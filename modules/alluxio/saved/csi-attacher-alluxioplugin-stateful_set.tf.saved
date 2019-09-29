@@ -1,0 +1,71 @@
+resource "k8s_apps_v1beta1_stateful_set" "csi-attacher-alluxioplugin" {
+  metadata {
+    name = "csi-attacher-alluxioplugin"
+  namespace = var.namespace
+  }
+  spec {
+    replicas     = 1
+    service_name = "csi-attacher"
+    template {
+      metadata {
+        labels = {
+          "app" = "csi-attacher-alluxioplugin"
+        }
+      }
+      spec {
+
+        containers {
+          args = [
+            "--v=5",
+            "--csi-address=$(ADDRESS)",
+          ]
+
+          env {
+            name  = "ADDRESS"
+            value = "/csi/csi.sock"
+          }
+          image             = "quay.io/k8scsi/csi-attacher:v1.1.1"
+          image_pull_policy = "IfNotPresent"
+          name              = "csi-attacher"
+
+          volume_mounts {
+            mount_path = "/csi"
+            name       = "socket-dir"
+          }
+        }
+        containers {
+          args = [
+            "--nodeid=$(NODE_ID)",
+            "--endpoint=$(CSI_ENDPOINT)",
+          ]
+          command = ["/usr/local/bin/alluxio-csi"]
+          env {
+            name = "NODE_ID"
+            value_from {
+              field_ref {
+                field_path = "spec.nodeName"
+              }
+            }
+          }
+          env {
+            name  = "CSI_ENDPOINT"
+            value = "unix://plugin/csi.sock"
+          }
+          image = "registry.rebelsoft.com/alluxio-csi"
+          image_pull_policy = "IfNotPresent"
+          name              = "alluxio"
+
+          volume_mounts {
+            mount_path = "/plugin"
+            name       = "socket-dir"
+          }
+        }
+        service_account = "csi-attacher"
+
+        volumes {
+          name = "socket-dir"
+        }
+      }
+    }
+  }
+}

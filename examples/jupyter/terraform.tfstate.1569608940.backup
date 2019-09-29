@@ -1,0 +1,3577 @@
+{
+  "version": 4,
+  "terraform_version": "0.12.9",
+  "serial": 688,
+  "lineage": "f17eedba-b4bc-4d34-9e50-a8d8bb350905",
+  "outputs": {
+    "preload_images": {
+      "value": [
+        "jupyter/minimal-notebook:latest",
+        "jupyter/scipy-notebook:latest",
+        "jupyter/r-notebook:latest",
+        "jupyter/tensorflow-notebook:latest",
+        "jupyter/datascience-notebook:latest",
+        "jupyter/pyspark-notebook:latest",
+        "jupyter/all-spark-notebook:latest",
+        "elyra/nb2kg:dev",
+        "elyra/kernel-py:dev",
+        "elyra/kernel-spark-py:dev",
+        "elyra/kernel-tf-py:dev",
+        "elyra/kernel-scala:dev",
+        "elyra/kernel-r:dev",
+        "elyra/kernel-spark-r:dev"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string",
+          "string"
+        ]
+      ]
+    }
+  },
+  "resources": [
+    {
+      "module": "module.preloader",
+      "mode": "managed",
+      "type": "k8s_apps_v1_daemon_set",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.daemon_set.jupyter-preloader",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:21Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-preloader",
+                  "name": "jupyter-preloader",
+                  "service": "jupyter-preloader"
+                },
+                "name": "jupyter-preloader",
+                "namespace": "jupyter-example",
+                "resource_version": "59771501",
+                "self_link": "/apis/apps/v1/namespaces/jupyter-example/daemonsets/jupyter-preloader",
+                "uid": "df2cff21-12ea-45ec-acbe-3f6a28d4c4c5"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "revision_history_limit": 10,
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "app": "jupyter-preloader",
+                      "name": "jupyter-preloader",
+                      "service": "jupyter-preloader"
+                    }
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {},
+                        "creation_timestamp": "",
+                        "deletion_grace_period_seconds": 0,
+                        "deletion_timestamp": "",
+                        "labels": {
+                          "app": "jupyter-preloader",
+                          "name": "jupyter-preloader",
+                          "service": "jupyter-preloader"
+                        },
+                        "name": "jupyter-preloader",
+                        "namespace": "jupyter-example",
+                        "resource_version": "",
+                        "self_link": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": "",
+                        "containers": [
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/minimal-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-minimal-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/scipy-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-scipy-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/r-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-r-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/tensorflow-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-tensorflow-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/datascience-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-datascience-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/pyspark-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-pyspark-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "jupyter/all-spark-notebook:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyter-all-spark-notebook-latest",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/nb2kg:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-nb2kg-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/kernel-py:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-kernel-py-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/kernel-spark-py:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-kernel-spark-py-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/kernel-tf-py:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-kernel-tf-py-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/kernel-scala:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-kernel-scala-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/kernel-r:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-kernel-r-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          },
+                          {
+                            "args": [],
+                            "command": [
+                              "sleep",
+                              "86400"
+                            ],
+                            "env": [],
+                            "env_from": [],
+                            "image": "elyra/kernel-spark-r:dev",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "elyra-kernel-spark-r-dev",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": "",
+                        "host_aliases": [],
+                        "host_ipc": "",
+                        "host_network": "",
+                        "host_pid": "",
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_containers": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "preemption_policy": "",
+                        "priority": 0,
+                        "priority_class_name": "",
+                        "readiness_gates": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [
+                          {
+                            "fsgroup": null,
+                            "run_asgroup": null,
+                            "run_asnon_root": null,
+                            "run_asuser": null,
+                            "selinux_options": [],
+                            "supplemental_groups": null,
+                            "sysctls": [],
+                            "windows_options": []
+                          }
+                        ],
+                        "service_account": "",
+                        "service_account_name": "",
+                        "share_process_namespace": "",
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 1,
+                        "tolerations": [],
+                        "volumes": []
+                      }
+                    ]
+                  }
+                ],
+                "update_strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_unavailable": "1"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_apps_v1_deployment",
+      "name": "nginx-ingress-controller",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.deployment.jupyter-ingress",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:21Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example",
+                "resource_version": "59164200",
+                "self_link": "/apis/apps/v1/namespaces/jupyter-example/deployments/jupyter-ingress",
+                "uid": "a2f91761-4baf-4fc6-8acc-6070b2abdb12"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "paused": "",
+                "progress_deadline_seconds": 600,
+                "replicas": 1,
+                "revision_history_limit": 10,
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "app.kubernetes.io/name": "jupyter-ingress",
+                      "app.kubernetes.io/part-of": "jupyter-ingress"
+                    }
+                  }
+                ],
+                "strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_surge": "25%",
+                        "max_unavailable": "25%"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {
+                          "prometheus.io/port": "10254",
+                          "prometheus.io/scrape": "true"
+                        },
+                        "creation_timestamp": "",
+                        "deletion_grace_period_seconds": 0,
+                        "deletion_timestamp": "",
+                        "labels": {
+                          "app.kubernetes.io/name": "jupyter-ingress",
+                          "app.kubernetes.io/part-of": "jupyter-ingress"
+                        },
+                        "name": "",
+                        "namespace": "",
+                        "resource_version": "",
+                        "self_link": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": "",
+                        "containers": [
+                          {
+                            "args": [
+                              "/nginx-ingress-controller",
+                              "--election-id=jupyter-ingress",
+                              "--ingress-class=jupyter-example",
+                              "--configmap=$(POD_NAMESPACE)/jupyter-ingress-nginx-configuration",
+                              "--tcp-services-configmap=$(POD_NAMESPACE)/jupyter-ingress-tcp-services",
+                              "--udp-services-configmap=$(POD_NAMESPACE)/jupyter-ingress-udp-services",
+                              "--annotations-prefix=nginx.ingress.kubernetes.io",
+                              "--publish-service=$(POD_NAMESPACE)/jupyter-ingress",
+                              "--update-status=true",
+                              "--update-status-on-shutdown",
+                              ""
+                            ],
+                            "command": [],
+                            "env": [
+                              {
+                                "name": "POD_NAME",
+                                "value": "",
+                                "value_from": [
+                                  {
+                                    "config_map_keyref": [],
+                                    "field_ref": [
+                                      {
+                                        "api_version": "v1",
+                                        "field_path": "metadata.name"
+                                      }
+                                    ],
+                                    "resource_field_ref": [],
+                                    "secret_key_ref": []
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "POD_NAMESPACE",
+                                "value": "",
+                                "value_from": [
+                                  {
+                                    "config_map_keyref": [],
+                                    "field_ref": [
+                                      {
+                                        "api_version": "v1",
+                                        "field_path": "metadata.namespace"
+                                      }
+                                    ],
+                                    "resource_field_ref": [],
+                                    "secret_key_ref": []
+                                  }
+                                ]
+                              }
+                            ],
+                            "env_from": [],
+                            "image": "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.25.1",
+                            "image_pull_policy": "IfNotPresent",
+                            "lifecycle": [],
+                            "liveness_probe": [
+                              {
+                                "exec": [],
+                                "failure_threshold": 3,
+                                "http_get": [
+                                  {
+                                    "host": "",
+                                    "http_headers": [],
+                                    "path": "/healthz",
+                                    "port": "10254",
+                                    "scheme": "HTTP"
+                                  }
+                                ],
+                                "initial_delay_seconds": 10,
+                                "period_seconds": 10,
+                                "success_threshold": 1,
+                                "tcp_socket": [],
+                                "timeout_seconds": 10
+                              }
+                            ],
+                            "name": "jupyter-ingress",
+                            "ports": [],
+                            "readiness_probe": [
+                              {
+                                "exec": [],
+                                "failure_threshold": 3,
+                                "http_get": [
+                                  {
+                                    "host": "",
+                                    "http_headers": [],
+                                    "path": "/healthz",
+                                    "port": "10254",
+                                    "scheme": "HTTP"
+                                  }
+                                ],
+                                "initial_delay_seconds": 0,
+                                "period_seconds": 10,
+                                "success_threshold": 1,
+                                "tcp_socket": [],
+                                "timeout_seconds": 10
+                              }
+                            ],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [
+                              {
+                                "allow_privilege_escalation": "true",
+                                "capabilities": [
+                                  {
+                                    "add": [
+                                      "NET_BIND_SERVICE"
+                                    ],
+                                    "drop": [
+                                      "ALL"
+                                    ]
+                                  }
+                                ],
+                                "privileged": "",
+                                "proc_mount": "",
+                                "read_only_root_filesystem": "",
+                                "run_asgroup": 0,
+                                "run_asnon_root": "",
+                                "run_asuser": 33,
+                                "selinux_options": [],
+                                "windows_options": []
+                              }
+                            ],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": "",
+                        "host_aliases": [],
+                        "host_ipc": "",
+                        "host_network": "",
+                        "host_pid": "",
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_containers": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "preemption_policy": "",
+                        "priority": 0,
+                        "priority_class_name": "",
+                        "readiness_gates": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [
+                          {
+                            "fsgroup": null,
+                            "run_asgroup": null,
+                            "run_asnon_root": "",
+                            "run_asuser": null,
+                            "selinux_options": [],
+                            "supplemental_groups": [],
+                            "sysctls": [],
+                            "windows_options": []
+                          }
+                        ],
+                        "service_account": "jupyter-ingress",
+                        "service_account_name": "jupyter-ingress",
+                        "share_process_namespace": "",
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 30,
+                        "tolerations": [],
+                        "volumes": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.hub.module.deployment-service",
+      "mode": "managed",
+      "type": "k8s_apps_v1_deployment",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.deployment.jupyter-hub",
+            "metadata": [
+              {
+                "annotations": {
+                  "config-version": "59011281",
+                  "secret-version": "59011247"
+                },
+                "creation_timestamp": "2019-09-15T04:35:23Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-hub",
+                  "name": "jupyter-hub",
+                  "service": "jupyter-hub"
+                },
+                "name": "jupyter-hub",
+                "namespace": "jupyter-example",
+                "resource_version": "59736253",
+                "self_link": "/apis/apps/v1/namespaces/jupyter-example/deployments/jupyter-hub",
+                "uid": "3540f280-22dc-4125-a86f-1abf8665a3c5"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "paused": "",
+                "progress_deadline_seconds": 600,
+                "replicas": 1,
+                "revision_history_limit": 10,
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "app": "jupyter-hub",
+                      "name": "jupyter-hub",
+                      "service": "jupyter-hub"
+                    }
+                  }
+                ],
+                "strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_surge": "25%",
+                        "max_unavailable": "25%"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {
+                          "config-version": "59011281",
+                          "secret-version": "59011247"
+                        },
+                        "creation_timestamp": "",
+                        "deletion_grace_period_seconds": 0,
+                        "deletion_timestamp": "",
+                        "labels": {
+                          "app": "jupyter-hub",
+                          "name": "jupyter-hub",
+                          "service": "jupyter-hub"
+                        },
+                        "name": "jupyter-hub",
+                        "namespace": "jupyter-example",
+                        "resource_version": "",
+                        "self_link": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": "",
+                        "containers": [
+                          {
+                            "args": [],
+                            "command": [
+                              "jupyterhub",
+                              "--config",
+                              "/srv/jupyterhub_config.py"
+                            ],
+                            "env": [
+                              {
+                                "name": "HUB_SERVICE_HOST",
+                                "value": "jupyter-hub",
+                                "value_from": []
+                              },
+                              {
+                                "name": "HUB_SERVICE_PORT",
+                                "value": "8081",
+                                "value_from": []
+                              },
+                              {
+                                "name": "PROXY_API_SERVICE_HOST",
+                                "value": "jupyter-proxy",
+                                "value_from": []
+                              },
+                              {
+                                "name": "PROXY_API_SERVICE_PORT",
+                                "value": "8001",
+                                "value_from": []
+                              },
+                              {
+                                "name": "PROXY_PUBLIC_SERVICE_HOST",
+                                "value": "jupyter.rebelsoft.com",
+                                "value_from": []
+                              },
+                              {
+                                "name": "PROXY_PUBLIC_SERVICE_PORT",
+                                "value": "80",
+                                "value_from": []
+                              },
+                              {
+                                "name": "PYTHONUNBUFFERED",
+                                "value": "1",
+                                "value_from": []
+                              },
+                              {
+                                "name": "JPY_COOKIE_SECRET",
+                                "value": "",
+                                "value_from": [
+                                  {
+                                    "config_map_keyref": [],
+                                    "field_ref": [],
+                                    "resource_field_ref": [],
+                                    "secret_key_ref": [
+                                      {
+                                        "key": "hub.cookie-secret",
+                                        "name": "jupyter",
+                                        "optional": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "POD_NAMESPACE",
+                                "value": "",
+                                "value_from": [
+                                  {
+                                    "config_map_keyref": [],
+                                    "field_ref": [
+                                      {
+                                        "api_version": "v1",
+                                        "field_path": "metadata.namespace"
+                                      }
+                                    ],
+                                    "resource_field_ref": [],
+                                    "secret_key_ref": []
+                                  }
+                                ]
+                              },
+                              {
+                                "name": "CONFIGPROXY_AUTH_TOKEN",
+                                "value": "",
+                                "value_from": [
+                                  {
+                                    "config_map_keyref": [],
+                                    "field_ref": [],
+                                    "resource_field_ref": [],
+                                    "secret_key_ref": [
+                                      {
+                                        "key": "proxy.token",
+                                        "name": "jupyter",
+                                        "optional": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "env_from": [],
+                            "image": "jupyterhub/k8s-hub:0.9-36ff743",
+                            "image_pull_policy": "IfNotPresent",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "jupyterhub",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": {},
+                                "requests": {
+                                  "cpu": "200m",
+                                  "memory": "512Mi"
+                                }
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [
+                              {
+                                "mount_path": "/etc/jupyterhub/config/",
+                                "mount_propagation": "",
+                                "name": "config",
+                                "read_only": "",
+                                "sub_path": "",
+                                "sub_path_expr": ""
+                              },
+                              {
+                                "mount_path": "/etc/jupyterhub/secret/",
+                                "mount_propagation": "",
+                                "name": "secret",
+                                "read_only": "",
+                                "sub_path": "",
+                                "sub_path_expr": ""
+                              }
+                            ],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": "",
+                        "host_aliases": [],
+                        "host_ipc": "",
+                        "host_network": "",
+                        "host_pid": "",
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_containers": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "preemption_policy": "",
+                        "priority": 0,
+                        "priority_class_name": "",
+                        "readiness_gates": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [
+                          {
+                            "fsgroup": 1000,
+                            "run_asgroup": 0,
+                            "run_asnon_root": "",
+                            "run_asuser": 1000,
+                            "selinux_options": [],
+                            "supplemental_groups": [],
+                            "sysctls": [],
+                            "windows_options": []
+                          }
+                        ],
+                        "service_account": "jupyter-hub",
+                        "service_account_name": "jupyter-hub",
+                        "share_process_namespace": "",
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 30,
+                        "tolerations": [],
+                        "volumes": [
+                          {
+                            "aws_elastic_block_store": [],
+                            "azure_disk": [],
+                            "azure_file": [],
+                            "cephfs": [],
+                            "cinder": [],
+                            "config_map": [
+                              {
+                                "default_mode": 420,
+                                "items": [],
+                                "name": "jupyter",
+                                "optional": ""
+                              }
+                            ],
+                            "csi": [],
+                            "downward_api": [],
+                            "empty_dir": [],
+                            "fc": [],
+                            "flex_volume": [],
+                            "flocker": [],
+                            "gce_persistent_disk": [],
+                            "git_repo": [],
+                            "glusterfs": [],
+                            "host_path": [],
+                            "iscsi": [],
+                            "name": "config",
+                            "nfs": [],
+                            "persistent_volume_claim": [],
+                            "photon_persistent_disk": [],
+                            "portworx_volume": [],
+                            "projected": [],
+                            "quobyte": [],
+                            "rbd": [],
+                            "scale_io": [],
+                            "secret": [],
+                            "storageos": [],
+                            "vsphere_volume": []
+                          },
+                          {
+                            "aws_elastic_block_store": [],
+                            "azure_disk": [],
+                            "azure_file": [],
+                            "cephfs": [],
+                            "cinder": [],
+                            "config_map": [],
+                            "csi": [],
+                            "downward_api": [],
+                            "empty_dir": [],
+                            "fc": [],
+                            "flex_volume": [],
+                            "flocker": [],
+                            "gce_persistent_disk": [],
+                            "git_repo": [],
+                            "glusterfs": [],
+                            "host_path": [],
+                            "iscsi": [],
+                            "name": "secret",
+                            "nfs": [],
+                            "persistent_volume_claim": [],
+                            "photon_persistent_disk": [],
+                            "portworx_volume": [],
+                            "projected": [],
+                            "quobyte": [],
+                            "rbd": [],
+                            "scale_io": [],
+                            "secret": [
+                              {
+                                "default_mode": 420,
+                                "items": [],
+                                "optional": "",
+                                "secret_name": "jupyter"
+                              }
+                            ],
+                            "storageos": [],
+                            "vsphere_volume": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.nfs-server.module.deployment-service",
+      "mode": "managed",
+      "type": "k8s_apps_v1_deployment",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.deployment.nfs-server",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:21Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "nfs-server",
+                  "name": "nfs-server",
+                  "service": "nfs-server"
+                },
+                "name": "nfs-server",
+                "namespace": "jupyter-example",
+                "resource_version": "59011561",
+                "self_link": "/apis/apps/v1/namespaces/jupyter-example/deployments/nfs-server",
+                "uid": "62a79441-6db0-4b11-b341-0697d6dfddaf"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "paused": "",
+                "progress_deadline_seconds": 600,
+                "replicas": 1,
+                "revision_history_limit": 10,
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "app": "nfs-server",
+                      "name": "nfs-server",
+                      "service": "nfs-server"
+                    }
+                  }
+                ],
+                "strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_surge": "25%",
+                        "max_unavailable": "25%"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {},
+                        "creation_timestamp": "",
+                        "deletion_grace_period_seconds": 0,
+                        "deletion_timestamp": "",
+                        "labels": {
+                          "app": "nfs-server",
+                          "name": "nfs-server",
+                          "service": "nfs-server"
+                        },
+                        "name": "nfs-server",
+                        "namespace": "jupyter-example",
+                        "resource_version": "",
+                        "self_link": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": "",
+                        "containers": [
+                          {
+                            "args": [],
+                            "command": [],
+                            "env": [
+                              {
+                                "name": "SHARED_DIRECTORY",
+                                "value": "/data",
+                                "value_from": []
+                              }
+                            ],
+                            "env_from": [],
+                            "image": "itsthenetwork/nfs-server-alpine",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "nfs-server",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [
+                              {
+                                "allow_privilege_escalation": "",
+                                "capabilities": [],
+                                "privileged": "true",
+                                "proc_mount": "",
+                                "read_only_root_filesystem": "",
+                                "run_asgroup": 0,
+                                "run_asnon_root": "",
+                                "run_asuser": 0,
+                                "selinux_options": [],
+                                "windows_options": []
+                              }
+                            ],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [
+                              {
+                                "mount_path": "/data",
+                                "mount_propagation": "",
+                                "name": "data",
+                                "read_only": "",
+                                "sub_path": "",
+                                "sub_path_expr": ""
+                              }
+                            ],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": "",
+                        "host_aliases": [],
+                        "host_ipc": "",
+                        "host_network": "",
+                        "host_pid": "",
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_containers": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "preemption_policy": "",
+                        "priority": 0,
+                        "priority_class_name": "",
+                        "readiness_gates": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [
+                          {
+                            "fsgroup": null,
+                            "run_asgroup": null,
+                            "run_asnon_root": null,
+                            "run_asuser": null,
+                            "selinux_options": [],
+                            "supplemental_groups": null,
+                            "sysctls": [],
+                            "windows_options": []
+                          }
+                        ],
+                        "service_account": "",
+                        "service_account_name": "",
+                        "share_process_namespace": "",
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 30,
+                        "tolerations": [],
+                        "volumes": [
+                          {
+                            "aws_elastic_block_store": [],
+                            "azure_disk": [],
+                            "azure_file": [],
+                            "cephfs": [],
+                            "cinder": [],
+                            "config_map": [],
+                            "csi": [],
+                            "downward_api": [],
+                            "empty_dir": [
+                              {
+                                "medium": null,
+                                "size_limit": null
+                              }
+                            ],
+                            "fc": [],
+                            "flex_volume": [],
+                            "flocker": [],
+                            "gce_persistent_disk": [],
+                            "git_repo": [],
+                            "glusterfs": [],
+                            "host_path": [],
+                            "iscsi": [],
+                            "name": "data",
+                            "nfs": [],
+                            "persistent_volume_claim": [],
+                            "photon_persistent_disk": [],
+                            "portworx_volume": [],
+                            "projected": [],
+                            "quobyte": [],
+                            "rbd": [],
+                            "scale_io": [],
+                            "secret": [],
+                            "storageos": [],
+                            "vsphere_volume": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.proxy.module.deployment-service",
+      "mode": "managed",
+      "type": "k8s_apps_v1_deployment",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.deployment.jupyter-proxy",
+            "metadata": [
+              {
+                "annotations": {
+                  "config-version": "59011281",
+                  "secret-version": "59011247"
+                },
+                "creation_timestamp": "2019-09-15T04:35:22Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-proxy",
+                  "name": "jupyter-proxy",
+                  "service": "jupyter-proxy"
+                },
+                "name": "jupyter-proxy",
+                "namespace": "jupyter-example",
+                "resource_version": "59011605",
+                "self_link": "/apis/apps/v1/namespaces/jupyter-example/deployments/jupyter-proxy",
+                "uid": "331fd91c-13bb-4895-b238-b3cb244fae16"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "paused": "",
+                "progress_deadline_seconds": 600,
+                "replicas": 1,
+                "revision_history_limit": 10,
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "app": "jupyter-proxy",
+                      "name": "jupyter-proxy",
+                      "service": "jupyter-proxy"
+                    }
+                  }
+                ],
+                "strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_surge": "25%",
+                        "max_unavailable": "25%"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {
+                          "config-version": "59011281",
+                          "secret-version": "59011247"
+                        },
+                        "creation_timestamp": "",
+                        "deletion_grace_period_seconds": 0,
+                        "deletion_timestamp": "",
+                        "labels": {
+                          "app": "jupyter-proxy",
+                          "name": "jupyter-proxy",
+                          "service": "jupyter-proxy"
+                        },
+                        "name": "jupyter-proxy",
+                        "namespace": "jupyter-example",
+                        "resource_version": "",
+                        "self_link": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": "",
+                        "containers": [
+                          {
+                            "args": [],
+                            "command": [
+                              "configurable-http-proxy",
+                              "--ip=0.0.0.0",
+                              "--api-ip=0.0.0.0",
+                              "--api-port=8001",
+                              "--default-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)",
+                              "--error-target=http://$(HUB_SERVICE_HOST):$(HUB_SERVICE_PORT)/hub/error",
+                              "--port=8000"
+                            ],
+                            "env": [
+                              {
+                                "name": "HUB_SERVICE_HOST",
+                                "value": "jupyter-hub",
+                                "value_from": []
+                              },
+                              {
+                                "name": "HUB_SERVICE_PORT",
+                                "value": "8081",
+                                "value_from": []
+                              },
+                              {
+                                "name": "CONFIGPROXY_AUTH_TOKEN",
+                                "value": "",
+                                "value_from": [
+                                  {
+                                    "config_map_keyref": [],
+                                    "field_ref": [],
+                                    "resource_field_ref": [],
+                                    "secret_key_ref": [
+                                      {
+                                        "key": "proxy.token",
+                                        "name": "jupyter",
+                                        "optional": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "env_from": [],
+                            "image": "jupyterhub/configurable-http-proxy:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "chp",
+                            "ports": [],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": {},
+                                "requests": {
+                                  "cpu": "200m",
+                                  "memory": "512Mi"
+                                }
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": "",
+                        "host_aliases": [],
+                        "host_ipc": "",
+                        "host_network": "",
+                        "host_pid": "",
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_containers": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "preemption_policy": "",
+                        "priority": 0,
+                        "priority_class_name": "",
+                        "readiness_gates": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [
+                          {
+                            "fsgroup": null,
+                            "run_asgroup": null,
+                            "run_asnon_root": null,
+                            "run_asuser": null,
+                            "selinux_options": [],
+                            "supplemental_groups": null,
+                            "sysctls": [],
+                            "windows_options": []
+                          }
+                        ],
+                        "service_account": "",
+                        "service_account_name": "",
+                        "share_process_namespace": "",
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 30,
+                        "tolerations": [],
+                        "volumes": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_core_v1_config_map",
+      "name": "nginx-configuration",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "binary_data": null,
+            "data": null,
+            "id": "jupyter-example.config_map.jupyter-ingress-nginx-configuration",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress-nginx-configuration",
+                "namespace": "jupyter-example",
+                "resource_version": "59011248",
+                "self_link": "/api/v1/namespaces/jupyter-example/configmaps/jupyter-ingress-nginx-configuration",
+                "uid": "81f104ec-41f2-456e-b972-224cccc6008c"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_core_v1_config_map",
+      "name": "tcp-services",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "binary_data": null,
+            "data": null,
+            "id": "jupyter-example.config_map.jupyter-ingress-tcp-services",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress-tcp-services",
+                "namespace": "jupyter-example",
+                "resource_version": "59011250",
+                "self_link": "/api/v1/namespaces/jupyter-example/configmaps/jupyter-ingress-tcp-services",
+                "uid": "1e913809-f482-430b-ab29-1f7f9ca8f5fb"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.config",
+      "mode": "managed",
+      "type": "k8s_core_v1_config_map",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "binary_data": null,
+            "data": {
+              "values.yaml": "Chart:\n  Name: jupyterhub\n  Version: 0.9-36ff743\nRelease:\n  Name: release-name\n  Namespace: jupyter-example\n  Service: Tiller\nauth:\n  admin:\n    access: true\n    users: null\n  dummy:\n    password: null\n  ldap:\n    dn:\n      search: {}\n      user: {}\n    user: {}\n  state:\n    enabled: false\n  type: dummy\n  whitelist:\n    users: null\ncull:\n  concurrency: 10\n  enabled: true\n  every: 600\n  maxAge: 0\n  timeout: 3600\n  users: false\ncustom: {}\ndebug:\n  enabled: false\nhub:\n  activeServerLimit: null\n  allowNamedServers: false\n  annotations: {}\n  baseUrl: /\n  concurrentSpawnLimit: 64\n  consecutiveFailureLimit: 5\n  db:\n    password: null\n    pvc:\n      accessModes:\n      - ReadWriteOnce\n      annotations: {}\n      selector: {}\n      storage: 1Gi\n      storageClassName: null\n      subPath: null\n    type: sqlite\n    upgrade: null\n    url: null\n  deploymentStrategy:\n    rollingUpdate: null\n    type: Recreate\n  extraConfig: {\"enterprise-gateway\":\"config = '/etc/jupyter/jupyter_notebook_config.py'\",\"jupyterlab\":\"c.Spawner.cmd = ['jupyter-labhub']\"}\n  extraContainers: []\n  extraVolumeMounts: []\n  extraVolumes: []\n  fsGid: 1000\n  image:\n    name: jupyterhub/k8s-hub\n    tag: 0.9-36ff743\n  imagePullPolicy: IfNotPresent\n  imagePullSecret:\n    email: null\n    enabled: false\n    password: null\n    registry: null\n    username: null\n  labels: {}\n  networkPolicy:\n    egress:\n    - to:\n      - ipBlock:\n          cidr: 0.0.0.0/0\n    enabled: false\n  nodeSelector: {}\n  pdb:\n    enabled: true\n    minAvailable: 1\n  publicURL: null\n  resources:\n    requests:\n      cpu: 200m\n      memory: 512Mi\n  service:\n    annotations: {}\n    loadBalancerIP: null\n    ports:\n      nodePort: null\n    type: ClusterIP\n  services: {}\n  uid: 1000\nscheduling:\n  corePods:\n    nodeAffinity:\n      matchNodePurpose: prefer\n  podPriority:\n    defaultPriority: 0\n    enabled: false\n    globalDefault: false\n    userPlaceholderPriority: -10\n  userPlaceholder:\n    enabled: false\n    replicas: 0\n  userPods:\n    nodeAffinity:\n      matchNodePurpose: prefer\n  userScheduler:\n    enabled: false\n    image:\n      name: gcr.io/google_containers/kube-scheduler-amd64\n      tag: v1.11.2\n    logLevel: 4\n    nodeSelector: {}\n    pdb:\n      enabled: true\n      minAvailable: 1\n    replicas: 1\n    resources:\n      requests:\n        cpu: 50m\n        memory: 256Mi\nsingleuser:\n  cloudMetadata:\n    enabled: false\n    ip: 169.254.169.254\n  cmd: jupyterhub-singleuser\n  cpu:\n    guarantee: null\n    limit: null\n  defaultUrl: /lab\n  events: true\n  extraAnnotations: {}\n  extraContainers: []\n  extraEnv: {\"KERNEL_UID\":\"0\",\"KERNEL_USERNAME\":\"jovyan\",\"KG_HTTP_USER\":\"jovyan\",\"KG_REQUEST_TIMEOUT\":\"60\",\"KG_URL\":\"http://enterprise-gateway:8888\"}\n  extraLabels:\n    hub.jupyter.org/network-access-hub: \"true\"\n  extraNodeAffinity:\n    preferred: []\n    required: []\n  extraPodAffinity:\n    preferred: []\n    required: []\n  extraPodAntiAffinity:\n    preferred: []\n    required: []\n  extraResource:\n    guarantees: {}\n    limits: {}\n  extraTolerations: []\n  fsGid: 100\n  image:\n    name: jupyter/minimal-notebook:latest\n    pullPolicy: IfNotPresent\n    tag: latest\n  imagePullSecret:\n    email: null\n    enabled: false\n    registry: null\n    username: null\n  initContainers: []\n  lifecycleHooks: null\n  memory:\n    guarantee: 1G\n    limit: null\n  networkPolicy:\n    egress:\n    - to:\n      - ipBlock:\n          cidr: 0.0.0.0/0\n          except:\n          - 169.254.169.254/32\n    enabled: false\n  networkTools:\n    image:\n      name: jupyterhub/k8s-network-tools\n      tag: 0.9-b51ffeb\n  nodeSelector: {}\n  profileList: [{\"default\":\"true\",\"description\":\"command line tools useful when working in Jupyter applications\",\"display_name\":\"minimal-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/minimal-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"includes popular packages from the scientific Python ecosystem\",\"display_name\":\"scipy-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/scipy-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"includes popular packages from the R ecosystem\",\"display_name\":\"r-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/r-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"includes popular Python deep learning libraries\",\"display_name\":\"tensorflow-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/tensorflow-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"includes libraries for data analysis from the Julia, Python, and R communities\",\"display_name\":\"datascience-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/datascience-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"includes Python support for Apache Spark\",\"display_name\":\"pyspark-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/pyspark-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"includes Python, R, and Scala support for Apache Spark\",\"display_name\":\"all-spark-notebook\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"jupyter/all-spark-notebook:latest\",\"singleuser_uid\":0}},{\"description\":\"Use Enterprise Gateway\",\"display_name\":\"elyra/nb2kg\",\"kubespawner_override\":{\"args\":[\"--allow-root\"],\"image\":\"elyra/nb2kg:dev\",\"singleuser_uid\":0}}]\n  serviceAccountName: null\n  startTimeout: 300\n  storage:\n    capacity: 10Gi\n    dynamic:\n      pvcNameTemplate: claim-{username}{servername}\n      storageAccessModes:\n      - ReadWriteOnce\n      storageClass: null\n      volumeNameTemplate: volume-{username}{servername}\n    extraLabels: {}\n    extraVolumeMounts: [{\"mountPath\":\"/alluxio\",\"name\":\"alluxio-fuse-mount\"}]\n    extraVolumes: [{\"name\":\"alluxio-fuse-mount\",\"persistentVolumeClaim\":{\"claimName\":\"jupyter\"}}]\n    homeMountPath: /home/jovyan\n    static:\n      pvcName: jupyter-users\n      subPath: '{username}'\n    type: static\n  uid: 1000\n\n"
+            },
+            "id": "jupyter-example.config_map.jupyter",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:20Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "jupyter",
+                "namespace": "jupyter-example",
+                "resource_version": "59011281",
+                "self_link": "/api/v1/namespaces/jupyter-example/configmaps/jupyter",
+                "uid": "06658951-baa9-4a0e-99a7-7be2078efc10"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_core_v1_config_map",
+      "name": "udp-services",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "binary_data": null,
+            "data": null,
+            "id": "jupyter-example.config_map.jupyter-ingress-udp-services",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress-udp-services",
+                "namespace": "jupyter-example",
+                "resource_version": "59011258",
+                "self_link": "/api/v1/namespaces/jupyter-example/configmaps/jupyter-ingress-udp-services",
+                "uid": "d78b7401-5f8d-46b7-be4a-64d01daa106d"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "k8s_core_v1_namespace",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": ".namespace.jupyter-example",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "istio-injection": "disabled"
+                },
+                "name": "jupyter-example",
+                "namespace": "",
+                "resource_version": "59011237",
+                "self_link": "/api/v1/namespaces/jupyter-example",
+                "uid": "0d227ef2-53cd-4f54-803c-caa163460d5b"
+              }
+            ],
+            "spec": [
+              {}
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "k8s_core_v1_persistent_volume",
+      "name": "jupyter-users",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": ".persistent_volume.jupyter",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:21Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "jupyter",
+                "namespace": "",
+                "resource_version": "59011425",
+                "self_link": "/api/v1/persistentvolumes/jupyter",
+                "uid": "a127b83f-9091-45c3-890b-900ca9c6c64b"
+              }
+            ],
+            "spec": [
+              {
+                "access_modes": [
+                  "ReadWriteOnce"
+                ],
+                "aws_elastic_block_store": [],
+                "azure_disk": [],
+                "azure_file": [],
+                "capacity": {
+                  "storage": "1Gi"
+                },
+                "cephfs": [],
+                "cinder": [],
+                "claim_ref": [
+                  {
+                    "api_version": "v1",
+                    "field_path": "",
+                    "kind": "PersistentVolumeClaim",
+                    "name": "jupyter-users",
+                    "namespace": "jupyter-example",
+                    "resource_version": "59011422",
+                    "uid": "df5de6bf-9fba-414d-a8ac-5a7777d4bb97"
+                  }
+                ],
+                "csi": [],
+                "fc": [],
+                "flex_volume": [],
+                "flocker": [],
+                "gce_persistent_disk": [],
+                "glusterfs": [],
+                "host_path": [],
+                "iscsi": [],
+                "local": [],
+                "mount_options": [
+                  "nfsvers=4.2",
+                  "proto=tcp",
+                  "port=2049"
+                ],
+                "nfs": [
+                  {
+                    "path": "/",
+                    "read_only": "",
+                    "server": "172.27.205.0"
+                  }
+                ],
+                "node_affinity": [],
+                "persistent_volume_reclaim_policy": "Retain",
+                "photon_persistent_disk": [],
+                "portworx_volume": [],
+                "quobyte": [],
+                "rbd": [],
+                "scale_io": [],
+                "storage_class_name": "jupyter",
+                "storageos": [],
+                "volume_mode": "Filesystem",
+                "vsphere_volume": []
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "module.nfs-server"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "k8s_core_v1_persistent_volume_claim",
+      "name": "jupyter-users",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.persistent_volume_claim.jupyter-users",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:22Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "jupyter-users",
+                "namespace": "jupyter-example",
+                "resource_version": "59011427",
+                "self_link": "/api/v1/namespaces/jupyter-example/persistentvolumeclaims/jupyter-users",
+                "uid": "df5de6bf-9fba-414d-a8ac-5a7777d4bb97"
+              }
+            ],
+            "spec": [
+              {
+                "access_modes": [
+                  "ReadWriteOnce"
+                ],
+                "data_source": [],
+                "resources": [
+                  {
+                    "limits": {},
+                    "requests": {
+                      "storage": "1Gi"
+                    }
+                  }
+                ],
+                "selector": [],
+                "storage_class_name": "jupyter",
+                "volume_mode": "Filesystem",
+                "volume_name": "jupyter"
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "k8s_core_v1_persistent_volume.jupyter-users"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "k8s_core_v1_persistent_volume_claim",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.persistent_volume_claim.jupyter",
+            "metadata": [
+              {
+                "annotations": {
+                  "volume.beta.kubernetes.io/storage-provisioner": "alluxio"
+                },
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "jupyter",
+                "namespace": "jupyter-example",
+                "resource_version": "59011289",
+                "self_link": "/api/v1/namespaces/jupyter-example/persistentvolumeclaims/jupyter",
+                "uid": "162f10dd-9080-4419-9917-b4bc903827ba"
+              }
+            ],
+            "spec": [
+              {
+                "access_modes": [
+                  "ReadWriteOnce"
+                ],
+                "data_source": [],
+                "resources": [
+                  {
+                    "limits": {},
+                    "requests": {
+                      "storage": "1Gi"
+                    }
+                  }
+                ],
+                "selector": [],
+                "storage_class_name": "alluxio",
+                "volume_mode": "Filesystem",
+                "volume_name": "pvc-162f10dd-9080-4419-9917-b4bc903827ba"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.config",
+      "mode": "managed",
+      "type": "k8s_core_v1_secret",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "data": {
+              "hub.cookie-secret": "YjNiMTE1YWZjYjliZjNjMjNiZmIzZGRiM2JlNGE4ZTY3MWFkZmViZWRmMzdhZjZmY2UwOTI4MGRmNGNmNGU0Mg==",
+              "proxy.token": "ODI5MjliYWRjMzNkZmI3YWUwYzgxZDM2MDAyMzJiNTBhMjczYzYzODI0MzZkYjBiNDFlN2YxODNhNzJjMzVlNg==",
+              "values.yaml": "YXV0aDoge30KaHViOgogIHNlcnZpY2VzOiB7fQo="
+            },
+            "id": "jupyter-example.secret.jupyter",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "jupyter",
+                "namespace": "jupyter-example",
+                "resource_version": "59011247",
+                "self_link": "/api/v1/namespaces/jupyter-example/secrets/jupyter",
+                "uid": "17a0186d-2811-4f4a-b268-954e87db5e19"
+              }
+            ],
+            "string_data": null,
+            "type": "Opaque"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.enterprise-gateway",
+      "mode": "managed",
+      "type": "k8s_core_v1_service",
+      "name": "enterprise-gateway",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.service.enterprise-gateway",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "enterprise-gateway",
+                  "component": "enterprise-gateway"
+                },
+                "name": "enterprise-gateway",
+                "namespace": "jupyter-example",
+                "resource_version": "59011255",
+                "self_link": "/api/v1/namespaces/jupyter-example/services/enterprise-gateway",
+                "uid": "7e63b9b1-e88e-44a3-a509-c91be9490890"
+              }
+            ],
+            "spec": [
+              {
+                "cluster_ip": "172.27.75.126",
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "",
+                "health_check_node_port": 0,
+                "load_balancer_ip": "",
+                "load_balancer_source_ranges": [],
+                "ports": [
+                  {
+                    "name": "http",
+                    "node_port": 0,
+                    "port": 8888,
+                    "protocol": "TCP",
+                    "target_port": "8888"
+                  }
+                ],
+                "publish_not_ready_addresses": "",
+                "selector": {
+                  "gateway-selector": "enterprise-gateway"
+                },
+                "session_affinity": "ClientIP",
+                "session_affinity_config": [
+                  {
+                    "client_ip": [
+                      {
+                        "timeout_seconds": 10800
+                      }
+                    ]
+                  }
+                ],
+                "type": "ClusterIP"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_core_v1_service",
+      "name": "ingress-nginx",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.service.jupyter-ingress",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:19Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example",
+                "resource_version": "59011268",
+                "self_link": "/api/v1/namespaces/jupyter-example/services/jupyter-ingress",
+                "uid": "e4e30205-e8f7-4745-8326-200fe1a73080"
+              }
+            ],
+            "spec": [
+              {
+                "cluster_ip": "172.27.198.242",
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "Cluster",
+                "health_check_node_port": 0,
+                "load_balancer_ip": "192.168.2.243",
+                "load_balancer_source_ranges": [],
+                "ports": [
+                  {
+                    "name": "http",
+                    "node_port": 30200,
+                    "port": 80,
+                    "protocol": "TCP",
+                    "target_port": "80"
+                  },
+                  {
+                    "name": "https",
+                    "node_port": 32490,
+                    "port": 443,
+                    "protocol": "TCP",
+                    "target_port": "443"
+                  }
+                ],
+                "publish_not_ready_addresses": "",
+                "selector": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "session_affinity": "None",
+                "session_affinity_config": [],
+                "type": "LoadBalancer"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.oauth2",
+      "mode": "managed",
+      "type": "k8s_core_v1_service",
+      "name": "oauth2-proxy",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.service.oauth2",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T19:17:50Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "k8s-app": "oauth2"
+                },
+                "name": "oauth2",
+                "namespace": "jupyter-example",
+                "resource_version": "59233207",
+                "self_link": "/api/v1/namespaces/jupyter-example/services/oauth2",
+                "uid": "769c00ad-a9a2-44b3-bd96-8eed49323eac"
+              }
+            ],
+            "spec": [
+              {
+                "cluster_ip": "172.27.82.54",
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "",
+                "health_check_node_port": 0,
+                "load_balancer_ip": "",
+                "load_balancer_source_ranges": [],
+                "ports": [
+                  {
+                    "name": "http",
+                    "node_port": 0,
+                    "port": 4180,
+                    "protocol": "TCP",
+                    "target_port": "4180"
+                  }
+                ],
+                "publish_not_ready_addresses": "",
+                "selector": {
+                  "k8s-app": "oauth2"
+                },
+                "session_affinity": "None",
+                "session_affinity_config": [],
+                "type": "ClusterIP"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.hub.module.deployment-service",
+      "mode": "managed",
+      "type": "k8s_core_v1_service",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.service.jupyter-hub",
+            "metadata": [
+              {
+                "annotations": {
+                  "config-version": "59011281",
+                  "secret-version": "59011247"
+                },
+                "creation_timestamp": "2019-09-15T04:35:22Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-hub",
+                  "name": "jupyter-hub",
+                  "service": "jupyter-hub"
+                },
+                "name": "jupyter-hub",
+                "namespace": "jupyter-example",
+                "resource_version": "59011437",
+                "self_link": "/api/v1/namespaces/jupyter-example/services/jupyter-hub",
+                "uid": "88f469a8-fd13-4cab-8210-11c069255fa2"
+              }
+            ],
+            "spec": [
+              {
+                "cluster_ip": "172.27.105.158",
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "",
+                "health_check_node_port": 0,
+                "load_balancer_ip": "",
+                "load_balancer_source_ranges": [],
+                "ports": [
+                  {
+                    "name": "http",
+                    "node_port": 0,
+                    "port": 8081,
+                    "protocol": "TCP",
+                    "target_port": "8081"
+                  }
+                ],
+                "publish_not_ready_addresses": "",
+                "selector": {
+                  "app": "jupyter-hub",
+                  "name": "jupyter-hub",
+                  "service": "jupyter-hub"
+                },
+                "session_affinity": "None",
+                "session_affinity_config": [],
+                "type": "ClusterIP"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.nfs-server.module.deployment-service",
+      "mode": "managed",
+      "type": "k8s_core_v1_service",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.service.nfs-server",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:19Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "nfs-server",
+                  "name": "nfs-server",
+                  "service": "nfs-server"
+                },
+                "name": "nfs-server",
+                "namespace": "jupyter-example",
+                "resource_version": "59011274",
+                "self_link": "/api/v1/namespaces/jupyter-example/services/nfs-server",
+                "uid": "a03c32f0-460e-480a-a579-80526014deeb"
+              }
+            ],
+            "spec": [
+              {
+                "cluster_ip": "172.27.205.0",
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "",
+                "health_check_node_port": 0,
+                "load_balancer_ip": "",
+                "load_balancer_source_ranges": [],
+                "ports": [
+                  {
+                    "name": "tcp",
+                    "node_port": 0,
+                    "port": 2049,
+                    "protocol": "TCP",
+                    "target_port": "2049"
+                  }
+                ],
+                "publish_not_ready_addresses": "",
+                "selector": {
+                  "app": "nfs-server",
+                  "name": "nfs-server",
+                  "service": "nfs-server"
+                },
+                "session_affinity": "None",
+                "session_affinity_config": [],
+                "type": "ClusterIP"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.proxy.module.deployment-service",
+      "mode": "managed",
+      "type": "k8s_core_v1_service",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.service.jupyter-proxy",
+            "metadata": [
+              {
+                "annotations": {
+                  "config-version": "59011281",
+                  "secret-version": "59011247"
+                },
+                "creation_timestamp": "2019-09-15T04:35:22Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-proxy",
+                  "name": "jupyter-proxy",
+                  "service": "jupyter-proxy"
+                },
+                "name": "jupyter-proxy",
+                "namespace": "jupyter-example",
+                "resource_version": "59011396",
+                "self_link": "/api/v1/namespaces/jupyter-example/services/jupyter-proxy",
+                "uid": "c217c1c8-1d10-4cb5-9c90-059ad2d96f84"
+              }
+            ],
+            "spec": [
+              {
+                "cluster_ip": "172.27.68.83",
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "",
+                "health_check_node_port": 0,
+                "load_balancer_ip": "",
+                "load_balancer_source_ranges": [],
+                "ports": [
+                  {
+                    "name": "http",
+                    "node_port": 0,
+                    "port": 8000,
+                    "protocol": "TCP",
+                    "target_port": "8000"
+                  },
+                  {
+                    "name": "api",
+                    "node_port": 0,
+                    "port": 8001,
+                    "protocol": "TCP",
+                    "target_port": "8001"
+                  }
+                ],
+                "publish_not_ready_addresses": "",
+                "selector": {
+                  "app": "jupyter-proxy",
+                  "name": "jupyter-proxy",
+                  "service": "jupyter-proxy"
+                },
+                "session_affinity": "None",
+                "session_affinity_config": [],
+                "type": "ClusterIP"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.enterprise-gateway",
+      "mode": "managed",
+      "type": "k8s_core_v1_service_account",
+      "name": "enterprise-gateway-sa",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "automount_service_account_token": null,
+            "id": "jupyter-example.service_account.enterprise-gateway-sa",
+            "image_pull_secrets": [],
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "enterprise-gateway",
+                  "component": "enterprise-gateway"
+                },
+                "name": "enterprise-gateway-sa",
+                "namespace": "jupyter-example",
+                "resource_version": "59011253",
+                "self_link": "/api/v1/namespaces/jupyter-example/serviceaccounts/enterprise-gateway-sa",
+                "uid": "5ac1c4f1-7c7d-46cc-9c85-587e3ef95117"
+              }
+            ],
+            "secrets": [
+              {
+                "api_version": "",
+                "field_path": "",
+                "kind": "",
+                "name": "enterprise-gateway-sa-token-ttxjg",
+                "namespace": "",
+                "resource_version": "",
+                "uid": ""
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_core_v1_service_account",
+      "name": "nginx-ingress-serviceaccount",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "automount_service_account_token": null,
+            "id": "jupyter-example.service_account.jupyter-ingress",
+            "image_pull_secrets": [],
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:19Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example",
+                "resource_version": "59011261",
+                "self_link": "/api/v1/namespaces/jupyter-example/serviceaccounts/jupyter-ingress",
+                "uid": "d730a758-26fd-4233-8192-075fcf5c1346"
+              }
+            ],
+            "secrets": [
+              {
+                "api_version": "",
+                "field_path": "",
+                "kind": "",
+                "name": "jupyter-ingress-token-mb4kq",
+                "namespace": "",
+                "resource_version": "",
+                "uid": ""
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.hub.module.rbac",
+      "mode": "managed",
+      "type": "k8s_core_v1_service_account",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "automount_service_account_token": null,
+            "id": "jupyter-example.service_account.jupyter-hub",
+            "image_pull_secrets": [],
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:19Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-hub",
+                  "name": "jupyter-hub",
+                  "service": "jupyter-hub"
+                },
+                "name": "jupyter-hub",
+                "namespace": "jupyter-example",
+                "resource_version": "59011272",
+                "self_link": "/api/v1/namespaces/jupyter-example/serviceaccounts/jupyter-hub",
+                "uid": "75cc8f58-7ce1-4f64-93d1-7f1baa4a1235"
+              }
+            ],
+            "secrets": [
+              {
+                "api_version": "",
+                "field_path": "",
+                "kind": "",
+                "name": "jupyter-hub-token-l4gnf",
+                "namespace": "",
+                "resource_version": "",
+                "uid": ""
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.oauth2",
+      "mode": "managed",
+      "type": "k8s_extensions_v1beta1_deployment",
+      "name": "oauth2-proxy",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "status": "tainted",
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.deployment.oauth2",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T19:17:51Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "k8s-app": "oauth2"
+                },
+                "name": "oauth2",
+                "namespace": "jupyter-example",
+                "resource_version": "59823973",
+                "self_link": "/apis/extensions/v1beta1/namespaces/jupyter-example/deployments/oauth2",
+                "uid": "4e01f6b2-b602-49b6-bb3e-b816ab0bbabc"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "paused": "",
+                "progress_deadline_seconds": 2147483647,
+                "replicas": 1,
+                "revision_history_limit": 2147483647,
+                "rollback_to": [],
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "k8s-app": "oauth2"
+                    }
+                  }
+                ],
+                "strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_surge": "1",
+                        "max_unavailable": "1"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {},
+                        "creation_timestamp": "",
+                        "deletion_grace_period_seconds": 0,
+                        "deletion_timestamp": "",
+                        "labels": {
+                          "k8s-app": "oauth2"
+                        },
+                        "name": "",
+                        "namespace": "",
+                        "resource_version": "",
+                        "self_link": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": "",
+                        "containers": [
+                          {
+                            "args": [
+                              "--provider=github",
+                              "--email-domain=*",
+                              "--upstream=file:///dev/null",
+                              "--http-address=0.0.0.0:4180",
+                              "--cookie-domain=.rebelsoft.com"
+                            ],
+                            "command": [],
+                            "env": [
+                              {
+                                "name": "OAUTH2_PROXY_CLIENT_ID",
+                                "value": "0a7d30c5558fd428c860",
+                                "value_from": []
+                              },
+                              {
+                                "name": "OAUTH2_PROXY_CLIENT_SECRET",
+                                "value": "fc1bce10de79e4f8fa88bbd1fc1d0435582b1905",
+                                "value_from": []
+                              },
+                              {
+                                "name": "OAUTH2_PROXY_COOKIE_SECRET",
+                                "value": "cd49b2ebe9d6e5ec14376ecec3c6199cbfd2fc1f",
+                                "value_from": []
+                              }
+                            ],
+                            "env_from": [],
+                            "image": "quay.io/pusher/oauth2_proxy:latest",
+                            "image_pull_policy": "Always",
+                            "lifecycle": [],
+                            "liveness_probe": [],
+                            "name": "oauth2",
+                            "ports": [
+                              {
+                                "container_port": 4180,
+                                "host_ip": "",
+                                "host_port": 0,
+                                "name": "",
+                                "protocol": "TCP"
+                              }
+                            ],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": null,
+                                "requests": null
+                              }
+                            ],
+                            "security_context": [],
+                            "stdin": "",
+                            "stdin_once": "",
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": "",
+                            "volume_devices": [],
+                            "volume_mounts": [],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": "",
+                        "host_aliases": [],
+                        "host_ipc": "",
+                        "host_network": "",
+                        "host_pid": "",
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_containers": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "preemption_policy": "",
+                        "priority": 0,
+                        "priority_class_name": "",
+                        "readiness_gates": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [
+                          {
+                            "fsgroup": null,
+                            "run_asgroup": null,
+                            "run_asnon_root": "",
+                            "run_asuser": null,
+                            "selinux_options": [],
+                            "supplemental_groups": [],
+                            "sysctls": [],
+                            "windows_options": []
+                          }
+                        ],
+                        "service_account": "",
+                        "service_account_name": "",
+                        "share_process_namespace": "",
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 30,
+                        "tolerations": [],
+                        "volumes": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "k8s_extensions_v1beta1_ingress",
+      "name": "oauth2",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.ingress.oauth2-ingress",
+            "metadata": [
+              {
+                "annotations": {
+                  "certmanager.k8s.io/cluster-issuer": "letsencrypt-prod",
+                  "kubernetes.io/ingress.class": "nginx",
+                  "nginx.ingress.kubernetes.io/configuration-snippet": "if ($request_uri ~ ^/redirect/(.*)) {\n  return 307 https://$1$is_args$args;\n}\n",
+                  "nginx.ingress.kubernetes.io/server-alias": "auth.*"
+                },
+                "creation_timestamp": "2019-09-17T04:23:32Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "oauth2-ingress",
+                "namespace": "jupyter-example",
+                "resource_version": "59762833",
+                "self_link": "/apis/extensions/v1beta1/namespaces/jupyter-example/ingresses/oauth2-ingress",
+                "uid": "3a70e78f-516c-41a3-8059-573def64804e"
+              }
+            ],
+            "spec": [
+              {
+                "backend": [],
+                "rules": [
+                  {
+                    "host": "auth.rebelsoft.com",
+                    "http": [
+                      {
+                        "paths": [
+                          {
+                            "backend": [
+                              {
+                                "service_name": "oauth2",
+                                "service_port": "4180"
+                              }
+                            ],
+                            "path": "/"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "tls": [
+                  {
+                    "hosts": [
+                      "auth.rebelsoft.com"
+                    ],
+                    "secret_name": "auth-tls"
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "k8s_core_v1_namespace.this",
+            "module.oauth2"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "k8s_extensions_v1beta1_ingress",
+      "name": "this",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.ingress.jupyter",
+            "metadata": [
+              {
+                "annotations": {
+                  "certmanager.k8s.io/cluster-issuer": "letsencrypt-prod",
+                  "kubernetes.io/ingress.class": "nginx",
+                  "nginx.ingress.kubernetes.io/auth-signin": "https://auth.rebelsoft.com/oauth2/start?rd=/redirect/$http_host$escaped_request_uri",
+                  "nginx.ingress.kubernetes.io/auth-url": "https://auth.rebelsoft.com/oauth2/auth",
+                  "nginx.ingress.kubernetes.io/server-alias": "jupyter.*"
+                },
+                "creation_timestamp": "2019-09-17T04:19:21Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {},
+                "name": "jupyter",
+                "namespace": "jupyter-example",
+                "resource_version": "59740033",
+                "self_link": "/apis/extensions/v1beta1/namespaces/jupyter-example/ingresses/jupyter",
+                "uid": "eae32a33-2683-45d9-9fce-a0fa97e78f06"
+              }
+            ],
+            "spec": [
+              {
+                "backend": [],
+                "rules": [
+                  {
+                    "host": "jupyter.rebelsoft.com",
+                    "http": [
+                      {
+                        "paths": [
+                          {
+                            "backend": [
+                              {
+                                "service_name": "jupyter-proxy",
+                                "service_port": "8000"
+                              }
+                            ],
+                            "path": "/"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "tls": [
+                  {
+                    "hosts": [
+                      "jupyter.rebelsoft.com"
+                    ],
+                    "secret_name": "jupyter-tls"
+                  }
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "k8s_core_v1_namespace.this",
+            "module.proxy"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.hub.module.rbac",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1_cluster_role",
+      "name": "this",
+      "each": "list",
+      "provider": "provider.k8s",
+      "instances": []
+    },
+    {
+      "module": "module.hub.module.rbac",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding",
+      "name": "this",
+      "each": "list",
+      "provider": "provider.k8s",
+      "instances": []
+    },
+    {
+      "module": "module.hub.module.rbac",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1_role",
+      "name": "this",
+      "each": "list",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.role.jupyter-hub",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:19Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-hub",
+                  "name": "jupyter-hub",
+                  "service": "jupyter-hub"
+                },
+                "name": "jupyter-hub",
+                "namespace": "jupyter-example",
+                "resource_version": "59011276",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1/namespaces/jupyter-example/roles/jupyter-hub",
+                "uid": "e32f679f-f4b9-4da2-8239-524de1bc901f"
+              }
+            ],
+            "rules": [
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "pods",
+                  "persistentvolumeclaims"
+                ],
+                "verbs": [
+                  "get",
+                  "watch",
+                  "list",
+                  "create",
+                  "delete"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "events"
+                ],
+                "verbs": [
+                  "get",
+                  "watch",
+                  "list"
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.hub.module.rbac",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1_role_binding",
+      "name": "this",
+      "each": "list",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "index_key": 0,
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.role_binding.jupyter-hub",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:20Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "jupyter-hub",
+                  "name": "jupyter-hub",
+                  "service": "jupyter-hub"
+                },
+                "name": "jupyter-hub",
+                "namespace": "jupyter-example",
+                "resource_version": "59011296",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1/namespaces/jupyter-example/rolebindings/jupyter-hub",
+                "uid": "b7d6e71d-8618-415e-9129-c373fea0f5cc"
+              }
+            ],
+            "role_ref": [
+              {
+                "api_group": "rbac.authorization.k8s.io",
+                "kind": "Role",
+                "name": "jupyter-hub"
+              }
+            ],
+            "subjects": [
+              {
+                "api_group": "",
+                "kind": "ServiceAccount",
+                "name": "jupyter-hub",
+                "namespace": "jupyter-example"
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.enterprise-gateway",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role",
+      "name": "enterprise-gateway-controller",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "aggregation_rule": [],
+            "id": ".cluster_role.enterprise-gateway-controller",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "enterprise-gateway",
+                  "component": "enterprise-gateway"
+                },
+                "name": "enterprise-gateway-controller",
+                "namespace": "",
+                "resource_version": "59011238",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/clusterroles/enterprise-gateway-controller",
+                "uid": "d06b3e78-078d-4877-8fa2-22e42631b045"
+              }
+            ],
+            "rules": [
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "pods",
+                  "namespaces",
+                  "services",
+                  "configmaps",
+                  "secrets",
+                  "persistentvolumes",
+                  "persistentvolumeclaims"
+                ],
+                "verbs": [
+                  "get",
+                  "watch",
+                  "list",
+                  "create",
+                  "delete"
+                ]
+              },
+              {
+                "api_groups": [
+                  "rbac.authorization.k8s.io"
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "rolebindings"
+                ],
+                "verbs": [
+                  "get",
+                  "list",
+                  "create",
+                  "delete"
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.enterprise-gateway",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role",
+      "name": "kernel-controller",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "aggregation_rule": [],
+            "id": ".cluster_role.kernel-controller",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "enterprise-gateway",
+                  "component": "kernel"
+                },
+                "name": "kernel-controller",
+                "namespace": "",
+                "resource_version": "59011239",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/clusterroles/kernel-controller",
+                "uid": "2bc90e5d-9854-4843-9f3a-93c304efeeb9"
+              }
+            ],
+            "rules": [
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "pods"
+                ],
+                "verbs": [
+                  "get",
+                  "watch",
+                  "list",
+                  "create",
+                  "delete"
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role",
+      "name": "nginx-ingress-clusterrole",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "aggregation_rule": [],
+            "id": ".cluster_role.jupyter-ingress",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "",
+                "resource_version": "59164059",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/clusterroles/jupyter-ingress",
+                "uid": "04498570-a9cd-4366-9e87-d3db65d8e387"
+              }
+            ],
+            "rules": [
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "configmaps",
+                  "endpoints",
+                  "nodes",
+                  "pods",
+                  "secrets"
+                ],
+                "verbs": [
+                  "list",
+                  "watch"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "nodes"
+                ],
+                "verbs": [
+                  "get"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "services"
+                ],
+                "verbs": [
+                  "get",
+                  "list",
+                  "watch"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "events"
+                ],
+                "verbs": [
+                  "create",
+                  "patch"
+                ]
+              },
+              {
+                "api_groups": [
+                  "extensions",
+                  "networking.k8s.io"
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "ingresses"
+                ],
+                "verbs": [
+                  "get",
+                  "list",
+                  "watch"
+                ]
+              },
+              {
+                "api_groups": [
+                  "extensions",
+                  "networking.k8s.io"
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "ingresses/status"
+                ],
+                "verbs": [
+                  "update"
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.enterprise-gateway",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding",
+      "name": "enterprise-gateway-controller",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": ".cluster_role_binding.enterprise-gateway-controller",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:20Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app": "enterprise-gateway",
+                  "component": "enterprise-gateway"
+                },
+                "name": "enterprise-gateway-controller",
+                "namespace": "",
+                "resource_version": "59011277",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/clusterrolebindings/enterprise-gateway-controller",
+                "uid": "80bff14a-a033-473a-a74e-27fffc1b2353"
+              }
+            ],
+            "role_ref": [
+              {
+                "api_group": "rbac.authorization.k8s.io",
+                "kind": "ClusterRole",
+                "name": "enterprise-gateway-controller"
+              }
+            ],
+            "subjects": [
+              {
+                "api_group": "",
+                "kind": "ServiceAccount",
+                "name": "enterprise-gateway-sa",
+                "namespace": "jupyter-example"
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "k8s_core_v1_service.enterprise-gateway"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding",
+      "name": "nginx-ingress-clusterrole-nisa-binding",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": ".cluster_role_binding.jupyter-ingress",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:20Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "",
+                "resource_version": "59011290",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/clusterrolebindings/jupyter-ingress",
+                "uid": "ae9015b8-6707-4fc6-8732-38235aebb6fc"
+              }
+            ],
+            "role_ref": [
+              {
+                "api_group": "rbac.authorization.k8s.io",
+                "kind": "ClusterRole",
+                "name": "jupyter-ingress"
+              }
+            ],
+            "subjects": [
+              {
+                "api_group": "",
+                "kind": "ServiceAccount",
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example"
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "k8s_core_v1_service_account.nginx-ingress-serviceaccount"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_role",
+      "name": "nginx-ingress-role",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.role.jupyter-ingress",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:18Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example",
+                "resource_version": "59011249",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/namespaces/jupyter-example/roles/jupyter-ingress",
+                "uid": "5bf293dc-44eb-4324-8e0f-277a070a2ad9"
+              }
+            ],
+            "rules": [
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "configmaps",
+                  "pods",
+                  "secrets",
+                  "namespaces"
+                ],
+                "verbs": [
+                  "get"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [
+                  "jupyter-ingress-jupyter-example"
+                ],
+                "resources": [
+                  "configmaps"
+                ],
+                "verbs": [
+                  "get",
+                  "update"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "configmaps"
+                ],
+                "verbs": [
+                  "create"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "non_resource_urls": [],
+                "resource_names": [],
+                "resources": [
+                  "endpoints"
+                ],
+                "verbs": [
+                  "get"
+                ]
+              }
+            ]
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.ingress",
+      "mode": "managed",
+      "type": "k8s_rbac_authorization_k8s_io_v1beta1_role_binding",
+      "name": "nginx-ingress-role-nisa-binding",
+      "provider": "provider.k8s",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jupyter-example.role_binding.jupyter-ingress",
+            "metadata": [
+              {
+                "annotations": {},
+                "creation_timestamp": "2019-09-15T04:35:20Z",
+                "deletion_grace_period_seconds": 0,
+                "deletion_timestamp": "",
+                "labels": {
+                  "app.kubernetes.io/name": "jupyter-ingress",
+                  "app.kubernetes.io/part-of": "jupyter-ingress"
+                },
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example",
+                "resource_version": "59011291",
+                "self_link": "/apis/rbac.authorization.k8s.io/v1beta1/namespaces/jupyter-example/rolebindings/jupyter-ingress",
+                "uid": "c41aa417-6b3b-4054-b6a8-45834c3048d8"
+              }
+            ],
+            "role_ref": [
+              {
+                "api_group": "rbac.authorization.k8s.io",
+                "kind": "Role",
+                "name": "jupyter-ingress"
+              }
+            ],
+            "subjects": [
+              {
+                "api_group": "",
+                "kind": "ServiceAccount",
+                "name": "jupyter-ingress",
+                "namespace": "jupyter-example"
+              }
+            ]
+          },
+          "private": "bnVsbA==",
+          "depends_on": [
+            "k8s_core_v1_service_account.nginx-ingress-serviceaccount"
+          ]
+        }
+      ]
+    }
+  ]
+}

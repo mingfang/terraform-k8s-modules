@@ -1,0 +1,10 @@
+embed-server --server-config=standalone-full.xml
+
+batch
+ls -l
+run-batch
+
+reload
+stop-embedded-server
+
+./add-user.sh -u admin -p admin12345 -g admin -a

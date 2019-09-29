@@ -1,0 +1,104 @@
+<svg id="sprotty_1" class="sprotty-graph sprotty" tabindex="1002" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2318 1243.5"><style>
+.elknode {
+    stroke: #448;
+    stroke-width: 2;
+    fill: #ddf;
+    fill-opacity: 0.5;
+}
+
+.elkport {
+    stroke: #448;
+    stroke-width: 1;
+    fill: #66c;
+}
+
+.elkedge {
+    fill: none;
+    stroke: #88f;
+    stroke-width: 8;
+    stroke-opacity: 0.3;
+    pointer-events: stroke;
+    stroke-linejoin: round;
+}
+
+.elkedge:hover {
+    stroke: #448;
+    stroke-width: 8;
+    stroke-opacity: 1;
+    stroke-dasharray: 16px;
+    stroke-dashoffset: 32px;
+    animation: stroke 0.5s linear infinite;
+}
+
+@keyframes stroke {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.elkedge.arrow {
+    fill: #336;
+}
+
+.elklabel {
+    stroke-width: 0;
+    stroke: #000;
+    fill: #000;
+    font-family: sans-serif;
+    font-size: 10pt;
+    dominant-baseline: hanging;
+}
+
+.elklabel:hover {
+    font-size: 24pt;
+}
+
+.elkjunction {
+    stroke: none;
+    fill: #224;
+}
+
+.selected &gt; rect {
+    stroke-width: 3;
+}
+
+.mouseover {
+    stroke: #88f;
+}
+/*
+ * Copyright (C) 2017 TypeFox and others.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+.sprotty {
+    padding: 0px;
+    font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+}
+
+.sprotty-hidden {
+    display: block;
+    position: absolute;
+    width: 0px;
+    height: 0px;
+}
+
+.sprotty-popup {
+    font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+    position: absolute;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid;
+    max-width: 400px;
+    min-width: 100px;
+}
+
+.sprotty-popup &gt; div {
+    margin: 10px;
+}
+
+.sprotty-popup-closed {
+    display: none;
+}
+</style><g transform="scale(1) translate(0,0)"><g id="sprotty_3" transform="translate(117, 71)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="2084" height="1122.5" /><g id="sprotty_5" transform="translate(1150, 50)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_6" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">data.template_file.members</text></g><g id="sprotty_16" transform="translate(1567, 50)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_17" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_core_v1_config_map.this</text></g><g id="sprotty_19" transform="translate(300, 286)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_20" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">local.labels</text></g><g id="sprotty_22" transform="translate(1150, 311.7142857142857)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_23" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">local.parameters</text></g><g id="sprotty_57" transform="translate(1567, 287.2142857142857)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="400" height="710" /><g id="sprotty_59" transform="translate(100, 50)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_60" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_apps_v1_stateful_set.this</text></g><g id="sprotty_61" transform="translate(100, 160)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_62" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">local.k8s_apps_v1_stateful_set_parameters</text></g><g id="sprotty_64" transform="translate(100, 270)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_65" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_core_v1_service.this</text></g><g id="sprotty_66" transform="translate(100, 380)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_67" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">local.k8s_core_v1_service_parameters</text></g><g id="sprotty_69" transform="translate(100, 490)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_70" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">local.selector</text></g><g id="sprotty_72" transform="translate(100, 600)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_73" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">local.labels</text></g><g id="sprotty_75" transform="translate(-16, 50)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_76" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">parameters</text></g><g id="sprotty_79" transform="translate(400, 50)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_80" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">labels</text></g><g id="sprotty_82" transform="translate(400, 110)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_83" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">name</text></g><g id="sprotty_85" transform="translate(400, 170)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_86" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">service</text></g><g id="sprotty_88" transform="translate(400, 230)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_89" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">statefulset</text></g><text id="sprotty_58" class="elklabel" transform="translate(0, -21) translate(0, 0)" opacity="1">statefulset-service</text></g><g id="sprotty_7" transform="translate(-16, 60.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_8" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">name</text></g><g id="sprotty_10" transform="translate(-16, 120.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_11" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">namespace</text></g><g id="sprotty_13" transform="translate(-16, 180.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_14" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">replicas</text></g><g id="sprotty_25" transform="translate(-16, 882.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_26" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">ORIENTDB_OPTS_MEMORY</text></g><g id="sprotty_28" transform="translate(-16, 522.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_29" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">ORIENTDB_ROOT_PASSWORD</text></g><g id="sprotty_31" transform="translate(-16, 942.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_32" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">args</text></g><g id="sprotty_34" transform="translate(-16, 402.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_35" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">distributed</text></g><g id="sprotty_37" transform="translate(-16, 642.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_38" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">env</text></g><g id="sprotty_40" transform="translate(-16, 582.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_41" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">image</text></g><g id="sprotty_44" transform="translate(-16, 822.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_45" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">ports</text></g><g id="sprotty_48" transform="translate(-16, 702.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_49" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">storage</text></g><g id="sprotty_51" transform="translate(-16, 462.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_52" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">storage_class</text></g><g id="sprotty_54" transform="translate(-16, 762.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_55" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">volume_claim_template_name</text></g><g id="sprotty_92" transform="translate(-16, 1002.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_93" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">overrides</text></g><g id="sprotty_95" transform="translate(2084, 397.2142857142857)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_96" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">name</text></g><g id="sprotty_98" transform="translate(2084, 1062.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_99" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">ports</text></g><g id="sprotty_101" transform="translate(2084, 457.2142857142857)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_102" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">service</text></g><g id="sprotty_104" transform="translate(2084, 517.2142857142858)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_105" class="elklabel" transform="translate(17, 10) translate(0, 0)" opacity="1">statefulset</text></g><text id="sprotty_4" class="elklabel" transform="translate(0, -21) translate(0, 0)" opacity="1">modules/orientdb</text><g id="sprotty_9" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,65 L 1150,65" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 65) translate(1150 65)" /></g><g id="sprotty_12" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,125 L 550,125 L 550,80 L 1150,80" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 80) translate(1150 80)" /></g><g id="sprotty_15" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,185 L 600,185 L 600,95 L 1150,95" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 95) translate(1150 95)" /></g><g id="sprotty_18" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1350,80 L 1567,80" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1567 80) translate(1567 80)" /></g><g id="sprotty_21" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,65 L 250,65 L 250,316 L 300,316" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 300 316) translate(300 316)" /><g id="sprotty_21_j0" transform="translate(250, 65)" opacity="1"><circle class="elkjunction" r="2" /></g></g><g id="sprotty_24" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 500,316 L 1150,316" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 316) translate(1150 316)" /></g><g id="sprotty_27" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,887 L 1050,887 L 1050,363.1428571428571 L 1150,363.1428571428571" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 363.1428571428571) translate(1150 363.1428571428571)" /></g><g id="sprotty_30" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,527 L 750,527 L 750,337.42857142857144 L 1150,337.42857142857144" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 337.42857142857144) translate(1150 337.42857142857144)" /></g><g id="sprotty_33" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,947 L 1100,947 L 1100,367.42857142857144 L 1150,367.42857142857144" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 367.42857142857144) translate(1150 367.42857142857144)" /></g><g id="sprotty_36" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,407 L 600,407 L 600,324.57142857142856 L 1150,324.57142857142856" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 324.57142857142856) translate(1150 324.57142857142856)" /></g><g id="sprotty_39" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,647 L 850,647 L 850,346 L 1150,346" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 346) translate(1150 346)" /></g><g id="sprotty_42" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,587 L 800,587 L 800,341.7142857142857 L 1150,341.7142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 341.7142857142857) translate(1150 341.7142857142857)" /></g><g id="sprotty_43" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,125 L 200,125 L 200,396 L 550,396 L 550,320.2857142857143 L 1150,320.2857142857143" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 320.2857142857143) translate(1150 320.2857142857143)" /><g id="sprotty_43_j0" transform="translate(200, 125)" opacity="1"><circle class="elkjunction" r="2" /></g></g><g id="sprotty_46" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,827 L 1000,827 L 1000,358.85714285714283 L 1150,358.85714285714283" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 358.85714285714283) translate(1150 358.85714285714283)" /></g><g id="sprotty_47" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,185 L 150,185 L 150,418 L 650,418 L 650,328.8571428571429 L 1150,328.8571428571429" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 328.8571428571429) translate(1150 328.8571428571429)" /><g id="sprotty_47_j0" transform="translate(150, 185)" opacity="1"><circle class="elkjunction" r="2" /></g></g><g id="sprotty_50" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,707 L 900,707 L 900,350.2857142857143 L 1150,350.2857142857143" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 350.2857142857143) translate(1150 350.2857142857143)" /></g><g id="sprotty_53" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,467 L 700,467 L 700,333.1428571428571 L 1150,333.14285714285717" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-180 1150 333.14285714285717) translate(1150 333.14285714285717)" /></g><g id="sprotty_56" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,767 L 950,767 L 950,354.57142857142856 L 1150,354.57142857142856" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1150 354.57142857142856) translate(1150 354.57142857142856)" /></g><g id="sprotty_63" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1767,447.2142857142857 L 1767,397.2142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(90 1767 397.2142857142857) translate(1767 397.2142857142857)" /></g><g id="sprotty_68" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1767,667.2142857142858 L 1767,617.2142857142858" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(90 1767 617.2142857142858) translate(1767 617.2142857142858)" /></g><g id="sprotty_71" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1767,777.2142857142858 L 1767,507.2142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(90 1767 507.2142857142857) translate(1767 507.2142857142857)" /></g><g id="sprotty_74" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1767,887.2142857142858 L 1767,727.2142857142858" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(90 1767 727.2142857142858) translate(1767 727.2142857142858)" /></g><g id="sprotty_77" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1560.6264118158124,346.2142857142857 L 1756.1572545612512,887.2142857142858" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-109.87111491399165 1756.1572545612512 887.2142857142858) translate(1756.1572545612512 887.2142857142858)" /></g><g id="sprotty_78" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1767,887.2142857142858 L 1767,837.2142857142858" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(90 1767 837.2142857142858) translate(1767 837.2142857142858)" /></g><g id="sprotty_81" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1777.8427454387488,887.2142857142858 L 1973.3735881841876,346.2142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(109.87111491399165 1973.3735881841876 346.2142857142857) translate(1973.3735881841876 346.2142857142857)" /></g><g id="sprotty_84" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1800.6388140161725,557.2142857142858 L 1969.954177897574,406.2142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(138.27256122803203 1969.954177897574 406.2142857142857) translate(1969.954177897574 406.2142857142857)" /></g><g id="sprotty_87" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1816.7211155378486,557.2142857142858 L 1967.5418326693227,466.2142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(148.89467282183267 1967.5418326693227 466.2142857142857) translate(1967.5418326693227 466.2142857142857)" /></g><g id="sprotty_90" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1807.388349514563,397.2142857142857 L 1968.9417475728155,517.2142857142858" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-143.39546107211746 1968.9417475728155 517.2142857142858) translate(1968.9417475728155 517.2142857142858)" /></g><g id="sprotty_91" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1350,341.7142857142857 L 1551,341.7142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1551 341.7142857142857) translate(1551 341.7142857142857)" /></g><g id="sprotty_94" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,1007 L 1400,1007 L 1400,341.7142857142857 L 1551,341.7142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 1551 341.7142857142857) translate(1551 341.7142857142857)" /><g id="sprotty_94_j0" transform="translate(1400, 341.7142857142857)" opacity="1"><circle class="elkjunction" r="2" /></g></g><g id="sprotty_97" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1983,401.7142857142857 L 2084,401.7142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 2084 401.7142857142857) translate(2084 401.7142857142857)" /></g><g id="sprotty_100" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,827.9142857142857 L 2084,1066.0857142857142" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-173.48019824834304 2084 1066.0857142857142) translate(2084 1066.0857142857142)" /></g><g id="sprotty_103" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1983,461.7142857142858 L 2084,461.7142857142857" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(179.99999999999997 2084 461.7142857142857) translate(2084 461.7142857142857)" /></g><g id="sprotty_106" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 1983,521.7142857142858 L 2084,521.7142857142858" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 2084 521.7142857142858) translate(2084 521.7142857142858)" /></g></g></g></svg>

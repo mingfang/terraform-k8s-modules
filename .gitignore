@@ -1,0 +1,7 @@
+.idea
+.DS_STORE
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+kubeconfig

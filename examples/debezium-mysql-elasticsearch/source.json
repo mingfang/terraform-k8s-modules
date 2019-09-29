@@ -1,0 +1,20 @@
+{
+  "name": "${name}",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "database.hostname": "${database_hostname}",
+    "database.port": "${database_port}",
+    "database.user": "${database_user}",
+    "database.password": "${database_password}",
+    "database.server.id": "${database_server_id}",
+    "database.server.name": "${database_server_name}",
+    "database.whitelist": "${database_whitelist}",
+    "database.history.kafka.bootstrap.servers": "${database_history_kafka_bootstrap_servers}",
+    "database.history.kafka.topic": "${database_history_kafka_topic}",
+    "transforms": "route",
+    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.route.regex": "([^.]+)\\.([^.]+)\\.([^.]+)",
+    "transforms.route.replacement": "$3"
+  }
+}

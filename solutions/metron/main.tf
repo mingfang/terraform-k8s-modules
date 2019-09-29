@@ -19,16 +19,16 @@ variable "kafka_storage" {}
 variable "kafka_count" {}
 
 module "zookeeper" {
-  source             = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/zookeeper"
-  name               = "${var.name}-zookeeper"
-  namespace          = "${var.namespace}"
-  storage_class_name = "${var.zookeeper_storage_class}"
-  storage            = "${var.zookeeper_storage}"
-  replicas           = "${var.zookeeper_count}"
+  source        = "../../modules/zookeeper"
+  name          = "${var.name}-zookeeper"
+  namespace     = "${var.namespace}"
+  storage_class = "${var.zookeeper_storage_class}"
+  storage       = "${var.zookeeper_storage}"
+  replicas      = "${var.zookeeper_count}"
 }
 
 module "kafka" {
-  source                  = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka"
+  source                  = "../../modules/kafka"
   name                    = "${var.name}-kafka"
   namespace               = "${var.namespace}"
   storage_class_name      = "${var.kafka_storage_class}"
@@ -38,12 +38,12 @@ module "kafka" {
 }
 
 module "hadoop_master" {
-  source    = "../../modules/hadoop-master"
+  source    = "../../modules/hadoop/master"
   namespace = "${var.namespace}"
 }
 
 module "hadoop_node" {
-  source          = "../../modules/hadoop-node"
+  source          = "../../modules/hadoop/node"
   namespace       = "${var.namespace}"
   namenode        = "${module.hadoop_master.name}"
   resourcemanager = "${module.hadoop_master.name}"
@@ -66,6 +66,7 @@ locals {
 
 module "storm_supervisor" {
   source                  = "../../modules/storm-supervisor"
+  name                    = "${var.name}-storm-supervisor"
   namespace               = "${var.namespace}"
   storm_zookeeper_servers = ["${module.zookeeper.name}"]
   nimbus_seeds            = ["${local.nimbus_seeds}"]
@@ -92,6 +93,7 @@ module "storm_supervisor" {
 
 module "metron" {
   source                  = "../../modules/metron"
+  name                    = var.name
   namespace               = "${var.namespace}"
   storm_zookeeper_servers = ["${module.zookeeper.name}"]
   nimbus_seeds            = ["${local.nimbus_seeds}"]

@@ -3,7 +3,7 @@
  */
 
 module "elasticsearch" {
-  source             = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/elasticsearch"
+  source             = "../../modules/elasticsearch"
   name               = "${var.name}-es"
   namespace          = var.namespace
   image              = "docker.elastic.co/elasticsearch/elasticsearch:6.5.0"
@@ -13,7 +13,7 @@ module "elasticsearch" {
 }
 
 module "fluentbit-es" {
-  source                    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/fluentbit-es"
+  source                    = "../../modules/fluentbit-es"
   name                      = "${var.name}-fluentbit"
   namespace                 = var.namespace
   fluent_elasticsearch_host = module.elasticsearch.name
@@ -21,7 +21,7 @@ module "fluentbit-es" {
 }
 
 module "kibana" {
-  source            = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kibana"
+  source            = "../../modules/kibana"
   name              = "${var.name}-kibana"
   namespace         = var.namespace
   image             = "registry.rebelsoft.com/kibana"

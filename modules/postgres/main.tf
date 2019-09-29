@@ -2,7 +2,7 @@
  * Module usage:
  *
  *     module "postgres" {
- *       source             = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/postgres"
+ *       source             = "git::https://github.com/mingfang/terraform-k8s-modules.git//modules/postgres"
  *       name               = "test-postgres"
  *       postgres_user      = "postgres"
  *       postgres_password  = "postgres"
@@ -202,8 +202,8 @@ resource "k8s_apps_v1_stateful_set" "this" {
               {
                 name = "POD_NAME"
 
-                value_from {
-                  field_ref {
+                value_from = {
+                  field_ref = {
                     field_path = "metadata.name"
                   }
                 }
@@ -213,8 +213,6 @@ resource "k8s_apps_v1_stateful_set" "this" {
                 value = "/data/$(POD_NAME)"
               },
             ]
-
-            resources {}
 
             volume_mounts = [
               {
@@ -236,7 +234,7 @@ resource "k8s_apps_v1_stateful_set" "this" {
           {
             name = "shm"
 
-            empty_dir {
+            empty_dir = {
               "medium" = "Memory"
             }
           },

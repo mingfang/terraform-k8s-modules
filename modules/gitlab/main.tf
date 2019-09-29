@@ -120,13 +120,13 @@ locals {
 
 
 module "statefulset-service" {
-  source = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/statefulset-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }
 
 module "rbac" {
-  source = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/rbac"
-  name = var.name
+  source    = "git::https://github.com/mingfang/terraform-k8s-modules.git//modules/kubernetes/rbac"
+  name      = var.name
   namespace = var.namespace
   cluster_role_rules = [
     {

@@ -10,13 +10,13 @@ resource "k8s_core_v1_namespace" "this" {
 }
 
 module "nfs-server" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/nfs-server-empty-dir"
+  source    = "../../modules/nfs-server-empty-dir"
   name      = "nfs-server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
 module "minecraft-storage" {
-  source        = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
+  source        = "../../modules/kubernetes/storage-nfs"
   name          = "${var.name}"
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = 1
@@ -41,7 +41,7 @@ module "minecraft" {
 }
 
 module "bungeecord-storage" {
-  source        = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
+  source        = "../../modules/kubernetes/storage-nfs"
   name          = "${var.name}-bungeecord"
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = 1

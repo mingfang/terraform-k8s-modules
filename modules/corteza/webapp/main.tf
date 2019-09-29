@@ -13,11 +13,11 @@ locals {
   }
 
   parameters = {
-    name      = var.name
-    namespace = var.namespace
-    labels    = local.labels
-    replicas  = var.replicas
-    ports     = var.ports
+    name                 = var.name
+    namespace            = var.namespace
+    labels               = local.labels
+    replicas             = var.replicas
+    ports                = var.ports
     enable_service_links = false
 
     containers = [
@@ -36,15 +36,15 @@ locals {
             }
           },
           {
-            name = "DB_DSN"
+            name  = "DB_DSN"
             value = var.DB_DSN
           },
           {
-            name = "AUTH_JWT_SECRET"
+            name  = "AUTH_JWT_SECRET"
             value = var.AUTH_JWT_SECRET
           },
           {
-            name = "VIRTUAL_HOST"
+            name  = "VIRTUAL_HOST"
             value = var.VIRTUAL_HOST
           },
         ]
@@ -55,6 +55,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

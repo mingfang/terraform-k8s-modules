@@ -37,7 +37,7 @@ locals {
             value = "true"
           },
           {
-            name  = "ALLUXIO_LOCALITY_NODE"
+            name = "ALLUXIO_LOCALITY_NODE"
             value_from = {
               field_ref = {
                 field_path = "spec.nodeName"
@@ -95,7 +95,7 @@ locals {
       {
         name = "alluxio-domain"
         host_path = {
-          path    = "/tmp/domain"
+          path = "/tmp/domain"
           type = "DirectoryOrCreate"
         }
       },
@@ -105,6 +105,6 @@ locals {
 
 
 module "daemonset" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/daemonset"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/daemonset"
   parameters = merge(local.parameters, var.overrides)
 }

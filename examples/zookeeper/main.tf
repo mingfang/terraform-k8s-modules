@@ -9,13 +9,13 @@ resource "k8s_core_v1_namespace" "this" {
 }
 
 module "nfs-server" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/nfs-server-empty-dir"
+  source    = "../../modules/nfs-server-empty-dir"
   name      = "nfs-server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
 module "zookeeper-storage" {
-  source        = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
+  source        = "../../modules/kubernetes/storage-nfs"
   name          = var.name
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = var.replicas
@@ -33,7 +33,7 @@ module "zookeeper" {
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas           = module.zookeeper-storage.replicas
-  storage            = module.zookeeper-storage.storage
-  storage_class_name = module.zookeeper-storage.storage_class_name
+  replicas      = module.zookeeper-storage.replicas
+  storage       = module.zookeeper-storage.storage
+  storage_class = module.zookeeper-storage.storage_class_name
 }

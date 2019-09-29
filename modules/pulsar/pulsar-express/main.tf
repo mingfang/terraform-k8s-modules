@@ -16,7 +16,7 @@ locals {
         port = var.port
       }
     ]
-    enable_service_links        = false
+    enable_service_links = false
     containers = [
       {
         name  = "dashboard"
@@ -33,7 +33,7 @@ locals {
             }
           },
           {
-            name = "PE_CONNECTION_URL"
+            name  = "PE_CONNECTION_URL"
             value = var.PE_CONNECTION_URL
           }
         ]
@@ -44,6 +44,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

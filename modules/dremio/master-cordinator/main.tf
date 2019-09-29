@@ -99,30 +99,30 @@ locals {
         image = "busybox"
         name  = "wait-for-zk"
       },
-//      {
-//        args = [
-//          "dremio:dremio",
-//          "/opt/dremio/data",
-//        ]
-//        command = [
-//          "chown",
-//        ]
-//        image             = var.image
-//        image_pull_policy = "IfNotPresent"
-//        name              = "chown-data-directory"
-//
-//        security_context = {
-//          privileged = true
-//          runAsUser = 0
-//      }
-//
-//        volume_mounts = [
-//          {
-//            mount_path = "/opt/dremio/data"
-//            name       = var.volume_claim_template_name
-//          },
-//        ]
-//      },
+      //      {
+      //        args = [
+      //          "dremio:dremio",
+      //          "/opt/dremio/data",
+      //        ]
+      //        command = [
+      //          "chown",
+      //        ]
+      //        image             = var.image
+      //        image_pull_policy = "IfNotPresent"
+      //        name              = "chown-data-directory"
+      //
+      //        security_context = {
+      //          privileged = true
+      //          runAsUser = 0
+      //      }
+      //
+      //        volume_mounts = [
+      //          {
+      //            mount_path = "/opt/dremio/data"
+      //            name       = var.volume_claim_template_name
+      //          },
+      //        ]
+      //      },
       {
         args = [
           "upgrade",
@@ -173,6 +173,6 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/statefulset-service"
-  parameters = merge(local.parameters, var.overrides, {"volumes" = local.volumes})
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  parameters = merge(local.parameters, var.overrides, { "volumes" = local.volumes })
 }

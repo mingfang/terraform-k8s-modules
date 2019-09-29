@@ -80,6 +80,6 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/statefulset-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

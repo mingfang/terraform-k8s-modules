@@ -7,9 +7,9 @@
 
 locals {
   parameters = {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
-    replicas = var.replicas
+    replicas  = var.replicas
     ports = [
       {
         name = "http"
@@ -18,7 +18,7 @@ locals {
     ]
     containers = [
       {
-        name = "nginx"
+        name  = "nginx"
         image = var.image
 
         env = [
@@ -34,29 +34,29 @@ locals {
         ]
 
         liveness_probe = {
-          failure_threshold = 3
+          failure_threshold     = 3
           initial_delay_seconds = 60
-          period_seconds = 10
-          success_threshold = 1
-          timeout_seconds = 1
+          period_seconds        = 10
+          success_threshold     = 1
+          timeout_seconds       = 1
 
           http_get = {
-            path = "/status"
-            port = var.port
+            path   = "/status"
+            port   = var.port
             scheme = "HTTP"
           }
         }
 
         readiness_probe = {
-          failure_threshold = 3
+          failure_threshold     = 3
           initial_delay_seconds = 5
-          period_seconds = 10
-          success_threshold = 1
-          timeout_seconds = 1
+          period_seconds        = 10
+          success_threshold     = 1
+          timeout_seconds       = 1
 
           http_get = {
-            path = "/status"
-            port = var.port
+            path   = "/status"
+            port   = var.port
             scheme = "HTTP"
           }
         }
@@ -67,6 +67,6 @@ locals {
 
 
 module "deployment-service" {
-  source = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

@@ -12,10 +12,10 @@ locals {
   ])
 
   parameters = {
-    name      = var.name
-    namespace = var.namespace
-    replicas  = var.replicas
-    ports = var.ports
+    name                 = var.name
+    namespace            = var.namespace
+    replicas             = var.replicas
+    ports                = var.ports
     enable_service_links = false
     containers = [
       {
@@ -28,7 +28,7 @@ locals {
 
         env = [
           {
-            name = "ALLUXIO_JAVA_OPTS"
+            name  = "ALLUXIO_JAVA_OPTS"
             value = local.alluxio_java_opts
           },
         ]
@@ -38,6 +38,6 @@ locals {
 }
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

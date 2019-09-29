@@ -28,47 +28,47 @@ locals {
 
         env = [
           {
-            name = "ENABLE_AUTH"
+            name  = "ENABLE_AUTH"
             value = var.ENABLE_AUTH
           },
           {
-            name = "XMPP_DOMAIN"
+            name  = "XMPP_DOMAIN"
             value = var.XMPP_DOMAIN
           },
           {
-            name = "XMPP_AUTH_DOMAIN"
+            name  = "XMPP_AUTH_DOMAIN"
             value = var.XMPP_AUTH_DOMAIN
           },
           {
-            name = "XMPP_INTERNAL_MUC_DOMAIN"
+            name  = "XMPP_INTERNAL_MUC_DOMAIN"
             value = var.XMPP_INTERNAL_MUC_DOMAIN
           },
           {
-            name = "XMPP_SERVER"
+            name  = "XMPP_SERVER"
             value = var.XMPP_SERVER
           },
           {
-            name = "JICOFO_COMPONENT_SECRET"
+            name  = "JICOFO_COMPONENT_SECRET"
             value = var.JICOFO_COMPONENT_SECRET
           },
           {
-            name = "JICOFO_AUTH_USER"
+            name  = "JICOFO_AUTH_USER"
             value = var.JICOFO_AUTH_USER
           },
           {
-            name = "JICOFO_AUTH_PASSWORD"
+            name  = "JICOFO_AUTH_PASSWORD"
             value = var.JICOFO_AUTH_PASSWORD
           },
           {
-            name = "JVB_BREWERY_MUC"
+            name  = "JVB_BREWERY_MUC"
             value = var.JVB_BREWERY_MUC
           },
           {
-            name = "JIGASI_BREWERY_MUC"
+            name  = "JIGASI_BREWERY_MUC"
             value = var.JIGASI_BREWERY_MUC
           },
           {
-            name = "TZ"
+            name  = "TZ"
             value = var.TZ
           },
         ]
@@ -79,6 +79,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

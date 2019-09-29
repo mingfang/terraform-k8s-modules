@@ -67,7 +67,7 @@ locals {
           }
         }
 
-      volume_mounts = concat([
+        volume_mounts = concat([
           {
             mount_path = "/opt/dremio/conf"
             name       = "config"
@@ -104,6 +104,6 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/statefulset-service"
-  parameters = merge(local.parameters, var.overrides, {"volumes" = local.volumes})
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  parameters = merge(local.parameters, var.overrides, { "volumes" = local.volumes })
 }

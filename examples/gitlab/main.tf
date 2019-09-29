@@ -1,18 +1,9 @@
 variable name {
+  default = "gitlab"
+}
+
+variable "namespace" {
   default = "gitlab-example"
-}
-
-variable "ingress_host" {
-  default = "192.168.2.146"
-}
-
-variable "ingress_node_port_http" {
-  default = 31000
-}
-
-//not used but set to avoid conflict
-variable "ingress_node_port_https" {
-  default = 31443
 }
 
 variable gitlab_root_password {
@@ -35,27 +26,38 @@ locals {
   ]
 }
 
+resource "k8s_core_v1_namespace" "this" {
+  metadata {
+    labels = {
+      "istio-injection" = "disabled"
+    }
+
+    name = var.namespace
+  }
+}
+
 module "nfs-server" {
-  source = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/nfs-server-empty-dir"
-  name   = "nfs-server"
+  source    = "../../modules/nfs-server-empty-dir"
+  name      = "nfs-server"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
 module "storage" {
-  source  = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
-  name    = "${var.name}"
-  count   = 1
-  storage = "1Gi"
+  source        = "../../modules/kubernetes/storage-nfs"
+  name          = var.name
+  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  replicas      = 1
+  mount_options = module.nfs-server.mount_options
+  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
+  storage       = "1Gi"
 
-  annotations {
-    "nfs-server-uid" = "${module.nfs-server.deployment_uid}"
+  annotations = {
+    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
   }
-
-  nfs_server    = "${module.nfs-server.cluster_ip}"
-  mount_options = "${local.mount_options}"
 }
 
 module "gitlab" {
-  source             = "git::https://github.com/mingfang/terraform-provider-k8s.git//solutions/gitlab"
+  source             = "../../solutions/gitlab"
   name               = "${var.name}"
   storage_class_name = "${module.storage.storage_class_name}"
   storage            = "${module.storage.storage}"

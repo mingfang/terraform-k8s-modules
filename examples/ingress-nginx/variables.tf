@@ -1,5 +1,5 @@
 variable "name" {
-  default = "ingress-nginx-example"
+  default = "ingress-nginx"
 }
 
 variable "namespace" {

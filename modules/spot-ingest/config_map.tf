@@ -5,7 +5,7 @@ resource "k8s_core_v1_config_map" "this" {
     namespace = "${var.namespace}"
   }
 
-  data {
+  data = {
     "spot.conf"        = "${data.template_file.spot.rendered}"
     "ingest_conf.json" = "${data.template_file.ingest_conf.rendered}"
     "core-site.xml"    = "${data.template_file.core_site.rendered}"

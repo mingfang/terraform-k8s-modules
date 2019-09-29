@@ -7,10 +7,10 @@
 
 locals {
   parameters = {
-    name      = var.name
-    namespace = var.namespace
+    name        = var.name
+    namespace   = var.namespace
     annotations = var.annotations
-    replicas  = var.replicas
+    replicas    = var.replicas
     ports = [
       {
         name = "http"
@@ -166,7 +166,7 @@ module "rbac" {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }
 

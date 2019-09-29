@@ -5,7 +5,7 @@ resource "k8s_core_v1_config_map" "this" {
     namespace = "${var.namespace}"
   }
 
-  data {
+  data = {
     "storm.yaml" = "${data.template_file.storm.rendered}"
   }
 }

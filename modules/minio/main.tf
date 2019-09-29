@@ -11,7 +11,7 @@ locals {
     namespace   = var.namespace
     annotations = var.annotations
     replicas    = var.replicas
-    ports       = [
+    ports = [
       {
         name = "http"
         port = 9000
@@ -48,9 +48,9 @@ locals {
 
         volume_mounts = [
           {
-            name = var.volume_claim_template_name
+            name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path = var.name
+            sub_path   = var.name
           }
         ]
       },
@@ -58,9 +58,9 @@ locals {
 
     volume_claim_templates = [
       {
-        name = var.volume_claim_template_name
+        name               = var.volume_claim_template_name
         storage_class_name = var.storage_class_name
-        access_modes = ["ReadWriteOnce"]
+        access_modes       = ["ReadWriteOnce"]
 
         resources = {
           requests = {
@@ -74,11 +74,11 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/statefulset-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }
 
 data "template_file" "this" {
-  count = var.replicas
+  count    = var.replicas
   template = "http://${var.name}-${count.index}.${var.name}.${var.namespace}.svc.cluster.local/data/${var.name}-${count.index}"
 }

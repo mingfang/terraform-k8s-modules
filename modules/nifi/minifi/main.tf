@@ -41,6 +41,6 @@ locals {
 }
 
 module "daemonset" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/daemonset"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/daemonset"
   parameters = merge(local.parameters, var.overrides)
 }

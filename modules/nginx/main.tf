@@ -13,11 +13,11 @@ locals {
   }
 
   parameters = {
-    name      = var.name
-    namespace = var.namespace
-    labels    = local.labels
-    replicas  = var.replicas
-    ports     = var.ports
+    name                 = var.name
+    namespace            = var.namespace
+    labels               = local.labels
+    replicas             = var.replicas
+    ports                = var.ports
     enable_service_links = false
 
     containers = [
@@ -71,6 +71,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

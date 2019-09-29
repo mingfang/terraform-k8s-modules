@@ -38,17 +38,17 @@ resource "k8s_apps_v1_stateful_set" "this" {
               {
                 name = "POD_NAME"
 
-                value_from {
-                  field_ref {
+                value_from = {
+                  field_ref = {
                     field_path = "metadata.name"
                   }
                 }
               },
             ]
 
-            lifecycle {
-              post_start {
-                exec {
+            lifecycle = {
+              post_start = {
+                exec = {
                   command = [
                     "sh",
                     "-c",
@@ -57,8 +57,6 @@ resource "k8s_apps_v1_stateful_set" "this" {
                 }
               }
             }
-
-            resources {}
 
             volume_mounts = [
               {
@@ -69,8 +67,6 @@ resource "k8s_apps_v1_stateful_set" "this" {
             ]
           },
         ]
-
-        security_context {}
 
         dns_policy                       = "${var.dns_policy}"
         node_selector                    = "${var.node_selector}"
@@ -83,7 +79,7 @@ resource "k8s_apps_v1_stateful_set" "this" {
           {
             name = "config"
 
-            config_map {
+            config_map = {
               name = "${k8s_core_v1_config_map.this.metadata.0.name}"
             }
           },

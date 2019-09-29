@@ -98,7 +98,7 @@ resource "k8s_core_v1_config_map" "this" {
       EOF
   }
   metadata {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
   }
 }
@@ -119,9 +119,9 @@ locals {
   ])
 
   parameters = {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
-    replicas = var.replicas
+    replicas  = var.replicas
     ports = [
       {
         name = "http"
@@ -131,23 +131,23 @@ locals {
     enable_service_links = false
     containers = [
       {
-        name = "kie-server"
+        name  = "kie-server"
         image = var.image
         env = [
           {
-            name = "JAVA_OPTS"
+            name  = "JAVA_OPTS"
             value = local.java_opts
           },
           {
-            name = "KIE_MAVEN_REPO"
+            name  = "KIE_MAVEN_REPO"
             value = var.maven_repo_url
           },
           {
-            name = "KIE_MAVEN_REPO_USER"
+            name  = "KIE_MAVEN_REPO_USER"
             value = var.maven_user
           },
           {
-            name = "KIE_MAVEN_REPO_PASSWORD"
+            name  = "KIE_MAVEN_REPO_PASSWORD"
             value = var.maven_pwd
           },
         ]
@@ -210,6 +210,6 @@ locals {
 }
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

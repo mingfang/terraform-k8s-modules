@@ -25,8 +25,8 @@ resource "k8s_core_v1_namespace" "this" {
 
 resource "k8s_core_v1_persistent_volume_claim" "this" {
   metadata {
-    name        = var.name
-    namespace   = var.namespace
+    name      = var.name
+    namespace = var.namespace
   }
 
   spec {
@@ -86,9 +86,9 @@ module "ui-proxy" {
 }
 
 module "ingress-rules" {
-  source        = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/ingress-rules"
-  name          = var.name
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/kubernetes/ingress-rules"
+  name      = var.name
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
   annotations = {
     "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*",
   }

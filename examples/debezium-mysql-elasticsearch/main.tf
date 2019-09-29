@@ -20,7 +20,7 @@
  * 3. Create a Terraform file to include this example, like this
  *    ```
  *    module "debezium-mysql-es" {
- *      source = "git::https://github.com/mingfang/terraform-provider-k8s.git//examples/debezium-mysql-elasticsearch"
+ *      source = "../../examples/debezium-mysql-elasticsearch"
  *      ingress_host = "<IP of any node, e.g. 192.168.2.146>"
  *    }
  *
@@ -58,13 +58,13 @@
 
 
 module "nfs-server" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/nfs-server-empty-dir"
+  source    = "../../modules/nfs-server-empty-dir"
   name      = "nfs-server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
 module "zookeeper_storage" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
+  source    = "../../modules/kubernetes/storage-nfs"
   name      = "${var.name}-zookeeper"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 3
@@ -79,7 +79,7 @@ module "zookeeper_storage" {
 }
 
 module "kafka_storage" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
+  source    = "../../modules/kubernetes/storage-nfs"
   name      = "${var.name}-kafka"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 3
@@ -94,7 +94,7 @@ module "kafka_storage" {
 }
 
 module "elasticsearch_storage" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/storage-nfs"
+  source    = "../../modules/kubernetes/storage-nfs"
   name      = "${var.name}-elasticsearch"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 3
@@ -121,7 +121,7 @@ module "mysql" {
 }
 
 module "elasticsearch" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/elasticsearch"
+  source    = "../../modules/elasticsearch"
   name      = "${var.name}-elasticsearch"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = module.elasticsearch_storage.replicas
@@ -131,7 +131,7 @@ module "elasticsearch" {
 }
 
 module "debezium" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//solutions/debezium"
+  source    = "../../solutions/debezium"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
@@ -161,7 +161,7 @@ data "template_file" "source" {
 }
 
 module "job_source" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//solutions/debezium/job"
+  source    = "../../solutions/debezium/job"
   name      = "${var.name}-source-init"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
@@ -182,7 +182,7 @@ data "template_file" "sink" {
 }
 
 module "job_sink" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//solutions/debezium/job"
+  source    = "../../solutions/debezium/job"
   name      = "${var.name}-sink-init"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 

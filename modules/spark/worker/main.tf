@@ -7,8 +7,8 @@
 
 locals {
   parameters = {
-    name      = var.name
-    namespace = var.namespace
+    name                 = var.name
+    namespace            = var.namespace
     enable_service_links = false
     containers = [
       {
@@ -43,6 +43,6 @@ locals {
 
 
 module "daemonset" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/daemonset"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/daemonset"
   parameters = merge(local.parameters, var.overrides)
 }

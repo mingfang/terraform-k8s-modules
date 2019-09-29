@@ -28,75 +28,75 @@ locals {
 
         env = [
           {
-            name = "ENABLE_AUTH"
+            name  = "ENABLE_AUTH"
             value = var.ENABLE_AUTH
           },
           {
-            name = "ENABLE_GUESTS"
+            name  = "ENABLE_GUESTS"
             value = var.ENABLE_GUESTS
           },
           {
-            name = "XMPP_DOMAIN"
+            name  = "XMPP_DOMAIN"
             value = var.XMPP_DOMAIN
           },
           {
-            name = "XMPP_AUTH_DOMAIN"
+            name  = "XMPP_AUTH_DOMAIN"
             value = var.XMPP_AUTH_DOMAIN
           },
           {
-            name = "XMPP_GUEST_DOMAIN"
+            name  = "XMPP_GUEST_DOMAIN"
             value = var.XMPP_GUEST_DOMAIN
           },
           {
-            name = "XMPP_MUC_DOMAIN"
+            name  = "XMPP_MUC_DOMAIN"
             value = var.XMPP_MUC_DOMAIN
           },
           {
-            name = "XMPP_INTERNAL_MUC_DOMAIN"
+            name  = "XMPP_INTERNAL_MUC_DOMAIN"
             value = var.XMPP_INTERNAL_MUC_DOMAIN
           },
           {
-            name = "XMPP_MODULES"
+            name  = "XMPP_MODULES"
             value = var.XMPP_MODULES
           },
           {
-            name = "XMPP_MUC_MODULES"
+            name  = "XMPP_MUC_MODULES"
             value = var.XMPP_MUC_MODULES
           },
           {
-            name = "XMPP_INTERNAL_MUC_MODULES"
+            name  = "XMPP_INTERNAL_MUC_MODULES"
             value = var.XMPP_INTERNAL_MUC_MODULES
           },
           {
-            name = "JICOFO_COMPONENT_SECRET"
+            name  = "JICOFO_COMPONENT_SECRET"
             value = var.JICOFO_COMPONENT_SECRET
           },
           {
-            name = "JICOFO_AUTH_USER"
+            name  = "JICOFO_AUTH_USER"
             value = var.JICOFO_AUTH_USER
           },
           {
-            name = "JICOFO_AUTH_PASSWORD"
+            name  = "JICOFO_AUTH_PASSWORD"
             value = var.JICOFO_AUTH_PASSWORD
           },
           {
-            name = "JVB_AUTH_USER"
+            name  = "JVB_AUTH_USER"
             value = var.JVB_AUTH_USER
           },
           {
-            name = "JVB_AUTH_PASSWORD"
+            name  = "JVB_AUTH_PASSWORD"
             value = var.JVB_AUTH_PASSWORD
           },
           {
-            name = "JIGASI_XMPP_USER"
+            name  = "JIGASI_XMPP_USER"
             value = var.JIGASI_XMPP_USER
           },
           {
-            name = "JIGASI_XMPP_PASSWORD"
+            name  = "JIGASI_XMPP_PASSWORD"
             value = var.JIGASI_XMPP_PASSWORD
           },
           {
-            name = "TZ"
+            name  = "TZ"
             value = var.TZ
           },
         ]
@@ -107,6 +107,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

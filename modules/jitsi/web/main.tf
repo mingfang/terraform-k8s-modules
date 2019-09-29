@@ -28,59 +28,59 @@ locals {
 
         env = [
           {
-            name = "ENABLE_AUTH"
+            name  = "ENABLE_AUTH"
             value = var.ENABLE_AUTH
           },
           {
-            name = "ENABLE_GUESTS"
+            name  = "ENABLE_GUESTS"
             value = var.ENABLE_GUESTS
           },
           {
-            name = "ENABLE_LETSENCRYPT"
+            name  = "ENABLE_LETSENCRYPT"
             value = var.ENABLE_LETSENCRYPT
           },
           {
-            name = "ENABLE_HTTP_REDIRECT"
+            name  = "ENABLE_HTTP_REDIRECT"
             value = var.ENABLE_HTTP_REDIRECT
           },
           {
-            name = "DISABLE_HTTPS"
+            name  = "DISABLE_HTTPS"
             value = var.DISABLE_HTTPS
           },
           {
-            name = "JICOFO_AUTH_USER"
+            name  = "JICOFO_AUTH_USER"
             value = var.JICOFO_AUTH_USER
           },
           {
-            name = "LETSENCRYPT_DOMAIN"
+            name  = "LETSENCRYPT_DOMAIN"
             value = var.LETSENCRYPT_DOMAIN
           },
           {
-            name = "LETSENCRYPT_EMAIL"
+            name  = "LETSENCRYPT_EMAIL"
             value = var.LETSENCRYPT_EMAIL
           },
           {
-            name = "XMPP_DOMAIN"
+            name  = "XMPP_DOMAIN"
             value = var.XMPP_DOMAIN
           },
           {
-            name = "XMPP_AUTH_DOMAIN"
+            name  = "XMPP_AUTH_DOMAIN"
             value = var.XMPP_AUTH_DOMAIN
           },
           {
-            name = "XMPP_BOSH_URL_BASE"
+            name  = "XMPP_BOSH_URL_BASE"
             value = var.XMPP_BOSH_URL_BASE
           },
           {
-            name = "XMPP_GUEST_DOMAIN"
+            name  = "XMPP_GUEST_DOMAIN"
             value = var.XMPP_GUEST_DOMAIN
           },
           {
-            name = "XMPP_MUC_DOMAIN"
+            name  = "XMPP_MUC_DOMAIN"
             value = var.XMPP_MUC_DOMAIN
           },
           {
-            name = "TZ"
+            name  = "TZ"
             value = var.TZ
           },
         ]
@@ -91,6 +91,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/deployment-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

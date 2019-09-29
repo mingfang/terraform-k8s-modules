@@ -24,7 +24,7 @@ variable "gitlab_runner_replicas" {
 }
 
 module "gitlab" {
-  source      = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/gitlab"
+  source      = "../../modules/gitlab"
   name        = "${var.name}"
   namespace   = "${var.namespace}"
   annotations = "${var.annotations}"
@@ -41,7 +41,7 @@ module "gitlab" {
 }
 
 module "gitlab-runner" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/gitlab-runner"
+  source    = "../../modules/gitlab-runner"
   name      = "${var.name}-runner"
   namespace = "${var.namespace}"
   replicas  = "${var.gitlab_runner_replicas}"

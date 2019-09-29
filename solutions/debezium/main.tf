@@ -15,17 +15,17 @@
 
 
 module "zookeeper" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/zookeeper"
+  source    = "../../modules/zookeeper"
   name      = "${var.name}-zookeeper"
   namespace = var.namespace
 
-  storage_class_name = var.zookeeper_storage_class
-  storage            = var.zookeeper_storage
-  replicas           = var.zookeeper_count
+  storage_class = var.zookeeper_storage_class
+  storage       = var.zookeeper_storage
+  replicas      = var.zookeeper_count
 }
 
 module "kafka" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka"
+  source    = "../../modules/kafka"
   name      = "${var.name}-kafka"
   namespace = var.namespace
 
@@ -36,7 +36,7 @@ module "kafka" {
 }
 
 module "kafka-rest-proxy" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka-rest-proxy"
+  source    = "../../modules/kafka-rest-proxy"
   name      = "${var.name}-kafka-rest-proxy"
   namespace = var.namespace
 
@@ -44,7 +44,7 @@ module "kafka-rest-proxy" {
 }
 
 module "kafka-topic-ui" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka-topic-ui"
+  source    = "../../modules/kafka-topic-ui"
   name      = "${var.name}-kafka-topic-ui"
   namespace = var.namespace
 
@@ -56,7 +56,7 @@ module "kafka-topic-ui" {
 }
 
 module "kafka-connect-ui" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka-connect-ui"
+  source    = "../../modules/kafka-connect-ui"
   name      = "${var.name}-kafka-connect-ui"
   namespace = var.namespace
 
@@ -68,7 +68,7 @@ module "kafka-connect-ui" {
 }
 
 module "kafka-connect-source" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka-connect"
+  source    = "../../modules/kafka-connect"
   name      = "${var.name}-connect-source"
   namespace = var.namespace
   image     = "debezium/connect:${var.debezium-version}"
@@ -77,7 +77,7 @@ module "kafka-connect-source" {
 }
 
 module "kafka-connect-sink" {
-  source    = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kafka-connect"
+  source    = "../../modules/kafka-connect"
   name      = "${var.name}-connect-sink"
   namespace = var.namespace
   image     = "registry.rebelsoft.com/debezium-jdbc-es"

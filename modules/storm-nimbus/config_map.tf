@@ -1,5 +1,5 @@
 resource "k8s_core_v1_config_map" "this" {
-  data {
+  data = {
     "storm.yaml" = "${data.template_file.storm.rendered}"
   }
 

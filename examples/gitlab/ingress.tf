@@ -1,5 +1,5 @@
 module "ingress-controller" {
-  source          = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/ingress-nginx"
+  source          = "../../modules/kubernetes/ingress-nginx"
   name            = "${var.name}-ingress-controller"
   namespace       = "default"
   node_port_http  = "${var.ingress_node_port_http}"
@@ -10,7 +10,7 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
   metadata {
     name = "${var.name}-ingress"
 
-    annotations {
+    annotations = {
       "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*",
     }
     ingress_class = "nginx"
@@ -21,12 +21,12 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
       {
         host = "gitlab.${var.ingress_host}.nip.io"
 
-        http {
+        http = {
           paths = [
             {
               path = "/"
 
-              backend {
+              backend = {
                 service_name = "${var.name}"
                 service_port = "80"
               }
@@ -37,12 +37,12 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
       {
         host = "mattermost.gitlab.${var.ingress_host}.nip.io"
 
-        http {
+        http = {
           paths = [
             {
               path = "/"
 
-              backend {
+              backend = {
                 service_name = "${var.name}"
                 service_port = "80"
               }
@@ -53,12 +53,12 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
       {
         host = "registry.gitlab.${var.ingress_host}.nip.io"
 
-        http {
+        http = {
           paths = [
             {
               path = "/"
 
-              backend {
+              backend = {
                 service_name = "${var.name}"
                 service_port = "80"
               }

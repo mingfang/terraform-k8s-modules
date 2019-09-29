@@ -7,11 +7,11 @@ locals {
   }
 
   parameters = {
-    name          = var.name
-    namespace     = var.namespace
-    labels    = local.labels
-    replicas      = var.replicas
-    ports         = var.ports
+    name                 = var.name
+    namespace            = var.namespace
+    labels               = local.labels
+    replicas             = var.replicas
+    ports                = var.ports
     enable_service_links = false
 
     containers = [
@@ -67,6 +67,6 @@ locals {
 }
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-provider-k8s.git//archetypes/statefulset-service"
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

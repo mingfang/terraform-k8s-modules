@@ -18,19 +18,30 @@ resource "k8s_core_v1_namespace" "this" {
 
 module "workbench" {
   source    = "../../modules/drools/workbench"
-  name      = "${var.name}-workbench"
+  name      = "workbench"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
 module "kie-server" {
   source         = "../../modules/drools/kie-server"
-  name           = "${var.name}-kie-server"
+  name           = "kie-server"
   namespace      = k8s_core_v1_namespace.this.metadata[0].name
-  replicas       = 1
+  replicas       = 2
 
-  kie_server_url = "http://kie-server.rebelsoft.com/kie-server/services/rest/server"
-  maven_repo_url = "http://${module.workbench.service.metadata[0].name}:${module.workbench.service.spec[0].ports[0].port}/business-central/maven2"
+  kie_server_id = "Sales"
   controller_url = "ws://${module.workbench.service.metadata[0].name}:${module.workbench.service.spec[0].ports[0].port}/business-central/websocket/controller"
+  maven_repo_url = "http://${module.workbench.service.metadata[0].name}:${module.workbench.service.spec[0].ports[0].port}/business-central/maven2"
+}
+
+module "kie-server2" {
+  source         = "../../modules/drools/kie-server"
+  name           = "kie-server2"
+  namespace      = k8s_core_v1_namespace.this.metadata[0].name
+  replicas       = 2
+
+  kie_server_id = "Finance"
+  controller_url = "ws://${module.workbench.service.metadata[0].name}:${module.workbench.service.spec[0].ports[0].port}/business-central/websocket/controller"
+  maven_repo_url = "http://${module.workbench.service.metadata[0].name}:${module.workbench.service.spec[0].ports[0].port}/business-central/maven2"
 }
 
 resource "k8s_extensions_v1beta1_ingress" "this" {
@@ -40,7 +51,7 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
 
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"       = "kie-server.*",
+      "nginx.ingress.kubernetes.io/server-alias"       = "drools.*",
       "nginx.ingress.kubernetes.io/proxy-send-timeout" = "3600",
       "nginx.ingress.kubernetes.io/proxy-read-timeout" = "3600",
     }

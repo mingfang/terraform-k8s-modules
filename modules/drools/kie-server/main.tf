@@ -1,123 +1,4 @@
-resource "k8s_core_v1_config_map" "this" {
-  data = {
-    "settings.xml" = <<-EOF
-      <!-- CUSTOM settings.xml for KIE Execution Server
-          *********************************************
-          - This is the custom settings.xml file used for KIE Execution Server to download the artifacts from the Maven repository
-          provided by the Drools WB internals.
-          - This file is deployed into jboss user home at $HOME/.m2/settings.xml
-          - This file uses system environment variables to point to the Drools WB Docker container that provides the Maven repository. These variables are:
-            KIE_MAVEN_REPO - Defaults to http://localhost:8080/drools-wb/maven2
-            KIE_MAVEN_REPO_USER - Defaults to admin
-            KIE_MAVEN_REPO_PASSWORD - Defaults to admin
-      -->
-      <settings>
-        <localRepository>$${env.HOME}/.m2/repository</localRepository>
-
-        <proxies>
-        </proxies>
-
-        <servers>
-          <server>
-            <id>kie-workbench</id>
-            <username>$${env.KIE_MAVEN_REPO_USER}</username>
-            <password>$${env.KIE_MAVEN_REPO_PASSWORD}</password>
-            <configuration>
-              <wagonProvider>httpclient</wagonProvider>
-              <httpConfiguration>
-                <all>
-                  <usePreemptive>true</usePreemptive>
-                </all>
-              </httpConfiguration>
-            </configuration>
-          </server>
-        </servers>
-
-        <mirrors>
-        </mirrors>
-
-        <profiles>
-          <profile>
-            <id>kie</id>
-            <properties>
-            </properties>
-            <repositories>
-              <repository>
-                <id>jboss-public-repository-group</id>
-                <name>JBoss Public Maven Repository Group</name>
-                <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-                <layout>default</layout>
-                <releases>
-                  <enabled>true</enabled>
-                  <updatePolicy>never</updatePolicy>
-                </releases>
-                <snapshots>
-                  <enabled>true</enabled>
-                  <updatePolicy>always</updatePolicy>
-                </snapshots>
-              </repository>
-              <repository>
-                <id>kie-workbench</id>
-                <name>JBoss BRMS Guvnor M2 Repository</name>
-                <url>$${env.KIE_MAVEN_REPO}</url>
-                <layout>default</layout>
-                <releases>
-                  <enabled>true</enabled>
-                  <updatePolicy>always</updatePolicy>
-                </releases>
-                <snapshots>
-                  <enabled>true</enabled>
-                  <updatePolicy>always</updatePolicy>
-                </snapshots>
-              </repository>
-            </repositories>
-            <pluginRepositories>
-              <pluginRepository>
-                <id>jboss-public-repository-group</id>
-                <name>JBoss Public Maven Repository Group</name>
-                <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-                <layout>default</layout>
-                <releases>
-                  <enabled>true</enabled>
-                  <updatePolicy>never</updatePolicy>
-                </releases>
-                <snapshots>
-                  <enabled>true</enabled>
-                  <updatePolicy>never</updatePolicy>
-                </snapshots>
-              </pluginRepository>
-            </pluginRepositories>
-          </profile>
-        </profiles>
-
-        <activeProfiles>
-          <activeProfile>kie</activeProfile>
-        </activeProfiles>
-
-      </settings>
-      EOF
-  }
-  metadata {
-    name      = var.name
-    namespace = var.namespace
-  }
-}
-
 locals {
-  java_opts = join(" ", [
-    "-server",
-    "-Xms256m",
-    "-Xmx1024m",
-    "-Djava.net.preferIPv4Stack=true",
-    "-Dfile.encoding=UTF-8",
-    "-Dorg.kie.server.controller=${var.controller_url}",
-    "-Dorg.kie.server.controller.user=${var.controller_user}",
-    "-Dorg.kie.server.controller.pwd=${var.controller_pwd}",
-    "-Dorg.kie.server.location=${var.kie_server_url}",
-    "-Dorg.kie.server.user=${var.kie_server_user}",
-    "-Dorg.kie.server.pwd=${var.kie_server_pwd}",
-  ])
-
   parameters = {
     name      = var.name
     namespace = var.namespace
@@ -135,8 +16,30 @@ locals {
         image = var.image
         env = [
           {
+            name = "POD_NAME"
+
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
+              }
+            }
+          },
+          {
             name  = "JAVA_OPTS"
-            value = local.java_opts
+            value = join(" ", [
+              "-server",
+              "-Xms256m",
+              "-Xmx1024m",
+              "-Djava.net.preferIPv4Stack=true",
+              "-Dfile.encoding=UTF-8",
+              "-Dorg.kie.server.controller=${var.controller_url}",
+              "-Dorg.kie.server.controller.user=${var.controller_user}",
+              "-Dorg.kie.server.controller.pwd=${var.controller_pwd}",
+              "-Dorg.kie.server.location=http://$(POD_NAME):8080/kie-server/services/rest/server",
+              "-Dorg.kie.server.id=${var.kie_server_id}",
+              "-Dorg.kie.server.user=${var.kie_server_user}",
+              "-Dorg.kie.server.pwd=${var.kie_server_pwd}",
+            ])
           },
           {
             name  = "KIE_MAVEN_REPO"

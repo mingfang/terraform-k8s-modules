@@ -9,7 +9,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "jboss/drools-workbench"
+  default = "jboss/business-central-workbench:7.27.0.Final"
 }
 
 variable "overrides" {
@@ -19,34 +19,34 @@ variable "overrides" {
 variable "users" {
   default = [
     {
-      user = "admin"
+      user     = "admin"
       password = "admin12345"
-      roles = "admin,analyst,kiemgmt"
+      roles    = "admin,analyst,kiemgmt,rest-all"
     },
     {
-      user = "kieserver"
+      user     = "kieserver"
       password = "kieserver1!"
-      roles = "kie-server"
+      roles    = "kie-server"
     },
     {
-      user = "analyst"
+      user     = "analyst"
       password = "analyst12345"
-      roles = "analyst"
+      roles    = "analyst"
     },
     {
-      user = "developer"
+      user     = "developer"
       password = "developer12345"
-      roles = "developer"
+      roles    = "developer"
     },
     {
-      user = "manager"
+      user     = "manager"
       password = "manager12345"
-      roles = "manager"
+      roles    = "manager"
     },
     {
-      user = "user"
+      user     = "user"
       password = "user12345"
-      roles = "user"
+      roles    = "user"
     },
   ]
 }

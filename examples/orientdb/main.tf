@@ -43,19 +43,11 @@ module "orientdb" {
   args = "-Dstorage.wal.allowDirectIO=false"
 }
 
-module "ingress" {
-  source           = "../../modules/kubernetes/ingress-nginx"
-  name             = "${var.name}-ingress"
-  namespace        = k8s_core_v1_namespace.this.metadata[0].name
-  ingress_class    = "${var.name}-ingress"
-  load_balancer_ip = "192.168.2.248"
-  service_type     = "LoadBalancer"
-}
-
+//depends on examples/ingress-nginx
 resource "k8s_extensions_v1beta1_ingress" "this" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
+      "kubernetes.io/ingress.class"              = "nginx-example"
       "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*"
       "nginx.ingress.kubernetes.io/affinity"     = "cookie"
     }
@@ -65,7 +57,7 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
   spec {
     rules {
       //must be set for sticky session to work
-      host = "orientdb.192.168.2.248.nip.io"
+      host = "orientdb.192.168.2.249.nip.io"
       http {
         paths {
           backend {

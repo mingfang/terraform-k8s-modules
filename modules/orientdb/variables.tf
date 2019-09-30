@@ -22,7 +22,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "orientdb"
+  default = "orientdb:3.0.23"
 }
 
 variable "env" {

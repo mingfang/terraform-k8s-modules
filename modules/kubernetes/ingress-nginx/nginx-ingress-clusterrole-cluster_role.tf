@@ -4,7 +4,7 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "nginx-ingress-clu
       "app.kubernetes.io/name"    = var.name
       "app.kubernetes.io/part-of" = var.name
     }
-    name = var.name
+    name = "${var.namespace}:${var.name}"
   }
 
   rules {

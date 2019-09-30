@@ -17,27 +17,27 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "certific
       json_path = <<-EOF
         .status.conditions[?(@.type=="Ready")].status
         EOF
-      name = "Ready"
-      type = "string"
+      name      = "Ready"
+      type      = "string"
     }
     additional_printer_columns {
       json_path = ".spec.secretName"
-      name = "Secret"
-      type = "string"
+      name      = "Secret"
+      type      = "string"
     }
     additional_printer_columns {
       json_path = ".spec.issuerRef.name"
-      name = "Issuer"
-      priority = 1
-      type = "string"
+      name      = "Issuer"
+      priority  = 1
+      type      = "string"
     }
     additional_printer_columns {
       json_path = <<-EOF
         .status.conditions[?(@.type=="Ready")].message
         EOF
-      name     = "Status"
-      priority = 1
-      type     = "string"
+      name      = "Status"
+      priority  = 1
+      type      = "string"
     }
     additional_printer_columns {
       json_path   = ".metadata.creationTimestamp"
@@ -46,19 +46,19 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "certific
         
         Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         EOF
-      name = "Age"
-      type = "date"
+      name        = "Age"
+      type        = "date"
     }
     group = "certmanager.k8s.io"
     names {
-      kind = "Certificate"
+      kind   = "Certificate"
       plural = "certificates"
       short_names = [
         "cert",
         "certs",
       ]
     }
-    scope = "Namespaced"
+    scope   = "Namespaced"
     version = "v1alpha1"
   }
 }

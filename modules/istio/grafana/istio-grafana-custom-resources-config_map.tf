@@ -17,7 +17,7 @@ resource "k8s_core_v1_config_map" "istio-grafana-custom-resources" {
           ports:
           - number: 3000
       EOF
-    "run.sh" = <<-EOF
+    "run.sh"                = <<-EOF
       #!/bin/sh
       
       set -x

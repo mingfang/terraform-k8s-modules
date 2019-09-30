@@ -1,12 +1,11 @@
-<img src="diagram.svg"/>To view the full size interactive diagram, append ```?sanitize=true``` to the raw URL.
-
+[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/kubernetes/priority-class/diagram.svg?sanitize=true)<img src="diagram.svg"/>
 PriorityClass defines mapping from a priority class name to the priority integer value.
 The value can be any valid integer.
 
 Module usage:
 
     module "priority-class" {
-      source         = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/kubernetes/priority-class"
+      source         = "git::https://github.com/mingfang/terraform-k8s-modules.git//modules/kubernetes/priority-class"
       name           = "normal"
       value          = 50
       description    = "Normal Priority"

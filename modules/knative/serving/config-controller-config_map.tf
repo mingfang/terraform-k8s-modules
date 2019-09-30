@@ -1,6 +1,6 @@
 resource "k8s_core_v1_config_map" "config-controller" {
   data = {
-    "_example" = <<-EOF
+    "_example"          = <<-EOF
       ################################
       #                              #
       #    EXAMPLE CONFIGURATION     #
@@ -25,7 +25,7 @@ resource "k8s_core_v1_config_map" "config-controller" {
     labels = {
       "serving.knative.dev/release" = "devel"
     }
-    name = "config-controller"
+    name      = "config-controller"
     namespace = "${var.namespace}"
   }
 }

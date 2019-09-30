@@ -69,7 +69,7 @@ resource "k8s_core_v1_config_map" "config-autoscaler" {
     labels = {
       "serving.knative.dev/release" = "devel"
     }
-    name = "config-autoscaler"
+    name      = "config-autoscaler"
     namespace = "${var.namespace}"
   }
 }

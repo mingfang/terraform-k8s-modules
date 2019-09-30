@@ -57,7 +57,7 @@ resource "k8s_core_v1_config_map" "this" {
         deploymentStrategy:
           rollingUpdate: null
           type: Recreate
-        extraConfig: ${jsonencode(merge({jupyterlab="c.Spawner.cmd = ['jupyter-labhub']"}, var.hub_extraConfig))}
+        extraConfig: ${jsonencode(merge({ jupyterlab = "c.Spawner.cmd = ['jupyter-labhub']" }, var.hub_extraConfig))}
         extraContainers: []
         extraVolumeMounts: []
         extraVolumes: []
@@ -206,7 +206,7 @@ resource "k8s_core_v1_config_map" "this" {
       EOF
   }
   metadata {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
   }
 }

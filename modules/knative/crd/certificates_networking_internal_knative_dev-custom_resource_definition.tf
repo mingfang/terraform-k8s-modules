@@ -12,15 +12,15 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "certific
       json_path = <<-EOF
         .status.conditions[?(@.type=="Ready")].status
         EOF
-      name = "Ready"
-      type = "string"
+      name      = "Ready"
+      type      = "string"
     }
     additional_printer_columns {
       json_path = <<-EOF
         .status.conditions[?(@.type=="Ready")].reason
         EOF
-      name = "Reason"
-      type = "string"
+      name      = "Reason"
+      type      = "string"
     }
     group = "networking.internal.knative.dev"
     names {

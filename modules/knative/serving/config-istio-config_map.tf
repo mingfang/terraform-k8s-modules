@@ -35,9 +35,9 @@ resource "k8s_core_v1_config_map" "config-istio" {
   metadata {
     labels = {
       "networking.knative.dev/ingress-provider" = "istio"
-      "serving.knative.dev/release" = "devel"
+      "serving.knative.dev/release"             = "devel"
     }
-    name = "config-istio"
+    name      = "config-istio"
     namespace = "${var.namespace}"
   }
 }

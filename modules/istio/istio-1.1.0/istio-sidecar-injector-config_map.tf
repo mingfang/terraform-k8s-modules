@@ -205,13 +205,13 @@ resource "k8s_core_v1_config_map" "istio-sidecar-injector" {
   }
   metadata {
     labels = {
-      "app" = "istio"
-      "chart" = "istio-1.1.0"
+      "app"      = "istio"
+      "chart"    = "istio-1.1.0"
       "heritage" = "Tiller"
-      "istio" = "sidecar-injector"
-      "release" = "istio"
+      "istio"    = "sidecar-injector"
+      "release"  = "istio"
     }
-    name = "istio-sidecar-injector"
+    name      = "istio-sidecar-injector"
     namespace = "${var.namespace}"
   }
 }

@@ -35,15 +35,15 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
         
         Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         EOF
-      name = "Age"
-      type = "date"
+      name        = "Age"
+      type        = "date"
     }
     group = "certmanager.k8s.io"
     names {
-      kind = "Challenge"
+      kind   = "Challenge"
       plural = "challenges"
     }
-    scope = "Namespaced"
+    scope   = "Namespaced"
     version = "v1alpha1"
   }
 }

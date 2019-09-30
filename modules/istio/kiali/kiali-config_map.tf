@@ -16,12 +16,12 @@ resource "k8s_core_v1_config_map" "kiali" {
   }
   metadata {
     labels = {
-      "app" = "kiali"
-      "chart" = "kiali"
+      "app"      = "kiali"
+      "chart"    = "kiali"
       "heritage" = "Tiller"
-      "release" = "istio"
+      "release"  = "istio"
     }
-    name = "kiali"
+    name      = "kiali"
     namespace = "${var.namespace}"
   }
 }

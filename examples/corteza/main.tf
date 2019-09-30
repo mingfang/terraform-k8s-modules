@@ -17,55 +17,55 @@ module "nfs-provisioner" {
 }
 
 module "database" {
-  source = "../../modules/mysql"
-  name = "corteza-db"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
-  image = "percona:8.0"
+  source    = "../../modules/mysql"
+  name      = "corteza-db"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  image     = "percona:8.0"
 
-  MYSQL_DATABASE=      "corteza"
-  MYSQL_USER=          "corteza"
-  MYSQL_PASSWORD=      "change-me"
-  MYSQL_ROOT_PASSWORD= "change-me-too"
+  MYSQL_DATABASE      = "corteza"
+  MYSQL_USER          = "corteza"
+  MYSQL_PASSWORD      = "change-me"
+  MYSQL_ROOT_PASSWORD = "change-me-too"
 
   storage       = "1Gi"
   storage_class = module.nfs-provisioner.storage_class
 }
 
 module "system" {
-  source = "../../modules/corteza/system"
-  name = "corteza-system"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/corteza/system"
+  name      = "corteza-system"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  DB_DSN = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
-  AUTH_JWT_SECRET="secret1234567890"
+  DB_DSN          = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
+  AUTH_JWT_SECRET = "secret1234567890"
 }
 
 module "compose" {
-  source = "../../modules/corteza/compose"
-  name = "corteza-compose"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/corteza/compose"
+  name      = "corteza-compose"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  DB_DSN = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
-  AUTH_JWT_SECRET="secret1234567890"
+  DB_DSN          = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
+  AUTH_JWT_SECRET = "secret1234567890"
 }
 
 module "messaging" {
-  source = "../../modules/corteza/messaging"
-  name = "corteza-messaging"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/corteza/messaging"
+  name      = "corteza-messaging"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  DB_DSN = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
-  AUTH_JWT_SECRET="secret1234567890"
+  DB_DSN          = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
+  AUTH_JWT_SECRET = "secret1234567890"
 }
 
 module "webapp" {
-  source = "../../modules/corteza/webapp"
-  name = "corteza-webapp"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/corteza/webapp"
+  name      = "corteza-webapp"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  DB_DSN = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
-  AUTH_JWT_SECRET="secret1234567890"
-  VIRTUAL_HOST = "192.168.2.244.nip.io"
+  DB_DSN          = "corteza:change-me@tcp(${module.database.name}:3306)/corteza?collation=utf8mb4_general_ci"
+  AUTH_JWT_SECRET = "secret1234567890"
+  VIRTUAL_HOST    = "192.168.2.244.nip.io"
 }
 
 resource "k8s_extensions_v1beta1_ingress" "system" {

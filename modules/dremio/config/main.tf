@@ -1,6 +1,6 @@
 resource "k8s_core_v1_config_map" "this" {
   data = {
-    "core-site.xml" = <<-EOF
+    "core-site.xml"      = <<-EOF
       <?xml version="1.0"?>
       <configuration>
         <!-- If you are editing any content in this file, please remove lines with double curly braces around them -->
@@ -9,7 +9,7 @@ resource "k8s_core_v1_config_map" "this" {
       </configuration>
       
       EOF
-    "dremio-env" = <<-EOF
+    "dremio-env"         = <<-EOF
       #
       # Copyright (C) 2017-2018 Dremio Corporation
       #
@@ -114,7 +114,7 @@ resource "k8s_core_v1_config_map" "this" {
       #DREMIO_JAVA_SERVER_EXTRA_OPTS=
       
       EOF
-    "dremio.conf" = <<-EOF
+    "dremio.conf"        = <<-EOF
       #
       # Copyright (C) 2017-2018 Dremio Corporation
       #
@@ -204,7 +204,7 @@ resource "k8s_core_v1_config_map" "this" {
       </configuration>
       
       EOF
-    "logback.xml" = <<-EOF
+    "logback.xml"        = <<-EOF
       <?xml version="1.0" encoding="UTF-8" ?>
       <!--
       
@@ -313,7 +313,7 @@ resource "k8s_core_v1_config_map" "this" {
       EOF
   }
   metadata {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
   }
 }

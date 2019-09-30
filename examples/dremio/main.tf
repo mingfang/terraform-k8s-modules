@@ -34,9 +34,9 @@ module "zookeeper" {
   name      = "${var.name}-zookeeper"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  storage            = module.zookeeper-storage.storage
+  storage       = module.zookeeper-storage.storage
   storage_class = module.zookeeper-storage.storage_class_name
-  replicas           = module.zookeeper-storage.replicas
+  replicas      = module.zookeeper-storage.replicas
 }
 
 module "config" {
@@ -63,8 +63,8 @@ module "master-cordinator-storage" {
 resource "k8s_core_v1_persistent_volume_claim" "this" {
 
   metadata {
-    name        = var.name
-    namespace   = var.namespace
+    name      = var.name
+    namespace = var.namespace
   }
 
   spec {
@@ -128,7 +128,7 @@ module "ingress-rules" {
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   annotations = {
-    "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*",
+    "nginx.ingress.kubernetes.io/server-alias"    = "${var.name}.*",
     "nginx.ingress.kubernetes.io/proxy-body-size" = "1024m",
   }
   ingress_class = "nginx"

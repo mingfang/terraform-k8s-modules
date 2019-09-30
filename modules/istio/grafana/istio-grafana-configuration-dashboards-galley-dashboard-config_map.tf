@@ -6,13 +6,13 @@ resource "k8s_core_v1_config_map" "istio-grafana-configuration-dashboards-galley
   }
   metadata {
     labels = {
-      "app" = "grafana"
-      "chart" = "grafana"
+      "app"      = "grafana"
+      "chart"    = "grafana"
       "heritage" = "Tiller"
-      "istio" = "grafana"
-      "release" = "istio"
+      "istio"    = "grafana"
+      "release"  = "istio"
     }
-    name = "istio-grafana-configuration-dashboards-galley-dashboard"
+    name      = "istio-grafana-configuration-dashboards-galley-dashboard"
     namespace = "${var.namespace}"
   }
 }

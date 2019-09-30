@@ -3,7 +3,7 @@ resource "k8s_policy_v1beta1_pod_security_policy" "speaker" {
     labels = {
       "app" = "metallb"
     }
-    name      = "speaker"
+    name = "speaker"
   }
   spec {
     allow_privilege_escalation = false

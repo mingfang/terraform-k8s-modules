@@ -28,7 +28,7 @@ resource "k8s_core_v1_config_map" "this" {
       EOF
   }
   metadata {
-    name = "config"
+    name      = "config"
     namespace = k8s_core_v1_namespace.this.metadata.0.name
   }
 }

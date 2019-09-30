@@ -1,7 +1,7 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     labels = {
-      "istio-injection" = "disabled"
+      "istio-injection"                       = "disabled"
       "certmanager.k8s.io/disable-validation" = "true"
     }
     name = var.namespace
@@ -15,7 +15,7 @@ module "cert-manager" {
 
 resource "k8s_cert_manager_io_v1alpha2_cluster_issuer" "this" {
   metadata {
-    name      = "test-selfsigned"
+    name = "test-selfsigned"
   }
 
   spec {

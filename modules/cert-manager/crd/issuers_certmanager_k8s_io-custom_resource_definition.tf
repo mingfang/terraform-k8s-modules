@@ -9,7 +9,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "issuers_
       plural = "issuers"
     }
     preserve_unknown_fields = false
-    scope = "Namespaced"
+    scope                   = "Namespaced"
     validation {
       open_apiv3_schema = <<-JSON
         {

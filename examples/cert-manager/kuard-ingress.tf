@@ -1,7 +1,7 @@
 resource "k8s_extensions_v1beta1_ingress" "kuard" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class" = "nginx"
+      "kubernetes.io/ingress.class"       = "nginx"
       "certmanager.k8s.io/cluster-issuer" = "test-selfsigned"
     }
     name = "kuard"

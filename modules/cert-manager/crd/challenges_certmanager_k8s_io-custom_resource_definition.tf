@@ -32,7 +32,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
       plural = "challenges"
     }
     preserve_unknown_fields = false
-    scope = "Namespaced"
+    scope                   = "Namespaced"
     subresources {
     }
     validation {

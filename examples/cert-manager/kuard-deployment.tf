@@ -6,7 +6,7 @@ resource "k8s_apps_v1_deployment" "kuard" {
     replicas = 1
     selector {
       match_labels = {
-        "app"                          = "kuard"
+        "app" = "kuard"
       }
     }
     template {

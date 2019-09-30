@@ -32,8 +32,8 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "virtuals
         
         Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         EOF
-      name = "Age"
-      type = "date"
+      name        = "Age"
+      type        = "date"
     }
     group = "networking.istio.io"
     names {
@@ -41,15 +41,15 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "virtuals
         "istio-io",
         "networking-istio-io",
       ]
-      kind = "VirtualService"
+      kind      = "VirtualService"
       list_kind = "VirtualServiceList"
-      plural = "virtualservices"
+      plural    = "virtualservices"
       short_names = [
         "vs",
       ]
       singular = "virtualservice"
     }
-    scope = "Namespaced"
+    scope   = "Namespaced"
     version = "v1alpha3"
   }
 }

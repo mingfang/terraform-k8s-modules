@@ -115,13 +115,13 @@ resource "k8s_core_v1_config_map" "istio-galley-configuration" {
   }
   metadata {
     labels = {
-      "app" = "galley"
-      "chart" = "galley"
+      "app"      = "galley"
+      "chart"    = "galley"
       "heritage" = "Tiller"
-      "istio" = "galley"
-      "release" = "istio"
+      "istio"    = "galley"
+      "release"  = "istio"
     }
-    name = "istio-galley-configuration"
+    name      = "istio-galley-configuration"
     namespace = "${var.namespace}"
   }
 }

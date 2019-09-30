@@ -14,7 +14,7 @@ module "ingress-rules" {
   namespace     = "kube-system"
   ingress_class = "example"
   annotations = {
-    "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*",
+    "nginx.ingress.kubernetes.io/server-alias"     = "${var.name}.*",
     "nginx.ingress.kubernetes.io/backend-protocol" = "HTTPS",
     "nginx.ingress.kubernetes.io/rewrite-target"   = "/",
     "nginx.ingress.kubernetes.io/ssl-passthrough"  = "true",

@@ -42,7 +42,7 @@ resource "k8s_core_v1_config_map" "config-domain" {
     labels = {
       "serving.knative.dev/release" = "devel"
     }
-    name = "config-domain"
+    name      = "config-domain"
     namespace = "${var.namespace}"
   }
 }

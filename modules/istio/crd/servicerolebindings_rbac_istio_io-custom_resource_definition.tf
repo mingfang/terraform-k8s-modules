@@ -28,8 +28,8 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "servicer
         
         Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         EOF
-      name = "Age"
-      type = "date"
+      name        = "Age"
+      type        = "date"
     }
     group = "rbac.istio.io"
     names {
@@ -37,11 +37,11 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "servicer
         "istio-io",
         "rbac-istio-io",
       ]
-      kind = "ServiceRoleBinding"
-      plural = "servicerolebindings"
+      kind     = "ServiceRoleBinding"
+      plural   = "servicerolebindings"
       singular = "servicerolebinding"
     }
-    scope = "Namespaced"
+    scope   = "Namespaced"
     version = "v1alpha1"
   }
 }

@@ -12,7 +12,7 @@ resource "k8s_core_v1_config_map" "istio-grafana" {
         type: file
       
       EOF
-    "datasources.yaml" = <<-EOF
+    "datasources.yaml"        = <<-EOF
       apiVersion: 1
       datasources:
       - access: proxy

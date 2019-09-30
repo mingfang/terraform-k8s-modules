@@ -1,4 +1,4 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-provider-k8s/master/examples/guestbook/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/examples/guestbook/diagram.svg?sanitize=true)<img src="diagram.svg"/>
 [Guessbook Example](https://github.com/kubernetes/examples/tree/master/guestbook)
 
 This was created using the Extraction tool like this

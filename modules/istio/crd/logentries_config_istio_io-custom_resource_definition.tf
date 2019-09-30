@@ -40,8 +40,8 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "logentri
         
         Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
         EOF
-      name = "Age"
-      type = "date"
+      name        = "Age"
+      type        = "date"
     }
     group = "config.istio.io"
     names {
@@ -49,11 +49,11 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "logentri
         "istio-io",
         "policy-istio-io",
       ]
-      kind = "logentry"
-      plural = "logentries"
+      kind     = "logentry"
+      plural   = "logentries"
       singular = "logentry"
     }
-    scope = "Namespaced"
+    scope   = "Namespaced"
     version = "v1alpha2"
   }
 }

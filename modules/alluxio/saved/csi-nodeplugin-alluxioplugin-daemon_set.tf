@@ -1,6 +1,6 @@
 resource "k8s_apps_v1beta2_daemon_set" "csi-nodeplugin-alluxioplugin" {
   metadata {
-    name = "csi-nodeplugin-alluxioplugin"
+    name      = "csi-nodeplugin-alluxioplugin"
     namespace = var.namespace
   }
   spec {
@@ -73,7 +73,7 @@ resource "k8s_apps_v1beta2_daemon_set" "csi-nodeplugin-alluxioplugin" {
             name  = "CSI_ENDPOINT"
             value = "unix://plugin/csi.sock"
           }
-          image = "registry.rebelsoft.com/alluxio-csi"
+          image             = "registry.rebelsoft.com/alluxio-csi"
           image_pull_policy = "IfNotPresent"
           name              = "alluxio"
           security_context {

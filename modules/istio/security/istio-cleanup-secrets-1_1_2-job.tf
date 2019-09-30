@@ -100,11 +100,11 @@ resource "k8s_batch_v1_job" "istio-cleanup-secrets-1_1_2" {
             EOF
             ,
           ]
-          image = "docker.io/istio/kubectl:1.1.2"
+          image             = "docker.io/istio/kubectl:1.1.2"
           image_pull_policy = "IfNotPresent"
-          name = "kubectl"
+          name              = "kubectl"
         }
-        restart_policy = "OnFailure"
+        restart_policy       = "OnFailure"
         service_account_name = "istio-cleanup-secrets-service-account"
       }
     }

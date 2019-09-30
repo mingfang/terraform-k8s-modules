@@ -35,8 +35,8 @@ module "zookeeper" {
   namespace = var.namespace
 
   storage_class = module.zookeeper_storage.storage_class_name
-  storage            = module.zookeeper_storage.storage
-  replicas           = module.zookeeper_storage.replicas
+  storage       = module.zookeeper_storage.storage
+  replicas      = module.zookeeper_storage.replicas
 }
 
 module "kafka_storage" {

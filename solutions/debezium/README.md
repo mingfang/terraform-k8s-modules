@@ -9,9 +9,8 @@ This solution sets up:
 - [Kafka Connect UI](http://kafka-connect-ui.landoop.com)
 - [Kafka Topic UI](http://kafka-topics-ui.landoop.com)
 
-Examples:
-- [Sync MySql to Elasticsearch](https://github.com/mingfang/terraform-provider-k8s/tree/master/examples/debezium-mysql-elasticsearch)
-- [Sync Postgres to Elasticsearch](https://github.com/mingfang/terraform-provider-k8s/tree/master/examples/debezium-postgres-elasticsearch)
+Example:
+- [Sync MySql to Elasticsearch](https://github.com/mingfang/terraform-k8s-modules/tree/master/examples/debezium-mysql-elasticsearch)
 
 ## Inputs
 

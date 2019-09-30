@@ -1,9 +1,8 @@
-<img src="diagram.svg"/>To view the full size interactive diagram, append ```?sanitize=true``` to the raw URL.
-
+[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/postgres/diagram.svg?sanitize=true)<img src="diagram.svg"/>
 Module usage:
 
     module "postgres" {
-      source             = "git::https://github.com/mingfang/terraform-provider-k8s.git//modules/postgres"
+      source             = "git::https://github.com/mingfang/terraform-k8s-modules.git//modules/postgres"
       name               = "test-postgres"
       postgres_user      = "postgres"
       postgres_password  = "postgres"

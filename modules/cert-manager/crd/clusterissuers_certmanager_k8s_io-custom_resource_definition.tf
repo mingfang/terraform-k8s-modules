@@ -9,7 +9,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
       plural = "clusterissuers"
     }
     preserve_unknown_fields = false
-    scope = "Cluster"
+    scope                   = "Cluster"
     validation {
       open_apiv3_schema = <<-JSON
         {

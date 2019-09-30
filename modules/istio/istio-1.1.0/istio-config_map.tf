@@ -1,6 +1,6 @@
 resource "k8s_core_v1_config_map" "istio" {
   data = {
-    "mesh" = <<-EOF
+    "mesh"         = <<-EOF
       # Set the following variable to true to disable policy checks by the Mixer.
       # Note that metrics will still be reported to the Mixer.
       disablePolicyChecks: false
@@ -123,12 +123,12 @@ resource "k8s_core_v1_config_map" "istio" {
   }
   metadata {
     labels = {
-      "app" = "istio"
-      "chart" = "istio-1.1.0"
+      "app"      = "istio"
+      "chart"    = "istio-1.1.0"
       "heritage" = "Tiller"
-      "release" = "istio"
+      "release"  = "istio"
     }
-    name = "istio"
+    name      = "istio"
     namespace = "${var.namespace}"
   }
 }

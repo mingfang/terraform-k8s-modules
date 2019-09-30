@@ -16,7 +16,7 @@ resource "k8s_core_v1_config_map" "istio-security-custom-resources" {
         - mtls:
             mode: PERMISSIVE	
       EOF
-    "run.sh" = <<-EOF
+    "run.sh"                = <<-EOF
       #!/bin/sh
       
       set -x

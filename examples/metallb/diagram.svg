@@ -1,0 +1,104 @@
+<svg id="sprotty_1" class="sprotty-graph sprotty" tabindex="1002" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1484 892"><style>
+.elknode {
+    stroke: #448;
+    stroke-width: 2;
+    fill: #ddf;
+    fill-opacity: 0.5;
+}
+
+.elkport {
+    stroke: #448;
+    stroke-width: 1;
+    fill: #66c;
+}
+
+.elkedge {
+    fill: none;
+    stroke: #88f;
+    stroke-width: 8;
+    stroke-opacity: 0.3;
+    pointer-events: stroke;
+    stroke-linejoin: round;
+}
+
+.elkedge:hover {
+    stroke: #448;
+    stroke-width: 8;
+    stroke-opacity: 1;
+    stroke-dasharray: 16px;
+    stroke-dashoffset: 32px;
+    animation: stroke 0.5s linear infinite;
+}
+
+@keyframes stroke {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.elkedge.arrow {
+    fill: #336;
+}
+
+.elklabel {
+    stroke-width: 0;
+    stroke: #000;
+    fill: #000;
+    font-family: sans-serif;
+    font-size: 10pt;
+    dominant-baseline: hanging;
+}
+
+.elklabel:hover {
+    font-size: 24pt;
+}
+
+.elkjunction {
+    stroke: none;
+    fill: #224;
+}
+
+.selected &gt; rect {
+    stroke-width: 3;
+}
+
+.mouseover {
+    stroke: #88f;
+}
+/*
+ * Copyright (C) 2017 TypeFox and others.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+.sprotty {
+    padding: 0px;
+    font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+}
+
+.sprotty-hidden {
+    display: block;
+    position: absolute;
+    width: 0px;
+    height: 0px;
+}
+
+.sprotty-popup {
+    font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+    position: absolute;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid;
+    max-width: 400px;
+    min-width: 100px;
+}
+
+.sprotty-popup &gt; div {
+    margin: 10px;
+}
+
+.sprotty-popup-closed {
+    display: none;
+}
+</style><g transform="scale(1) translate(0,0)"><g id="sprotty_3" transform="translate(117, 71)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="1267" height="771" /><g id="sprotty_5" transform="translate(517, 50)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_6" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_core_v1_config_map.this</text></g><g id="sprotty_7" transform="translate(100, 60)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_8" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_core_v1_namespace.this</text></g><g id="sprotty_13" transform="translate(517, 231)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="650" height="490" /><g id="sprotty_15" transform="translate(100, 50)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_16" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_apps_v1_daemon_set.speaker</text></g><g id="sprotty_20" transform="translate(350, 50)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_21" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_apps_v1_deployment.controller</text></g><g id="sprotty_23" transform="translate(100, 160)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_24" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_core_v1_service_account.controller</text></g><g id="sprotty_26" transform="translate(350, 160)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_27" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_core_v1_service_account.speaker</text></g><g id="sprotty_29" transform="translate(100, 270)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_30" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_rbac_authorization_k8s_io_v1_cluster_role_binding.metallb-system_controller</text></g><g id="sprotty_32" transform="translate(350, 270)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_33" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_rbac_authorization_k8s_io_v1_cluster_role_binding.metallb-system_speaker</text></g><g id="sprotty_35" transform="translate(100, 380)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_36" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_rbac_authorization_k8s_io_v1_role.config-watcher</text></g><g id="sprotty_38" transform="translate(350, 380)" opacity="1"><rect class="elknode" x="0" y="0" rx="10" width="200" height="60" /><text id="sprotty_39" class="elklabel" transform="translate(5, 22) translate(0, 0)" opacity="1">k8s_rbac_authorization_k8s_io_v1_role_binding.config-watcher</text></g><g id="sprotty_17" transform="translate(-16, 50)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_18" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">namespace</text></g><text id="sprotty_14" class="elklabel" transform="translate(0, -21) translate(0, 0)" opacity="1">metal-lb</text></g><g id="sprotty_10" transform="translate(-16, 85.5)" opacity="1"><rect class="elkport" x="0" y="0" width="16" height="9" /><text id="sprotty_11" class="elklabel" transform="translate(-1, 10) translate(0, 0)" opacity="1">namespace</text></g><text id="sprotty_4" class="elklabel" transform="translate(0, -21) translate(0, 0)" opacity="1">examples/metallb</text><g id="sprotty_9" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 300,80 L 517,80" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 517 80) translate(517 80)" /></g><g id="sprotty_12" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 0,90 L 100,90" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 100 90) translate(100 90)" /></g><g id="sprotty_19" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 517,286.4807692307692 L 617,298.74038461538464" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-173.0106348436615 617 298.74038461538464) translate(617 298.74038461538464)" /></g><g id="sprotty_22" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 517,285.9454148471616 L 867,305.43231441048033" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-176.81324131380964 867 305.43231441048033) translate(867 305.43231441048033)" /></g><g id="sprotty_25" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 515.9077490774907,290 L 670.9483394833949,391" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-146.91807712723494 670.9483394833949 391) translate(670.9483394833949 391)" /></g><g id="sprotty_28" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 517,287.8668122270742 L 867,391.4148471615721" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-163.51906811785517 867 391.4148471615721) translate(867 391.4148471615721)" /></g><g id="sprotty_31" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 512.8126272912424,290 L 691.5824847250509,501" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-130.27295566323374 691.5824847250509 501) translate(691.5824847250509 501)" /></g><g id="sprotty_34" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 967,451 L 967,501" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-90 967 501) translate(967 501)" /></g><g id="sprotty_37" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 511.63291139240505,290 L 699.4472573839662,611" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-120.3315364470422 699.4472573839662 611) translate(699.4472573839662 611)" /></g><g id="sprotty_40" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 514.7974683544304,290 L 928.3502109704641,611" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(-142.18135436369792 928.3502109704641 611) translate(928.3502109704641 611)" /></g><g id="sprotty_41" class="sprotty-edge" opacity="1"><path class="elkedge" d="M 300,100 L 350,100 L 350,285.5 L 501,285.5" /><path class="edge arrow" d="M 0,0 L 8,-3 L 8,3 Z" transform="rotate(180 501 285.5) translate(501 285.5)" /></g></g></g></svg>

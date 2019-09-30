@@ -6,8 +6,8 @@ resource "k8s_admissionregistration_k8s_io_v1beta1_mutating_webhook_configuratio
       "heritage" = "Tiller"
       "release"  = "istio"
     }
-    name      = "istio-sidecar-injector"
-    
+    name = "istio-sidecar-injector"
+
   }
 
   webhooks {

@@ -9,13 +9,13 @@ resource "k8s_cert_manager_io_v1alpha2_issuer" "letsencrypt-prod" {
         name = "letsencrypt-prod"
       }
       server = "https://acme-v02.api.letsencrypt.org/directory"
-        solvers {
-          http01 {
-            ingress {
-              class = "nginx"
-            }
+      solvers {
+        http01 {
+          ingress {
+            class = "nginx"
           }
         }
+      }
     }
   }
 }

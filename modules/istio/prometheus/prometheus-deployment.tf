@@ -140,13 +140,13 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
             EOF
             ,
           ]
-          image = "busybox:1.30.1"
+          image             = "busybox:1.30.1"
           image_pull_policy = "IfNotPresent"
-          name = "prom-init"
+          name              = "prom-init"
 
           volume_mounts {
             mount_path = "/etc/istio-certs"
-            name = "istio-certs"
+            name       = "istio-certs"
           }
         }
         service_account_name = "prometheus"
@@ -161,8 +161,8 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
           name = "istio-certs"
           secret {
             default_mode = 420
-            optional = true
-            secret_name = "istio.default"
+            optional     = true
+            secret_name  = "istio.default"
           }
         }
       }

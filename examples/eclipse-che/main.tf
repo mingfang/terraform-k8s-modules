@@ -9,9 +9,9 @@ resource "k8s_core_v1_namespace" "this" {
 }
 
 module "nfs-server" {
-  source    = "../../modules/nfs-server-empty-dir"
-  name      = "nfs-server"
-//  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  source = "../../modules/nfs-server-empty-dir"
+  name   = "nfs-server"
+  //  namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
 resource "k8s_core_v1_persistent_volume" "che-data-volume" {
@@ -89,10 +89,10 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "workspace" {
 
 module "eclipse-che" {
   source = "../../modules/eclipse-che/eclipse-che"
-  name = var.name
+  name   = var.name
   //  namespace = k8s_core_v1_namespace.this.metadata[0].name
   CHE_INFRA_KUBERNETES_INGRESS_DOMAIN = "rebelsoft.com"
-//  CHE_INFRA_KUBERNETES_INGRESS_DOMAIN = "192.168.2.244.nip.io"
+  //  CHE_INFRA_KUBERNETES_INGRESS_DOMAIN = "192.168.2.244.nip.io"
   ingress_class = module.ingress.ingress_class
 
 }
@@ -117,15 +117,15 @@ module "ingress" {
 resource "k8s_extensions_v1beta1_ingress" "ingress" {
   metadata {
     annotations = {
-//      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "che-default.*",
+      //      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
+      "kubernetes.io/ingress.class"                       = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"          = "che-default.*",
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
     }
-    name      = var.name
-//    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    name = var.name
+    //    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
@@ -146,15 +146,15 @@ resource "k8s_extensions_v1beta1_ingress" "ingress" {
 resource "k8s_extensions_v1beta1_ingress" "devfile-registry" {
   metadata {
     annotations = {
-//      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "devfile-registry-default.*",
+      //      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
+      "kubernetes.io/ingress.class"                       = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"          = "devfile-registry-default.*",
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
     }
-    name      = module.devfile-registry.service.metadata[0].name
-//    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    name = module.devfile-registry.service.metadata[0].name
+    //    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
@@ -175,15 +175,15 @@ resource "k8s_extensions_v1beta1_ingress" "devfile-registry" {
 resource "k8s_extensions_v1beta1_ingress" "plugin-registry" {
   metadata {
     annotations = {
-//      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "plugin-registry-default.*",
+      //      "kubernetes.io/ingress.class"              = module.ingress.ingress_class
+      "kubernetes.io/ingress.class"                       = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"          = "plugin-registry-default.*",
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
     }
-    name      = module.plugin-registry.service.metadata[0].name
-//    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    name = module.plugin-registry.service.metadata[0].name
+    //    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {

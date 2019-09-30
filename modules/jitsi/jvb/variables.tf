@@ -15,8 +15,8 @@ variable "ports" {
       port = 4443
     },
     {
-      name = "udp"
-      port = 10000
+      name     = "udp"
+      port     = 10000
       protocol = "UDP"
     },
   ]

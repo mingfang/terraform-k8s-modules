@@ -63,7 +63,7 @@ resource "k8s_apps_v1_deployment" "enterprise-gateway" {
             value = "['r_kubernetes','python_kubernetes','python_tf_kubernetes','python_tf_gpu_kubernetes','scala_kubernetes','spark_r_kubernetes','spark_python_kubernetes','spark_scala_kubernetes']"
           }
           env {
-            name = "EG_UID_BLACKLIST"
+            name  = "EG_UID_BLACKLIST"
             value = "-1"
           }
           image             = "elyra/enterprise-gateway:dev"

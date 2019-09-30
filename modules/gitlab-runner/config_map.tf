@@ -7,8 +7,8 @@ resource "k8s_core_v1_config_map" "this" {
   }
 
   metadata {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
-    labels = local.labels
+    labels    = local.labels
   }
 }

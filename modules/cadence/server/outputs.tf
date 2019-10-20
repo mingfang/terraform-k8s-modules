@@ -1,11 +1,15 @@
 output "name" {
-  value = module.deployment-service.name
+  value = module.statefulset-service.name
+}
+
+output "ports" {
+  value = var.ports
 }
 
 output "service" {
-  value = module.deployment-service.service
+  value = module.statefulset-service.service
 }
 
-output "deployment" {
-  value = module.deployment-service.deployment
+output "statefulset" {
+  value = module.statefulset-service.statefulset
 }

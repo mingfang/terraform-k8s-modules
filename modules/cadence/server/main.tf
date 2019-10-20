@@ -42,7 +42,9 @@ locals {
           },
         ]
 
-/*
+        /*
+        Auto register domain
+        */
         lifecycle = {
           post_start = {
             exec = {
@@ -50,17 +52,20 @@ locals {
                 "bash",
                 "-cx",
                 <<-EOF
-                until cadence --domain $CADENCE_CLI_DOMAIN domain describe || cadence --domain $CADENCE_CLI_DOMAIN domain register; do
-                  sleep 3
+                until cadence --domain $CADENCE_CLI_DOMAIN domain describe || (cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError && cadence --domain $CADENCE_CLI_DOMAIN domain register); do
+                  sleep 10
                 done
                 EOF
               ]
             }
           }
         }
-*/
 
-/*
+        /*
+        EntityNotExistsError means that the cluster is able to talk to DB and verify that the domain is not registered.
+        Which means that the cluster is OK.
+        */
+
         liveness_probe = {
           initial_delay_seconds = 300
           period_seconds        = 60
@@ -70,14 +75,12 @@ locals {
               "bash",
               "-cx",
               <<-EOF
-              cadence --domain $CADENCE_CLI_DOMAIN domain describe
+              cadence --domain $CADENCE_CLI_DOMAIN domain describe || cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError
               EOF
             ]
           }
         }
-*/
 
-/*
         readiness_probe = {
           initial_delay_seconds = 10
 
@@ -86,20 +89,18 @@ locals {
               "bash",
               "-cx",
               <<-EOF
-              cadence --domain $CADENCE_CLI_DOMAIN domain describe
+              cadence --domain $CADENCE_CLI_DOMAIN domain describe || cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError
               EOF
             ]
           }
         }
-*/
 
       }
     ]
   }
 }
 
-
-module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
+module "statefulset-service" {
+  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

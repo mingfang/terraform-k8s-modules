@@ -11,8 +11,20 @@ variable "replicas" {
 variable "ports" {
   default = [
     {
-      name : "tcp"
+      name : "frontend"
       port : 7933
+    },
+    {
+      name : "history"
+      port : 7934
+    },
+    {
+      name : "matching"
+      port : 7935
+    },
+    {
+      name : "worker"
+      port : 7939
     },
   ]
 }
@@ -34,3 +46,12 @@ variable "BIND_ON_IP" {
 variable "CADENCE_CLI_DOMAIN" {
   default = "default"
 }
+
+variable "LOG_LEVEL" {
+  default = "info"
+}
+
+variable "NUM_HISTORY_SHARDS" {
+  default = 512
+}
+

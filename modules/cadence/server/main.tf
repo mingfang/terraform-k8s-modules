@@ -29,8 +29,22 @@ locals {
             }
           },
           {
+            name = "RINGPOP_SEEDS"
+            value = join(",", [
+              "${var.name}-0.${var.name}.${var.namespace}:7933",
+              ])
+          },
+          {
+            name = "RINGPOP_BOOTSTRAP_MODE"
+            value = "dns"
+          },
+          {
             name = "CASSANDRA_SEEDS"
             value = var.CASSANDRA_SEEDS
+          },
+          {
+            name = "CASSANDRA_CONSISTENCY"
+            value = "Quorum"
           },
           {
             name = "BIND_ON_IP"
@@ -39,6 +53,14 @@ locals {
           {
             name = "CADENCE_CLI_DOMAIN"
             value = var.CADENCE_CLI_DOMAIN
+          },
+          {
+            name = "LOG_LEVEL"
+            value = var.LOG_LEVEL
+          },
+          {
+            name = "NUM_HISTORY_SHARDS"
+            value = var.NUM_HISTORY_SHARDS
           },
         ]
 
@@ -95,8 +117,26 @@ locals {
           }
         }
 
+        volume_mounts = [
+          {
+            name       = "config"
+            mount_path = "/etc/cadence/config/config_template.yaml"
+            sub_path   = "config_template.yaml"
+          },
+        ]
+
       }
     ]
+
+    volumes = [
+      {
+        config_map = {
+          name = var.name
+        }
+        name = "config"
+      },
+    ]
+
   }
 }
 

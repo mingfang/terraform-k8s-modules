@@ -31,7 +31,7 @@ locals {
           {
             name = "RINGPOP_SEEDS"
             value = join(",", [
-              "${var.name}-0.${var.name}.${var.namespace}:7933",
+              "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7933",
               ])
           },
           {

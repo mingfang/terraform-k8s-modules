@@ -39,10 +39,7 @@ variable "overrides" {
 
 variable "CASSANDRA_SEEDS" {}
 
-variable "BIND_ON_IP" {
-  default = "0.0.0.0"
-}
-
+// This domain will be auto registered
 variable "CADENCE_CLI_DOMAIN" {
   default = "default"
 }

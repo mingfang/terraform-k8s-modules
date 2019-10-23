@@ -29,9 +29,21 @@ locals {
             }
           },
           {
+            name = "POD_IP"
+
+            value_from = {
+              field_ref = {
+                field_path = "status.podIP"
+              }
+            }
+          },
+          {
             name = "RINGPOP_SEEDS"
             value = join(",", [
               "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7933",
+              "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7934",
+              "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7935",
+              "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7939",
               ])
           },
           {
@@ -48,7 +60,11 @@ locals {
           },
           {
             name = "BIND_ON_IP"
-            value = var.BIND_ON_IP
+            value = "$(POD_IP)"
+          },
+          {
+            name = "CADENCE_CLI_ADDRESS"
+            value = "$(POD_IP):7933"
           },
           {
             name = "CADENCE_CLI_DOMAIN"
@@ -75,7 +91,7 @@ locals {
                 "-cx",
                 <<-EOF
                 until cadence --domain $CADENCE_CLI_DOMAIN domain describe || (cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError && cadence --domain $CADENCE_CLI_DOMAIN domain register); do
-                  sleep 10
+                  sleep 3
                 done
                 EOF
               ]
@@ -104,7 +120,7 @@ locals {
         }
 
         readiness_probe = {
-          initial_delay_seconds = 10
+          initial_delay_seconds = 5
 
           exec = {
             command = [

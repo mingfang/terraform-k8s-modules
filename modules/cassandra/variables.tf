@@ -34,7 +34,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "cassandra:3.11.4"
+  default = "cassandra:3.11.5"
 }
 
 variable "env" {

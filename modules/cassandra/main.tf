@@ -6,16 +6,9 @@
  */
 
 locals {
-  labels = {
-    app     = var.name
-    name    = var.name
-    service = var.name
-  }
-
   parameters = {
     name                 = var.name
     namespace            = var.namespace
-    labels               = local.labels
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false

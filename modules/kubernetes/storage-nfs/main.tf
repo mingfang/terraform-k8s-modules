@@ -14,6 +14,7 @@ resource "k8s_core_v1_persistent_volume" "this" {
   }
 
   spec {
+    storage_class_name               = var.name
     persistent_volume_reclaim_policy = "Retain"
     access_modes                     = ["ReadWriteOnce"]
 
@@ -40,6 +41,7 @@ resource "k8s_core_v1_persistent_volume_claim" "this" {
   }
 
   spec {
+    storage_class_name = element(k8s_core_v1_persistent_volume.this.*.spec.0.storage_class_name, count.index)
     volume_name  = element(k8s_core_v1_persistent_volume.this.*.metadata.0.name, count.index)
     access_modes = ["ReadWriteOnce"]
 

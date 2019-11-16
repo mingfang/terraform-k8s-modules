@@ -8,8 +8,7 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
-  type = list
+variable "ports" {
   default = [
     {
       name = "http"
@@ -18,33 +17,31 @@ variable ports {
   ]
 }
 
-variable image {
-  default = "prom/prometheus"
+variable "image" {
+  default = "prom/prometheus:v2.14.0"
 }
 
 variable "env" {
-  type    = list
   default = []
 }
 
 variable "annotations" {
-  type    = map
-  default = null
+  default = {}
 }
 
-variable "node_selector" {
-  type    = map
-  default = null
+variable "overrides" {
+  default = {}
 }
 
 variable "storage" {}
 
-variable "storage_class_name" {}
+variable "storage_class" {}
 
 variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable "overrides" {
-  default = {}
+// path to config.yml, e.g. ${path.module}/prometheus.yml
+variable "config_file" {
+  default = ""
 }

@@ -16,12 +16,6 @@
 # default named port `https`. This works for single API server deployments as
 # well as HA API server deployments.
 scrape_configs:
-- job_name: 'prometheus'
-  metrics_path: /metrics
-
-  static_configs:
-  - targets: ['localhost:9090']
-
 - job_name: 'kubernetes-apiservers'
 
   kubernetes_sd_configs:
@@ -146,9 +140,9 @@ scrape_configs:
   relabel_configs:
   # Example relabel to scrape only endpoints that have
   # "example.io/should_be_scraped = true" annotation.
-  #  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_scraped]
-  #    action: keep
-  #    regex: true
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
   #
   # Example relabel to customize metric path based on endpoints
   # "example.io/metric_path = <metric path>" annotation.
@@ -195,9 +189,9 @@ scrape_configs:
 
   relabel_configs:
   # Example relabel to probe only some services that have "example.io/should_be_probed = true" annotation
-  #  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_probed]
-  #    action: keep
-  #    regex: true
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
   - source_labels: [__address__]
     target_label: __param_target
   - target_label: __address__
@@ -257,9 +251,9 @@ scrape_configs:
   relabel_configs:
   # Example relabel to scrape only pods that have
   # "example.io/should_be_scraped = true" annotation.
-  #  - source_labels: [__meta_kubernetes_pod_annotation_example_io_should_be_scraped]
-  #    action: keep
-  #    regex: true
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
   #
   # Example relabel to customize metric path based on pod
   # "example.io/metric_path = <metric path>" annotation.
@@ -285,3 +279,10 @@ scrape_configs:
   - source_labels: [__meta_kubernetes_pod_name]
     action: replace
     target_label: kubernetes_pod_name
+
+# Alertmanager
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093

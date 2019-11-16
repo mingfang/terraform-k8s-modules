@@ -17,7 +17,7 @@ locals {
     annotations = merge(
       var.annotations,
       { "prometheus.io/path" = "/metrics" },
-      { "prometheus.io/port" = "9402" },
+      { "prometheus.io/port" = "9102" },
       { "prometheus.io/scrape" = "true" },
     )
 

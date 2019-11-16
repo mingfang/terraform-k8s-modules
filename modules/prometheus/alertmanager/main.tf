@@ -14,7 +14,7 @@ locals {
     enable_service_links = false
 
     // restart on config change
-    annotations = merge(var.annotations, {checksum = md5(data.template_file.config.rendered)})
+    annotations = merge(var.annotations, { checksum = md5(data.template_file.config.rendered) })
 
     containers = [
       {
@@ -52,7 +52,7 @@ locals {
           {
             name       = "config"
             mount_path = "/etc/alertmanager/config.yml"
-            sub_path = "config.yml"
+            sub_path   = "config.yml"
           },
         ]
       }

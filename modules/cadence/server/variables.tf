@@ -11,26 +11,34 @@ variable "replicas" {
 variable "ports" {
   default = [
     {
-      name : "frontend"
-      port : 7933
+      name = "frontend"
+      port = 7933
     },
     {
-      name : "history"
-      port : 7934
+      name = "history"
+      port = 7934
     },
     {
-      name : "matching"
-      port : 7935
+      name = "matching"
+      port = 7935
     },
     {
-      name : "worker"
-      port : 7939
+      name = "worker"
+      port = 7939
     },
   ]
 }
 
 variable "image" {
   default = "ubercadence/server:0.9.5-auto-setup"
+}
+
+variable "env" {
+  default = []
+}
+
+variable "annotations" {
+  default = {}
 }
 
 variable "overrides" {
@@ -52,3 +60,6 @@ variable "NUM_HISTORY_SHARDS" {
   default = 512
 }
 
+variable "config_file" {
+  default = ""
+}

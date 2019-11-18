@@ -1,4 +1,4 @@
-resource "k8s_apps_v1beta2_daemon_set" "csi-nodeplugin" {
+resource "k8s_apps_v1_daemon_set" "csi-nodeplugin" {
   metadata {
     name      = var.name
     namespace = var.namespace

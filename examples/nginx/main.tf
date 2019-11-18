@@ -14,7 +14,7 @@ module "nginx" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_extensions_v1beta1_ingress" "duckling" {
+resource "k8s_extensions_v1beta1_ingress" "nginx" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"

@@ -11,14 +11,14 @@ variable "replicas" {
 variable "ports" {
   default = [
     {
-      name : "http"
-      port : 80
+      name = "http"
+      port = 80
     },
   ]
 }
 
 variable "image" {
-  default = "nginx"
+  default = "nginx:1.17.5"
 }
 
 variable "overrides" {

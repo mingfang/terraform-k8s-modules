@@ -8,12 +8,10 @@ variable "replicas" {}
 variable "storage" {}
 
 variable "annotations" {
-  type    = "map"
   default = {}
 }
 
 variable "mount_options" {
-  type    = "list"
   default = []
 }
 

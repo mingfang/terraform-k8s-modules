@@ -13,7 +13,6 @@ locals {
     ports                = var.ports
     enable_service_links = false
 
-    // restart on config change
     annotations = merge(
       var.annotations,
       { "prometheus.io/path" = "/metrics" },
@@ -52,6 +51,6 @@ locals {
 }
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
+  source     = "../../../archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

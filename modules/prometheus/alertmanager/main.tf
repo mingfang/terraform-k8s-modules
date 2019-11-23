@@ -74,6 +74,6 @@ data "template_file" "config" {
 }
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
+  source     = "../../../archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

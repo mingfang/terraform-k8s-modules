@@ -82,6 +82,18 @@ locals {
               name  = "NUM_HISTORY_SHARDS"
               value = var.NUM_HISTORY_SHARDS
             },
+            {
+              name  = "STATSD_ENDPOINT"
+              value = var.STATSD_ENDPOINT
+            },
+            {
+              name  = "SERVICES"
+              value = var.SERVICES
+            },
+            {
+              name  = "SKIP_SCHEMA_SETUP"
+              value = var.SKIP_SCHEMA_SETUP
+            }
           ],
           var.env
         )
@@ -89,13 +101,14 @@ locals {
         /*
         Auto register domain
         */
-        lifecycle = {
+        lifecycle = var.SKIP_SCHEMA_SETUP ? null : {
           post_start = {
             exec = {
               command = [
                 "bash",
                 "-cx",
                 <<-EOF
+                export CADENCE_CLI_ADDRESS="$POD_IP:7933"
                 until cadence --domain $CADENCE_CLI_DOMAIN domain describe || (cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError && cadence --domain $CADENCE_CLI_DOMAIN domain register); do
                   sleep 3
                 done
@@ -110,7 +123,7 @@ locals {
         Which means that the cluster is OK.
         */
 
-        liveness_probe = {
+        liveness_probe = var.SKIP_SCHEMA_SETUP ? null : {
           initial_delay_seconds = 300
           period_seconds        = 60
 
@@ -119,13 +132,14 @@ locals {
               "bash",
               "-cx",
               <<-EOF
+              export CADENCE_CLI_ADDRESS="$POD_IP:7933"
               cadence --domain $CADENCE_CLI_DOMAIN domain describe || cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError
               EOF
             ]
           }
         }
 
-        readiness_probe = {
+        readiness_probe = var.SKIP_SCHEMA_SETUP ? null : {
           initial_delay_seconds = 5
 
           exec = {
@@ -133,6 +147,7 @@ locals {
               "bash",
               "-cx",
               <<-EOF
+              export CADENCE_CLI_ADDRESS="$POD_IP:7933"
               cadence --domain $CADENCE_CLI_DOMAIN domain describe || cadence --domain $CADENCE_CLI_DOMAIN domain describe|grep EntityNotExistsError
               EOF
             ]
@@ -167,6 +182,6 @@ data "template_file" "config" {
 }
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  source     = "../../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

@@ -52,12 +52,28 @@ variable "CADENCE_CLI_DOMAIN" {
   default = "default"
 }
 
+variable "CADENCE_CLI_SHOW_STACKS" {
+  default = "1"
+}
+
 variable "LOG_LEVEL" {
   default = "info"
 }
 
 variable "NUM_HISTORY_SHARDS" {
   default = 512
+}
+
+variable "SKIP_SCHEMA_SETUP" {
+  default = false
+}
+
+variable "SERVICES" {
+  default = "history,matching,frontend,worker"
+}
+
+variable "STATSD_ENDPOINT" {
+  default = ""
 }
 
 variable "config_file" {

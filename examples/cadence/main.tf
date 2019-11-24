@@ -39,15 +39,12 @@ module "cassandra" {
 }
 
 locals {
-  ringpop_seeds = {
-    name = "RINGPOP_SEEDS"
-    value = join(",", [
-      "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933",
-      "${var.name}-history-0.${var.name}-history.${var.namespace}.svc.cluster.local:7934",
-      "${var.name}-matching-0.${var.name}-matching.${var.namespace}.svc.cluster.local:7935",
-      "${var.name}-worker-0.${var.name}-worker.${var.namespace}.svc.cluster.local:7939",
-    ])
-  }
+  ringpop_seeds = join(",", [
+    "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933",
+    "${var.name}-history-0.${var.name}-history.${var.namespace}.svc.cluster.local:7934",
+    "${var.name}-matching-0.${var.name}-matching.${var.namespace}.svc.cluster.local:7935",
+    "${var.name}-worker-0.${var.name}-worker.${var.namespace}.svc.cluster.local:7939",
+  ])
 }
 
 module "cadence-frontend" {
@@ -55,10 +52,10 @@ module "cadence-frontend" {
   name      = "${var.name}-frontend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = var.replicas
-  env       = [local.ringpop_seeds]
 
   CASSANDRA_SEEDS   = module.cassandra.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
+  RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "frontend"
   SKIP_SCHEMA_SETUP = false
 }
@@ -68,10 +65,10 @@ module "cadence-matching" {
   name      = "${var.name}-matching"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = var.replicas
-  env       = [local.ringpop_seeds]
 
   CASSANDRA_SEEDS   = module.cassandra.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
+  RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "matching"
   SKIP_SCHEMA_SETUP = true
 }
@@ -81,10 +78,10 @@ module "cadence-history" {
   name      = "${var.name}-history"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = var.replicas
-  env       = [local.ringpop_seeds]
 
   CASSANDRA_SEEDS   = module.cassandra.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
+  RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "history"
   SKIP_SCHEMA_SETUP = true
 }
@@ -94,10 +91,10 @@ module "cadence-worker" {
   name      = "${var.name}-worker"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = var.replicas
-  env       = [local.ringpop_seeds]
 
   CASSANDRA_SEEDS   = module.cassandra.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
+  RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "worker"
   SKIP_SCHEMA_SETUP = true
 }

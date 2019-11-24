@@ -21,82 +21,82 @@ locals {
         name  = "server"
         image = var.image
 
-        env = concat(
-          [
-            {
-              name = "POD_NAME"
+        env = concat([
+          {
+            name = "POD_NAME"
 
-              value_from = {
-                field_ref = {
-                  field_path = "metadata.name"
-                }
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
               }
-            },
-            {
-              name = "POD_IP"
+            }
+          },
+          {
+            name = "POD_IP"
 
-              value_from = {
-                field_ref = {
-                  field_path = "status.podIP"
-                }
+            value_from = {
+              field_ref = {
+                field_path = "status.podIP"
               }
-            },
-            {
-              name = "RINGPOP_SEEDS"
-              value = join(",", [
+            }
+          },
+          {
+            name = "RINGPOP_SEEDS"
+            value = coalesce(
+              var.RINGPOP_SEEDS,
+              join(",", [
                 "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7933",
                 "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7934",
                 "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7935",
                 "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:7939",
               ])
-            },
-            {
-              name  = "RINGPOP_BOOTSTRAP_MODE"
-              value = "dns"
-            },
-            {
-              name  = "CASSANDRA_SEEDS"
-              value = var.CASSANDRA_SEEDS
-            },
-            {
-              name  = "CASSANDRA_CONSISTENCY"
-              value = "Quorum"
-            },
-            {
-              name  = "BIND_ON_IP"
-              value = "$(POD_IP)"
-            },
-            {
-              name  = "CADENCE_CLI_ADDRESS"
-              value = "$(POD_IP):7933"
-            },
-            {
-              name  = "CADENCE_CLI_DOMAIN"
-              value = var.CADENCE_CLI_DOMAIN
-            },
-            {
-              name  = "LOG_LEVEL"
-              value = var.LOG_LEVEL
-            },
-            {
-              name  = "NUM_HISTORY_SHARDS"
-              value = var.NUM_HISTORY_SHARDS
-            },
-            {
-              name  = "STATSD_ENDPOINT"
-              value = var.STATSD_ENDPOINT
-            },
-            {
-              name  = "SERVICES"
-              value = var.SERVICES
-            },
-            {
-              name  = "SKIP_SCHEMA_SETUP"
-              value = var.SKIP_SCHEMA_SETUP
-            }
-          ],
-          var.env
-        )
+            )
+          },
+          {
+            name  = "RINGPOP_BOOTSTRAP_MODE"
+            value = "dns"
+          },
+          {
+            name  = "CASSANDRA_SEEDS"
+            value = var.CASSANDRA_SEEDS
+          },
+          {
+            name  = "CASSANDRA_CONSISTENCY"
+            value = "Quorum"
+          },
+          {
+            name  = "BIND_ON_IP"
+            value = "$(POD_IP)"
+          },
+          {
+            name  = "CADENCE_CLI_ADDRESS"
+            value = "$(POD_IP):7933"
+          },
+          {
+            name  = "CADENCE_CLI_DOMAIN"
+            value = var.CADENCE_CLI_DOMAIN
+          },
+          {
+            name  = "LOG_LEVEL"
+            value = var.LOG_LEVEL
+          },
+          {
+            name  = "NUM_HISTORY_SHARDS"
+            value = var.NUM_HISTORY_SHARDS
+          },
+          {
+            name  = "STATSD_ENDPOINT"
+            value = var.STATSD_ENDPOINT
+          },
+          {
+            name  = "SERVICES"
+            value = var.SERVICES
+          },
+          {
+            name  = "SKIP_SCHEMA_SETUP"
+            value = var.SKIP_SCHEMA_SETUP
+          },
+        ], var.env)
 
         /*
         Auto register domain

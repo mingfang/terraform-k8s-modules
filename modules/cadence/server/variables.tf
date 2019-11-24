@@ -64,12 +64,16 @@ variable "NUM_HISTORY_SHARDS" {
   default = 512
 }
 
-variable "SKIP_SCHEMA_SETUP" {
-  default = false
+variable "RINGPOP_SEEDS" {
+  default = ""
 }
 
 variable "SERVICES" {
   default = "history,matching,frontend,worker"
+}
+
+variable "SKIP_SCHEMA_SETUP" {
+  default = false
 }
 
 variable "STATSD_ENDPOINT" {

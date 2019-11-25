@@ -1,10 +1,12 @@
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
-    annotations = var.annotations
-    replicas    = var.replicas
-    ports       = var.ports
+    name                 = var.name
+    namespace            = var.namespace
+    annotations          = var.annotations
+    replicas             = var.replicas
+    ports                = var.ports
+    enable_service_links = false
+
     containers = [
       {
         name  = "kafka"
@@ -80,6 +82,6 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

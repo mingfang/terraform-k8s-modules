@@ -9,7 +9,6 @@ variable "replicas" {
 }
 
 variable ports {
-  type = list
   default = [
     {
       name = "tcp"
@@ -23,17 +22,14 @@ variable image {
 }
 
 variable "env" {
-  type    = list
   default = []
 }
 
 variable "annotations" {
-  type    = map
   default = {}
 }
 
 variable "node_selector" {
-  type    = map
   default = {}
 }
 

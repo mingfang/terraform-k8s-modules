@@ -19,24 +19,21 @@ schema_config:
   configs:
   - from: 2018-04-15
     store: cassandra
-    object_store: filesystem
+    object_store: cassandra
     schema: v9
     index:
-      prefix: cassandra_table
+      prefix: index_
       period: 168h
-
+    chunks:
+      prefix: chunks_
+      period: 168h
 storage_config:
   cassandra:
     username: cassandra
     password: cassandra
     addresses: ${cassandra}
     auth: false
-    keyspace: lokiindex
-    timeout: 10s
-    connect_timeout: 10s
-
-  filesystem:
-    directory: /tmp/loki/chunks
+    keyspace: loki
 
 limits_config:
   enforce_metric_name: false
@@ -57,5 +54,5 @@ table_manager:
     inactive_write_throughput: 0
     provisioned_read_throughput: 0
     provisioned_write_throughput: 0
-  retention_deletes_enabled: false
-  retention_period: 0
+  retention_deletes_enabled: true
+  retention_period: 336h

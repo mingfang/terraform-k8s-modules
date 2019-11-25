@@ -6,16 +6,10 @@
  */
 
 locals {
-  labels = {
-    app     = var.name
-    name    = var.name
-    service = var.name
-  }
-
   parameters = {
     name                 = var.name
     namespace            = var.namespace
-    labels               = local.labels
+    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
@@ -24,6 +18,7 @@ locals {
       {
         name  = "zookeeper"
         image = var.image
+
         env = concat([
           {
             name = "POD_NAME"
@@ -40,7 +35,7 @@ locals {
           },
           {
             name  = "ZOO_SERVERS"
-            value = "${join(" ", data.template_file.zoo-servers.*.rendered)}"
+            value = join(" ", data.template_file.zoo-servers.*.rendered)
           },
           {
             name  = "ZOO_STANDALONE_ENABLED"
@@ -54,9 +49,11 @@ locals {
 
         command = [
           "bash",
-          "-cex",
+          "-cx",
           <<-EOF
-          export ZOO_SERVERS=$(echo $ZOO_SERVERS|sed "s|$POD_NAME.${var.name}.${var.namespace}|0.0.0.0|")
+          mkdir -p $ZOO_DATA_DIR
+          echo "$(expr $${HOSTNAME//[^0-9]/} + 1)" > $ZOO_DATA_DIR/myid
+          export ZOO_SERVERS=$(echo $ZOO_SERVERS|sed "s|$POD_NAME.${var.name}.${var.namespace}.svc.cluster.local|0.0.0.0|")
           /docker-entrypoint.sh zkServer.sh start-foreground
           EOF
         ]
@@ -85,44 +82,7 @@ locals {
             name       = var.volume_claim_template_name
             mount_path = "/data"
             sub_path   = var.name
-          }
-        ]
-      },
-    ]
-
-    init_containers = [
-      {
-        name  = "set-myid"
-        image = var.image
-
-        env = [
-          {
-            name = "POD_NAME"
-
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
-              }
-            }
           },
-          {
-            name  = "ZOO_DATA_DIR"
-            value = "/data/$(POD_NAME)"
-          },
-        ]
-
-        command = [
-          "bash",
-          "-cex",
-          "mkdir -p $ZOO_DATA_DIR; echo \"$(expr $${HOSTNAME//[^0-9]/} + 1)\" > $ZOO_DATA_DIR/myid",
-        ]
-
-        volume_mounts = [
-          {
-            name       = var.volume_claim_template_name
-            mount_path = "/data"
-            sub_path   = var.name
-          }
         ]
       },
     ]
@@ -149,11 +109,11 @@ locals {
 }
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }
 
 data "template_file" "zoo-servers" {
   count    = var.replicas
-  template = "server.${count.index + 1}=${var.name}-${count.index}.${var.name}.${var.namespace}:2888:3888;2181"
+  template = "server.${count.index + 1}=${var.name}-${count.index}.${var.name}.${var.namespace}.svc.cluster.local:2888:3888;2181"
 }

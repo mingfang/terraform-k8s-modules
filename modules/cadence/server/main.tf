@@ -161,8 +161,7 @@ locals {
             sub_path   = "config_template.yaml"
           },
         ]
-
-      }
+      },
     ]
 
     volumes = [
@@ -175,10 +174,6 @@ locals {
     ]
 
   }
-}
-
-data "template_file" "config" {
-  template = file(coalesce(var.config_file, "${path.module}/config.yml"))
 }
 
 module "statefulset-service" {

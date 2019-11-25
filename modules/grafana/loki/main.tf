@@ -14,7 +14,7 @@ locals {
     enable_service_links = false
 
     // restart on config change
-    annotations = merge(var.annotations, { "configmap-uid" = k8s_core_v1_config_map.this.metadata[0].uid })
+    annotations = merge(var.annotations, { checksum = md5(data.template_file.config.rendered) })
 
     containers = [
       {

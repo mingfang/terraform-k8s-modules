@@ -47,6 +47,14 @@ variable "overrides" {
 
 variable "CASSANDRA_SEEDS" {}
 
+variable "ES_SEEDS" {
+  default = ""
+}
+
+variable "KAFKA_SEEDS" {
+  default = ""
+}
+
 // This domain will be auto registered
 variable "CADENCE_CLI_DOMAIN" {
   default = "default"

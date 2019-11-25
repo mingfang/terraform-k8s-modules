@@ -38,6 +38,83 @@ module "cassandra" {
   storage_class = module.cassandra-storage.storage_class_name
 }
 
+module "elasticsearch_storage" {
+  source    = "../../modules/kubernetes/storage-nfs"
+  name      = "elasticsearch"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 3
+  storage   = "1Gi"
+
+  annotations = {
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
+  }
+
+  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
+  mount_options = module.nfs-server.mount_options
+}
+
+module "elasticsearch" {
+  source    = "../../modules/elasticsearch"
+  name      = "elasticsearch"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = module.elasticsearch_storage.replicas
+
+  storage_class = module.elasticsearch_storage.storage_class_name
+  storage       = module.elasticsearch_storage.storage
+}
+
+module "zookeeper_storage" {
+  source    = "../../modules/kubernetes/storage-nfs"
+  name      = "zookeeper"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 3
+  storage   = "1Gi"
+
+  annotations = {
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
+  }
+
+  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
+  mount_options = module.nfs-server.mount_options
+}
+
+module "zookeeper" {
+  source    = "../../modules/zookeeper"
+  name      = "zookeeper"
+  namespace = var.namespace
+
+  storage_class = module.zookeeper_storage.storage_class_name
+  storage       = module.zookeeper_storage.storage
+  replicas      = module.zookeeper_storage.replicas
+}
+
+module "kafka_storage" {
+  source    = "../../modules/kubernetes/storage-nfs"
+  name      = "kafka"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = var.replicas
+  storage   = "1Gi"
+
+  annotations = {
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
+  }
+
+  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
+  mount_options = module.nfs-server.mount_options
+}
+
+module "kafka" {
+  source    = "../../modules/kafka"
+  name      = "kafka"
+  namespace = var.namespace
+
+  storage_class_name      = module.kafka_storage.storage_class_name
+  storage                 = module.kafka_storage.storage
+  replicas                = module.kafka_storage.replicas
+  kafka_zookeeper_connect = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
+}
+
+
 locals {
   ringpop_seeds = join(",", [
     "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933",
@@ -54,6 +131,8 @@ module "cadence-frontend" {
   replicas  = var.replicas
 
   CASSANDRA_SEEDS   = module.cassandra.name
+  ES_SEEDS          = module.elasticsearch.name
+  KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "frontend"
@@ -67,6 +146,8 @@ module "cadence-matching" {
   replicas  = var.replicas
 
   CASSANDRA_SEEDS   = module.cassandra.name
+  ES_SEEDS          = module.elasticsearch.name
+  KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "matching"
@@ -80,6 +161,8 @@ module "cadence-history" {
   replicas  = var.replicas
 
   CASSANDRA_SEEDS   = module.cassandra.name
+  ES_SEEDS          = module.elasticsearch.name
+  KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "history"
@@ -93,6 +176,8 @@ module "cadence-worker" {
   replicas  = var.replicas
 
   CASSANDRA_SEEDS   = module.cassandra.name
+  ES_SEEDS          = module.elasticsearch.name
+  KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "worker"

@@ -61,6 +61,18 @@ locals {
             value = var.CASSANDRA_SEEDS
           },
           {
+            name  = "KAFKA_SEEDS"
+            value = var.KAFKA_SEEDS
+          },
+          {
+            name  = "ES_SEEDS"
+            value = var.ES_SEEDS
+          },
+          {
+            name  = "ENABLE_ES"
+            value = length(var.ES_SEEDS) > 0 ? "true" : "false"
+          },
+          {
             name  = "CASSANDRA_CONSISTENCY"
             value = "Quorum"
           },

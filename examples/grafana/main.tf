@@ -40,7 +40,7 @@ module "cassandra" {
 
 module "loki" {
   source    = "../../modules/grafana/loki"
-  name      = var.name
+  name      = "loki"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = var.replicas
   cassandra = module.cassandra.name

@@ -1,9 +1,9 @@
 variable "name" {
-  default = "loki"
+  default = "grafana"
 }
 
 variable "namespace" {
-  default = "loki-example"
+  default = "grafana-example"
 }
 
 variable "replicas" {

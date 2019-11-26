@@ -5,11 +5,10 @@ variable "namespace" {
 }
 
 variable "replicas" {
-  default = 1
+  default = 3
 }
 
-variable ports {
-  type = list
+variable "ports" {
   default = [
     {
       name = "http"
@@ -19,17 +18,19 @@ variable ports {
 }
 
 variable image {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:6.5.1"
+  default = "docker.elastic.co/elasticsearch/elasticsearch:6.8.0"
 }
 
 variable "env" {
-  type    = list
   default = []
 }
 
 variable "annotations" {
-  type    = map
-  default = null
+  default = {}
+}
+
+variable "overrides" {
+  default = {}
 }
 
 variable "node_selector" {
@@ -39,14 +40,10 @@ variable "node_selector" {
 
 variable "storage" {}
 
-variable "storage_class_name" {}
+variable "storage_class" {}
 
 variable "volume_claim_template_name" {
   default = "pvc"
-}
-
-variable "overrides" {
-  default = {}
 }
 
 variable "heap_size" {

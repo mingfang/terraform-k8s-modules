@@ -74,7 +74,7 @@ locals {
           },
           {
             name  = "CASSANDRA_CONSISTENCY"
-            value = "Quorum"
+            value = var.CASSANDRA_CONSISTENCY
           },
           {
             name  = "BIND_ON_IP"

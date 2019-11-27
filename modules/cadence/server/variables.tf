@@ -64,6 +64,10 @@ variable "CADENCE_CLI_SHOW_STACKS" {
   default = "1"
 }
 
+variable "CASSANDRA_CONSISTENCY" {
+  default = "One"
+}
+
 variable "LOG_LEVEL" {
   default = "info"
 }

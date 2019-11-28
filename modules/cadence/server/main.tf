@@ -89,6 +89,14 @@ locals {
             value = var.CADENCE_CLI_DOMAIN
           },
           {
+            name  = "CADENCE_CLI_SHOW_STACKS"
+            value = var.CADENCE_CLI_SHOW_STACKS
+          },
+          {
+            name  = "FRONTEND"
+            value = var.FRONTEND
+          },
+          {
             name  = "LOG_LEVEL"
             value = var.LOG_LEVEL
           },

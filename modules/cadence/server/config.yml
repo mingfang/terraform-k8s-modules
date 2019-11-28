@@ -151,7 +151,7 @@ clusterMetadata:
             enabled: true
             initialFailoverVersion: 0
             rpcName: "cadence-frontend"
-            rpcAddress: "127.0.0.1:7933"
+            rpcAddress: {{ default .Env.FRONTEND "127.0.0.1" }}:7933
 
 dcRedirectionPolicy:
     policy: "noop"
@@ -195,7 +195,7 @@ kafka:
             dlq-topic: cadence-visibility-dev-dlq
 
 publicClient:
-    hostPort: {{ default .Env.BIND_ON_IP "127.0.0.1" }}:7933
+    hostPort: {{ default .Env.FRONTEND "127.0.0.1" }}:7933
 
 dynamicConfigClient:
     filepath: {{ default .Env.DYNAMIC_CONFIG_FILE_PATH "/etc/cadence/config/dynamicconfig" }}

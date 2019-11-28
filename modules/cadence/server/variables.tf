@@ -68,6 +68,10 @@ variable "CASSANDRA_CONSISTENCY" {
   default = "One"
 }
 
+variable "FRONTEND" {
+  default = "127.0.0.1"
+}
+
 variable "LOG_LEVEL" {
   default = "info"
 }

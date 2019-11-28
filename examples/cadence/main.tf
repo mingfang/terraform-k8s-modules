@@ -1,9 +1,5 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
-    labels = {
-      "istio-injection" = "disabled"
-    }
-
     name = var.namespace
   }
 }
@@ -58,10 +54,37 @@ module "elasticsearch" {
   name      = "elasticsearch"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = module.elasticsearch_storage.replicas
+  image = "docker.elastic.co/elasticsearch/elasticsearch:6.5.1"
 
   storage_class = module.elasticsearch_storage.storage_class_name
   storage       = module.elasticsearch_storage.storage
 }
+
+resource "k8s_extensions_v1beta1_ingress" "elasticsearch" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "cadence-es.*"
+    }
+    name      = module.elasticsearch.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = module.elasticsearch.name
+      http {
+        paths {
+          backend {
+            service_name = module.elasticsearch.name
+            service_port = 9200
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
 
 module "zookeeper_storage" {
   source    = "../../modules/kubernetes/storage-nfs"
@@ -106,7 +129,7 @@ module "kafka_storage" {
 module "kafka" {
   source    = "../../modules/kafka"
   name      = "kafka"
-  namespace = var.namespace
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   storage_class_name      = module.kafka_storage.storage_class_name
   storage                 = module.kafka_storage.storage
@@ -152,6 +175,7 @@ module "cadence-matching" {
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "matching"
   SKIP_SCHEMA_SETUP = true
+  FRONTEND          = module.cadence-frontend.name
 }
 
 module "cadence-history" {
@@ -167,6 +191,7 @@ module "cadence-history" {
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "history"
   SKIP_SCHEMA_SETUP = true
+  FRONTEND          = module.cadence-frontend.name
 }
 
 module "cadence-worker" {
@@ -182,6 +207,7 @@ module "cadence-worker" {
   RINGPOP_SEEDS     = local.ringpop_seeds
   SERVICES          = "worker"
   SKIP_SCHEMA_SETUP = true
+  FRONTEND          = module.cadence-frontend.name
 }
 
 module "cadence-web" {

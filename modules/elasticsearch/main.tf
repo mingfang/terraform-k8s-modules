@@ -39,7 +39,7 @@ locals {
           },
           {
             name  = "discovery.zen.ping.unicast.hosts"
-            value = "${var.name}"
+            value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
           },
 //          {
 //            name  = "discovery.seed_hosts"

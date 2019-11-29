@@ -137,16 +137,6 @@ module "kafka" {
   kafka_zookeeper_connect = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
 }
 
-
-locals {
-  ringpop_seeds = join(",", [
-    "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933",
-    "${var.name}-history-0.${var.name}-history.${var.namespace}.svc.cluster.local:7934",
-    "${var.name}-matching-0.${var.name}-matching.${var.namespace}.svc.cluster.local:7935",
-    "${var.name}-worker-0.${var.name}-worker.${var.namespace}.svc.cluster.local:7939",
-  ])
-}
-
 module "cadence-frontend" {
   source    = "../../modules/cadence/server"
   name      = "${var.name}-frontend"
@@ -157,7 +147,7 @@ module "cadence-frontend" {
   ES_SEEDS          = module.elasticsearch.name
   KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
-  RINGPOP_SEEDS     = local.ringpop_seeds
+  RINGPOP_SEEDS     = "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933"
   SERVICES          = "frontend"
   SKIP_SCHEMA_SETUP = false
 }
@@ -172,7 +162,7 @@ module "cadence-matching" {
   ES_SEEDS          = module.elasticsearch.name
   KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
-  RINGPOP_SEEDS     = local.ringpop_seeds
+  RINGPOP_SEEDS     = "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933"
   SERVICES          = "matching"
   SKIP_SCHEMA_SETUP = true
   FRONTEND          = module.cadence-frontend.name
@@ -188,7 +178,7 @@ module "cadence-history" {
   ES_SEEDS          = module.elasticsearch.name
   KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
-  RINGPOP_SEEDS     = local.ringpop_seeds
+  RINGPOP_SEEDS     = "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933"
   SERVICES          = "history"
   SKIP_SCHEMA_SETUP = true
   FRONTEND          = module.cadence-frontend.name
@@ -204,7 +194,7 @@ module "cadence-worker" {
   ES_SEEDS          = module.elasticsearch.name
   KAFKA_SEEDS       = module.kafka.name
   STATSD_ENDPOINT   = "${module.statsd-exporter.name}:9125"
-  RINGPOP_SEEDS     = local.ringpop_seeds
+  RINGPOP_SEEDS     = "${var.name}-frontend-0.${var.name}-frontend.${var.namespace}.svc.cluster.local:7933"
   SERVICES          = "worker"
   SKIP_SCHEMA_SETUP = true
   FRONTEND          = module.cadence-frontend.name

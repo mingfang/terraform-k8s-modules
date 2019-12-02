@@ -1,10 +1,11 @@
-resource "k8s_core_v1_service" "che-host" {
+resource "k8s_core_v1_service" "che_host" {
   metadata {
     labels = {
       "app"       = "che"
       "component" = "che"
     }
     name = "che-host"
+    namespace = var.namespace
   }
   spec {
 

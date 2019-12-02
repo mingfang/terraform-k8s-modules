@@ -1,10 +1,11 @@
-resource "k8s_apps_v1_deployment" "plugin-registry" {
+resource "k8s_apps_v1_deployment" "plugin_registry" {
   metadata {
     labels = {
       "app"       = "che"
       "component" = "plugin-registry"
     }
     name = "plugin-registry"
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -31,7 +32,7 @@ resource "k8s_apps_v1_deployment" "plugin-registry" {
       spec {
 
         containers {
-          image             = "quay.io/eclipse/che-plugin-registry:7.1.0"
+          image             = "quay.io/eclipse/che-plugin-registry:7.5.0"
           image_pull_policy = "Always"
           liveness_probe {
             http_get {

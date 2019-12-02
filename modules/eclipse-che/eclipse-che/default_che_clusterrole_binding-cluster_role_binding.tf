@@ -1,6 +1,6 @@
-resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "default-che-clusterrole-binding" {
+resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "default_che_clusterrole_binding" {
   metadata {
-    name = "default-che-clusterrole-binding"
+    name = "${var.namespace}-default-che-clusterrole-binding"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
@@ -11,6 +11,6 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "default-c
   subjects {
     kind      = "ServiceAccount"
     name      = "che"
-    namespace = "default"
+    namespace = var.namespace
   }
 }

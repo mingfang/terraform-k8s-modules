@@ -1,10 +1,14 @@
-resource "k8s_extensions_v1beta1_deployment" "che" {
+resource "k8s_apps_v1_deployment" "che" {
   metadata {
+    annotations = {
+      "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.che.data), values(k8s_core_v1_config_map.che.data)))
+    }
     labels = {
       "app"       = "che"
       "component" = "che"
     }
     name = "che"
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -18,6 +22,9 @@ resource "k8s_extensions_v1beta1_deployment" "che" {
     }
     template {
       metadata {
+        annotations = {
+          "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.che.data), values(k8s_core_v1_config_map.che.data)))
+        }
         labels = {
           "app"       = "che"
           "component" = "che"
@@ -41,7 +48,7 @@ resource "k8s_extensions_v1beta1_deployment" "che" {
               name = "che"
             }
           }
-          image             = "eclipse/che-server:7.1.0"
+          image             = "eclipse/che-server:7.5.0"
           image_pull_policy = "Always"
           liveness_probe {
             http_get {
@@ -96,7 +103,7 @@ resource "k8s_extensions_v1beta1_deployment" "che" {
             name       = "che-data-volume"
           }
         }
-
+        enable_service_links = false
         init_containers {
           command = [
             "chmod",

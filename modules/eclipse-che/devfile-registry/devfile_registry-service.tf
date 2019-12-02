@@ -1,10 +1,11 @@
-resource "k8s_core_v1_service" "plugin-registry" {
+resource "k8s_core_v1_service" "devfile_registry" {
   metadata {
     labels = {
       "app"       = "che"
-      "component" = "plugin-registry"
+      "component" = "devfile-registry"
     }
-    name = "plugin-registry"
+    name = "devfile-registry"
+    namespace = var.namespace
   }
   spec {
 
@@ -15,7 +16,7 @@ resource "k8s_core_v1_service" "plugin-registry" {
     }
     selector = {
       "app"       = "che"
-      "component" = "plugin-registry"
+      "component" = "devfile-registry"
     }
   }
 }

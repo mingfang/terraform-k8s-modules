@@ -6,11 +6,11 @@
  */
 
 locals {
-  labels = {
+  labels = lookup(var.parameters, "labels", {
     app     = var.parameters.name
     name    = var.parameters.name
     service = var.parameters.name
-  }
+  })
 
   selector = {
     match_labels = local.labels

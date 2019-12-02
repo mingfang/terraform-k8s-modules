@@ -10,7 +10,7 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "default_c
 
   subjects {
     kind      = "ServiceAccount"
-    name      = "che"
+    name      = k8s_core_v1_service_account.che.metadata[0].name
     namespace = var.namespace
   }
 }

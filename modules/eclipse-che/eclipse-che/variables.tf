@@ -4,6 +4,39 @@ variable "namespace" {
   default = null
 }
 
+variable "image" {
+  default = "eclipse/che-server:7.5.0"
+}
+
+variable "replicas" {
+  default = 1
+}
+
+variable "env" {
+  default = []
+}
+
+variable "ports" {
+  default = [
+    {
+      name = "http"
+      port = 8080
+    },
+    {
+      name = "metrics"
+      port = 8087
+    },
+  ]
+}
+
+variable "annotations" {
+  default = {}
+}
+
+variable "overrides" {
+  default = {}
+}
+
 variable "ingress_class" {}
 
 variable CHE_INFRA_KUBERNETES_INGRESS_DOMAIN {}

@@ -1,11 +1,11 @@
 output "name" {
-  value = k8s_core_v1_service.che_host.metadata.0.name
+  value = module.deployment-service.name
 }
 
 output "service" {
-  value = k8s_core_v1_service.che_host
+  value = module.deployment-service.service
 }
 
 output "deployment" {
-  value = k8s_apps_v1_deployment.che
+  value = module.deployment-service.deployment
 }

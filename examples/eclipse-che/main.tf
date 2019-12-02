@@ -1,6 +1,10 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
+    labels = {
+      app       = "che"
+      component = "che"
+    }
   }
 }
 
@@ -8,6 +12,34 @@ module "nfs-server" {
   source    = "../../modules/nfs-server-empty-dir"
   name      = "nfs-server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+}
+
+module "postgres-storage" {
+  source        = "../../modules/kubernetes/storage-nfs"
+  name          = "postgres"
+  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  replicas      = 1
+  mount_options = module.nfs-server.mount_options
+  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
+  storage       = "1Gi"
+
+  annotations = {
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
+  }
+}
+
+module "postgres" {
+  source        = "../../modules/postgres"
+  name          = "postgres"
+  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  storage_class = module.postgres-storage.storage_class_name
+  storage       = module.postgres-storage.storage
+  replicas      = module.postgres-storage.replicas
+  //  image         = "postgres:9.6.16"
+
+  POSTGRES_USER     = "pgche"
+  POSTGRES_PASSWORD = "pgchepassword"
+  POSTGRES_DB       = "dbche"
 }
 
 resource "k8s_core_v1_persistent_volume" "che-data-volume" {
@@ -124,6 +156,14 @@ module "eclipse-che" {
   CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT      = k8s_core_v1_namespace.workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_PVC_NAME               = k8s_core_v1_persistent_volume_claim.claim-che-workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME = k8s_core_v1_persistent_volume.claim-che-workspace.spec[0].storage_class_name
+
+  /*
+  Depends on examples/keycloak
+  */
+  CHE_MULTIUSER                  = true
+  CHE_KEYCLOAK_AUTH__SERVER__URL = "https://keycloak.rebelsoft.com/auth"
+  CHE_KEYCLOAK_REALM             = "eclipse-che"
+  CHE_KEYCLOAK_CLIENT__ID        = "eclipse-che"
 }
 
 module "devfile-registry" {
@@ -136,7 +176,7 @@ module "plugin-registry" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_extensions_v1beta1_ingress" "ingress" {
+resource "k8s_extensions_v1beta1_ingress" "che" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"

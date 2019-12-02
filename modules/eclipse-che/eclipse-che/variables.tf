@@ -56,3 +56,20 @@ variable "CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME" {
   default = "claim-che-workspace"
 }
 
+variable CHE_LIMITS_USER_WORKSPACES_RUN_COUNT {
+  default = 10
+}
+
+variable CHE_KEYCLOAK_AUTH__SERVER__URL {
+  default = ""
+}
+variable CHE_KEYCLOAK_CLIENT__ID {
+  default = ""
+}
+variable CHE_KEYCLOAK_REALM {
+  default = ""
+}
+variable CHE_MULTIUSER {
+  default = false
+}
+

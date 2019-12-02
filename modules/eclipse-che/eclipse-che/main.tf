@@ -7,9 +7,9 @@
 
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = merge(
+    name      = var.name
+    namespace = var.namespace
+    annotations = merge(
       var.annotations,
       {
         "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.che.data), values(k8s_core_v1_config_map.che.data)))
@@ -18,6 +18,10 @@ locals {
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
+    labels = {
+      app       = "che"
+      component = "che"
+    }
 
     containers = [
       {
@@ -34,7 +38,7 @@ locals {
             }
           },
           {
-            name = "OPENSHIFT_KUBE_PING_NAMESPACE"
+            name = "KUBERNETES_NAMESPACE"
             value_from = {
               field_ref = {
                 field_path = "metadata.namespace"
@@ -113,6 +117,9 @@ locals {
       fsgroup = 1724
     }
     service_account_name = k8s_core_v1_service_account.che.metadata[0].name
+    strategy = {
+      type = "Recreate"
+    }
 
     volumes = [
       {

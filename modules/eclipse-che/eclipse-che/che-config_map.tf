@@ -37,6 +37,10 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_TLS__SECRET"                         = ""
     "CHE_INFRA_KUBERNETES_TRUST__CERTS"                        = "false"
     "CHE_INFRA_KUBERNETES_WORKSPACE__START__TIMEOUT__MIN"      = "15"
+    "CHE_KEYCLOAK_AUTH__SERVER__URL"                           = var.CHE_KEYCLOAK_AUTH__SERVER__URL
+    "CHE_KEYCLOAK_CLIENT__ID"                                  = var.CHE_KEYCLOAK_CLIENT__ID
+    "CHE_KEYCLOAK_REALM"                                       = var.CHE_KEYCLOAK_REALM
+    "CHE_LIMITS_USER_WORKSPACES_RUN_COUNT"                     = var.CHE_LIMITS_USER_WORKSPACES_RUN_COUNT
     "CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT"                        = "1800000"
     "CHE_LOCAL_CONF_DIR"                                       = "/etc/conf"
     "CHE_LOGGER_CONFIG"                                        = ""
@@ -44,7 +48,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_LOGS_DIR"                                             = "/data/logs"
     "CHE_LOG_LEVEL"                                            = "INFO"
     "CHE_METRICS_ENABLED"                                      = "false"
-    "CHE_MULTIUSER"                                            = "false"
+    "CHE_MULTIUSER"                                            = var.CHE_MULTIUSER
     "CHE_OAUTH_GITHUB_CLIENTID"                                = ""
     "CHE_OAUTH_GITHUB_CLIENTSECRET"                            = ""
     "CHE_PORT"                                                 = "8080"

@@ -73,3 +73,11 @@ variable CHE_MULTIUSER {
   default = false
 }
 
+variable CHE_WORKSPACE_DEVFILE__REGISTRY__URL {}
+variable CHE_WORKSPACE_PLUGIN__REGISTRY__URL {}
+
+variable "https" {
+  default = true
+}
+variable CHE_HOST {}
+

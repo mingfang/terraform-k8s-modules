@@ -151,12 +151,16 @@ module "eclipse-che" {
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   ingress_class = "nginx"
 
+  https                                       = true
+  CHE_HOST                                    = "eclipse.rebelsoft.com"
   CHE_INFRA_KUBERNETES_INGRESS_DOMAIN         = "rebelsoft.com"
   CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME = k8s_core_v1_service_account.workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT      = k8s_core_v1_namespace.workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_PVC_NAME               = k8s_core_v1_persistent_volume_claim.claim-che-workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME = k8s_core_v1_persistent_volume.claim-che-workspace.spec[0].storage_class_name
 
+  CHE_WORKSPACE_DEVFILE__REGISTRY__URL = "https://devfile-registry.rebelsoft.com"
+  CHE_WORKSPACE_PLUGIN__REGISTRY__URL  = "https://plugin-registry.rebelsoft.com/v3"
   /*
   Depends on examples/keycloak
   */
@@ -180,17 +184,18 @@ resource "k8s_extensions_v1beta1_ingress" "che" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"          = "eclipse.*",
+      "nginx.ingress.kubernetes.io/server-alias"          = "eclipse.*"
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
+      "certmanager.k8s.io/cluster-issuer"                 = "letsencrypt-prod"
     }
     name      = var.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = var.name
+      host = "eclipse.rebelsoft.com"
       http {
         paths {
           backend {
@@ -201,6 +206,13 @@ resource "k8s_extensions_v1beta1_ingress" "che" {
         }
       }
     }
+
+    tls {
+      hosts = [
+        "eclipse.rebelsoft.com"
+      ]
+      secret_name = "${var.name}-tls"
+    }
   }
 }
 
@@ -208,17 +220,18 @@ resource "k8s_extensions_v1beta1_ingress" "devfile-registry" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"          = "devfile-registry-default.*",
+      "nginx.ingress.kubernetes.io/server-alias"          = "devfile-registry.*",
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
+      "certmanager.k8s.io/cluster-issuer"                 = "letsencrypt-prod"
     }
     name      = module.devfile-registry.service.metadata[0].name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.devfile-registry.service.metadata[0].name
+      host = "devfile-registry.rebelsoft.com"
       http {
         paths {
           backend {
@@ -229,6 +242,14 @@ resource "k8s_extensions_v1beta1_ingress" "devfile-registry" {
         }
       }
     }
+
+    tls {
+      hosts = [
+        "devfile-registry.rebelsoft.com"
+      ]
+      secret_name = "${var.name}-devfile-registry-tls"
+    }
+
   }
 }
 
@@ -236,17 +257,18 @@ resource "k8s_extensions_v1beta1_ingress" "plugin-registry" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"          = "plugin-registry-default.*",
+      "nginx.ingress.kubernetes.io/server-alias"          = "plugin-registry.*",
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
+      "certmanager.k8s.io/cluster-issuer"                 = "letsencrypt-prod"
     }
     name      = module.plugin-registry.service.metadata[0].name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.plugin-registry.service.metadata[0].name
+      host = "plugin-registry.rebelsoft.com"
       http {
         paths {
           backend {
@@ -256,6 +278,13 @@ resource "k8s_extensions_v1beta1_ingress" "plugin-registry" {
           path = "/"
         }
       }
+    }
+
+    tls {
+      hosts = [
+        "plugin-registry.rebelsoft.com"
+      ]
+      secret_name = "${var.name}-plugin-registry-tls"
     }
   }
 }

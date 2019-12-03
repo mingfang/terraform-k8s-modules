@@ -1,20 +1,29 @@
 /*
-All possible settings are here https://github.com/eclipse/che/blob/master/assembly/assembly-wsmaster-war/src/main/webapp/WEB-INF/classes/che/che.properties
+All possible settings are here
+For multi-user = false https://github.com/eclipse/che/blob/master/assembly/assembly-wsmaster-war/src/main/webapp/WEB-INF/classes/che/che.properties
+For multi-user = true https://github.com/eclipse/che/blob/master/assembly/assembly-wsmaster-war/src/main/webapp/WEB-INF/classes/che/multiuser.properties
 - Uppercase all names
 - Convert . to _
 - Convert - to __ //double underscore
 */
 
+locals {
+  http_protocol = var.https ? "https" : "http"
+  http_url      = "${local.http_protocol}://${var.CHE_HOST}"
+  ws_protocol   = var.https ? "wss" : "ws"
+  ws_url        = "${local.ws_protocol}://${var.CHE_HOST}"
+}
+
 resource "k8s_core_v1_config_map" "che" {
   data = {
-    "CHE_API"                                                  = "http://eclipse.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}/api"
+    "CHE_API"                                                  = "${local.http_url}/api"
     "CHE_CORS_ALLOWED__ORIGINS"                                = "*"
     "CHE_CORS_ALLOW__CREDENTIALS"                              = "false"
     "CHE_CORS_ENABLED"                                         = "true"
     "CHE_DEBUG_SERVER"                                         = "true"
-    "CHE_HOST"                                                 = "eclipse.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}"
+    "CHE_HOST"                                                 = var.CHE_HOST
     "CHE_INFRASTRUCTURE_ACTIVE"                                = "kubernetes"
-    "CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL"            = "http://eclipse.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}/agent-binaries/linux_amd64/bootstrapper/bootstrapper"
+    "CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL"            = "${local.http_url}/agent-binaries/linux_amd64/bootstrapper/bootstrapper"
     "CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON"           = <<-EOF
       {"kubernetes.io/ingress.class": "${var.ingress_class}", "nginx.ingress.kubernetes.io/rewrite-target": "/$1","nginx.ingress.kubernetes.io/ssl-redirect": "false","nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600","nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"}
       EOF
@@ -53,16 +62,16 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_OAUTH_GITHUB_CLIENTSECRET"                            = ""
     "CHE_PORT"                                                 = "8080"
     "CHE_TRACING_ENABLED"                                      = "false"
-    "CHE_WEBSOCKET_ENDPOINT"                                   = "ws://eclipse.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}/api/websocket"
-    "CHE_WEBSOCKET_ENDPOINT__MINOR"                            = "ws://eclipse.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}/api/websocket-minor"
+    "CHE_WEBSOCKET_ENDPOINT"                                   = "${local.ws_url}/api/websocket"
+    "CHE_WEBSOCKET_ENDPOINT__MINOR"                            = "${local.ws_url}/api/websocket-minor"
     "CHE_WORKSPACE_AUTO_START"                                 = "false"
-    "CHE_WORKSPACE_DEVFILE__REGISTRY__URL"                     = "http://devfile-registry-default.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}"
+    "CHE_WORKSPACE_DEVFILE__REGISTRY__URL"                     = var.CHE_WORKSPACE_DEVFILE__REGISTRY__URL
     "CHE_WORKSPACE_HTTPS__PROXY"                               = ""
     "CHE_WORKSPACE_HTTP__PROXY"                                = ""
     "CHE_WORKSPACE_JAVA__OPTIONS"                              = "-Xmx2000m"
     "CHE_WORKSPACE_MAVEN__OPTIONS"                             = "-Xmx20000m"
     "CHE_WORKSPACE_NO__PROXY"                                  = ""
-    "CHE_WORKSPACE_PLUGIN__REGISTRY__URL"                      = "http://plugin-registry-default.${var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN}/v3"
+    "CHE_WORKSPACE_PLUGIN__REGISTRY__URL"                      = var.CHE_WORKSPACE_PLUGIN__REGISTRY__URL
     "CHE_WSAGENT_CORS_ALLOWED__ORIGINS"                        = "NULL"
     "CHE_WSAGENT_CORS_ALLOW__CREDENTIALS"                      = "true"
     "CHE_WSAGENT_CORS_ENABLED"                                 = "true"

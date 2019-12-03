@@ -151,14 +151,14 @@ module "eclipse-che" {
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   ingress_class = "nginx"
 
-  https                                       = true
-  CHE_HOST                                    = "eclipse.rebelsoft.com"
-  CHE_INFRA_KUBERNETES_INGRESS_DOMAIN         = "rebelsoft.com"
   CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME = k8s_core_v1_service_account.workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT      = k8s_core_v1_namespace.workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_PVC_NAME               = k8s_core_v1_persistent_volume_claim.claim-che-workspace.metadata[0].name
   CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME = k8s_core_v1_persistent_volume.claim-che-workspace.spec[0].storage_class_name
 
+  CHE_INFRA_KUBERNETES_TLS__ENABLED    = true
+  CHE_HOST                             = "eclipse.rebelsoft.com"
+  CHE_INFRA_KUBERNETES_INGRESS_DOMAIN  = "rebelsoft.com"
   CHE_WORKSPACE_DEVFILE__REGISTRY__URL = "https://devfile-registry.rebelsoft.com"
   CHE_WORKSPACE_PLUGIN__REGISTRY__URL  = "https://plugin-registry.rebelsoft.com/v3"
   /*

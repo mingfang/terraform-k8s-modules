@@ -8,11 +8,12 @@ For multi-user = true https://github.com/eclipse/che/blob/master/assembly/assemb
 */
 
 locals {
-  http_protocol = var.https ? "https" : "http"
+  http_protocol = var.CHE_INFRA_KUBERNETES_TLS__ENABLED ? "https" : "http"
   http_url      = "${local.http_protocol}://${var.CHE_HOST}"
-  ws_protocol   = var.https ? "wss" : "ws"
+  ws_protocol   = var.CHE_INFRA_KUBERNETES_TLS__ENABLED ? "wss" : "ws"
   ws_url        = "${local.ws_protocol}://${var.CHE_HOST}"
 }
+
 
 resource "k8s_core_v1_config_map" "che" {
   data = {
@@ -40,9 +41,9 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_PVC_QUANTITY"                        = "1Gi"
     "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME"            = var.CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME
     "CHE_INFRA_KUBERNETES_PVC_STRATEGY"                        = "common"
-    "CHE_INFRA_KUBERNETES_SERVER__STRATEGY"                    = "multi-host"
+    "CHE_INFRA_KUBERNETES_SERVER__STRATEGY"                    = "single-host"
     "CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME"              = var.CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME
-    "CHE_INFRA_KUBERNETES_TLS__ENABLED"                        = "false"
+    "CHE_INFRA_KUBERNETES_TLS__ENABLED"                        = var.CHE_INFRA_KUBERNETES_TLS__ENABLED
     "CHE_INFRA_KUBERNETES_TLS__SECRET"                         = ""
     "CHE_INFRA_KUBERNETES_TRUST__CERTS"                        = "false"
     "CHE_INFRA_KUBERNETES_WORKSPACE__START__TIMEOUT__MIN"      = "15"

@@ -76,7 +76,7 @@ variable CHE_MULTIUSER {
 variable CHE_WORKSPACE_DEVFILE__REGISTRY__URL {}
 variable CHE_WORKSPACE_PLUGIN__REGISTRY__URL {}
 
-variable "https" {
+variable "CHE_INFRA_KUBERNETES_TLS__ENABLED" {
   default = true
 }
 variable CHE_HOST {}

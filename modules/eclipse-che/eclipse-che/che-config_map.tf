@@ -25,6 +25,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_HOST"                                                 = var.CHE_HOST
     "CHE_INFRASTRUCTURE_ACTIVE"                                = "kubernetes"
     "CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL"            = "${local.http_url}/agent-binaries/linux_amd64/bootstrapper/bootstrapper"
+    "CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME"                 = var.CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME
     "CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON"           = <<-EOF
       {"kubernetes.io/ingress.class": "${var.ingress_class}", "nginx.ingress.kubernetes.io/rewrite-target": "/$1","nginx.ingress.kubernetes.io/ssl-redirect": "false","nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600","nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"}
       EOF
@@ -41,7 +42,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_PVC_QUANTITY"                        = "1Gi"
     "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME"            = var.CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME
     "CHE_INFRA_KUBERNETES_PVC_STRATEGY"                        = "common"
-    "CHE_INFRA_KUBERNETES_SERVER__STRATEGY"                    = "single-host"
+    "CHE_INFRA_KUBERNETES_SERVER__STRATEGY"                    = var.CHE_INFRA_KUBERNETES_SERVER__STRATEGY
     "CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME"              = var.CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME
     "CHE_INFRA_KUBERNETES_TLS__ENABLED"                        = var.CHE_INFRA_KUBERNETES_TLS__ENABLED
     "CHE_INFRA_KUBERNETES_TLS__SECRET"                         = ""

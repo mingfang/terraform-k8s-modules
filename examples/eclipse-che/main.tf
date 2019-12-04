@@ -14,6 +14,13 @@ module "nfs-server" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
+module "nfs-provisioner" {
+  source        = "../../modules/nfs-provisioner-empty-dir"
+  name          = "nfs-provisioner"
+  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  storage_class = k8s_core_v1_namespace.this.metadata[0].name
+}
+
 module "postgres-storage" {
   source        = "../../modules/kubernetes/storage-nfs"
   name          = "postgres"
@@ -79,86 +86,18 @@ resource "k8s_core_v1_persistent_volume_claim" "che_data_volume" {
   }
 }
 
-resource "k8s_core_v1_namespace" "workspace" {
-  metadata {
-    name = "${var.namespace}-workspace"
-  }
-}
-
-resource "k8s_core_v1_persistent_volume" "claim-che-workspace" {
-  metadata {
-    name = "${var.namespace}-claim-che-workspace"
-  }
-  spec {
-    storage_class_name               = "claim-che-workspace"
-    persistent_volume_reclaim_policy = "Retain"
-    access_modes                     = ["ReadWriteMany"]
-    capacity = {
-      storage = var.user_storage
-    }
-    nfs {
-      path   = "/"
-      server = module.nfs-server.service.spec[0].cluster_ip
-    }
-    mount_options = module.nfs-server.mount_options
-  }
-}
-
-resource "k8s_core_v1_persistent_volume_claim" "claim-che-workspace" {
-  metadata {
-    name        = "claim-che-workspace"
-    namespace   = k8s_core_v1_namespace.workspace.metadata[0].name
-    annotations = { "volume-uid" = k8s_core_v1_persistent_volume.claim-che-workspace.metadata[0].uid }
-  }
-  spec {
-    storage_class_name = k8s_core_v1_persistent_volume.claim-che-workspace.spec[0].storage_class_name
-    volume_name        = k8s_core_v1_persistent_volume.claim-che-workspace.metadata[0].name
-    access_modes       = ["ReadWriteMany"]
-    resources {
-      requests = {
-        storage = var.user_storage
-      }
-    }
-  }
-}
-
-resource "k8s_core_v1_service_account" "workspace" {
-  metadata {
-    name      = "che-workspace"
-    namespace = k8s_core_v1_namespace.workspace.metadata[0].name
-  }
-}
-
-resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "workspace" {
-  metadata {
-    name = "${var.namespace}-workspace"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
-  }
-  subjects {
-    kind      = "ServiceAccount"
-    name      = k8s_core_v1_service_account.workspace.metadata[0].name
-    namespace = k8s_core_v1_service_account.workspace.metadata[0].namespace
-  }
-}
-
 module "eclipse-che" {
   source        = "../../modules/eclipse-che/eclipse-che"
   name          = var.name
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   ingress_class = "nginx"
 
-  CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME = k8s_core_v1_service_account.workspace.metadata[0].name
-  CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT      = k8s_core_v1_namespace.workspace.metadata[0].name
-  CHE_INFRA_KUBERNETES_PVC_NAME               = k8s_core_v1_persistent_volume_claim.claim-che-workspace.metadata[0].name
-  CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME = k8s_core_v1_persistent_volume.claim-che-workspace.spec[0].storage_class_name
+  CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME    = "cluster-admin"
+  CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT      = "${var.namespace}-<username>"
+  CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME = module.nfs-provisioner.storage_class
 
   CHE_INFRA_KUBERNETES_TLS__ENABLED    = true
   CHE_HOST                             = "eclipse.rebelsoft.com"
-  CHE_INFRA_KUBERNETES_INGRESS_DOMAIN  = "rebelsoft.com"
   CHE_WORKSPACE_DEVFILE__REGISTRY__URL = "https://devfile-registry.rebelsoft.com"
   CHE_WORKSPACE_PLUGIN__REGISTRY__URL  = "https://plugin-registry.rebelsoft.com/v3"
   /*

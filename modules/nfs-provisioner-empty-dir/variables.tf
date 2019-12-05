@@ -43,3 +43,23 @@ variable "storage_class" {
   default = "nfs-provisioner"
 }
 
+variable "is_default_class" {
+  default = false
+}
+
+// Delete or Retain
+variable "reclaim_policy" {
+  default = "Retain"
+}
+
+variable "allow_volume_expansion" {
+  default = true
+}
+
+variable "mount_options" {
+  default = [
+    "vers=4.1",
+    "noatime",
+  ]
+}
+

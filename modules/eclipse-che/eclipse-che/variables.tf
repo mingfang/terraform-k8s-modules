@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "eclipse/che-server:7.5.0"
+  default = "eclipse/che-server:7.5.1"
 }
 
 variable "replicas" {

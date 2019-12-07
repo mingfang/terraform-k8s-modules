@@ -70,9 +70,16 @@ variable CHE_INFRA_KUBERNETES_PVC_NAME {
 }
 
 // storage class for each pvc in each workspace
-variable "CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME" {
+variable "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME" {
   default = "claim-che-workspace"
 }
+variable CHE_INFRA_KUBERNETES_PVC_QUANTITY {
+  default = "10Gi"
+}
+variable CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE {
+  default = "ReadWriteOnce"
+}
+
 
 // limit number of active workspaces for each user
 variable CHE_LIMITS_USER_WORKSPACES_RUN_COUNT {

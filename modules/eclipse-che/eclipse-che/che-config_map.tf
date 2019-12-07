@@ -8,10 +8,8 @@ For multi-user = true https://github.com/eclipse/che/blob/master/assembly/assemb
 */
 
 locals {
-  http_protocol = var.CHE_INFRA_KUBERNETES_TLS__ENABLED ? "https" : "http"
-  http_url      = "${local.http_protocol}://${var.CHE_HOST}"
-  ws_protocol   = var.CHE_INFRA_KUBERNETES_TLS__ENABLED ? "wss" : "ws"
-  ws_url        = "${local.ws_protocol}://${var.CHE_HOST}"
+  http_url = "${var.CHE_INFRA_KUBERNETES_TLS__ENABLED ? "https" : "http"}://${var.CHE_HOST}"
+  ws_url   = "${var.CHE_INFRA_KUBERNETES_TLS__ENABLED ? "wss" : "ws"}://${var.CHE_HOST}"
 }
 
 
@@ -38,9 +36,9 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER" = "1724"
     "CHE_INFRA_KUBERNETES_PVC_PRECREATE__SUBPATHS"             = "true"
     "CHE_INFRA_KUBERNETES_PVC_NAME"                            = var.CHE_INFRA_KUBERNETES_PVC_NAME
-    "CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE"                    = "ReadWriteMany"
-    "CHE_INFRA_KUBERNETES_PVC_QUANTITY"                        = "1Gi"
-    "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME"            = var.CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME
+    "CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE"                    = var.CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE
+    "CHE_INFRA_KUBERNETES_PVC_QUANTITY"                        = var.CHE_INFRA_KUBERNETES_PVC_QUANTITY
+    "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME"            = var.CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME
     "CHE_INFRA_KUBERNETES_PVC_STRATEGY"                        = "common"
     "CHE_INFRA_KUBERNETES_SERVER__STRATEGY"                    = var.CHE_INFRA_KUBERNETES_SERVER__STRATEGY
     "CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME"              = var.CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME

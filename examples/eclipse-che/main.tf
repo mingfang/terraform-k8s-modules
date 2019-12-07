@@ -92,9 +92,9 @@ module "eclipse-che" {
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   ingress_class = "nginx"
 
-  CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME    = "cluster-admin"
-  CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT      = "${var.namespace}-<username>"
-  CHE_INFRA_KUBERNETES_PVC_STORAGE_CLASS_NAME = module.nfs-provisioner.storage_class
+  CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME      = "cluster-admin"
+  CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT        = "${var.namespace}-<username>"
+  CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME = module.nfs-provisioner.storage_class
 
   CHE_INFRA_KUBERNETES_TLS__ENABLED    = true
   CHE_HOST                             = "eclipse.rebelsoft.com"

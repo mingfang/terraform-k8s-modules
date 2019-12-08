@@ -72,6 +72,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_WORKSPACE_MAVEN__OPTIONS"                             = "-Xmx20000m"
     "CHE_WORKSPACE_NO__PROXY"                                  = ""
     "CHE_WORKSPACE_PLUGIN__REGISTRY__URL"                      = var.CHE_WORKSPACE_PLUGIN__REGISTRY__URL
+    "CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB"         = "${var.CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB}"
     "CHE_WSAGENT_CORS_ALLOWED__ORIGINS"                        = "NULL"
     "CHE_WSAGENT_CORS_ALLOW__CREDENTIALS"                      = "true"
     "CHE_WSAGENT_CORS_ENABLED"                                 = "true"

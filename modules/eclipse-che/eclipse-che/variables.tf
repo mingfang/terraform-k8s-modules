@@ -105,6 +105,10 @@ variable CHE_MULTIUSER {
 variable CHE_WORKSPACE_DEVFILE__REGISTRY__URL {}
 variable CHE_WORKSPACE_PLUGIN__REGISTRY__URL {}
 
+variable CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB {
+  default = 256
+}
+
 // enable https
 variable "CHE_INFRA_KUBERNETES_TLS__ENABLED" {
   default = true

@@ -4,6 +4,14 @@ variable "namespace" {
   default = null
 }
 
+variable "auth_type" {
+  default = "dummy"
+}
+
+variable "auth_custom" {
+  default = {}
+}
+
 variable "hub_extraConfig" {
   default = {}
 }

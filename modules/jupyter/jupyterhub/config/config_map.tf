@@ -21,7 +21,8 @@ resource "k8s_core_v1_config_map" "this" {
           user: {}
         state:
           enabled: false
-        type: dummy
+        type: ${var.auth_type}
+        custom: ${jsonencode(var.auth_custom)}
         whitelist:
           users: null
       cull:

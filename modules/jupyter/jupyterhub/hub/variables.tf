@@ -30,3 +30,14 @@ variable "proxy_api_service_host" {}
 variable "proxy_api_service_port" {}
 variable "proxy_public_service_host" {}
 variable "proxy_public_service_port" {}
+
+variable "OAUTH2_AUTHORIZE_URL" {
+  default = ""
+}
+
+variable "OAUTH2_TOKEN_URL" {
+  default = ""
+}
+variable "OAUTH_CALLBACK_URL" {
+  default = ""
+}

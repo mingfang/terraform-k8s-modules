@@ -17,6 +17,8 @@ locals {
         port = var.port
       }
     ]
+    enable_service_links = false
+
     containers = [
       {
         command = [
@@ -80,10 +82,36 @@ locals {
               }
             }
           },
+          {
+            name = "OAUTH2_AUTHORIZE_URL"
+            value = var.OAUTH2_AUTHORIZE_URL
+          },
+          {
+            name = "OAUTH2_TOKEN_URL"
+            value = var.OAUTH2_TOKEN_URL
+          },
+          {
+            name = "OAUTH_CALLBACK_URL"
+            value = var.OAUTH_CALLBACK_URL
+          },
         ]
 
         image = var.image
         name  = "jupyterhub"
+
+        lifecycle = {
+          post_start = {
+            exec = {
+              command = [
+                "bash",
+                "-cx",
+                <<-EOF
+                sed -i -e 's|key=lambda x: x.last_timestamp,|key=lambda x: x.last_timestamp and x.last_timestamp.timestamp() or 0.,|' /usr/local/lib/python3.6/dist-packages/kubespawner/spawner.py
+                EOF
+              ]
+            }
+          }
+        }
 
         resources = {
           requests = {
@@ -106,7 +134,7 @@ locals {
     ]
     security_context = {
       fsgroup    = 1000
-      run_asuser = 1000
+      run_asuser = 0
     }
     service_account_name = module.rbac.service_account.metadata.0.name
 
@@ -166,7 +194,7 @@ module "rbac" {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
+  source     = "../../../../archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }
 

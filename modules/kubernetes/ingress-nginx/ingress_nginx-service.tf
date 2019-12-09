@@ -1,4 +1,4 @@
-resource "k8s_core_v1_service" "ingress-nginx" {
+resource "k8s_core_v1_service" "ingress_nginx" {
   metadata {
     labels = {
       "app.kubernetes.io/name"    = var.name
@@ -8,6 +8,7 @@ resource "k8s_core_v1_service" "ingress-nginx" {
     namespace = var.namespace
   }
   spec {
+    external_traffic_policy = "Cluster"
     load_balancer_ip = var.load_balancer_ip
 
     dynamic "ports" {

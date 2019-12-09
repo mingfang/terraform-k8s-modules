@@ -1,4 +1,4 @@
-resource "k8s_core_v1_config_map" "tcp-services" {
+resource "k8s_core_v1_config_map" "tcp_services" {
   metadata {
     labels = {
       "app.kubernetes.io/name"    = var.name

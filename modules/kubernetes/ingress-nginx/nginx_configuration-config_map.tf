@@ -1,4 +1,4 @@
-resource "k8s_core_v1_config_map" "nginx-configuration" {
+resource "k8s_core_v1_config_map" "nginx_configuration" {
   metadata {
     labels = {
       "app.kubernetes.io/name"    = var.name

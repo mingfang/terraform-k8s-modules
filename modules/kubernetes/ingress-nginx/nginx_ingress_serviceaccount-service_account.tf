@@ -1,4 +1,4 @@
-resource "k8s_core_v1_service_account" "nginx-ingress-serviceaccount" {
+resource "k8s_core_v1_service_account" "nginx_ingress_serviceaccount" {
   metadata {
     labels = {
       "app.kubernetes.io/name"    = var.name

@@ -1,4 +1,4 @@
-resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "nginx-ingress-clusterrole" {
+resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "nginx_ingress_clusterrole" {
   metadata {
     labels = {
       "app.kubernetes.io/name"    = var.name

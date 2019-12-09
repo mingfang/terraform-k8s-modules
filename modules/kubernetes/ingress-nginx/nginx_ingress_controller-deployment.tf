@@ -1,4 +1,4 @@
-resource "k8s_apps_v1_deployment" "nginx-ingress-controller" {
+resource "k8s_apps_v1_deployment" "nginx_ingress_controller" {
   metadata {
     labels = {
       "app.kubernetes.io/name"    = var.name
@@ -61,7 +61,16 @@ resource "k8s_apps_v1_deployment" "nginx-ingress-controller" {
               }
             }
           }
-          image = "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.25.1"
+          image = "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1"
+          lifecycle {
+            pre_stop {
+              exec {
+                command = [
+                  "/wait-shutdown",
+                ]
+              }
+            }
+          }
           liveness_probe {
             failure_threshold = 3
             http_get {

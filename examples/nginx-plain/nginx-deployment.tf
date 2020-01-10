@@ -6,7 +6,7 @@ resource "k8s_apps_v1_deployment" "nginx" {
       "service" = "nginx"
     }
     name      = "nginx"
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    namespace = var.namespace
   }
   spec {
     replicas = 1

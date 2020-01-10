@@ -32,7 +32,7 @@ resource "k8s_apps_v1_deployment" "plugin_registry" {
       spec {
 
         containers {
-          image             = "quay.io/eclipse/che-plugin-registry:7.5.1"
+          image             = var.image
           image_pull_policy = "Always"
           liveness_probe {
             http_get {

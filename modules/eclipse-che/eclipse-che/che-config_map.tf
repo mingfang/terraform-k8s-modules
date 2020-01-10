@@ -25,15 +25,21 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL"            = "${local.http_url}/agent-binaries/linux_amd64/bootstrapper/bootstrapper"
     "CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME"                 = var.CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME
     "CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON"           = <<-EOF
-      {"kubernetes.io/ingress.class": "${var.ingress_class}", "nginx.ingress.kubernetes.io/rewrite-target": "/$1","nginx.ingress.kubernetes.io/ssl-redirect": "false","nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600","nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"}
+      {
+        "kubernetes.io/ingress.class": "${var.ingress_class}",
+        "nginx.ingress.kubernetes.io/rewrite-target": "/$1",
+        "nginx.ingress.kubernetes.io/ssl-redirect": "false",
+        "nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600",
+        "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"
+      }
       EOF
     "CHE_INFRA_KUBERNETES_INGRESS_DOMAIN"                      = var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN
     "CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM"             = "%s(.*)"
     "CHE_INFRA_KUBERNETES_MACHINE__START__TIMEOUT__MIN"        = "5"
     "CHE_INFRA_KUBERNETES_MASTER__URL"                         = ""
     "CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT"                   = var.CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT
-    "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP"     = "1724"
-    "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER" = "1724"
+    "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP"     = var.CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP
+    "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER" = var.CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER
     "CHE_INFRA_KUBERNETES_PVC_PRECREATE__SUBPATHS"             = "true"
     "CHE_INFRA_KUBERNETES_PVC_NAME"                            = var.CHE_INFRA_KUBERNETES_PVC_NAME
     "CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE"                    = var.CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE
@@ -50,7 +56,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_KEYCLOAK_CLIENT__ID"                                  = var.CHE_KEYCLOAK_CLIENT__ID
     "CHE_KEYCLOAK_REALM"                                       = var.CHE_KEYCLOAK_REALM
     "CHE_LIMITS_USER_WORKSPACES_RUN_COUNT"                     = var.CHE_LIMITS_USER_WORKSPACES_RUN_COUNT
-    "CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT"                        = "1800000"
+    "CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT"                        = var.CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT
     "CHE_LOCAL_CONF_DIR"                                       = "/etc/conf"
     "CHE_LOGGER_CONFIG"                                        = ""
     "CHE_LOGS_APPENDERS_IMPL"                                  = "plaintext"
@@ -72,7 +78,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_WORKSPACE_MAVEN__OPTIONS"                             = "-Xmx20000m"
     "CHE_WORKSPACE_NO__PROXY"                                  = ""
     "CHE_WORKSPACE_PLUGIN__REGISTRY__URL"                      = var.CHE_WORKSPACE_PLUGIN__REGISTRY__URL
-    "CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB"         = "${var.CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB}"
+    "CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB"         = var.CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB
     "CHE_WSAGENT_CORS_ALLOWED__ORIGINS"                        = "NULL"
     "CHE_WSAGENT_CORS_ALLOW__CREDENTIALS"                      = "true"
     "CHE_WSAGENT_CORS_ENABLED"                                 = "true"

@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "eclipse/che-server:7.5.1"
+  default = "eclipse/che-server:7.7.0"
 }
 
 variable "replicas" {
@@ -44,7 +44,7 @@ variable CHE_INFRA_KUBERNETES_INGRESS_DOMAIN {
   default = null
 }
 
-// default to single-host
+// default-host, multi-host, single-host
 variable CHE_INFRA_KUBERNETES_SERVER__STRATEGY {
   default = "single-host"
 }
@@ -85,6 +85,9 @@ variable CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE {
 variable CHE_LIMITS_USER_WORKSPACES_RUN_COUNT {
   default = 10
 }
+variable CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT {
+  default = 1800000
+}
 
 // keycloak integration
 variable CHE_KEYCLOAK_AUTH__SERVER__URL {
@@ -115,3 +118,10 @@ variable "CHE_INFRA_KUBERNETES_TLS__ENABLED" {
 }
 variable CHE_HOST {}
 
+// set both to "0" if you need root access
+variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP {
+  default = "1724"
+}
+variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER {
+  default = "1724"
+}

@@ -100,6 +100,14 @@ module "eclipse-che" {
   CHE_HOST                             = "eclipse.rebelsoft.com"
   CHE_WORKSPACE_DEVFILE__REGISTRY__URL = "https://devfile-registry.rebelsoft.com"
   CHE_WORKSPACE_PLUGIN__REGISTRY__URL  = "https://plugin-registry.rebelsoft.com/v3"
+
+  /*
+  Ingress strategy
+  Domain only needed when strategy is multi-host
+  */
+  CHE_INFRA_KUBERNETES_SERVER__STRATEGY = "single-host"
+  CHE_INFRA_KUBERNETES_INGRESS_DOMAIN = "rebelsoft.com"
+
   /*
   Depends on examples/keycloak
   */
@@ -107,6 +115,10 @@ module "eclipse-che" {
   CHE_KEYCLOAK_AUTH__SERVER__URL = "https://keycloak.rebelsoft.com/auth"
   CHE_KEYCLOAK_REALM             = "eclipse-che"
   CHE_KEYCLOAK_CLIENT__ID        = "eclipse-che"
+
+  // run as root
+  CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP = "0"
+  CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER = "0"
 }
 
 module "devfile-registry" {

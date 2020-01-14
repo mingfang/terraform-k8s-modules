@@ -5,14 +5,14 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "cert_manager_cont
       "app.kubernetes.io/instance"   = "cert-manager"
       "app.kubernetes.io/managed-by" = "Tiller"
       "app.kubernetes.io/name"       = "cert-manager"
-      "helm.sh/chart"                = "cert-manager-v0.10.1"
+      "helm.sh/chart"                = "cert-manager-v0.12.0"
     }
     name = "cert-manager-controller-certificates"
   }
 
   rules {
     api_groups = [
-      "certmanager.k8s.io",
+      "cert-manager.io",
     ]
     resources = [
       "certificates",
@@ -26,14 +26,13 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "cert_manager_cont
   }
   rules {
     api_groups = [
-      "certmanager.k8s.io",
+      "cert-manager.io",
     ]
     resources = [
       "certificates",
       "certificaterequests",
       "clusterissuers",
       "issuers",
-      "orders",
     ]
     verbs = [
       "get",
@@ -43,10 +42,11 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "cert_manager_cont
   }
   rules {
     api_groups = [
-      "certmanager.k8s.io",
+      "cert-manager.io",
     ]
     resources = [
       "certificates/finalizers",
+      "certificaterequests/finalizers",
     ]
     verbs = [
       "update",
@@ -54,7 +54,7 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "cert_manager_cont
   }
   rules {
     api_groups = [
-      "certmanager.k8s.io",
+      "acme.cert-manager.io",
     ]
     resources = [
       "orders",
@@ -62,6 +62,9 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role" "cert_manager_cont
     verbs = [
       "create",
       "delete",
+      "get",
+      "list",
+      "watch",
     ]
   }
   rules {

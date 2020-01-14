@@ -5,7 +5,7 @@ resource "k8s_core_v1_service_account" "cert_manager_cainjector" {
       "app.kubernetes.io/instance"   = "cert-manager"
       "app.kubernetes.io/managed-by" = "Tiller"
       "app.kubernetes.io/name"       = "cainjector"
-      "helm.sh/chart"                = "cainjector-v0.10.1"
+      "helm.sh/chart"                = "cert-manager-v0.12.0"
     }
     name      = "cert-manager-cainjector"
     namespace = var.namespace

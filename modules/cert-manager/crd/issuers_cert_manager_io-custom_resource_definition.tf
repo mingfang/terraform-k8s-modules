@@ -1,25 +1,51 @@
-resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusterissuers_certmanager_k8s_io" {
+resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "issuers_cert_manager_io" {
   metadata {
-    name = "clusterissuers.certmanager.k8s.io"
+    name = "issuers.cert-manager.io"
   }
   spec {
-    group = "certmanager.k8s.io"
+
+    additional_printer_columns {
+      json_path = <<-EOF
+        .status.conditions[?(@.type=="Ready")].status
+        EOF
+      name      = "Ready"
+      type      = "string"
+    }
+    additional_printer_columns {
+      json_path = <<-EOF
+        .status.conditions[?(@.type=="Ready")].message
+        EOF
+      name      = "Status"
+      priority  = 1
+      type      = "string"
+    }
+    additional_printer_columns {
+      json_path   = ".metadata.creationTimestamp"
+      description = "CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC."
+      name        = "Age"
+      type        = "date"
+    }
+    group = "cert-manager.io"
     names {
-      kind   = "ClusterIssuer"
-      plural = "clusterissuers"
+      kind      = "Issuer"
+      list_kind = "IssuerList"
+      plural    = "issuers"
+      singular  = "issuer"
     }
     preserve_unknown_fields = false
-    scope                   = "Cluster"
+    scope                   = "Namespaced"
+    subresources {
+    }
     validation {
       open_apiv3_schema = <<-JSON
         {
           "properties": {
             "apiVersion": {
-              "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
+              "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
               "type": "string"
             },
             "kind": {
-              "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
+              "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
               "type": "string"
             },
             "metadata": {
@@ -31,379 +57,9 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                 "acme": {
                   "description": "ACMEIssuer contains the specification for an ACME issuer",
                   "properties": {
-                    "dns01": {
-                      "description": "DEPRECATED: DNS-01 config",
-                      "properties": {
-                        "providers": {
-                          "items": {
-                            "description": "ACMEIssuerDNS01Provider contains configuration for a DNS provider that can be used to solve ACME DNS01 challenges.",
-                            "properties": {
-                              "acmedns": {
-                                "description": "ACMEIssuerDNS01ProviderAcmeDNS is a structure containing the configuration for ACME-DNS servers",
-                                "properties": {
-                                  "accountSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  "host": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "accountSecretRef",
-                                  "host"
-                                ],
-                                "type": "object"
-                              },
-                              "akamai": {
-                                "description": "ACMEIssuerDNS01ProviderAkamai is a structure containing the DNS configuration for Akamai DNS—Zone Record Management API",
-                                "properties": {
-                                  "accessTokenSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  "clientSecretSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  "clientTokenSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  "serviceConsumerDomain": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "accessTokenSecretRef",
-                                  "clientSecretSecretRef",
-                                  "clientTokenSecretRef",
-                                  "serviceConsumerDomain"
-                                ],
-                                "type": "object"
-                              },
-                              "azuredns": {
-                                "description": "ACMEIssuerDNS01ProviderAzureDNS is a structure containing the configuration for Azure DNS",
-                                "properties": {
-                                  "clientID": {
-                                    "type": "string"
-                                  },
-                                  "clientSecretSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  "environment": {
-                                    "enum": [
-                                      "AzurePublicCloud",
-                                      "AzureChinaCloud",
-                                      "AzureGermanCloud",
-                                      "AzureUSGovernmentCloud"
-                                    ],
-                                    "type": "string"
-                                  },
-                                  "hostedZoneName": {
-                                    "type": "string"
-                                  },
-                                  "resourceGroupName": {
-                                    "type": "string"
-                                  },
-                                  "subscriptionID": {
-                                    "type": "string"
-                                  },
-                                  "tenantID": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "clientID",
-                                  "clientSecretSecretRef",
-                                  "resourceGroupName",
-                                  "subscriptionID",
-                                  "tenantID"
-                                ],
-                                "type": "object"
-                              },
-                              "clouddns": {
-                                "description": "ACMEIssuerDNS01ProviderCloudDNS is a structure containing the DNS configuration for Google Cloud DNS",
-                                "properties": {
-                                  "project": {
-                                    "type": "string"
-                                  },
-                                  "serviceAccountSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  }
-                                },
-                                "required": [
-                                  "project",
-                                  "serviceAccountSecretRef"
-                                ],
-                                "type": "object"
-                              },
-                              "cloudflare": {
-                                "description": "ACMEIssuerDNS01ProviderCloudflare is a structure containing the DNS configuration for Cloudflare",
-                                "properties": {
-                                  "apiKeySecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  "email": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "apiKeySecretRef",
-                                  "email"
-                                ],
-                                "type": "object"
-                              },
-                              "cnameStrategy": {
-                                "description": "CNAMEStrategy configures how the DNS01 provider should handle CNAME records when found in DNS zones.",
-                                "enum": [
-                                  "None",
-                                  "Follow"
-                                ],
-                                "type": "string"
-                              },
-                              "digitalocean": {
-                                "description": "ACMEIssuerDNS01ProviderDigitalOcean is a structure containing the DNS configuration for DigitalOcean Domains",
-                                "properties": {
-                                  "tokenSecretRef": {
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  }
-                                },
-                                "required": [
-                                  "tokenSecretRef"
-                                ],
-                                "type": "object"
-                              },
-                              "name": {
-                                "description": "Name is the name of the DNS provider, which should be used to reference this DNS provider configuration on Certificate resources.",
-                                "type": "string"
-                              },
-                              "rfc2136": {
-                                "description": "ACMEIssuerDNS01ProviderRFC2136 is a structure containing the configuration for RFC2136 DNS",
-                                "properties": {
-                                  "nameserver": {
-                                    "description": "The IP address of the DNS supporting RFC2136. Required. Note: FQDN is not a valid value, only IP.",
-                                    "type": "string"
-                                  },
-                                  "tsigAlgorithm": {
-                                    "description": "The TSIG Algorithm configured in the DNS supporting RFC2136. Used only when ``tsigSecretSecretRef`` and ``tsigKeyName`` are defined. Supported values are (case-insensitive): ``HMACMD5`` (default), ``HMACSHA1``, ``HMACSHA256`` or ``HMACSHA512``.",
-                                    "type": "string"
-                                  },
-                                  "tsigKeyName": {
-                                    "description": "The TSIG Key name configured in the DNS. If ``tsigSecretSecretRef`` is defined, this field is required.",
-                                    "type": "string"
-                                  },
-                                  "tsigSecretSecretRef": {
-                                    "description": "The name of the secret containing the TSIG value. If ``tsigKeyName`` is defined, this field is required.",
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  }
-                                },
-                                "required": [
-                                  "nameserver"
-                                ],
-                                "type": "object"
-                              },
-                              "route53": {
-                                "description": "ACMEIssuerDNS01ProviderRoute53 is a structure containing the Route 53 configuration for AWS",
-                                "properties": {
-                                  "accessKeyID": {
-                                    "description": "The AccessKeyID is used for authentication. If not set we fall-back to using env vars, shared credentials file or AWS Instance metadata see: https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials",
-                                    "type": "string"
-                                  },
-                                  "hostedZoneID": {
-                                    "description": "If set, the provider will manage only this zone in Route53 and will not do an lookup using the route53:ListHostedZonesByName api call.",
-                                    "type": "string"
-                                  },
-                                  "region": {
-                                    "description": "Always set the region when using AccessKeyID and SecretAccessKey",
-                                    "type": "string"
-                                  },
-                                  "role": {
-                                    "description": "Role is a Role ARN which the Route53 provider will assume using either the explicit credentials AccessKeyID/SecretAccessKey or the inferred credentials from environment variables, shared credentials file or AWS Instance metadata",
-                                    "type": "string"
-                                  },
-                                  "secretAccessKeySecretRef": {
-                                    "description": "The SecretAccessKey is used for authentication. If not set we fall-back to using env vars, shared credentials file or AWS Instance metadata https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials",
-                                    "properties": {
-                                      "key": {
-                                        "description": "The key of the secret to select from. Must be a valid secret key.",
-                                        "type": "string"
-                                      },
-                                      "name": {
-                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "name"
-                                    ],
-                                    "type": "object"
-                                  }
-                                },
-                                "required": [
-                                  "region"
-                                ],
-                                "type": "object"
-                              },
-                              "webhook": {
-                                "description": "ACMEIssuerDNS01ProviderWebhook specifies configuration for a webhook DNS01 provider, including where to POST ChallengePayload resources.",
-                                "properties": {
-                                  "config": {
-                                    "description": "Additional configuration that should be passed to the webhook apiserver when challenges are processed. This can contain arbitrary JSON data. Secret values should not be specified in this stanza. If secret values are needed (e.g. credentials for a DNS service), you should use a SecretKeySelector to reference a Secret resource. For details on the schema of this field, consult the webhook provider implementation's documentation.",
-                                    "type": "object"
-                                  },
-                                  "groupName": {
-                                    "description": "The API group name that should be used when POSTing ChallengePayload resources to the webhook apiserver. This should be the same as the GroupName specified in the webhook provider implementation.",
-                                    "type": "string"
-                                  },
-                                  "solverName": {
-                                    "description": "The name of the solver to use, as defined in the webhook provider implementation. This will typically be the name of the provider, e.g. 'cloudflare'.",
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "groupName",
-                                  "solverName"
-                                ],
-                                "type": "object"
-                              }
-                            },
-                            "required": [
-                              "name"
-                            ],
-                            "type": "object"
-                          },
-                          "type": "array"
-                        }
-                      },
-                      "type": "object"
-                    },
                     "email": {
                       "description": "Email is the email for this account",
                       "type": "string"
-                    },
-                    "http01": {
-                      "description": "DEPRECATED: HTTP-01 config",
-                      "properties": {
-                        "serviceType": {
-                          "description": "Optional service type for Kubernetes solver service",
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
                     },
                     "privateKeySecretRef": {
                       "description": "PrivateKey is the name of a secret containing the private key for this user account.",
@@ -605,8 +261,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                                   }
                                 },
                                 "required": [
-                                  "project",
-                                  "serviceAccountSecretRef"
+                                  "project"
                                 ],
                                 "type": "object"
                               },
@@ -629,12 +284,27 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                                     ],
                                     "type": "object"
                                   },
+                                  "apiTokenSecretRef": {
+                                    "properties": {
+                                      "key": {
+                                        "description": "The key of the secret to select from. Must be a valid secret key.",
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "name"
+                                    ],
+                                    "type": "object"
+                                  },
                                   "email": {
                                     "type": "string"
                                   }
                                 },
                                 "required": [
-                                  "apiKeySecretRef",
                                   "email"
                                 ],
                                 "type": "object"
@@ -757,7 +427,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                                 "properties": {
                                   "config": {
                                     "description": "Additional configuration that should be passed to the webhook apiserver when challenges are processed. This can contain arbitrary JSON data. Secret values should not be specified in this stanza. If secret values are needed (e.g. credentials for a DNS service), you should use a SecretKeySelector to reference a Secret resource. For details on the schema of this field, consult the webhook provider implementation's documentation.",
-                                    "type": "object"
+                                    "x-kubernetes-preserve-unknown-fields": true
                                   },
                                   "groupName": {
                                     "description": "The API group name that should be used when POSTing ChallengePayload resources to the webhook apiserver. This should be the same as the GroupName specified in the webhook provider implementation.",
@@ -796,6 +466,22 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                                     "properties": {
                                       "metadata": {
                                         "description": "ObjectMeta overrides for the pod used to solve HTTP01 challenges. Only the 'labels' and 'annotations' fields may be set. If labels or annotations overlap with in-built values, the values here will override the in-built values.",
+                                        "properties": {
+                                          "annotations": {
+                                            "additionalProperties": {
+                                              "type": "string"
+                                            },
+                                            "description": "Annotations that should be added to the create ACME HTTP01 solver pods.",
+                                            "type": "object"
+                                          },
+                                          "labels": {
+                                            "additionalProperties": {
+                                              "type": "string"
+                                            },
+                                            "description": "Labels that should be added to the created ACME HTTP01 solver pods.",
+                                            "type": "object"
+                                          }
+                                        },
                                         "type": "object"
                                       },
                                       "spec": {
@@ -1426,6 +1112,41 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                           ],
                           "type": "object"
                         },
+                        "kubernetes": {
+                          "description": "This contains a Role and Secret with a ServiceAccount token to authenticate with vault.",
+                          "properties": {
+                            "mountPath": {
+                              "description": "The Vault mountPath here is the mount path to use when authenticating with Vault. For example, setting a value to `/v1/auth/foo`, will use the path `/v1/auth/foo/login` to authenticate with Vault. If unspecified, the default value \"/v1/auth/kubernetes\" will be used.",
+                              "type": "string"
+                            },
+                            "role": {
+                              "description": "A required field containing the Vault Role to assume. A Role binds a Kubernetes ServiceAccount with a set of Vault policies.",
+                              "type": "string"
+                            },
+                            "secretRef": {
+                              "description": "The required Secret field containing a Kubernetes ServiceAccount JWT used for authenticating with Vault. Use of 'ambient credentials' is not supported.",
+                              "properties": {
+                                "key": {
+                                  "description": "The key of the secret to select from. Must be a valid secret key.",
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name"
+                              ],
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "role",
+                            "secretRef"
+                          ],
+                          "type": "object"
+                        },
                         "tokenSecretRef": {
                           "description": "This Secret contains the Vault token key",
                           "properties": {
@@ -1609,9 +1330,10 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
         }
         JSON
     }
+    version = "v1alpha2"
 
     versions {
-      name    = "v1alpha1"
+      name    = "v1alpha2"
       served  = true
       storage = true
     }

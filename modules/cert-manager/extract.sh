@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function tfextract() {
-    go run cmd/extractor/*go $@
+    go run /go/src/github.com/mingfang/terraform-provider-k8s/cmd/extractor/*go $@
 }
 
 export DIR=modules/cert-manager
@@ -9,7 +9,7 @@ mkdir -p ${DIR}/tmp
 mkdir -p ${DIR}/crd
 
 rm ${DIR}/tmp/*
-tfextract -dir ${DIR}/tmp -url https://github.com/jetstack/cert-manager/releases/download/v0.10.1/cert-manager-no-webhook.yaml
+tfextract -dir ${DIR}/tmp -url https://github.com/jetstack/cert-manager/releases/download/v0.12.0/cert-manager-no-webhook.yaml
 
 # Must apply the CRDs first
 mv ${DIR}/tmp/*-custom_resource_definition.tf ${DIR}/crd

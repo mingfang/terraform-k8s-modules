@@ -5,7 +5,7 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
       "app.kubernetes.io/instance"   = "cert-manager"
       "app.kubernetes.io/managed-by" = "Tiller"
       "app.kubernetes.io/name"       = "cert-manager"
-      "helm.sh/chart"                = "cert-manager-v0.10.1"
+      "helm.sh/chart"                = "cert-manager-v0.12.0"
     }
     name      = "cert-manager"
     namespace = var.namespace
@@ -32,7 +32,7 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
           "app.kubernetes.io/instance"   = "cert-manager"
           "app.kubernetes.io/managed-by" = "Tiller"
           "app.kubernetes.io/name"       = "cert-manager"
-          "helm.sh/chart"                = "cert-manager-v0.10.1"
+          "helm.sh/chart"                = "cert-manager-v0.12.0"
         }
       }
       spec {
@@ -41,7 +41,7 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
           args = [
             "--v=2",
             "--cluster-resource-namespace=$(POD_NAMESPACE)",
-            "--leader-election-namespace=$(POD_NAMESPACE)",
+            "--leader-election-namespace=kube-system",
             "--webhook-namespace=$(POD_NAMESPACE)",
             "--webhook-ca-secret=cert-manager-webhook-ca",
             "--webhook-serving-secret=cert-manager-webhook-tls",
@@ -56,12 +56,13 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-controller:v0.10.1"
+          image             = "quay.io/jetstack/cert-manager-controller:v0.12.0"
           image_pull_policy = "IfNotPresent"
           name              = "cert-manager"
 
           ports {
             container_port = 9402
+            protocol       = "TCP"
           }
           resources {
             requests = {

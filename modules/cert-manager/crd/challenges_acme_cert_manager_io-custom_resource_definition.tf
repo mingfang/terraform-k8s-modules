@@ -1,6 +1,6 @@
-resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challenges_certmanager_k8s_io" {
+resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challenges_acme_cert_manager_io" {
   metadata {
-    name = "challenges.certmanager.k8s.io"
+    name = "challenges.acme.cert-manager.io"
   }
   spec {
 
@@ -26,10 +26,12 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
       name        = "Age"
       type        = "date"
     }
-    group = "certmanager.k8s.io"
+    group = "acme.cert-manager.io"
     names {
-      kind   = "Challenge"
-      plural = "challenges"
+      kind      = "Challenge"
+      list_kind = "ChallengeList"
+      plural    = "challenges"
+      singular  = "challenge"
     }
     preserve_unknown_fields = false
     scope                   = "Namespaced"
@@ -41,11 +43,11 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
           "description": "Challenge is a type to represent a Challenge request with an ACME server",
           "properties": {
             "apiVersion": {
-              "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources",
+              "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
               "type": "string"
             },
             "kind": {
-              "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds",
+              "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
               "type": "string"
             },
             "metadata": {
@@ -56,39 +58,6 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
                 "authzURL": {
                   "description": "AuthzURL is the URL to the ACME Authorization resource that this challenge is a part of.",
                   "type": "string"
-                },
-                "config": {
-                  "description": "Config specifies the solver configuration for this challenge. Only **one** of 'config' or 'solver' may be specified, and if both are specified then no action will be performed on the Challenge resource. DEPRECATED: the 'solver' field should be specified instead",
-                  "properties": {
-                    "dns01": {
-                      "description": "DNS01 contains DNS01 challenge solving configuration",
-                      "properties": {
-                        "provider": {
-                          "description": "Provider is the name of the DNS01 challenge provider to use, as configure on the referenced Issuer or ClusterIssuer resource.",
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "provider"
-                      ],
-                      "type": "object"
-                    },
-                    "http01": {
-                      "description": "HTTP01 contains HTTP01 challenge solving configuration",
-                      "properties": {
-                        "ingress": {
-                          "description": "Ingress is the name of an Ingress resource that will be edited to include the ACME HTTP01 'well-known' challenge path in order to solve HTTP01 challenges. If this field is specified, 'ingressClass' **must not** be specified.",
-                          "type": "string"
-                        },
-                        "ingressClass": {
-                          "description": "IngressClass is the ingress class that should be set on new ingress resources that are created in order to solve HTTP01 challenges. This field should be used when using an ingress controller such as nginx, which 'flattens' ingress configuration instead of maintaining a 1:1 mapping between loadbalancer IP:ingress resources. If this field is not set, and 'ingress' is not set, then ingresses without an ingress class set will be created to solve HTTP01 challenges. If this field is specified, 'ingress' **must not** be specified.",
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    }
-                  },
-                  "type": "object"
                 },
                 "dnsName": {
                   "description": "DNSName is the identifier that this challenge is for, e.g. example.com.",
@@ -117,7 +86,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
                   "type": "string"
                 },
                 "solver": {
-                  "description": "Solver contains the domain solving configuration that should be used to solve this challenge resource. Only **one** of 'config' or 'solver' may be specified, and if both are specified then no action will be performed on the Challenge resource.",
+                  "description": "Solver contains the domain solving configuration that should be used to solve this challenge resource.",
                   "properties": {
                     "dns01": {
                       "properties": {
@@ -290,8 +259,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
                             }
                           },
                           "required": [
-                            "project",
-                            "serviceAccountSecretRef"
+                            "project"
                           ],
                           "type": "object"
                         },
@@ -314,12 +282,27 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
                               ],
                               "type": "object"
                             },
+                            "apiTokenSecretRef": {
+                              "properties": {
+                                "key": {
+                                  "description": "The key of the secret to select from. Must be a valid secret key.",
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name"
+                              ],
+                              "type": "object"
+                            },
                             "email": {
                               "type": "string"
                             }
                           },
                           "required": [
-                            "apiKeySecretRef",
                             "email"
                           ],
                           "type": "object"
@@ -442,7 +425,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
                           "properties": {
                             "config": {
                               "description": "Additional configuration that should be passed to the webhook apiserver when challenges are processed. This can contain arbitrary JSON data. Secret values should not be specified in this stanza. If secret values are needed (e.g. credentials for a DNS service), you should use a SecretKeySelector to reference a Secret resource. For details on the schema of this field, consult the webhook provider implementation's documentation.",
-                              "type": "object"
+                              "x-kubernetes-preserve-unknown-fields": true
                             },
                             "groupName": {
                               "description": "The API group name that should be used when POSTing ChallengePayload resources to the webhook apiserver. This should be the same as the GroupName specified in the webhook provider implementation.",
@@ -481,6 +464,22 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
                               "properties": {
                                 "metadata": {
                                   "description": "ObjectMeta overrides for the pod used to solve HTTP01 challenges. Only the 'labels' and 'annotations' fields may be set. If labels or annotations overlap with in-built values, the values here will override the in-built values.",
+                                  "properties": {
+                                    "annotations": {
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      },
+                                      "description": "Annotations that should be added to the create ACME HTTP01 solver pods.",
+                                      "type": "object"
+                                    },
+                                    "labels": {
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      },
+                                      "description": "Labels that should be added to the created ACME HTTP01 solver pods.",
+                                      "type": "object"
+                                    }
+                                  },
                                   "type": "object"
                                 },
                                 "spec": {
@@ -1114,9 +1113,10 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
         }
         JSON
     }
+    version = "v1alpha2"
 
     versions {
-      name    = "v1alpha1"
+      name    = "v1alpha2"
       served  = true
       storage = true
     }

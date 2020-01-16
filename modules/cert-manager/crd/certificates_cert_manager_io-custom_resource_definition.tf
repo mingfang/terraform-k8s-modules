@@ -50,6 +50,9 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "certific
     preserve_unknown_fields = false
     scope                   = "Namespaced"
     subresources {
+      status = {
+        "" = "" //hack since TF does not allow empty values
+      }
     }
     validation {
       open_apiv3_schema = <<-JSON

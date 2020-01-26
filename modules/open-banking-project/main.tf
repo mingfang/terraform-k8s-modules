@@ -48,12 +48,16 @@ locals {
             value = var.OBP_KAFKA_PARTITIONS
           },
           {
-            name  = "OBP_CONNECTOR"
-            value = var.OBP_CONNECTOR
+            name  = "OBP_KAFKA_REQUEST_TOPIC"
+            value = var.OBP_KAFKA_REQUEST_TOPIC
           },
           {
-            name  = "OBP_API_INSTANCE_ID"
-            value = var.OBP_API_INSTANCE_ID
+            name  = "OBP_KAFKA_RESPONSE_TOPIC"
+            value = var.OBP_KAFKA_RESPONSE_TOPIC
+          },
+          {
+            name  = "OBP_CONNECTOR"
+            value = var.OBP_CONNECTOR
           },
           {
             name  = "OBP_DB_DRIVER"
@@ -72,6 +76,15 @@ locals {
             value = var.OBP_AKKA_CONNECTOR_LOGLEVEL
           },
         ], var.env)
+
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          export OBP_API_INSTANCE_ID="$(expr $${HOSTNAME//[^0-9]/} + 1)"
+          exec java -jar start.jar
+          EOF
+        ]
 
         volume_mounts = [
           {
@@ -96,7 +109,7 @@ locals {
   }
 }
 
-module "deployment-service" {
-  source     = "../../archetypes/deployment-service"
+module "statefulset-service" {
+  source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

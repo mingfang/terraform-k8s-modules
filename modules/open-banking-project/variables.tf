@@ -45,6 +45,14 @@ variable "OBP_KAFKA_PARTITIONS" {
   default = 1
 }
 
+variable "OBP_KAFKA_REQUEST_TOPIC" {
+  default = "Request"
+}
+
+variable "OBP_KAFKA_RESPONSE_TOPIC" {
+  default = "Response"
+}
+
 variable "OBP_CONNECTOR" {
   default = null
 }
@@ -55,9 +63,6 @@ variable "OBP_DB_DRIVER" {
 
 variable "OBP_DB_URL" {
   default = null
-}
-
-variable "OBP_API_INSTANCE_ID" {
 }
 
 variable "OBP_LOGGER_LOGLEVEL" {

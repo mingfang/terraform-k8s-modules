@@ -95,10 +95,8 @@ module "open-banking-project-api" {
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  OBP_API_INSTANCE_ID       = var.name
-  OBP_CONNECTOR             = "kafka_vSept2018"
+  OBP_CONNECTOR             = "kafka_vMay2019"
   OBP_KAFKA_BOOTSTRAP_HOSTS = "${module.kafka.name}:9092"
-  OBP_KAFKA_CLIENT_ID       = var.name
   OBP_DB_DRIVER             = "org.postgresql.Driver"
   OBP_DB_URL                = "jdbc:postgresql://${module.postgres.name}:5432/openbankingproject?user=openbankingproject&password=openbankingproject"
 }

@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "eclipse/che-server:7.7.0"
+  default = "quay.io/eclipse/che-server:7.8.0"
 }
 
 variable "replicas" {

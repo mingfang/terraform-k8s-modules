@@ -30,7 +30,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "ubercadence/server:0.10.2-auto-setup"
+  default = "ubercadence/server:0.10.3-auto-setup"
 }
 
 variable "env" {

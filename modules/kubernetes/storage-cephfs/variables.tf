@@ -8,12 +8,10 @@ variable "replicas" {}
 variable "storage" {}
 
 variable "annotations" {
-  type    = "map"
   default = {}
 }
 
 variable "mount_options" {
-  type    = "list"
   default = []
 }
 
@@ -22,7 +20,7 @@ variable "secret_name" {}
 variable "secret_namespace" {}
 
 variable "monitors" {
-  type = "list"
+  type = list
 }
 
 variable "path" {

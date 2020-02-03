@@ -21,13 +21,13 @@ variable "overrides" {
 }
 
 variable "storm_zookeeper_servers" {
-  type = "list"
+  type = list
 }
 
 variable nimbus_seeds {
-  type = "list"
+  type = list
 }
 
 variable "supervisor_slots_ports" {
-  type = "list"
+  type = list
 }

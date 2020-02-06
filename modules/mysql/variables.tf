@@ -17,22 +17,25 @@ variable "ports" {
   ]
 }
 
-variable image {
-  default = "mysql"
+variable "image" {
+  default = "mysql:8.0.19"
 }
 
 variable "env" {
   default = []
 }
 
+variable "annotations" {
+  default = {}
+}
 
 variable "overrides" {
   default = {}
 }
 
-variable "storage_class" {}
-
 variable "storage" {}
+
+variable "storage_class" {}
 
 variable "volume_claim_template_name" {
   default = "pvc"

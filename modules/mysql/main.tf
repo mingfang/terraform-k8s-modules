@@ -1,15 +1,9 @@
 
 locals {
-  labels = {
-    app     = var.name
-    name    = var.name
-    service = var.name
-  }
-
   parameters = {
     name                 = var.name
     namespace            = var.namespace
-    labels               = local.labels
+    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
@@ -18,6 +12,7 @@ locals {
       {
         name  = "mysql"
         image = var.image
+
         env = concat([
           {
             name  = "MYSQL_USER"

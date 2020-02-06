@@ -41,6 +41,14 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
+variable "TZ" {
+  default = "UTC"
+}
+
+//caching_sha2_password or mysql_native_password
+variable "default-authentication-plugin" {
+  default = "caching_sha2_password"
+}
 
 variable MYSQL_USER {}
 
@@ -49,3 +57,7 @@ variable MYSQL_PASSWORD {}
 variable MYSQL_DATABASE {}
 
 variable "MYSQL_ROOT_PASSWORD" {}
+
+variable "MYSQL_ROOT_HOST" {
+  default = "%"
+}

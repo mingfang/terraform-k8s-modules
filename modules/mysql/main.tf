@@ -12,6 +12,7 @@ locals {
       {
         name  = "mysql"
         image = var.image
+        args  = ["--default-authentication-plugin=${var.default-authentication-plugin}"]
 
         env = concat([
           {
@@ -31,8 +32,12 @@ locals {
             value = var.MYSQL_ROOT_PASSWORD
           },
           {
+            name  = "MYSQL_ROOT_HOST"
+            value = var.MYSQL_ROOT_HOST
+          },
+          {
             name  = "TZ"
-            value = "UTC"
+            value = var.TZ
           },
         ], var.env)
 

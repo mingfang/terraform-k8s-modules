@@ -11,8 +11,18 @@ variable "ports" {
       port = 2049
     },
     {
+      name = "nfs-udp"
+      port = 2049
+      protocol = "UDP"
+    },
+    {
       name = "mountd"
       port = 20048
+    },
+    {
+      name = "mountd-udp"
+      port = 20048
+      protocol = "UDP"
     },
     {
       name = "rpcbind"
@@ -21,6 +31,33 @@ variable "ports" {
     {
       name     = "rpcbind-udp"
       port     = 111
+      protocol = "UDP"
+    },
+    {
+      name = "tcp-662"
+      port = 662
+    },
+    {
+      name     = "udp-662"
+      port     = 662
+      protocol = "UDP"
+    },
+    {
+      name = "tcp-875"
+      port = 875
+    },
+    {
+      name     = "udp-875"
+      port     = 875
+      protocol = "UDP"
+    },
+    {
+      name = "tcp-32803"
+      port = 32803
+    },
+    {
+      name     = "udp-32803"
+      port     = 32803
       protocol = "UDP"
     },
   ]

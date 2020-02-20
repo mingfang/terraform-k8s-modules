@@ -9,6 +9,7 @@ locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
+    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
@@ -18,7 +19,7 @@ locals {
         name  = "nginx"
         image = var.image
 
-        env = [
+        env = concat([
           {
             name = "POD_NAME"
 
@@ -28,9 +29,26 @@ locals {
               }
             }
           },
-        ]
+        ], var.env)
+
+        volume_mounts = var.default-conf != null ? [
+          {
+            name       = "config"
+            mount_path = "/etc/nginx/conf.d/default.conf"
+            sub_path   = "default.conf"
+          },
+        ] : []
       }
     ]
+
+    volumes = var.default-conf != null ? [
+      {
+        config_map = {
+          name = var.name
+        }
+        name = "config"
+      },
+    ] : []
   }
 }
 

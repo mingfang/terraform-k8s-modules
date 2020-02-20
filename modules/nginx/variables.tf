@@ -18,9 +18,23 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "nginx:1.17.5"
+  default = "nginx:1.17.8"
+}
+
+variable "env" {
+  default = []
+}
+
+variable "annotations" {
+  default = {}
 }
 
 variable "overrides" {
   default = {}
+}
+
+// optional - override default.conf
+variable "default-conf" {
+  type    = string
+  default = null
 }

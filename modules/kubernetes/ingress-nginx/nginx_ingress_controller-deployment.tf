@@ -61,7 +61,7 @@ resource "k8s_apps_v1_deployment" "nginx_ingress_controller" {
               }
             }
           }
-          image = "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1"
+          image = "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.30.0"
           lifecycle {
             pre_stop {
               exec {
@@ -106,10 +106,14 @@ resource "k8s_apps_v1_deployment" "nginx_ingress_controller" {
                 "ALL",
               ]
             }
-            run_asuser = 33
+            run_asuser = 101
           }
         }
-        service_account_name = var.name
+        node_selector = {
+          "kubernetes.io/os" = "linux"
+        }
+        service_account_name             = var.name
+        termination_grace_period_seconds = 300
       }
     }
   }

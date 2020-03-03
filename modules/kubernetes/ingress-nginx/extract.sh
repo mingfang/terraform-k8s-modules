@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 function tfextract() {
-    go run cmd/extractor/*go $@
+    go run /go/src/github.com/mingfang/terraform-provider-k8s/cmd/extractor/*go $@
 }
 
 export DIR=modules/kubernetes/ingress-nginx
 mkdir -p ${DIR}
 
-tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
-tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
+tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
+tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/baremetal/service-nodeport.yaml
 
 #namespace
 rm ${DIR}/*namespace.tf

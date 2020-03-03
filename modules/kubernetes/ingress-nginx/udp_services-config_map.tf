@@ -7,6 +7,4 @@ resource "k8s_core_v1_config_map" "udp_services" {
     name      = "${var.name}-udp-services"
     namespace = var.namespace
   }
-
-  data = var.udp_services_data
 }

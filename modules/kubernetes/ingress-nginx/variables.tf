@@ -1,11 +1,16 @@
 variable "name" {}
 
 variable "namespace" {
-  default = null
+  default = "default"
 }
 
 variable "service_type" {
-  default = "ClusterIP"
+  default = "LoadBalancer"
+}
+
+variable external_traffic_policy {
+  default     = "Cluster"
+  description = "set to null if service_type is not LoadBalancer"
 }
 
 variable "ingress_class" {
@@ -33,6 +38,10 @@ variable "ports" {
   ]
 }
 
+variable "container_ports" {
+  default = null
+}
+
 variable "extra_args" {
   default = []
 }
@@ -44,3 +53,9 @@ variable "tcp_services_data" {
 variable "udp_services_data" {
   default = {}
 }
+
+variable "node_selector" {
+  default     = {}
+  description = "key/value pair. e.g. zone=com"
+}
+

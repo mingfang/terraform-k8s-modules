@@ -8,8 +8,8 @@ resource "k8s_core_v1_service" "ingress_nginx" {
     namespace = var.namespace
   }
   spec {
-    external_traffic_policy = "Cluster"
-    load_balancer_ip = var.load_balancer_ip
+    external_traffic_policy = var.external_traffic_policy
+    load_balancer_ip        = var.load_balancer_ip
 
     dynamic "ports" {
       for_each = var.ports == null ? [] : var.ports

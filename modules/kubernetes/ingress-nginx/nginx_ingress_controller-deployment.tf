@@ -109,10 +109,21 @@ resource "k8s_apps_v1_deployment" "nginx_ingress_controller" {
             }
             run_asuser = 101
           }
+
+          dynamic "ports" {
+            for_each = var.container_ports == null ? [] : var.container_ports
+            content {
+              container_port = lookup(ports.value, "container_port", null)
+              host_port      = lookup(ports.value, "host_port", null)
+            }
+          }
         }
-        node_selector = {
-          "kubernetes.io/os" = "linux"
-        }
+        node_selector = merge(
+          {
+            "kubernetes.io/os" = "linux"
+          },
+          var.node_selector
+        )
         service_account_name             = var.name
         termination_grace_period_seconds = 300
       }

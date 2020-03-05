@@ -29,21 +29,22 @@ resource "k8s_apps_v1_deployment" "nginx_ingress_controller" {
       spec {
 
         containers {
-          args = [
-            "/nginx-ingress-controller",
-            "--election-id=${var.name}",
-            "--ingress-class=${var.ingress_class}",
-            "--configmap=$(POD_NAMESPACE)/${var.name}-nginx-configuration",
-            "--tcp-services-configmap=$(POD_NAMESPACE)/${var.name}-tcp-services",
-            "--udp-services-configmap=$(POD_NAMESPACE)/${var.name}-udp-services",
-            "--annotations-prefix=nginx.ingress.kubernetes.io",
-            var.service_type == "NodePort" ?
-            "--report-node-internal-ip-address" :
-            "--publish-service=$(POD_NAMESPACE)/${var.name}",
-            "--update-status=true",
-            "--update-status-on-shutdown",
-            join(",", var.extra_args),
-          ]
+          args = concat(
+            [
+              "/nginx-ingress-controller",
+              "--election-id=${var.name}",
+              "--ingress-class=${var.ingress_class}",
+              "--configmap=$(POD_NAMESPACE)/${var.name}-nginx-configuration",
+              "--tcp-services-configmap=$(POD_NAMESPACE)/${var.name}-tcp-services",
+              "--udp-services-configmap=$(POD_NAMESPACE)/${var.name}-udp-services",
+              "--annotations-prefix=nginx.ingress.kubernetes.io",
+              var.service_type == "NodePort" ? "--report-node-internal-ip-address" : "--publish-service=$(POD_NAMESPACE)/${var.name}",
+              "--update-status=true",
+              "--update-status-on-shutdown",
+            ],
+            var.extra_args
+          )
+
 
           env {
             name = "POD_NAME"

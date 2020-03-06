@@ -27,14 +27,13 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON"           = <<-EOF
       {
         "kubernetes.io/ingress.class": "${var.ingress_class}",
-        "nginx.ingress.kubernetes.io/rewrite-target": "/$1",
         "nginx.ingress.kubernetes.io/ssl-redirect": "false",
         "nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600",
         "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"
       }
       EOF
     "CHE_INFRA_KUBERNETES_INGRESS_DOMAIN"                      = var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN
-    "CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM"             = "%s(.*)"
+    "CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM"             = var.CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM
     "CHE_INFRA_KUBERNETES_MACHINE__START__TIMEOUT__MIN"        = "5"
     "CHE_INFRA_KUBERNETES_MASTER__URL"                         = ""
     "CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT"                   = var.CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT
@@ -49,7 +48,9 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_INFRA_KUBERNETES_SERVER__STRATEGY"                    = var.CHE_INFRA_KUBERNETES_SERVER__STRATEGY
     "CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME"              = var.CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME
     "CHE_INFRA_KUBERNETES_TLS__ENABLED"                        = var.CHE_INFRA_KUBERNETES_TLS__ENABLED
-    "CHE_INFRA_KUBERNETES_TLS__SECRET"                         = ""
+    "CHE_INFRA_KUBERNETES_TLS__SECRET"                         = "tls"
+    "CHE_INFRA_KUBERNETES_TLS__KEY"                            = var.CHE_INFRA_KUBERNETES_TLS__KEY
+    "CHE_INFRA_KUBERNETES_TLS__CERT"                           = var.CHE_INFRA_KUBERNETES_TLS__CERT
     "CHE_INFRA_KUBERNETES_TRUST__CERTS"                        = "false"
     "CHE_INFRA_KUBERNETES_WORKSPACE__START__TIMEOUT__MIN"      = "15"
     "CHE_KEYCLOAK_AUTH__SERVER__URL"                           = var.CHE_KEYCLOAK_AUTH__SERVER__URL

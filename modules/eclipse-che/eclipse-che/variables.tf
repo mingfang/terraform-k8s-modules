@@ -37,6 +37,11 @@ variable "overrides" {
   default = {}
 }
 
+variable data-pvc-name {
+  default = "che-data-volume"
+  description = "PVC name for Che data"
+}
+
 variable "ingress_class" {}
 
 variable CHE_WORKSPACE_DEVFILE__REGISTRY__URL {}

@@ -125,7 +125,7 @@ locals {
       {
         name = "che-data-volume"
         persistent_volume_claim = {
-          claim_name = "che-data-volume"
+          claim_name = var.data-pvc-name
         }
       },
     ]

@@ -5,7 +5,7 @@
  * Module usage:
  *
  *     module "priority-class" {
- *       source         = "git::https://github.com/mingfang/terraform-k8s-modules.git//modules/kubernetes/priority-class"
+ *       source         = "../../modules/kubernetes/priority-class"
  *       name           = "normal"
  *       value          = 50
  *       description    = "Normal Priority"
@@ -36,10 +36,10 @@ variable global_default {
 
 resource "k8s_scheduling_k8s_io_v1beta1_priority_class" "priority-class" {
   metadata {
-    name = "${var.name}"
+    name = var.name
   }
 
-  value          = "${var.value}"
-  description    = "${var.description}"
-  global_default = "${var.global_default}"
+  value          = var.value
+  description    = var.description
+  global_default = var.global_default
 }

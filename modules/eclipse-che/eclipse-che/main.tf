@@ -87,8 +87,9 @@ locals {
 
         volume_mounts = [
           {
-            name       = "che-data-volume"
-            mount_path = "/data"
+            name          = "che-data-volume"
+            mount_path    = "/data"
+            sub_path_expr = "${var.namespace}/${var.name}/$(POD_NAME)"
           },
         ]
       },
@@ -106,8 +107,9 @@ locals {
 
         volume_mounts = [
           {
-            name       = "che-data-volume"
-            mount_path = "/data"
+            name          = "che-data-volume"
+            mount_path    = "/data"
+            sub_path_expr = "${var.namespace}/${var.name}/$(POD_NAME)"
           },
         ]
       },

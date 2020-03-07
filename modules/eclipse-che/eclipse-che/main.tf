@@ -105,6 +105,17 @@ locals {
         image = "busybox"
         name  = "fmp-volume-permission"
 
+        env = [
+          {
+            name = "POD_NAME"
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
+              }
+            }
+          },
+        ]
+
         volume_mounts = [
           {
             name          = "che-data-volume"

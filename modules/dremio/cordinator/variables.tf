@@ -5,21 +5,18 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "dremio/dremio-oss:latest"
+  default = "dremio/dremio-oss:4.1.4"
 }
 
 variable "env" {
-  type    = list
   default = []
 }
 
 variable "annotations" {
-  type    = map
   default = {}
 }
 
 variable "node_selector" {
-  type    = map
   default = null
 }
 

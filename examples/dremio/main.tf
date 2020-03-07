@@ -1,9 +1,5 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
-    labels = {
-      "istio-injection" = "disabled"
-    }
-
     name = var.namespace
   }
 }
@@ -22,7 +18,7 @@ module "zookeeper-storage" {
   storage   = "1Gi"
 
   annotations = {
-    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 
   nfs_server    = module.nfs-server.service.spec[0].cluster_ip
@@ -53,33 +49,30 @@ module "master-cordinator-storage" {
   storage   = "1Gi"
 
   annotations = {
-    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 
   nfs_server    = module.nfs-server.service.spec[0].cluster_ip
   mount_options = module.nfs-server.mount_options
 }
 
+// optional Alluxio integration
 resource "k8s_core_v1_persistent_volume_claim" "this" {
-
   metadata {
     name      = var.name
     namespace = var.namespace
   }
-
   spec {
     access_modes = ["ReadWriteMany"]
-
     resources {
       requests = { "storage" = "5Gi" }
     }
-
     storage_class_name = "alluxio"
   }
 }
 
-
 locals {
+  /*
   overrides = {
     annotations = {
       "pvc" = k8s_core_v1_persistent_volume_claim.this.metadata[0].resource_version
@@ -99,6 +92,8 @@ locals {
       }
     ]
   }
+*/
+  overrides = {}
 }
 
 module "master-cordinator" {
@@ -123,34 +118,35 @@ module "cordinator" {
   overrides         = local.overrides
 }
 
-module "ingress-rules" {
-  source    = "../../modules/kubernetes/ingress-rules"
-  name      = var.name
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  annotations = {
-    "nginx.ingress.kubernetes.io/server-alias"    = "${var.name}.*",
-    "nginx.ingress.kubernetes.io/proxy-body-size" = "1024m",
+resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"                       = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"          = "${var.name}.${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
+      "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
+      "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
+      "nginx.ingress.kubernetes.io/proxy-body-size"       = "1024m" // for large file uploads
+    }
+    name      = "${var.name}.${var.namespace}"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
-  ingress_class = "nginx"
-  rules = [
-    {
-      host = var.name
-
-      http = {
-        paths = [
-          {
-            path = "/"
-
-            backend = {
-              service_name = module.cordinator.service.metadata[0].name
-              service_port = module.cordinator.service.spec[0].ports[0].port
-            }
-          },
-        ]
+  spec {
+    rules {
+      host = "${var.name}.${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.cordinator.name
+            service_port = module.cordinator.service.spec[0].ports[0].port
+          }
+          path = "/"
+        }
       }
-    },
-  ]
+    }
+  }
 }
+
 
 module "executor-storage" {
   source    = "../../modules/kubernetes/storage-nfs"
@@ -160,7 +156,7 @@ module "executor-storage" {
   storage   = "1Gi"
 
   annotations = {
-    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 
   nfs_server    = module.nfs-server.service.spec[0].cluster_ip

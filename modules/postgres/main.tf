@@ -37,15 +37,15 @@ locals {
           },
           {
             name  = "PGDATA"
-            value = "/data/$(POD_NAME)"
+            value = "/data"
           },
         ], var.env)
 
         volume_mounts = [
           {
-            name       = var.volume_claim_template_name
-            mount_path = "/data"
-            sub_path   = var.name
+            name          = var.volume_claim_template_name
+            mount_path    = "/data"
+            sub_path_expr = "${var.namespace}/${var.name}/$(POD_NAME)"
           },
           {
             name       = "shm"

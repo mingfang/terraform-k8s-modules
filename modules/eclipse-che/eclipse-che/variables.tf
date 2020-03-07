@@ -149,3 +149,8 @@ variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER {
 }
 
 // end CHE_MULTIUSER=true
+
+variable CHE_SYSTEM_ADMIN__NAME {
+  default = "admin"
+  description = "Grant system permission for 'che.admin.name' user. If the user already exists it’ll happen oncomponent startup, if not - during the first login when user is persisted in the database."
+}

@@ -5,6 +5,9 @@ For multi-user = true https://github.com/eclipse/che/blob/master/assembly/assemb
 - Uppercase all names
 - Convert . to _
 - Convert - to __ //double underscore
+
+And here
+https://www.eclipse.org/che/docs/pages/che-7/administration-guide/examples/system-variables.html
 */
 
 locals {
@@ -68,6 +71,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_OAUTH_GITHUB_CLIENTID"                                = ""
     "CHE_OAUTH_GITHUB_CLIENTSECRET"                            = ""
     "CHE_PORT"                                                 = "8080"
+    "CHE_SYSTEM_ADMIN__NAME"                                   = var.CHE_SYSTEM_ADMIN__NAME
     "CHE_TRACING_ENABLED"                                      = "false"
     "CHE_WEBSOCKET_ENDPOINT"                                   = "${local.ws_url}/api/websocket"
     "CHE_WEBSOCKET_ENDPOINT__MINOR"                            = "${local.ws_url}/api/websocket-minor"

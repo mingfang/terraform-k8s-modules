@@ -1,7 +1,7 @@
 resource "k8s_rbac_authorization_k8s_io_v1_role" "kubernetes-dashboard-minimal" {
   metadata {
     name      = "${var.name}-minimal"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 
   rules {

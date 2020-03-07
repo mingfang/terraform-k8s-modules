@@ -1,22 +1,22 @@
 resource "k8s_apps_v1_deployment" "kubernetes-dashboard" {
   metadata {
     labels = {
-      "k8s-app" = "${var.name}"
+      "k8s-app" = var.name
     }
-    name      = "${var.name}"
-    namespace = "${var.namespace}"
+    name      = var.name
+    namespace = var.namespace
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        "k8s-app" = "${var.name}"
+        "k8s-app" = var.name
       }
     }
     template {
       metadata {
         labels = {
-          "k8s-app" = "${var.name}"
+          "k8s-app" = var.name
         }
       }
       spec {
@@ -35,7 +35,7 @@ resource "k8s_apps_v1_deployment" "kubernetes-dashboard" {
             initial_delay_seconds = 30
             timeout_seconds       = 30
           }
-          name = "${var.name}"
+          name = var.name
 
           ports {
             container_port = 8443
@@ -51,7 +51,7 @@ resource "k8s_apps_v1_deployment" "kubernetes-dashboard" {
             name       = "tmp-volume"
           }
         }
-        service_account_name = "${var.name}"
+        service_account_name = var.name
 
         tolerations {
           effect = "NoSchedule"

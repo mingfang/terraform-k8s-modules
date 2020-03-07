@@ -1,7 +1,7 @@
 resource "k8s_rbac_authorization_k8s_io_v1_role_binding" "kubernetes-dashboard-minimal" {
   metadata {
     name      = "${var.name}-minimal"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
@@ -11,7 +11,7 @@ resource "k8s_rbac_authorization_k8s_io_v1_role_binding" "kubernetes-dashboard-m
 
   subjects {
     kind      = "ServiceAccount"
-    name      = "${var.name}"
-    namespace = "${var.namespace}"
+    name      = var.name
+    namespace = var.namespace
   }
 }

@@ -1,10 +1,6 @@
 
 resource "k8s_core_v1_namespace" "this" {
   metadata {
-    labels = {
-      "istio-injection" = "disabled"
-    }
-
     name = var.namespace
   }
 }
@@ -17,7 +13,7 @@ module "nfs-server" {
 
 module "minecraft-storage" {
   source        = "../../modules/kubernetes/storage-nfs"
-  name          = "${var.name}"
+  name          = var.name
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = 1
   mount_options = module.nfs-server.mount_options
@@ -25,7 +21,7 @@ module "minecraft-storage" {
   storage       = "1Gi"
 
   annotations = {
-    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 }
 
@@ -50,7 +46,7 @@ module "bungeecord-storage" {
   storage       = "1Gi"
 
   annotations = {
-    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 }
 

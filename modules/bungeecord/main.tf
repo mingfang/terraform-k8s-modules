@@ -7,9 +7,14 @@
 
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = var.annotations
+    name      = var.name
+    namespace = var.namespace
+    annotations = merge(
+      var.annotations,
+      {
+        "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.this.data), values(k8s_core_v1_config_map.this.data)))
+      },
+    )
     replicas             = 1
     ports                = var.ports
     enable_service_links = false
@@ -62,6 +67,6 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

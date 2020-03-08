@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "quay.io/eclipse/che-server:7.9.0"
+  default = "quay.io/eclipse/che-server:7.9.1"
 }
 
 variable "replicas" {
@@ -35,11 +35,6 @@ variable "annotations" {
 
 variable "overrides" {
   default = {}
-}
-
-variable data-pvc-name {
-  default = "che-data-volume"
-  description = "PVC name for Che data"
 }
 
 variable "ingress_class" {}

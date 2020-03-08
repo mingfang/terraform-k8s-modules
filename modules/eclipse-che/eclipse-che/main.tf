@@ -84,45 +84,6 @@ locals {
         security_context = {
           run_asuser = 1724
         }
-
-        volume_mounts = [
-          {
-            name          = "che-data-volume"
-            mount_path    = "/data"
-            sub_path_expr = "${var.namespace}/${var.name}/$(POD_NAME)"
-          },
-        ]
-      },
-    ]
-
-    init_containers = [
-      {
-        command = [
-          "chmod",
-          "777",
-          "/data",
-        ]
-        image = "busybox"
-        name  = "fmp-volume-permission"
-
-        env = [
-          {
-            name = "POD_NAME"
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
-              }
-            }
-          },
-        ]
-
-        volume_mounts = [
-          {
-            name          = "che-data-volume"
-            mount_path    = "/data"
-            sub_path_expr = "${var.namespace}/${var.name}/$(POD_NAME)"
-          },
-        ]
       },
     ]
 
@@ -133,15 +94,6 @@ locals {
     strategy = {
       type = "Recreate"
     }
-
-    volumes = [
-      {
-        name = "che-data-volume"
-        persistent_volume_claim = {
-          claim_name = var.data-pvc-name
-        }
-      },
-    ]
   }
 }
 

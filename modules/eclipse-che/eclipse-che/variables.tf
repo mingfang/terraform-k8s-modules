@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "quay.io/eclipse/che-server:7.9.1"
+  default = "quay.io/eclipse/che-server:7.10.0"
 }
 
 variable "replicas" {
@@ -153,4 +153,8 @@ variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER {
 variable CHE_SYSTEM_ADMIN__NAME {
   default = "admin"
   description = "Grant system permission for 'che.admin.name' user. If the user already exists it’ll happen oncomponent startup, if not - during the first login when user is persisted in the database."
+}
+
+variable CHE_METRICS_ENABLED {
+  default = true
 }

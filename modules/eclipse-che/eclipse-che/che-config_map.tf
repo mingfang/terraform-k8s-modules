@@ -66,7 +66,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_LOGS_APPENDERS_IMPL"                                  = "plaintext"
     "CHE_LOGS_DIR"                                             = "/data/logs"
     "CHE_LOG_LEVEL"                                            = "INFO"
-    "CHE_METRICS_ENABLED"                                      = "false"
+    "CHE_METRICS_ENABLED"                                      = var.CHE_METRICS_ENABLED
     "CHE_MULTIUSER"                                            = var.CHE_MULTIUSER
     "CHE_OAUTH_GITHUB_CLIENTID"                                = ""
     "CHE_OAUTH_GITHUB_CLIENTSECRET"                            = ""

@@ -1,0 +1,84 @@
+apiVersion: 1.0.0
+metadata:
+  name: terraform-k8s-modules
+projects:
+  - name: terraform-k8s-modules
+    source:
+      location: 'https://github.com/mingfang/terraform-k8s-modules'
+      type: git
+components:
+  - referenceContent: |
+      apiVersion: v1
+      kind: List
+      items:
+      - apiVersion: v1
+        kind: Pod
+        metadata:
+          name: terraform
+        spec:
+          containers:
+          - name: terraform
+            image: registry.rebelsoft.com/terraform-provider-k8s
+            command: [sleep, infinity]
+            env:
+            - name: HOME
+              value: /projects
+            - name: TF_VAR_namespace
+              value: ""
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            resources:
+              limits:
+                memory: 512Mi
+            volumeMounts:
+            - mountPath: /projects
+              name: projects
+          volumes:
+          - name: projects
+            persistentVolumeClaim:
+              claimName: projects
+      - apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: projects
+        spec:
+          accessModes:
+           - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi  
+    type: kubernetes
+    alias: terraform
+commands:
+  - name: terraform fmt
+    actions:
+      - workdir: '${fileDirname}'
+        type: exec
+        command: pwd; terraform fmt
+        component: terraform
+  - name: terraform init
+    actions:
+      - workdir: '${fileDirname}'
+        type: exec
+        command: pwd; terraform init
+        component: terraform
+  - name: terraform plan
+    actions:
+      - workdir: '${fileDirname}'
+        type: exec
+        command: pwd; terraform plan
+        component: terraform
+  - name: terraform apply -auto-approve
+    actions:
+      - workdir: '${fileDirname}'
+        type: exec
+        command: pwd; terraform apply -auto-approve
+        component: terraform
+  - name: terraform destroy -auto-approve
+    actions:
+      - workdir: '${fileDirname}'
+        type: exec
+        command: pwd; terraform destroy -auto-approve
+        component: terraform

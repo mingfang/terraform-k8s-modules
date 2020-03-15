@@ -24,7 +24,7 @@ module "cassandra-storage" {
   storage       = "1Gi"
 
   annotations = {
-    "nfs-server-uid" = "${module.nfs-server.deployment.metadata[0].uid}"
+    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 }
 

@@ -34,7 +34,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "cassandra:3.11.5"
+  default = "cassandra:3.11.6"
 }
 
 variable "env" {
@@ -51,4 +51,17 @@ variable "storage" {}
 
 variable "volume_claim_template_name" {
   default = "pvc"
+}
+
+variable "CASSANDRA_CLUSTER_NAME" {
+  default = "cassandra"
+}
+variable "CASSANDRA_DC" {
+  default = "dc1"
+}
+variable "CASSANDRA_RACK" {
+  default = "rack1"
+}
+variable "CASSANDRA_ENDPOINT_SNITCH" {
+  default = "GossipingPropertyFileSnitch"
 }

@@ -1,9 +1,5 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
-    labels = {
-      "istio-injection" = "disabled"
-    }
-
     name = var.namespace
   }
 }
@@ -15,13 +11,15 @@ module "nfs-server" {
 }
 
 module "minio-storage" {
-  source        = "../../modules/kubernetes/storage-nfs"
-  name          = "${var.name}"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
-  replicas      = 4
+  source    = "../../modules/kubernetes/storage-nfs"
+  name      = var.name
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  replicas = var.replicas
+  storage  = "2Gi"
+
   mount_options = module.nfs-server.mount_options
   nfs_server    = module.nfs-server.service.spec[0].cluster_ip
-  storage       = "2Gi"
 
   annotations = {
     "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
@@ -30,41 +28,30 @@ module "minio-storage" {
 
 module "minio" {
   source    = "../../modules/minio"
-  name      = "${var.name}"
+  name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   replicas           = module.minio-storage.replicas
   storage            = module.minio-storage.storage
   storage_class_name = module.minio-storage.storage_class_name
-  minio_access_key   = var.minio_access_key
-  minio_secret_key   = var.minio_secret_key
+
+  minio_access_key = var.minio_access_key
+  minio_secret_key = var.minio_secret_key
 }
 
-module "ingress" {
-  source           = "../../modules/kubernetes/ingress-nginx"
-  name             = "${var.name}-ingress"
-  namespace        = k8s_core_v1_namespace.this.metadata[0].name
-  ingress_class    = k8s_core_v1_namespace.this.metadata[0].name
-  load_balancer_ip = "192.168.2.242"
-  service_type     = "LoadBalancer"
-}
-
-resource "k8s_extensions_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"    = "${var.name}.*",
-      "certmanager.k8s.io/cluster-issuer"           = "letsencrypt-prod"
-      "nginx.ingress.kubernetes.io/auth-url"        = "https://auth.rebelsoft.com/oauth2/auth"
-      "nginx.ingress.kubernetes.io/auth-signin"     = "https://auth.rebelsoft.com/oauth2/start?rd=/redirect/$http_host$escaped_request_uri"
-      "nginx.ingress.kubernetes.io/proxy-body-size" = "10240m",
+      "nginx.ingress.kubernetes.io/proxy-body-size" = "10240m"
+      "cert-manager.io/cluster-issuer"              = "letsencrypt-prod"
     }
     name      = var.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "minio.rebelsoft.com"
+      host = "${var.namespace}.rebelsoft.com"
       http {
         paths {
           backend {
@@ -78,9 +65,9 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
 
     tls {
       hosts = [
-        "minio.rebelsoft.com"
+        "${var.namespace}.rebelsoft.com"
       ]
-      secret_name = "${var.name}-tls"
+      secret_name = "${var.namespace}.rebelsoft.com-tls"
     }
   }
 }

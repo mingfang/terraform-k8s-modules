@@ -9,21 +9,18 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "minio/minio"
+  default = "minio/minio:RELEASE.2020-03-14T02-21-58Z"
 }
 
 variable "env" {
-  type    = list
   default = []
 }
 
 variable "annotations" {
-  type    = map
-  default = null
+  default = {}
 }
 
 variable "node_selector" {
-  type    = map
   default = null
 }
 

@@ -51,32 +51,32 @@ variable CHE_HOST {
 // begin CHE_INFRA_KUBERNETES_SERVER__STRATEGY=multi-host
 
 variable CHE_INFRA_KUBERNETES_SERVER__STRATEGY {
-  default = "multi-host"
+  default     = "multi-host"
   description = "default-host, multi-host, single-host"
 }
 
 variable CHE_INFRA_KUBERNETES_INGRESS_DOMAIN {
-  default = null
+  default     = null
   description = "domain suffix for each workspace ingress; Required when CHE_INFRA_KUBERNETES_SERVER__STRATEGY=multi-host"
 }
 
 variable CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM {
-  default = null
+  default     = null
   description = "set to %s(.*) when CHE_INFRA_KUBERNETES_SERVER__STRATEGY=single-host"
 }
 
 variable "CHE_INFRA_KUBERNETES_TLS__ENABLED" {
-  default = true
+  default     = true
   description = "Will use https and wss URLs if true"
 }
 
 variable CHE_INFRA_KUBERNETES_TLS__KEY {
-  default = ""
+  default     = ""
   description = "base64 encoded key coppied to each workspace to enable https for ingress"
 }
 
 variable CHE_INFRA_KUBERNETES_TLS__CERT {
-  default = ""
+  default     = ""
   description = "base64 encoded cert coppied to each workspace to enable https for ingress"
 }
 
@@ -86,28 +86,28 @@ variable CHE_INFRA_KUBERNETES_TLS__CERT {
 // begin CHE_MULTIUSER=true
 
 variable CHE_MULTIUSER {
-  default = true
+  default     = true
   description = "enable multi user support"
 }
 variable "CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME" {
-  default = null
+  default     = null
   description = "Extra permissions each workspace will get"
 }
 variable CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME {
-  default = "che-workspace"
+  default     = "che-workspace"
   description = "name of auto created service account for each workspace"
 }
 variable CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT {
-  default = "che-<username>"
+  default     = "che-<username>"
   description = "create new namespace for each user"
 }
 
 variable CHE_INFRA_KUBERNETES_PVC_NAME {
-  default = "claim-che-workspace"
+  default     = "claim-che-workspace"
   description = "name of pvc for each workspace"
 }
 variable "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME" {
-  default = "claim-che-workspace"
+  default     = "claim-che-workspace"
   description = "storage class for each pvc in each workspace"
 }
 variable CHE_INFRA_KUBERNETES_PVC_QUANTITY {
@@ -151,10 +151,14 @@ variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER {
 // end CHE_MULTIUSER=true
 
 variable CHE_SYSTEM_ADMIN__NAME {
-  default = "admin"
+  default     = "admin"
   description = "Grant system permission for 'che.admin.name' user. If the user already exists it’ll happen oncomponent startup, if not - during the first login when user is persisted in the database."
 }
 
 variable CHE_METRICS_ENABLED {
   default = true
+}
+
+variable JAEGER_ENDPOINT {
+  default = null
 }

@@ -72,7 +72,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_OAUTH_GITHUB_CLIENTSECRET"                            = ""
     "CHE_PORT"                                                 = "8080"
     "CHE_SYSTEM_ADMIN__NAME"                                   = var.CHE_SYSTEM_ADMIN__NAME
-    "CHE_TRACING_ENABLED"                                      = "false"
+    "CHE_TRACING_ENABLED"                                      = var.JAEGER_ENDPOINT != null
     "CHE_WEBSOCKET_ENDPOINT"                                   = "${local.ws_url}/api/websocket"
     "CHE_WEBSOCKET_ENDPOINT__MINOR"                            = "${local.ws_url}/api/websocket-minor"
     "CHE_WORKSPACE_AUTO_START"                                 = "false"
@@ -87,7 +87,7 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_WSAGENT_CORS_ALLOWED__ORIGINS"                        = "NULL"
     "CHE_WSAGENT_CORS_ALLOW__CREDENTIALS"                      = "true"
     "CHE_WSAGENT_CORS_ENABLED"                                 = "true"
-    "JAEGER_ENDPOINT"                                          = "http://jaeger-collector:14268/api/traces"
+    "JAEGER_ENDPOINT"                                          = var.JAEGER_ENDPOINT
     "JAEGER_REPORTER_MAX_QUEUE_SIZE"                           = "10000"
     "JAEGER_SAMPLER_MANAGER_HOST_PORT"                         = "jaeger:5778"
     "JAEGER_SAMPLER_PARAM"                                     = "1"

@@ -18,7 +18,7 @@ variable "ports" {
 }
 
 variable image {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:6.8.0"
+  default = "docker.elastic.co/elasticsearch/elasticsearch:7.6.1"
 }
 
 variable "env" {
@@ -34,7 +34,6 @@ variable "overrides" {
 }
 
 variable "node_selector" {
-  type    = map
   default = null
 }
 

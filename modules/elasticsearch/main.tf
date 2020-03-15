@@ -19,6 +19,21 @@ locals {
         name  = "elasticsearch"
         image = var.image
 
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          sysctl -w vm.max_map_count=262144
+          ulimit -l unlimited
+          su elasticsearch
+          if [[ "$POD_NAME" == "${var.name}-0" ]]; then
+            env node.master=true node.data=false node.ingest=false /usr/local/bin/docker-entrypoint.sh
+          else
+            env node.master=false node.data=true node.ingest=true /usr/local/bin/docker-entrypoint.sh
+          fi
+          EOF
+        ]
+
         env = concat([
           {
             name = "POD_NAME"
@@ -30,28 +45,24 @@ locals {
             }
           },
           {
-            name  = "cluster.name"
-            value = var.name
-          },
-          {
             name  = "node.name"
             value = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local"
           },
           {
-            name  = "discovery.zen.ping.unicast.hosts"
+            name  = "cluster.name"
+            value = "${var.name}-${var.namespace}"
+          },
+          {
+            name  = "discovery.seed_hosts"
             value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
           },
-//          {
-//            name  = "discovery.seed_hosts"
-//            value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
-//          },
-//          {
-//            name  = "cluster.initial_master_nodes"
-//            value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
-//          },
+          {
+            name  = "cluster.initial_master_nodes"
+            value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
+          },
           {
             name  = "bootstrap.memory_lock"
-            value = "false"
+            value = "true"
           },
           {
             name  = "ES_JAVA_OPTS"
@@ -98,6 +109,15 @@ locals {
           }
         }
 
+        security_context = {
+          capabilities = {
+            add = [
+              "IPC_LOCK",
+            ]
+          }
+          privileged = true
+        }
+
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
@@ -105,27 +125,6 @@ locals {
             sub_path   = var.name
           },
         ]
-      },
-    ]
-
-    init_containers = [
-      {
-        name              = "init"
-        image             = "busybox"
-        image_pull_policy = "IfNotPresent"
-
-        command = [
-          "sh",
-          "-cx",
-          <<-EOF
-          sysctl -w vm.max_map_count=262144
-          ulimit -l unlimited
-          EOF
-        ]
-
-        security_context = {
-          privileged = true
-        }
       },
     ]
 

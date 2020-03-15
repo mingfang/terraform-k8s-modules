@@ -60,7 +60,7 @@ module "grafana" {
   datasources_file = "${path.module}/datasources.yaml"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "grafana" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "grafana" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"

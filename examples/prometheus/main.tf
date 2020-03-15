@@ -50,7 +50,7 @@ module "statsd-exporter" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_extensions_v1beta1_ingress" "prometheus" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "prometheus" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -74,7 +74,7 @@ resource "k8s_extensions_v1beta1_ingress" "prometheus" {
     }
   }
 }
-resource "k8s_extensions_v1beta1_ingress" "alertmanager" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -98,7 +98,7 @@ resource "k8s_extensions_v1beta1_ingress" "alertmanager" {
     }
   }
 }
-resource "k8s_extensions_v1beta1_ingress" "statsd-exporter" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "statsd-exporter" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"

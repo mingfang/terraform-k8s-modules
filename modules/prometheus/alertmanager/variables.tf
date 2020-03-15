@@ -18,7 +18,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "prom/alertmanager:v0.19.0"
+  default = "prom/alertmanager:v0.20.0"
 }
 
 variable "annotations" {

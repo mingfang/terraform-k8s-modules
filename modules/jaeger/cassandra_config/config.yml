@@ -1,0 +1,15 @@
+span-storage-type: cassandra
+collector: |
+    collector:
+      zipkin:
+        http-port: 9411
+    cassandra:
+      servers: cassandra
+      keyspace: jaeger_v1_dc1
+query: |
+    cassandra:
+      servers: cassandra
+      keyspace: jaeger_v1_dc1
+agent: |
+    collector:
+      host-port: "jaeger-collector:14267"

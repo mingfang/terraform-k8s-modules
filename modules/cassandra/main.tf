@@ -89,7 +89,7 @@ locals {
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
-            mount_path = "/data"
+            mount_path = "/var/lib/cassandra"
             sub_path   = var.name
           }
         ]

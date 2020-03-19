@@ -1,0 +1,14 @@
+log-level: ${log-level}
+check-existing: ${check-existing}
+health-checker:
+    port: 8080
+    path: /healthz
+server:
+    namespace: ${namespace}
+    service: ${service}
+    port: ${port}
+    ca-cert-path: /tls/ca.crt
+    cert-path: /tls/tls.crt
+    key-path: /tls/tls.key
+rules:
+${rules}

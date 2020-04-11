@@ -2,10 +2,11 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
   metadata {
     labels = {
       "app"                          = "webhook"
+      "app.kubernetes.io/component"  = "webhook"
       "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Tiller"
+      "app.kubernetes.io/managed-by" = "Helm"
       "app.kubernetes.io/name"       = "webhook"
-      "helm.sh/chart"                = "cert-manager-v0.12.0"
+      "helm.sh/chart"                = "cert-manager-v0.14.0"
     }
     name      = "cert-manager-webhook"
     namespace = var.namespace
@@ -14,20 +15,20 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
     replicas = 1
     selector {
       match_labels = {
-        "app"                          = "webhook"
-        "app.kubernetes.io/instance"   = "cert-manager"
-        "app.kubernetes.io/managed-by" = "Tiller"
-        "app.kubernetes.io/name"       = "webhook"
+        "app.kubernetes.io/component" = "webhook"
+        "app.kubernetes.io/instance"  = "cert-manager"
+        "app.kubernetes.io/name"      = "webhook"
       }
     }
     template {
       metadata {
         labels = {
           "app"                          = "webhook"
+          "app.kubernetes.io/component"  = "webhook"
           "app.kubernetes.io/instance"   = "cert-manager"
-          "app.kubernetes.io/managed-by" = "Tiller"
+          "app.kubernetes.io/managed-by" = "Helm"
           "app.kubernetes.io/name"       = "webhook"
-          "helm.sh/chart"                = "cert-manager-v0.12.0"
+          "helm.sh/chart"                = "cert-manager-v0.14.0"
         }
       }
       spec {
@@ -48,7 +49,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-webhook:v0.12.0"
+          image             = "quay.io/jetstack/cert-manager-webhook:v0.14.0"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             http_get {

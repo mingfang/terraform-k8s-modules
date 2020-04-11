@@ -2,10 +2,11 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
   metadata {
     labels = {
       "app"                          = "cert-manager"
+      "app.kubernetes.io/component"  = "controller"
       "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Tiller"
+      "app.kubernetes.io/managed-by" = "Helm"
       "app.kubernetes.io/name"       = "cert-manager"
-      "helm.sh/chart"                = "cert-manager-v0.12.0"
+      "helm.sh/chart"                = "cert-manager-v0.14.0"
     }
     name      = "cert-manager"
     namespace = var.namespace
@@ -14,10 +15,9 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
     replicas = 1
     selector {
       match_labels = {
-        "app"                          = "cert-manager"
-        "app.kubernetes.io/instance"   = "cert-manager"
-        "app.kubernetes.io/managed-by" = "Tiller"
-        "app.kubernetes.io/name"       = "cert-manager"
+        "app.kubernetes.io/component" = "controller"
+        "app.kubernetes.io/instance"  = "cert-manager"
+        "app.kubernetes.io/name"      = "cert-manager"
       }
     }
     template {
@@ -29,10 +29,11 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
         }
         labels = {
           "app"                          = "cert-manager"
+          "app.kubernetes.io/component"  = "controller"
           "app.kubernetes.io/instance"   = "cert-manager"
-          "app.kubernetes.io/managed-by" = "Tiller"
+          "app.kubernetes.io/managed-by" = "Helm"
           "app.kubernetes.io/name"       = "cert-manager"
-          "helm.sh/chart"                = "cert-manager-v0.12.0"
+          "helm.sh/chart"                = "cert-manager-v0.14.0"
         }
       }
       spec {
@@ -56,7 +57,7 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-controller:v0.12.0"
+          image             = "quay.io/jetstack/cert-manager-controller:v0.14.0"
           image_pull_policy = "IfNotPresent"
           name              = "cert-manager"
 
@@ -65,10 +66,6 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
             protocol       = "TCP"
           }
           resources {
-            requests = {
-              "cpu"    = "10m"
-              "memory" = "32Mi"
-            }
           }
         }
         service_account_name = "cert-manager"

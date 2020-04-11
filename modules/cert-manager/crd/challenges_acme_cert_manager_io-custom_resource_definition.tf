@@ -1116,12 +1116,16 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "challeng
         }
         JSON
     }
-    version = "v1alpha2"
 
     versions {
       name    = "v1alpha2"
       served  = true
       storage = true
+    }
+    versions {
+      name    = "v1alpha3"
+      served  = true
+      storage = false
     }
   }
 }

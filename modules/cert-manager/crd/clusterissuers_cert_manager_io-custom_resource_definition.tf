@@ -64,6 +64,47 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                       "description": "Email is the email for this account",
                       "type": "string"
                     },
+                    "externalAccountBinding": {
+                      "description": "ExternalAccountBinding is a reference to a CA external account of the ACME server.",
+                      "properties": {
+                        "keyAlgorithm": {
+                          "description": "keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are \"HS256\", \"HS384\" and \"HS512\".",
+                          "enum": [
+                            "HS256",
+                            "HS384",
+                            "HS512"
+                          ],
+                          "type": "string"
+                        },
+                        "keyID": {
+                          "description": "keyID is the ID of the CA key that the External Account is bound to.",
+                          "type": "string"
+                        },
+                        "keySecretRef": {
+                          "description": "keySecretRef is a Secret Key Selector referencing a data item in a Kubernetes Secret which holds the symmetric MAC key of the External Account Binding. The `key` is the index string that is paired with the key data in the Secret and should not be confused with the key data itself, or indeed with the External Account Binding keyID above. The secret key stored in the Secret **must** be un-padded, base64 URL encoded data.",
+                          "properties": {
+                            "key": {
+                              "description": "The key of the secret to select from. Must be a valid secret key.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "keyAlgorithm",
+                        "keyID",
+                        "keySecretRef"
+                      ],
+                      "type": "object"
+                    },
                     "privateKeySecretRef": {
                       "description": "PrivateKey is the name of a secret containing the private key for this user account.",
                       "properties": {
@@ -1220,8 +1261,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                         }
                       },
                       "required": [
-                        "apiTokenSecretRef",
-                        "url"
+                        "apiTokenSecretRef"
                       ],
                       "type": "object"
                     },
@@ -1229,7 +1269,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
                       "description": "TPP specifies Trust Protection Platform configuration settings. Only one of TPP or Cloud may be specified.",
                       "properties": {
                         "caBundle": {
-                          "description": "CABundle is a PEM encoded TLS certifiate to use to verify connections to the TPP instance. If specified, system roots will not be used and the issuing CA for the TPP instance must be verifiable using the provided root. If not specified, the connection will be verified using the cert-manager system root certificates.",
+                          "description": "CABundle is a PEM encoded TLS certificate to use to verify connections to the TPP instance. If specified, system roots will not be used and the issuing CA for the TPP instance must be verifiable using the provided root. If not specified, the connection will be verified using the cert-manager system root certificates.",
                           "format": "byte",
                           "type": "string"
                         },
@@ -1333,12 +1373,16 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "clusteri
         }
         JSON
     }
-    version = "v1alpha2"
 
     versions {
       name    = "v1alpha2"
       served  = true
       storage = true
+    }
+    versions {
+      name    = "v1alpha3"
+      served  = true
+      storage = false
     }
   }
 }

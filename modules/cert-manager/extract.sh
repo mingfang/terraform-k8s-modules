@@ -9,7 +9,7 @@ mkdir -p ${DIR}/tmp
 mkdir -p ${DIR}/crd
 
 rm ${DIR}/tmp/*
-tfextract -dir ${DIR}/tmp -url https://github.com/jetstack/cert-manager/releases/download/v0.12.0/cert-manager.yaml
+tfextract -dir ${DIR}/tmp -url https://github.com/jetstack/cert-manager/releases/download/v0.14.0/cert-manager.yaml
 
 # namespace
 rm ${DIR}/tmp/*namespace.tf

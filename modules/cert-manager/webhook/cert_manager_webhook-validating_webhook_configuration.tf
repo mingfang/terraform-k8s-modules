@@ -5,10 +5,11 @@ resource "k8s_admissionregistration_k8s_io_v1beta1_validating_webhook_configurat
     }
     labels = {
       "app"                          = "webhook"
+      "app.kubernetes.io/component"  = "webhook"
       "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Tiller"
+      "app.kubernetes.io/managed-by" = "Helm"
       "app.kubernetes.io/name"       = "webhook"
-      "helm.sh/chart"                = "cert-manager-v0.12.0"
+      "helm.sh/chart"                = "cert-manager-v0.14.0"
     }
     name = "cert-manager-webhook"
   }

@@ -103,7 +103,7 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "orders_a
             "status": {
               "properties": {
                 "authorizations": {
-                  "description": "Authorizations contains data returned from the ACME server on what authoriations must be completed in order to validate the DNS names specified on the Order.",
+                  "description": "Authorizations contains data returned from the ACME server on what authorizations must be completed in order to validate the DNS names specified on the Order.",
                   "items": {
                     "description": "ACMEAuthorization contains data returned from the ACME server on an authorization that must be completed in order validate a DNS name on an ACME Order resource.",
                     "properties": {
@@ -200,12 +200,16 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "orders_a
         }
         JSON
     }
-    version = "v1alpha2"
 
     versions {
       name    = "v1alpha2"
       served  = true
       storage = true
+    }
+    versions {
+      name    = "v1alpha3"
+      served  = true
+      storage = false
     }
   }
 }

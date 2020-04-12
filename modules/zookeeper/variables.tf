@@ -26,7 +26,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "zookeeper"
+  default = "zookeeper:3.6.0"
 }
 
 variable "env" {
@@ -35,6 +35,15 @@ variable "env" {
 
 variable "annotations" {
   default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "500m"
+      memory = "1Gi"
+    }
+  }
 }
 
 variable "overrides" {

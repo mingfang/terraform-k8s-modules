@@ -1,18 +1,20 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
+  zoo-servers = join(" ",
+    [
+      for i in range(0, var.replicas) :
+      "server.${i + 1}=${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:2888:3888;2181"
+    ]
+  )
+
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = var.annotations
-    replicas             = var.replicas
-    ports                = var.ports
-    enable_service_links = false
+    name        = var.name
+    namespace   = var.namespace
+    annotations = var.annotations
+    replicas    = var.replicas
+    ports       = var.ports
+
+    enable_service_links        = false
+    publish_not_ready_addresses = true
 
     containers = [
       {
@@ -31,11 +33,11 @@ locals {
           },
           {
             name  = "ZOO_DATA_DIR"
-            value = "/data/$(POD_NAME)"
+            value = "/data"
           },
           {
             name  = "ZOO_SERVERS"
-            value = join(" ", data.template_file.zoo-servers.*.rendered)
+            value = local.zoo-servers
           },
           {
             name  = "ZOO_STANDALONE_ENABLED"
@@ -51,7 +53,6 @@ locals {
           "bash",
           "-cx",
           <<-EOF
-          mkdir -p $ZOO_DATA_DIR
           echo "$(expr $${HOSTNAME//[^0-9]/} + 1)" > $ZOO_DATA_DIR/myid
           export ZOO_SERVERS=$(echo $ZOO_SERVERS|sed "s|$POD_NAME.${var.name}.${var.namespace}.svc.cluster.local|0.0.0.0|")
           /docker-entrypoint.sh zkServer.sh start-foreground
@@ -59,7 +60,7 @@ locals {
         ]
 
         liveness_probe = {
-          initial_delay_seconds = 10
+          initial_delay_seconds = 30
 
           exec = {
             command = [
@@ -70,18 +71,46 @@ locals {
           }
         }
 
-        resources = {
-          requests = {
-            cpu    = "500m"
-            memory = "1Gi"
-          }
+        resources = var.resources
+
+        volume_mounts = [
+          {
+            name       = var.volume_claim_template_name
+            mount_path = "/data"
+          },
+        ]
+      },
+    ]
+
+    init_containers = [
+      {
+        name  = "init"
+        image = var.image
+
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          chown zookeeper $ZOO_DATA_DIR
+          EOF
+        ]
+
+        env = [
+          {
+            name  = "ZOO_DATA_DIR"
+            value = "/data"
+          },
+        ]
+
+        security_context = {
+          privileged = true
+          run_asuser = "0"
         }
 
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           },
         ]
       },
@@ -111,9 +140,4 @@ locals {
 module "statefulset-service" {
   source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
-}
-
-data "template_file" "zoo-servers" {
-  count    = var.replicas
-  template = "server.${count.index + 1}=${var.name}-${count.index}.${var.name}.${var.namespace}.svc.cluster.local:2888:3888;2181"
 }

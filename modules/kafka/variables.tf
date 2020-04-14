@@ -18,7 +18,7 @@ variable ports {
 }
 
 variable image {
-  default = "confluentinc/cp-kafka"
+  default = "confluentinc/cp-kafka:5.4.1"
 }
 
 variable "env" {
@@ -35,7 +35,7 @@ variable "node_selector" {
 
 variable "storage" {}
 
-variable "storage_class_name" {}
+variable "storage_class" {}
 
 variable "volume_claim_template_name" {
   default = "pvc"
@@ -45,4 +45,6 @@ variable "overrides" {
   default = {}
 }
 
-variable "kafka_zookeeper_connect" {}
+variable "kafka_zookeeper_connect" {
+  description = "Zookeeper URL, e.g. zookeeper:2181"
+}

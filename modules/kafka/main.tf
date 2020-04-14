@@ -24,7 +24,7 @@ locals {
           },
           {
             name  = "KAFKA_LOG_DIRS"
-            value = "/data/$(POD_NAME)"
+            value = "/data"
           },
           {
             name  = "KAFKA_ADVERTISED_LISTENERS"
@@ -59,7 +59,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           },
         ]
       },
@@ -67,7 +66,7 @@ locals {
     volume_claim_templates = [
       {
         name               = var.volume_claim_template_name
-        storage_class_name = var.storage_class_name
+        storage_class_name = var.storage_class
         access_modes       = ["ReadWriteOnce"]
 
         resources = {

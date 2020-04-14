@@ -3,7 +3,7 @@ variable "name" {
 }
 
 variable "namespace" {
-  default = "kafka"
+  default = "kafka-example"
 }
 
 variable "replicas" {

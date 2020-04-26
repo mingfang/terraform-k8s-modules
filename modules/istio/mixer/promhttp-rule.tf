@@ -7,7 +7,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "promhttp" {
       "release"  = "istio"
     }
     name      = "promhttp"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -15,14 +15,14 @@ resource "k8s_config_istio_io_v1alpha2_rule" "promhttp" {
         {
           "handler": "prometheus",
           "instances": [
-            "requestcount.metric",
-            "requestduration.metric",
-            "requestsize.metric",
-            "responsesize.metric"
+            "requestcount",
+            "requestduration",
+            "requestsize",
+            "responsesize"
           ]
         }
       ],
-      "match": "(context.protocol == \"http\" || context.protocol == \"grpc\") \u0026\u0026 (match((request.useragent | \"-\"), \"kube-probe*\") == false)"
+      "match": "(context.protocol == \"http\" || context.protocol == \"grpc\") \u0026\u0026 (match((request.useragent | \"-\"), \"kube-probe*\") == false) \u0026\u0026 (match((request.useragent | \"-\"), \"Prometheus*\") == false)"
     }
     JSON
 }

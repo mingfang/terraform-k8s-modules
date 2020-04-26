@@ -7,7 +7,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "kubeattrgenrulerule" {
       "release"  = "istio"
     }
     name      = "kubeattrgenrulerule"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -15,7 +15,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "kubeattrgenrulerule" {
         {
           "handler": "kubernetesenv",
           "instances": [
-            "attributes.kubernetes"
+            "attributes"
           ]
         }
       ]

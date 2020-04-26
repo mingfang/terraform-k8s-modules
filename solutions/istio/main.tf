@@ -3,7 +3,7 @@ config
 */
 
 module "istio" {
-  source    = "../../modules/istio/istio-1.1.0"
+  source    = "../../modules/istio/istio"
   namespace = var.namespace
 }
 
@@ -50,7 +50,7 @@ gateways
 module "gateways" {
   source    = "../../modules/istio/gateways"
   namespace = var.namespace
-  type      = "${var.ingress_type}"
+  type      = var.ingress_type
 }
 
 /*

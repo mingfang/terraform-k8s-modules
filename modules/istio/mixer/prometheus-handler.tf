@@ -7,7 +7,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
       "release"  = "istio"
     }
     name      = "prometheus"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -15,7 +15,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
       "params": {
         "metrics": [
           {
-            "instance_name": "requestcount.metric.istio-system",
+            "instance_name": "requestcount.instance.${var.namespace}",
             "kind": "COUNTER",
             "label_names": [
               "reporter",
@@ -34,9 +34,8 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
               "destination_service_namespace",
               "request_protocol",
               "response_code",
+              "grpc_response_status",
               "response_flags",
-              "permissive_response_code",
-              "permissive_response_policyid",
               "connection_security_policy"
             ],
             "name": "requests_total"
@@ -59,7 +58,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
                 ]
               }
             },
-            "instance_name": "requestduration.metric.istio-system",
+            "instance_name": "requestduration.instance.${var.namespace}",
             "kind": "DISTRIBUTION",
             "label_names": [
               "reporter",
@@ -78,9 +77,8 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
               "destination_service_namespace",
               "request_protocol",
               "response_code",
+              "grpc_response_status",
               "response_flags",
-              "permissive_response_code",
-              "permissive_response_policyid",
               "connection_security_policy"
             ],
             "name": "request_duration_seconds"
@@ -93,7 +91,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
                 "scale": 1
               }
             },
-            "instance_name": "requestsize.metric.istio-system",
+            "instance_name": "requestsize.instance.${var.namespace}",
             "kind": "DISTRIBUTION",
             "label_names": [
               "reporter",
@@ -112,9 +110,8 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
               "destination_service_namespace",
               "request_protocol",
               "response_code",
+              "grpc_response_status",
               "response_flags",
-              "permissive_response_code",
-              "permissive_response_policyid",
               "connection_security_policy"
             ],
             "name": "request_bytes"
@@ -127,7 +124,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
                 "scale": 1
               }
             },
-            "instance_name": "responsesize.metric.istio-system",
+            "instance_name": "responsesize.instance.${var.namespace}",
             "kind": "DISTRIBUTION",
             "label_names": [
               "reporter",
@@ -146,15 +143,14 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
               "destination_service_namespace",
               "request_protocol",
               "response_code",
+              "grpc_response_status",
               "response_flags",
-              "permissive_response_code",
-              "permissive_response_policyid",
               "connection_security_policy"
             ],
             "name": "response_bytes"
           },
           {
-            "instance_name": "tcpbytesent.metric.istio-system",
+            "instance_name": "tcpbytesent.instance.${var.namespace}",
             "kind": "COUNTER",
             "label_names": [
               "reporter",
@@ -177,7 +173,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
             "name": "tcp_sent_bytes_total"
           },
           {
-            "instance_name": "tcpbytereceived.metric.istio-system",
+            "instance_name": "tcpbytereceived.instance.${var.namespace}",
             "kind": "COUNTER",
             "label_names": [
               "reporter",
@@ -200,7 +196,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
             "name": "tcp_received_bytes_total"
           },
           {
-            "instance_name": "tcpconnectionsopened.metric.istio-system",
+            "instance_name": "tcpconnectionsopened.instance.${var.namespace}",
             "kind": "COUNTER",
             "label_names": [
               "reporter",
@@ -223,7 +219,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "prometheus" {
             "name": "tcp_connections_opened_total"
           },
           {
-            "instance_name": "tcpconnectionsclosed.metric.istio-system",
+            "instance_name": "tcpconnectionsclosed.instance.${var.namespace}",
             "kind": "COUNTER",
             "label_names": [
               "reporter",

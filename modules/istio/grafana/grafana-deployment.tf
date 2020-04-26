@@ -1,4 +1,4 @@
-resource "k8s_extensions_v1beta1_deployment" "grafana" {
+resource "k8s_apps_v1_deployment" "grafana" {
   metadata {
     labels = {
       "app"      = "grafana"
@@ -7,15 +7,20 @@ resource "k8s_extensions_v1beta1_deployment" "grafana" {
       "release"  = "istio"
     }
     name      = "grafana"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
     replicas = 1
+    selector {
+      match_labels = {
+        "app" = "grafana"
+      }
+    }
     template {
       metadata {
         annotations = {
-          "scheduler.alpha.kubernetes.io/critical-pod" = ""
-          "sidecar.istio.io/inject"                    = "false"
+          "prometheus.io/scrape"    = "true"
+          "sidecar.istio.io/inject" = "false"
         }
         labels = {
           "app"      = "grafana"
@@ -107,7 +112,7 @@ resource "k8s_extensions_v1beta1_deployment" "grafana" {
             name  = "GF_PATHS_DATA"
             value = "/data/grafana"
           }
-          image             = "grafana/grafana:5.4.0"
+          image             = "grafana/grafana:6.4.3"
           image_pull_policy = "IfNotPresent"
           name              = "grafana"
 
@@ -116,7 +121,7 @@ resource "k8s_extensions_v1beta1_deployment" "grafana" {
           }
           readiness_probe {
             http_get {
-              path = "/login"
+              path = "/api/health"
               port = "3000"
             }
           }
@@ -129,6 +134,12 @@ resource "k8s_extensions_v1beta1_deployment" "grafana" {
           volume_mounts {
             mount_path = "/data/grafana"
             name       = "data"
+          }
+          volume_mounts {
+            mount_path = "/var/lib/grafana/dashboards/istio/citadel-dashboard.json"
+            name       = "dashboards-istio-citadel-dashboard"
+            read_only  = true
+            sub_path   = "citadel-dashboard.json"
           }
           volume_mounts {
             mount_path = "/var/lib/grafana/dashboards/istio/galley-dashboard.json"
@@ -198,6 +209,12 @@ resource "k8s_extensions_v1beta1_deployment" "grafana" {
           empty_dir {
           }
           name = "data"
+        }
+        volumes {
+          config_map {
+            name = "istio-grafana-configuration-dashboards-citadel-dashboard"
+          }
+          name = "dashboards-istio-citadel-dashboard"
         }
         volumes {
           config_map {

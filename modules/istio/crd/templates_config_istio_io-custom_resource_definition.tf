@@ -24,7 +24,16 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "template
       plural   = "templates"
       singular = "template"
     }
-    scope   = "Namespaced"
-    version = "v1alpha2"
+    scope = "Namespaced"
+    subresources {
+      status = {
+      }
+    }
+
+    versions {
+      name    = "v1alpha2"
+      served  = true
+      storage = true
+    }
   }
 }

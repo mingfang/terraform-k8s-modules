@@ -1,7 +1,13 @@
 resource "k8s_config_istio_io_v1alpha2_rule" "promtcpconnectionopen" {
   metadata {
+    labels = {
+      "app"      = "mixer"
+      "chart"    = "mixer"
+      "heritage" = "Tiller"
+      "release"  = "istio"
+    }
     name      = "promtcpconnectionopen"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -9,7 +15,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "promtcpconnectionopen" {
         {
           "handler": "prometheus",
           "instances": [
-            "tcpconnectionsopened.metric"
+            "tcpconnectionsopened"
           ]
         }
       ],

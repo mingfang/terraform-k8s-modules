@@ -7,7 +7,7 @@ resource "k8s_core_v1_service" "tracing" {
       "release"  = "istio"
     }
     name      = "tracing"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 
@@ -20,5 +20,6 @@ resource "k8s_core_v1_service" "tracing" {
     selector = {
       "app" = "jaeger"
     }
+    type = "ClusterIP"
   }
 }

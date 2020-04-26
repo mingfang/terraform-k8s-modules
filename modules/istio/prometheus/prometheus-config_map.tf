@@ -41,38 +41,6 @@ resource "k8s_core_v1_config_map" "prometheus" {
           action: replace
           target_label: pod_name
       
-        metric_relabel_configs:
-        # Exclude some of the envoy metrics that have massive cardinality
-        # This list may need to be pruned further moving forward, as informed
-        # by performance and scalability testing.
-        - source_labels: [ cluster_name ]
-          regex: '(outbound|inbound|prometheus_stats).*'
-          action: drop
-        - source_labels: [ tcp_prefix ]
-          regex: '(outbound|inbound|prometheus_stats).*'
-          action: drop
-        - source_labels: [ listener_address ]
-          regex: '(.+)'
-          action: drop
-        - source_labels: [ http_conn_manager_listener_prefix ]
-          regex: '(.+)'
-          action: drop
-        - source_labels: [ http_conn_manager_prefix ]
-          regex: '(.+)'
-          action: drop
-        - source_labels: [ __name__ ]
-          regex: 'envoy_tls.*'
-          action: drop
-        - source_labels: [ __name__ ]
-          regex: 'envoy_tcp_downstream.*'
-          action: drop
-        - source_labels: [ __name__ ]
-          regex: 'envoy_http_(stats|admin).*'
-          action: drop
-        - source_labels: [ __name__ ]
-          regex: 'envoy_cluster_(lb|retry|bind|internal|max|original).*'
-          action: drop
-      
       - job_name: 'istio-policy'
         kubernetes_sd_configs:
         - role: endpoints
@@ -133,6 +101,19 @@ resource "k8s_core_v1_config_map" "prometheus" {
         - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
           action: keep
           regex: istio-citadel;http-monitoring
+      
+      - job_name: 'sidecar-injector'
+      
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - ${var.namespace}
+      
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: istio-sidecar-injector;http-monitoring
       
       # scrape config for API servers
       - job_name: 'kubernetes-apiservers'
@@ -312,6 +293,6 @@ resource "k8s_core_v1_config_map" "prometheus" {
       "release"  = "istio"
     }
     name      = "prometheus"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

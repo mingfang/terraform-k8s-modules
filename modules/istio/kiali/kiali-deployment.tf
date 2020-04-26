@@ -1,4 +1,4 @@
-resource "k8s_extensions_v1beta1_deployment" "kiali" {
+resource "k8s_apps_v1_deployment" "kiali" {
   metadata {
     labels = {
       "app"      = "kiali"
@@ -7,7 +7,7 @@ resource "k8s_extensions_v1beta1_deployment" "kiali" {
       "release"  = "istio"
     }
     name      = "kiali"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -19,6 +19,9 @@ resource "k8s_extensions_v1beta1_deployment" "kiali" {
     template {
       metadata {
         annotations = {
+          "kiali.io/runtimes"                          = "go,kiali"
+          "prometheus.io/port"                         = "9090"
+          "prometheus.io/scrape"                       = "true"
           "scheduler.alpha.kubernetes.io/critical-pod" = ""
           "sidecar.istio.io/inject"                    = "false"
         }
@@ -97,7 +100,7 @@ resource "k8s_extensions_v1beta1_deployment" "kiali" {
             "-config",
             "/kiali-configuration/config.yaml",
             "-v",
-            "4",
+            "3",
           ]
 
           env {
@@ -108,36 +111,27 @@ resource "k8s_extensions_v1beta1_deployment" "kiali" {
               }
             }
           }
-          env {
-            name = "SERVER_CREDENTIALS_USERNAME"
-            value_from {
-              secret_key_ref {
-                key      = "username"
-                name     = "kiali"
-                optional = true
-              }
+          image             = "quay.io/kiali/kiali:v1.9"
+          image_pull_policy = "IfNotPresent"
+          liveness_probe {
+            http_get {
+              path   = "/kiali/healthz"
+              port   = "20001"
+              scheme = "HTTP"
             }
+            initial_delay_seconds = 5
+            period_seconds        = 30
           }
-          env {
-            name = "SERVER_CREDENTIALS_PASSWORD"
-            value_from {
-              secret_key_ref {
-                key      = "passphrase"
-                name     = "kiali"
-                optional = true
-              }
+          name = "kiali"
+          readiness_probe {
+            http_get {
+              path   = "/kiali/healthz"
+              port   = "20001"
+              scheme = "HTTP"
             }
+            initial_delay_seconds = 5
+            period_seconds        = 30
           }
-          env {
-            name  = "PROMETHEUS_SERVICE_URL"
-            value = "http://prometheus:9090"
-          }
-          env {
-            name  = "SERVER_WEB_ROOT"
-            value = "/kiali"
-          }
-          image = "docker.io/kiali/kiali:v0.14"
-          name  = "kiali"
           resources {
             requests = {
               "cpu" = "10m"
@@ -148,6 +142,14 @@ resource "k8s_extensions_v1beta1_deployment" "kiali" {
             mount_path = "/kiali-configuration"
             name       = "kiali-configuration"
           }
+          volume_mounts {
+            mount_path = "/kiali-cert"
+            name       = "kiali-cert"
+          }
+          volume_mounts {
+            mount_path = "/kiali-secret"
+            name       = "kiali-secret"
+          }
         }
         service_account_name = "kiali-service-account"
 
@@ -156,6 +158,20 @@ resource "k8s_extensions_v1beta1_deployment" "kiali" {
             name = "kiali"
           }
           name = "kiali-configuration"
+        }
+        volumes {
+          name = "kiali-cert"
+          secret {
+            optional    = true
+            secret_name = "istio.kiali-service-account"
+          }
+        }
+        volumes {
+          name = "kiali-secret"
+          secret {
+            optional    = true
+            secret_name = "kiali"
+          }
         }
       }
     }

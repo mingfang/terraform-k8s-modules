@@ -19,8 +19,9 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "kiali" {
       "namespaces",
       "nodes",
       "pods",
-      "services",
+      "pods/log",
       "replicationcontrollers",
+      "services",
     ]
     verbs = [
       "get",
@@ -35,8 +36,8 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "kiali" {
     ]
     resources = [
       "deployments",
-      "statefulsets",
       "replicasets",
+      "statefulsets",
     ]
     verbs = [
       "get",
@@ -74,53 +75,13 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "kiali" {
   rules {
     api_groups = [
       "config.istio.io",
-    ]
-    resources = [
-      "apikeys",
-      "authorizations",
-      "checknothings",
-      "circonuses",
-      "deniers",
-      "fluentds",
-      "handlers",
-      "kubernetesenvs",
-      "kuberneteses",
-      "listcheckers",
-      "listentries",
-      "logentries",
-      "memquotas",
-      "metrics",
-      "opas",
-      "prometheuses",
-      "quotas",
-      "quotaspecbindings",
-      "quotaspecs",
-      "rbacs",
-      "reportnothings",
-      "rules",
-      "solarwindses",
-      "stackdrivers",
-      "statsds",
-      "stdios",
-    ]
-    verbs = [
-      "create",
-      "delete",
-      "get",
-      "list",
-      "patch",
-      "watch",
-    ]
-  }
-  rules {
-    api_groups = [
       "networking.istio.io",
+      "authentication.istio.io",
+      "rbac.istio.io",
+      "security.istio.io",
     ]
     resources = [
-      "destinationrules",
-      "gateways",
-      "serviceentries",
-      "virtualservices",
+      "*",
     ]
     verbs = [
       "create",
@@ -133,18 +94,14 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "kiali" {
   }
   rules {
     api_groups = [
-      "authentication.istio.io",
+      "monitoring.kiali.io",
     ]
     resources = [
-      "policies",
+      "monitoringdashboards",
     ]
     verbs = [
-      "create",
-      "delete",
       "get",
       "list",
-      "patch",
-      "watch",
     ]
   }
 }

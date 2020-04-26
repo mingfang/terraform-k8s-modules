@@ -20,11 +20,78 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "attribut
         "istio-io",
         "policy-istio-io",
       ]
-      kind     = "attributemanifest"
-      plural   = "attributemanifests"
-      singular = "attributemanifest"
+      kind      = "attributemanifest"
+      list_kind = "attributemanifestList"
+      plural    = "attributemanifests"
+      singular  = "attributemanifest"
     }
-    scope   = "Namespaced"
-    version = "v1alpha2"
+    scope = "Namespaced"
+    subresources {
+      status = {
+      }
+    }
+    validation {
+      open_apiv3_schema = <<-JSON
+        {
+          "properties": {
+            "spec": {
+              "description": "Describes the rules used to configure Mixer's policy and telemetry features. See more details at: https://istio.io/docs/reference/config/policy-and-telemetry/istio.policy.v1beta1.html",
+              "properties": {
+                "attributes": {
+                  "additionalProperties": {
+                    "properties": {
+                      "description": {
+                        "description": "A human-readable description of the attribute's purpose.",
+                        "format": "string",
+                        "type": "string"
+                      },
+                      "valueType": {
+                        "description": "The type of data carried by this attribute.",
+                        "enum": [
+                          "VALUE_TYPE_UNSPECIFIED",
+                          "STRING",
+                          "INT64",
+                          "DOUBLE",
+                          "BOOL",
+                          "TIMESTAMP",
+                          "IP_ADDRESS",
+                          "EMAIL_ADDRESS",
+                          "URI",
+                          "DNS_NAME",
+                          "DURATION",
+                          "STRING_MAP"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "description": "The set of attributes this Istio component will be responsible for producing at runtime.",
+                  "type": "object"
+                },
+                "name": {
+                  "description": "Name of the component producing these attributes.",
+                  "format": "string",
+                  "type": "string"
+                },
+                "revision": {
+                  "description": "The revision of this document.",
+                  "format": "string",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+        JSON
+    }
+
+    versions {
+      name    = "v1alpha2"
+      served  = true
+      storage = true
+    }
   }
 }

@@ -18,11 +18,108 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "httpapis
         "istio-io",
         "apim-istio-io",
       ]
-      kind     = "HTTPAPISpecBinding"
-      plural   = "httpapispecbindings"
-      singular = "httpapispecbinding"
+      kind      = "HTTPAPISpecBinding"
+      list_kind = "HTTPAPISpecBindingList"
+      plural    = "httpapispecbindings"
+      singular  = "httpapispecbinding"
     }
-    scope   = "Namespaced"
-    version = "v1alpha2"
+    scope = "Namespaced"
+    subresources {
+      status = {
+      }
+    }
+    validation {
+      open_apiv3_schema = <<-JSON
+        {
+          "properties": {
+            "spec": {
+              "properties": {
+                "apiSpecs": {
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "description": "The short name of the HTTPAPISpec.",
+                        "format": "string",
+                        "type": "string"
+                      },
+                      "namespace": {
+                        "description": "Optional namespace of the HTTPAPISpec.",
+                        "format": "string",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "api_specs": {
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "description": "The short name of the HTTPAPISpec.",
+                        "format": "string",
+                        "type": "string"
+                      },
+                      "namespace": {
+                        "description": "Optional namespace of the HTTPAPISpec.",
+                        "format": "string",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "services": {
+                  "description": "One or more services to map the listed HTTPAPISpec onto.",
+                  "items": {
+                    "properties": {
+                      "domain": {
+                        "description": "Domain suffix used to construct the service FQDN in implementations that support such specification.",
+                        "format": "string",
+                        "type": "string"
+                      },
+                      "labels": {
+                        "additionalProperties": {
+                          "format": "string",
+                          "type": "string"
+                        },
+                        "description": "Optional one or more labels that uniquely identify the service version.",
+                        "type": "object"
+                      },
+                      "name": {
+                        "description": "The short name of the service such as \"foo\".",
+                        "format": "string",
+                        "type": "string"
+                      },
+                      "namespace": {
+                        "description": "Optional namespace of the service.",
+                        "format": "string",
+                        "type": "string"
+                      },
+                      "service": {
+                        "description": "The service FQDN.",
+                        "format": "string",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+        JSON
+    }
+
+    versions {
+      name    = "v1alpha2"
+      served  = true
+      storage = true
+    }
   }
 }

@@ -7,7 +7,7 @@ resource "k8s_core_v1_service" "grafana" {
       "release"  = "istio"
     }
     name      = "grafana"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 

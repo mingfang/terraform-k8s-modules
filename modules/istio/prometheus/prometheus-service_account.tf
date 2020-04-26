@@ -7,6 +7,6 @@ resource "k8s_core_v1_service_account" "prometheus" {
       "release"  = "istio"
     }
     name      = "prometheus"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

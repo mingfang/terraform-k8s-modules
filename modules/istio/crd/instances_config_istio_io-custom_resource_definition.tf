@@ -20,11 +20,61 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "instance
         "istio-io",
         "policy-istio-io",
       ]
-      kind     = "instance"
-      plural   = "instances"
-      singular = "instance"
+      kind      = "instance"
+      list_kind = "instanceList"
+      plural    = "instances"
+      singular  = "instance"
     }
-    scope   = "Namespaced"
-    version = "v1alpha2"
+    scope = "Namespaced"
+    subresources {
+      status = {
+      }
+    }
+    validation {
+      open_apiv3_schema = <<-JSON
+        {
+          "properties": {
+            "spec": {
+              "description": "An Instance tells Mixer how to create instances for particular template.",
+              "properties": {
+                "attributeBindings": {
+                  "additionalProperties": {
+                    "format": "string",
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "compiledTemplate": {
+                  "description": "The name of the compiled in template this instance creates instances for.",
+                  "format": "string",
+                  "type": "string"
+                },
+                "name": {
+                  "format": "string",
+                  "type": "string"
+                },
+                "params": {
+                  "description": "Depends on referenced template.",
+                  "type": "object"
+                },
+                "template": {
+                  "description": "The name of the template this instance creates instances for.",
+                  "format": "string",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+        JSON
+    }
+
+    versions {
+      name    = "v1alpha2"
+      served  = true
+      storage = true
+    }
   }
 }

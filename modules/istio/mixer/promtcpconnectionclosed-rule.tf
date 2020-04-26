@@ -1,7 +1,13 @@
 resource "k8s_config_istio_io_v1alpha2_rule" "promtcpconnectionclosed" {
   metadata {
+    labels = {
+      "app"      = "mixer"
+      "chart"    = "mixer"
+      "heritage" = "Tiller"
+      "release"  = "istio"
+    }
     name      = "promtcpconnectionclosed"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -9,7 +15,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "promtcpconnectionclosed" {
         {
           "handler": "prometheus",
           "instances": [
-            "tcpconnectionsclosed.metric"
+            "tcpconnectionsclosed"
           ]
         }
       ],

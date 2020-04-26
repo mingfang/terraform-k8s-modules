@@ -7,7 +7,7 @@ resource "k8s_config_istio_io_v1alpha2_handler" "stdio" {
       "release"  = "istio"
     }
     name      = "stdio"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {

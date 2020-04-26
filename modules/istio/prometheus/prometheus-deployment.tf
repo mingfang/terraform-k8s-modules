@@ -1,4 +1,4 @@
-resource "k8s_extensions_v1beta1_deployment" "prometheus" {
+resource "k8s_apps_v1_deployment" "prometheus" {
   metadata {
     labels = {
       "app"      = "prometheus"
@@ -7,7 +7,7 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
       "release"  = "istio"
     }
     name      = "prometheus"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -19,8 +19,7 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
     template {
       metadata {
         annotations = {
-          "scheduler.alpha.kubernetes.io/critical-pod" = ""
-          "sidecar.istio.io/inject"                    = "false"
+          "sidecar.istio.io/inject" = "false"
         }
         labels = {
           "app"      = "prometheus"
@@ -95,7 +94,7 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
             "--storage.tsdb.retention=6h",
             "--config.file=/etc/prometheus/prometheus.yml",
           ]
-          image             = "docker.io/prom/prometheus:v2.3.1"
+          image             = "docker.io/prom/prometheus:v2.12.0"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             http_get {
@@ -130,25 +129,6 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
             name       = "istio-certs"
           }
         }
-
-        init_containers {
-          command = [
-            "sh",
-            "-c",
-            <<-EOF
-            counter=0; until [ "$counter" -ge 30 ]; do if [ -f /etc/istio-certs/key.pem ]; then exit 0; else echo waiting for istio certs && sleep 1 && counter=$((counter+1)); fi; done; exit 1;
-            EOF
-            ,
-          ]
-          image             = "busybox:1.30.1"
-          image_pull_policy = "IfNotPresent"
-          name              = "prom-init"
-
-          volume_mounts {
-            mount_path = "/etc/istio-certs"
-            name       = "istio-certs"
-          }
-        }
         service_account_name = "prometheus"
 
         volumes {
@@ -161,7 +141,6 @@ resource "k8s_extensions_v1beta1_deployment" "prometheus" {
           name = "istio-certs"
           secret {
             default_mode = 420
-            optional     = true
             secret_name  = "istio.default"
           }
         }

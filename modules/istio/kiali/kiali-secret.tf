@@ -11,7 +11,7 @@ resource "k8s_core_v1_secret" "kiali" {
       "release"  = "istio"
     }
     name      = "kiali"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   type = "Opaque"
 }

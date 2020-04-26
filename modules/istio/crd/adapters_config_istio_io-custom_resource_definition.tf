@@ -24,7 +24,16 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "adapters
       plural   = "adapters"
       singular = "adapter"
     }
-    scope   = "Namespaced"
-    version = "v1alpha2"
+    scope = "Namespaced"
+    subresources {
+      status = {
+      }
+    }
+
+    versions {
+      name    = "v1alpha2"
+      served  = true
+      storage = true
+    }
   }
 }

@@ -7,7 +7,7 @@ resource "k8s_core_v1_service" "zipkin" {
       "release"  = "istio"
     }
     name      = "zipkin"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 
@@ -20,6 +20,5 @@ resource "k8s_core_v1_service" "zipkin" {
     selector = {
       "app" = "jaeger"
     }
-    type = "ClusterIP"
   }
 }

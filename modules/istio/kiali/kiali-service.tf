@@ -7,7 +7,7 @@ resource "k8s_core_v1_service" "kiali" {
       "release"  = "istio"
     }
     name      = "kiali"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 

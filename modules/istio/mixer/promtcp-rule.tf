@@ -7,7 +7,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "promtcp" {
       "release"  = "istio"
     }
     name      = "promtcp"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -15,8 +15,8 @@ resource "k8s_config_istio_io_v1alpha2_rule" "promtcp" {
         {
           "handler": "prometheus",
           "instances": [
-            "tcpbytesent.metric",
-            "tcpbytereceived.metric"
+            "tcpbytesent",
+            "tcpbytereceived"
           ]
         }
       ],

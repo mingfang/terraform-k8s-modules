@@ -7,7 +7,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "stdiotcp" {
       "release"  = "istio"
     }
     name      = "stdiotcp"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {
@@ -15,7 +15,7 @@ resource "k8s_config_istio_io_v1alpha2_rule" "stdiotcp" {
         {
           "handler": "stdio",
           "instances": [
-            "tcpaccesslog.logentry"
+            "tcpaccesslog"
           ]
         }
       ],

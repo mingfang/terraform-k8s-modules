@@ -18,11 +18,130 @@ resource "k8s_apiextensions_k8s_io_v1beta1_custom_resource_definition" "quotaspe
         "istio-io",
         "apim-istio-io",
       ]
-      kind     = "QuotaSpec"
-      plural   = "quotaspecs"
-      singular = "quotaspec"
+      kind      = "QuotaSpec"
+      list_kind = "QuotaSpecList"
+      plural    = "quotaspecs"
+      singular  = "quotaspec"
     }
-    scope   = "Namespaced"
-    version = "v1alpha2"
+    scope = "Namespaced"
+    subresources {
+      status = {
+      }
+    }
+    validation {
+      open_apiv3_schema = <<-JSON
+        {
+          "properties": {
+            "spec": {
+              "description": "Determines the quotas used for individual requests.",
+              "properties": {
+                "rules": {
+                  "description": "A list of Quota rules.",
+                  "items": {
+                    "properties": {
+                      "match": {
+                        "description": "If empty, match all request.",
+                        "items": {
+                          "properties": {
+                            "clause": {
+                              "additionalProperties": {
+                                "oneOf": [
+                                  {
+                                    "not": {
+                                      "anyOf": [
+                                        {
+                                          "required": [
+                                            "exact"
+                                          ]
+                                        },
+                                        {
+                                          "required": [
+                                            "prefix"
+                                          ]
+                                        },
+                                        {
+                                          "required": [
+                                            "regex"
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "required": [
+                                      "exact"
+                                    ]
+                                  },
+                                  {
+                                    "required": [
+                                      "prefix"
+                                    ]
+                                  },
+                                  {
+                                    "required": [
+                                      "regex"
+                                    ]
+                                  }
+                                ],
+                                "properties": {
+                                  "exact": {
+                                    "format": "string",
+                                    "type": "string"
+                                  },
+                                  "prefix": {
+                                    "format": "string",
+                                    "type": "string"
+                                  },
+                                  "regex": {
+                                    "format": "string",
+                                    "type": "string"
+                                  }
+                                },
+                                "type": "object"
+                              },
+                              "description": "Map of attribute names to StringMatch type.",
+                              "type": "object"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "quotas": {
+                        "description": "The list of quotas to charge.",
+                        "items": {
+                          "properties": {
+                            "charge": {
+                              "format": "int32",
+                              "type": "integer"
+                            },
+                            "quota": {
+                              "format": "string",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+        JSON
+    }
+
+    versions {
+      name    = "v1alpha2"
+      served  = true
+      storage = true
+    }
   }
 }

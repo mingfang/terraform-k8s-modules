@@ -11,7 +11,7 @@ locals {
 
     containers = [
       {
-        name  = "wordpress"
+        name  = "sonarqube"
         image = var.image
 
         env = concat([

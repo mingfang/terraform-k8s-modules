@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function tfextract() {
-    go run cmd/extractor/*go $@
+    go run /go/src/github.com/mingfang/terraform-provider-k8s/cmd/extractor/*go $@
 }
 
 export DIR=modules/kubernetes/oauth2-proxy

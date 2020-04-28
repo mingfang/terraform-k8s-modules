@@ -1,4 +1,4 @@
-resource "k8s_networking_istio_io_v1alpha3_virtual_service" "prometheus" {
+resource "k8s_networking_istio_io_v1beta1_virtual_service" "prometheus" {
   metadata {
     name      = "prometheus"
     namespace = "istio-system"

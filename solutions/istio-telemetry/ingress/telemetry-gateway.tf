@@ -1,4 +1,4 @@
-resource "k8s_networking_istio_io_v1alpha3_gateway" "telemetry-gateway" {
+resource "k8s_networking_istio_io_v1beta1_gateway" "telemetry-gateway" {
   metadata {
     name      = "telemetry-gateway"
     namespace = "istio-system"

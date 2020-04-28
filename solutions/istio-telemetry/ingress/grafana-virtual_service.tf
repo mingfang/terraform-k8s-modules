@@ -1,4 +1,4 @@
-resource "k8s_networking_istio_io_v1alpha3_virtual_service" "grafana" {
+resource "k8s_networking_istio_io_v1beta1_virtual_service" "grafana" {
   metadata {
     name      = "grafana"
     namespace = "istio-system"

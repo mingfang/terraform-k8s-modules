@@ -111,7 +111,7 @@ resource "k8s_apps_v1_deployment" "kiali" {
               }
             }
           }
-          image             = "quay.io/kiali/kiali:v1.9"
+          image             = "quay.io/kiali/kiali:v1.17"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             http_get {

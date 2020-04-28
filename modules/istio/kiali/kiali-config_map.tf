@@ -5,20 +5,20 @@ resource "k8s_core_v1_config_map" "kiali" {
       deployment:
         accessible_namespaces: ['**']
       auth:
-        strategy: login
+        strategy: anonymous
       server:
         port: 20001
         web_root: /kiali
       external_services:
         tracing:
-          url: 
+          url:
           in_cluster_url: http://tracing/jaeger
         grafana:
-          url: 
+          url:
           in_cluster_url: http://grafana:3000
         prometheus:
           url: http://prometheus:9090
-      
+
       EOF
   }
   metadata {

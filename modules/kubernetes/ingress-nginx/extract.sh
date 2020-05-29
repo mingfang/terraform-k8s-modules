@@ -10,6 +10,9 @@ mkdir -p ${DIR}
 tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
 tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/baremetal/service-nodeport.yaml
 
+# remove limits
+rm ${DIR}/*limit_range.tf
+
 #namespace
 rm ${DIR}/*namespace.tf
 sed -i -e 's|namespace *= "ingress-nginx"|namespace = var.namespace|g' ${DIR}/*.tf

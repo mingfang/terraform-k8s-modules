@@ -4,6 +4,10 @@ variable "namespace" {
   default = "default"
 }
 
+variable "replicas" {
+  default = 1
+}
+
 variable "service_type" {
   default = "LoadBalancer"
 }

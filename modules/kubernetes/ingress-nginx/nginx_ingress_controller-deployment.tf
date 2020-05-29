@@ -8,7 +8,7 @@ resource "k8s_apps_v1_deployment" "nginx_ingress_controller" {
     namespace = var.namespace
   }
   spec {
-    replicas = 1
+    replicas = var.replicas
     selector {
       match_labels = {
         "app.kubernetes.io/name"    = var.name

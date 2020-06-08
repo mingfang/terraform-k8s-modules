@@ -26,7 +26,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "zookeeper:3.6.0"
+  default = "zookeeper:3.6.1"
 }
 
 variable "env" {

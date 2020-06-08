@@ -14,6 +14,7 @@ locals {
     ports       = var.ports
 
     enable_service_links        = false
+    pod_management_policy       = "Parallel"
     publish_not_ready_addresses = true
 
     containers = [
@@ -103,7 +104,6 @@ locals {
         ]
 
         security_context = {
-          privileged = true
           run_asuser = "0"
         }
 

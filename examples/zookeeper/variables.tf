@@ -15,5 +15,5 @@ variable "storage" {
 }
 
 variable "storage_class" {
-  default = "cephfs"
+  default = null //use default
 }

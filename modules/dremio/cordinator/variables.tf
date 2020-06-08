@@ -5,9 +5,25 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "dremio/dremio-oss:4.1.4"
+  default = "dremio/dremio-oss:4.3.1"
 }
 
+variable "ports" {
+  default = [
+    {
+      name = "http"
+      port = 9047
+    },
+    {
+      name = "client"
+      port = 31010
+    },
+    {
+      name = "server"
+      port = 45678
+    },
+  ]
+}
 variable "env" {
   default = []
 }
@@ -26,6 +42,15 @@ variable "replicas" {
 
 variable "overrides" {
   default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "500m"
+      memory = "100Mi"
+    }
+  }
 }
 
 variable "config_map" {}

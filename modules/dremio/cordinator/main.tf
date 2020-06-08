@@ -1,30 +1,15 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
   parameters = {
     name        = var.name
     namespace   = var.namespace
     annotations = var.annotations
     replicas    = var.replicas
-    ports = [
-      {
-        name = "http"
-        port = 9047
-      },
-      {
-        name = "client"
-        port = 31010
-      },
-      {
-        name = "server"
-        port = 45678
-      },
-    ]
+    ports       = var.ports
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
+
     containers = [
       {
         args = [
@@ -60,12 +45,17 @@ locals {
         image = var.image
         name  = "dremio"
 
-        resources = {
-          requests = {
-            cpu    = "4"
-            memory = "16384M"
+        liveness_probe = {
+          http_get = {
+            path   = "/apiv2/server_status"
+            port   = "9047"
+            scheme = "HTTP"
           }
+          initial_delay_seconds = 30
+          period_seconds        = 30
         }
+
+        resources = var.resources
 
         volume_mounts = concat([
           {
@@ -104,6 +94,8 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "../../../archetypes/statefulset-service"
-  parameters = merge(local.parameters, var.overrides, { "volumes" = local.volumes })
+  source = "../../../archetypes/statefulset-service"
+  parameters = merge(local.parameters, var.overrides, {
+    "volumes" = local.volumes
+  })
 }

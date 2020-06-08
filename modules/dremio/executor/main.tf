@@ -1,9 +1,4 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+
 
 locals {
   parameters = {
@@ -11,12 +6,12 @@ locals {
     namespace   = var.namespace
     annotations = var.annotations
     replicas    = var.replicas
-    ports = [
-      {
-        name = "server"
-        port = 45678
-      },
-    ]
+    ports       = var.ports
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
+
     containers = [
       {
         name  = "dremio"
@@ -28,7 +23,6 @@ locals {
         command = [
           "/opt/dremio/bin/dremio",
         ]
-
         env = concat([
           {
             name = "POD_NAME"
@@ -53,12 +47,7 @@ locals {
           },
         ], var.env)
 
-        resources = {
-          requests = {
-            cpu    = "4"
-            memory = "16384M"
-          }
-        }
+        resources = var.resources
 
         volume_mounts = concat([
           {
@@ -83,30 +72,29 @@ locals {
         image = "busybox"
         name  = "wait-for-zk"
       },
-      //      {
-      //        args = [
-      //          "dremio:dremio",
-      //          "/opt/dremio/data",
-      //        ]
-      //        command = [
-      //          "chown",
-      //        ]
-      //        image             = var.image
-      //        image_pull_policy = "IfNotPresent"
-      //        name              = "chown-data-directory"
-      //
-      //        security_context = {
-      //          privileged = true
-      //          runAsUser = 0
-      //      }
-      //
-      //        volume_mounts = [
-      //          {
-      //            mount_path = "/opt/dremio/data"
-      //            name       = var.volume_claim_template_name
-      //          },
-      //        ]
-      //      },
+      {
+        args = [
+          "dremio:dremio",
+          "/opt/dremio/data",
+        ]
+        command = [
+          "chown",
+        ]
+        image             = var.image
+        image_pull_policy = "IfNotPresent"
+        name              = "chown-data-directory"
+
+        security_context = {
+          run_asuser = "0"
+        }
+
+        volume_mounts = [
+          {
+            mount_path = "/opt/dremio/data"
+            name       = var.volume_claim_template_name
+          },
+        ]
+      },
     ]
 
     volumes = [

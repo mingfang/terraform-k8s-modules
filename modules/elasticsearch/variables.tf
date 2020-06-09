@@ -18,7 +18,7 @@ variable "ports" {
 }
 
 variable image {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:7.6.1"
+  default = "docker.elastic.co/elasticsearch/elasticsearch:7.7.0"
 }
 
 variable "env" {
@@ -35,6 +35,15 @@ variable "overrides" {
 
 variable "node_selector" {
   default = null
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "4Gi"
+    }
+  }
 }
 
 variable "storage" {}

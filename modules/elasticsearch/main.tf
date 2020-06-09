@@ -1,18 +1,14 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = var.annotations
-    replicas             = var.replicas
-    ports                = var.ports
-    enable_service_links = false
+    name        = var.name
+    namespace   = var.namespace
+    annotations = var.annotations
+    replicas    = var.replicas
+    ports       = var.ports
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
@@ -102,12 +98,7 @@ locals {
           }
         }
 
-        resources = {
-          requests = {
-            cpu    = "250m"
-            memory = "4Gi"
-          }
-        }
+        resources = var.resources
 
         security_context = {
           capabilities = {
@@ -122,7 +113,32 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
+          },
+        ]
+      },
+    ]
+
+    init_containers = [
+      {
+        name  = "init"
+        image = var.image
+
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          chown elasticsearch /data
+          EOF
+        ]
+
+        security_context = {
+          run_asuser = "0"
+        }
+
+        volume_mounts = [
+          {
+            name       = var.volume_claim_template_name
+            mount_path = "/data"
           },
         ]
       },

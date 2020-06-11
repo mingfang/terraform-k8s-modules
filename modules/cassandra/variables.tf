@@ -41,13 +41,29 @@ variable "env" {
   default = []
 }
 
+variable "annotations" {
+  default = {}
+}
+
 variable "overrides" {
   default = {}
 }
 
-variable "storage_class" {}
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "500m"
+      memory = "512Mi"
+    }
+    limits = {
+      memory = "1Gi"
+    }
+  }
+}
 
 variable "storage" {}
+
+variable "storage_class" {}
 
 variable "volume_claim_template_name" {
   default = "pvc"

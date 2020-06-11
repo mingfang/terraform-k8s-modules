@@ -1,17 +1,14 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    replicas             = var.replicas
-    ports                = var.ports
-    enable_service_links = false
+    name        = var.name
+    namespace   = var.namespace
+    annotations = var.annotations
+    replicas    = var.replicas
+    ports       = var.ports
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
@@ -38,8 +35,26 @@ locals {
             }
           },
           {
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
             name  = "MAX_HEAP_SIZE"
-            value = "512M"
+            value = "$(REQUESTS_MEMORY)M"
           },
           {
             name  = "HEAP_NEWSIZE"
@@ -71,7 +86,7 @@ locals {
           },
         ], var.env)
 
-        lifecyle = {
+        lifecycle = {
           pre_stop = {
             exec = {
               command = ["/bin/sh", "-c", "nodetool drain"]
@@ -79,20 +94,34 @@ locals {
           }
         }
 
-        resources = {
-          requests = {
-            cpu    = "500m"
-            memory = "1Gi"
-          }
-        }
+        resources = var.resources
 
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
             mount_path = "/var/lib/cassandra"
-            sub_path   = var.name
           }
         ]
+      },
+    ]
+
+    init_containers = [
+      {
+        name  = "init"
+        image = var.image
+
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          sysctl -w vm.max_map_count=1048575
+          EOF
+        ]
+
+        security_context = {
+          privileged = true
+          run_asuser = "0"
+        }
       },
     ]
 

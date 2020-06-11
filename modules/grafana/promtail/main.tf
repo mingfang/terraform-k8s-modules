@@ -6,10 +6,10 @@
 
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
+    name      = var.name
+    namespace = var.namespace
     // restart on config change
-    annotations = merge(var.annotations, { checksum = md5(data.template_file.config.rendered) })
+    annotations = merge(var.annotations, { checksum = module.config.checksum })
 
     containers = [
       {
@@ -17,7 +17,8 @@ locals {
         image = var.image
         args = [
           "-config.file=/etc/promtail/promtail.yaml",
-          "-client.url=${var.loki_url}"
+          "-client.url=${var.loki_url}",
+          "-client.tenant-id=${var.tenant_id}",
         ]
         env = concat([
           {
@@ -52,13 +53,6 @@ locals {
       },
     ]
     service_account_name = module.rbac.service_account.metadata.0.name
-    tolerations = [
-      {
-        effect   = "NoSchedule"
-        key      = "node-role.kubernetes.io/master"
-        operator = "Exists"
-      },
-    ]
     volumes = [
       {
         name = "varlog"
@@ -75,7 +69,7 @@ locals {
       {
         name = "config"
         config_map = {
-          name = k8s_core_v1_config_map.this.metadata.0.name
+          name = module.config.name
         }
       },
       {
@@ -88,15 +82,24 @@ locals {
   }
 }
 
+module "config" {
+  source    = "../../kubernetes/config-map"
+  name      = var.name
+  namespace = var.namespace
+  from-map = {
+    "promtail.yaml" = file(coalesce(var.config_file, "${path.module}/promtail.yaml"))
+  }
+}
+
 module "daemonset" {
   source     = "../../../archetypes/daemonset"
   parameters = merge(local.parameters, var.overrides)
 }
 
 module "rbac" {
-  source = "../../../modules/kubernetes/rbac"
-  name   = var.name
-  namespace   = var.namespace
+  source    = "../../../modules/kubernetes/rbac"
+  name      = var.name
+  namespace = var.namespace
   cluster_role_rules = [
     {
       api_groups = [

@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable image {
-  default = "grafana/promtail:v1.0.0"
+  default = "grafana/promtail:1.5.0"
 }
 
 variable "env" {
@@ -28,5 +28,9 @@ variable "overrides" {
 variable "loki_url" {}
 
 variable "config_file" {
+  default = ""
+}
+
+variable "tenant_id" {
   default = ""
 }

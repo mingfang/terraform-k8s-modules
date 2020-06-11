@@ -18,7 +18,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "grafana/grafana:6.6.2"
+  default = "grafana/grafana:7.0.1"
 }
 
 variable "env" {
@@ -33,10 +33,16 @@ variable "overrides" {
   default = {}
 }
 
-variable "datasources_file" {
-  default = ""
+variable "pvc_name" {}
+
+variable "grafana_ini_config_map_name" {
+  default = null
 }
 
-variable "dashboards_file" {
-  default = ""
+variable "dashboards_config_map_name" {
+  default = null
+}
+
+variable "datasources_config_map_name" {
+  default = null
 }

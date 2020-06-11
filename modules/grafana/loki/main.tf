@@ -1,10 +1,3 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
   parameters = {
     name                 = var.name
@@ -14,7 +7,7 @@ locals {
     enable_service_links = false
 
     // restart on config change
-    annotations = merge(var.annotations, { checksum = md5(data.template_file.config.rendered) })
+    annotations = merge(var.annotations, { checksum = module.config.checksum })
 
     containers = [
       {
@@ -53,11 +46,22 @@ locals {
     volumes = [
       {
         config_map = {
-          name = var.name
+          name = module.config.name
         }
         name = "config"
       },
     ]
+  }
+}
+
+module "config" {
+  source    = "../../kubernetes/config-map"
+  name      = var.name
+  namespace = var.namespace
+  from-map = {
+    "local-config.yaml" = templatefile("${path.module}/config.yml", {
+      cassandra = var.cassandra
+    })
   }
 }
 

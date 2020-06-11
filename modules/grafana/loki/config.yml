@@ -1,4 +1,4 @@
-auth_enabled: false
+auth_enabled: true
 
 server:
   http_listen_port: 3100
@@ -20,12 +20,12 @@ schema_config:
   - from: 2018-04-15
     store: cassandra
     object_store: cassandra
-    schema: v9
+    schema: v11
     index:
-      prefix: index_
+      prefix: cassandra_index_
       period: 168h
     chunks:
-      prefix: chunks_
+      prefix: cassandra_chunk_
       period: 168h
 storage_config:
   cassandra:
@@ -40,19 +40,6 @@ limits_config:
   reject_old_samples: true
   reject_old_samples_max_age: 168h
 
-chunk_store_config:
-  max_look_back_period: 0
-
 table_manager:
-  chunk_tables_provisioning:
-    inactive_read_throughput: 0
-    inactive_write_throughput: 0
-    provisioned_read_throughput: 0
-    provisioned_write_throughput: 0
-  index_tables_provisioning:
-    inactive_read_throughput: 0
-    inactive_write_throughput: 0
-    provisioned_read_throughput: 0
-    provisioned_write_throughput: 0
   retention_deletes_enabled: true
   retention_period: 336h

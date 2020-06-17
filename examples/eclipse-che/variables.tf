@@ -9,3 +9,7 @@ variable "namespace" {
 variable "user_storage" {
   default = "1Gi"
 }
+
+variable "storage_class_name" {
+  default = "cephfs"
+}

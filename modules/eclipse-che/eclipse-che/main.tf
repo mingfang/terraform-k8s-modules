@@ -1,9 +1,4 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+
 
 locals {
   parameters = {
@@ -15,8 +10,8 @@ locals {
         "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.che.data), values(k8s_core_v1_config_map.che.data)))
       },
       var.CHE_METRICS_ENABLED ? {
-        "prometheus.io/port": "8087",
-        "prometheus.io/scrape": "true"
+        "prometheus.io/port" : "8087",
+        "prometheus.io/scrape" : "true"
       } : {},
     )
     replicas             = var.replicas

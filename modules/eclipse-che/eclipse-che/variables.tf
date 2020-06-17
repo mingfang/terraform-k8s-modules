@@ -5,7 +5,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "quay.io/eclipse/che-server:7.10.0"
+  default = "quay.io/eclipse/che-server:7.14.2"
 }
 
 variable "replicas" {
@@ -38,6 +38,10 @@ variable "overrides" {
 }
 
 variable "ingress_class" {}
+
+variable "JAVA_OPTS" {
+  default = "-XX:MaxRAMPercentage=85.0 "
+}
 
 variable CHE_WORKSPACE_DEVFILE__REGISTRY__URL {}
 
@@ -160,5 +164,34 @@ variable CHE_METRICS_ENABLED {
 }
 
 variable JAEGER_ENDPOINT {
+  default = null
+}
+
+variable CHE_OAUTH_GITHUB_CLIENTID {
+  default = ""
+}
+
+variable CHE_OAUTH_GITHUB_CLIENTSECRET {
+  default = ""
+}
+
+// extensions
+
+variable "CHE_INFRA_KUBERNETES_NAMESPACE_ANNOTATIONS__JSON" {
+  default = null
+}
+variable "CHE_INFRA_KUBERNETES_NAMESPACE_LABELS__JSON" {
+  default = null
+}
+
+variable "CHE_INFRA_KUBERNETES_NAMESPACE_RESOURCE__QUOTA__JSON" {
+  default = null
+}
+
+variable CHE_INFRA_KUBERNETES_NAMESPACE_LIMIT__RANGE__LIMIT__JSON {
+  default = null
+}
+
+variable CHE_INFRA_KUBERNETES_NAMESPACE_LIMIT__RANGE__REQUEST__JSON {
   default = null
 }

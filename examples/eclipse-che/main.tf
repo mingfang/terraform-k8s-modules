@@ -4,18 +4,11 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
-module "nfs-provisioner" {
-  source        = "../../modules/nfs-provisioner-empty-dir"
-  name          = "nfs-provisioner"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
-  storage_class = k8s_core_v1_namespace.this.metadata[0].name
-}
-
 module "postgres" {
   source        = "../../modules/postgres"
   name          = "postgres"
   namespace     = k8s_core_v1_namespace.this.metadata[0].name
-  storage_class = module.nfs-provisioner.storage_class
+  storage_class = var.storage_class_name
   storage       = "1Gi"
   replicas      = 1
 
@@ -33,7 +26,7 @@ module "eclipse-che" {
   CHE_SYSTEM_ADMIN__NAME                        = "mingfang"
   CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME      = "cluster-admin"
   CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT        = "${var.namespace}-<username>"
-  CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME = module.nfs-provisioner.storage_class
+  CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME = var.storage_class_name
 
   CHE_HOST                             = "che.${var.namespace}.rebelsoft.com"
   CHE_WORKSPACE_DEVFILE__REGISTRY__URL = "https://devfile-registry.${var.namespace}.rebelsoft.com"
@@ -144,7 +137,6 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "devfile-registry" {
       "kubernetes.io/ingress.class"                       = "nginx"
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
-      "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
       "cert-manager.io/cluster-issuer"                    = "letsencrypt-prod"
     }
     name      = module.devfile-registry.service.metadata[0].name
@@ -180,7 +172,6 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "plugin-registry" {
       "kubernetes.io/ingress.class"                       = "nginx"
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
-      "nginx.ingress.kubernetes.io/ssl-redirect"          = "false"
       "cert-manager.io/cluster-issuer"                    = "letsencrypt-prod"
     }
     name      = module.plugin-registry.service.metadata[0].name

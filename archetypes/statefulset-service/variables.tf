@@ -5,3 +5,7 @@ variable "parameters" {
 variable "enable_service" {
   default = true
 }
+
+variable "podAnnotations" {
+  default = {}
+}

@@ -1,0 +1,14 @@
+jenkins:
+  securityRealm: keycloak
+
+unclassified:
+  keycloakSecurityRealm:
+    keycloakJson: |-
+      {
+        "realm": "rebelsoft",
+        "auth-server-url": "https://keycloak.rebelsoft.com/auth/",
+        "ssl-required": "external",
+        "resource": "jenkins-example",
+        "public-client": true,
+        "confidential-port": 0
+      }

@@ -1,0 +1,45 @@
+jenkins:
+  clouds:
+  - kubernetes:
+      name: "kubernetes"
+      namespace: "jenkins-example"
+      jenkinsUrl: "http://jenkins:8080"
+      containerCapStr: 10
+      maxRequestsPerHostStr: 64
+      retentionTimeout: 5
+      connectTimeout: 10
+      readTimeout: 20
+
+      templates:
+      - name: "jenkins-worker"
+        label: "jenkins-worker"
+        nodeUsageMode: NORMAL
+        showRawYaml: false
+        annotations:
+        - key: "sidecar.istio.io/inject"
+          value: "false"
+        containers:
+        - name: "jnlp"
+          image: "registry.rebelsoft.com/jenkins-slave:latest"
+          alwaysPullImage: true
+          command: "jenkins-slave"
+          args: "^${computer.jnlpmac} ^${computer.name}"
+          resourceRequestCpu: "100m"
+          resourceRequestMemory: "256Mi"
+        workspaceVolume:
+          persistentVolumeClaimWorkspaceVolume:
+            claimName: "jenkins"
+            readOnly: false
+        volumes:
+        - hostPathVolume:
+            hostPath: "/var/run/docker.sock"
+            mountPath: "/var/run/docker.sock"
+        - hostPathVolume:
+            hostPath: "jenkins_nodejs_npm_cache"
+            mountPath: "/root/.npm"
+        - hostPathVolume:
+            hostPath: "sonar_cache"
+            mountPath: "/root/.sonar/cache"
+        - hostPathVolume:
+            hostPath: "bazel_cache"
+            mountPath: "/root/.cache/bazel"

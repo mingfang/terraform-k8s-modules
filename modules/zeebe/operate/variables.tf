@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "camunda/operate:1.1.0"
+  default = "camunda/operate:0.23.2"
 }
 
 variable "overrides" {

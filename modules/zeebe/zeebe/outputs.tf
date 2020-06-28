@@ -1,13 +1,13 @@
 output "name" {
-  value = module.statefulset-service.name
-}
-
-output "ports" {
-  value = var.ports
+  value = var.name
 }
 
 output "service" {
   value = module.statefulset-service.service
+}
+
+output "ports" {
+  value = var.ports
 }
 
 output "statefulset" {

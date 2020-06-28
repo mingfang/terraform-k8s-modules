@@ -6,14 +6,15 @@ locals {
     namespace            = var.namespace
     replicas             = var.replicas
     ports                = var.ports
+    annotations          = var.annotations
     enable_service_links = false
 
     containers = [
       {
-        name  = "operate"
+        name  = "simple-monitor"
         image = var.image
 
-        env = [
+        env = concat([
           {
             name = "POD_NAME"
 
@@ -24,18 +25,18 @@ locals {
             }
           },
           {
-            name  = "CAMUNDA_OPERATE_ELASTICSEARCH_HOST"
-            value = var.CAMUNDA_OPERATE_ELASTICSEARCH_HOST
+            name  = "ZEEBE_CLIENT_BROKER_CONTACTPOINT"
+            value = var.ZEEBE_CLIENT_BROKER_CONTACTPOINT
           },
           {
-            name  = "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST"
-            value = var.CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST
+            name  = "ZEEBE_CLIENT_SECURITY_PLAINTEXT"
+            value = var.ZEEBE_CLIENT_SECURITY_PLAINTEXT
           },
           {
-            name  = "CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT"
-            value = var.CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT
+            name  = "ZEEBE_CLIENT_WORKER_HAZELCAST_CONNECTION"
+            value = var.ZEEBE_CLIENT_WORKER_HAZELCAST_CONNECTION
           },
-        ]
+        ], var.env)
       }
     ]
   }

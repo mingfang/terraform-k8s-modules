@@ -1,20 +1,21 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
+  contact-points = join(",",
+    [
+      for i in range(0, var.replicas) :
+      "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:26502"
+    ]
+  )
+
   parameters = {
-    name                        = var.name
-    namespace                   = var.namespace
-    annotations                 = var.annotations
-    replicas                    = var.replicas
-    ports                       = var.ports
+    name        = var.name
+    namespace   = var.namespace
+    annotations = var.annotations
+    replicas    = var.replicas
+    ports       = var.ports
+
     enable_service_links        = false
-    publish_not_ready_addresses = true
     pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
@@ -24,7 +25,6 @@ locals {
         env = concat([
           {
             name = "POD_NAME"
-
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -32,32 +32,58 @@ locals {
             }
           },
           {
-            name  = "ZEEBE_HOST"
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name  = "ZEEBE_BROKER_NETWORK_ADVERTISEDHOST"
             value = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local"
           },
           {
-            name  = "ZEEBE_CONTACT_POINTS"
-            value = join(",", data.template_file.contact-points.*.rendered)
+            name  = "ZEEBE_BROKER_CLUSTER_INITIALCONTACTPOINTS"
+            value = local.contact-points
           },
           {
-            name  = "ZEEBE_DIRECTORIES"
-            value = "/data/$(POD_NAME)"
-          },
-          {
-            name  = "ZEEBE_PARTITIONS_COUNT"
-            value = 3
-          },
-          {
-            name  = "ZEEBE_CLUSTER_SIZE"
+            name  = "ZEEBE_BROKER_CLUSTER_CLUSTERSIZE"
             value = var.replicas
           },
           {
-            name  = "ZEEBE_REPLICATION_FACTOR"
-            value = 3
+            name  = "ZEEBE_BROKER_CLUSTER_PARTITIONSCOUNT"
+            value = var.replicas
+          },
+          {
+            name  = "ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR"
+            value = var.ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR
+          },
+          {
+            name  = "ZEEBE_BROKER_CLUSTER_CLUSTERNAME"
+            value = "${var.name}-${var.namespace}"
+          },
+          {
+            name  = "ZEEBE_GATEWAY_CLUSTER_CLUSTERNAME"
+            value = "${var.name}-${var.namespace}"
+          },
+          {
+            name  = "ZEEBE_GATEWAY_CLUSTER_MEMBERID"
+            value = "$(POD_NAME)"
           },
           {
             name  = "JAVA_TOOL_OPTIONS"
-            value = var.JAVA_TOOL_OPTIONS
+            value = "-Xms$(REQUESTS_MEMORY)m -Xmx$(LIMITS_MEMORY)m ${var.JAVA_TOOL_OPTIONS}"
           },
           {
             name  = "ZEEBE_LOG_LEVEL"
@@ -66,11 +92,10 @@ locals {
         ], var.env)
 
         command = [
-          "bash",
+          "sh",
           "-cx",
           <<-EOF
-          configFile=/usr/local/zeebe/conf/zeebe.cfg.toml
-          export ZEEBE_NODE_ID="$${HOSTNAME##*-}"
+          export ZEEBE_BROKER_CLUSTER_NODEID="$${HOSTNAME##*-}"
           exec /usr/local/zeebe/bin/broker
           EOF
         ]
@@ -83,34 +108,14 @@ locals {
           }
         }
 
-        resources = {
-          requests = {
-            cpu    = "500m"
-            memory = "1Gi"
-          }
-        }
+        resources = var.resources
 
         volume_mounts = [
           {
-            mount_path = "/usr/local/zeebe/conf/zeebe.cfg.toml"
-            name       = "config"
-            sub_path   = "zeebe.cfg.toml"
-          },
-          {
             name       = var.volume_claim_template_name
-            mount_path = "/data"
-            sub_path   = var.name
+            mount_path = "/usr/local/zeebe/data"
           },
         ]
-      },
-    ]
-
-    volumes = [
-      {
-        config_map = {
-          name = k8s_core_v1_config_map.this.metadata[0].name
-        }
-        name = "config"
       },
     ]
 
@@ -131,11 +136,6 @@ locals {
 }
 
 module "statefulset-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service"
+  source     = "../../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
-}
-
-data "template_file" "contact-points" {
-  count    = var.replicas
-  template = "${var.name}-${count.index}.${var.name}.${var.namespace}.svc.cluster.local:26502"
 }

@@ -41,6 +41,24 @@ locals {
             }
           },
           {
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
             name  = "node.name"
             value = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local"
           },
@@ -62,7 +80,7 @@ locals {
           },
           {
             name  = "ES_JAVA_OPTS"
-            value = "-Xms${var.heap_size} -Xmx${var.heap_size}"
+            value = "-Xms$(REQUESTS_MEMORY)m -Xmx$(REQUESTS_MEMORY)m ${var.ES_JAVA_OPTS}"
           },
           {
             name  = "path.data"

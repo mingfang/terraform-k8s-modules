@@ -12,8 +12,6 @@ module "elasticsearch" {
 
   storage       = "1Gi"
   storage_class = var.storage_class_name
-
-  heap_size = "4g"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "elasticsearch" {
@@ -27,12 +25,12 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "elasticsearch" {
   }
   spec {
     rules {
-      host = module.elasticsearch.name
+      host = "${var.name}.${var.namespace}"
       http {
         paths {
           backend {
             service_name = module.elasticsearch.name
-            service_port = 9200
+            service_port = module.elasticsearch.ports[0].port
           }
           path = "/"
         }

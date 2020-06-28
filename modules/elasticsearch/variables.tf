@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 3
@@ -18,7 +16,7 @@ variable "ports" {
 }
 
 variable image {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:7.7.0"
+  default = "docker.elastic.co/elasticsearch/elasticsearch:7.8.0"
 }
 
 variable "env" {
@@ -41,6 +39,9 @@ variable "resources" {
   default = {
     requests = {
       cpu    = "250m"
+      memory = "3Gi"
+    }
+    limits = {
       memory = "4Gi"
     }
   }
@@ -54,6 +55,6 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable "heap_size" {
-  default = "4g"
+variable "ES_JAVA_OPTS" {
+  default = ""
 }

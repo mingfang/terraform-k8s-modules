@@ -16,7 +16,7 @@ locals {
     match_labels = local.labels
   }
 
-  podAnnotations = merge(lookup(var.parameters, "annotations", {}), var.podAnnotations)
+  podAnnotations = merge(coalesce(lookup(var.parameters, "annotations", {}), {}), var.podAnnotations)
 
   k8s_core_v1_service_parameters = merge(
     var.parameters,

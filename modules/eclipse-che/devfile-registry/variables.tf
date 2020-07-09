@@ -1,7 +1,5 @@
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable image {
-  default = "quay.io/eclipse/che-devfile-registry:7.14.2"
+  default = "quay.io/eclipse/che-devfile-registry:7.15.2"
 }

@@ -5,9 +5,6 @@ For multi-user = true https://github.com/eclipse/che/blob/master/assembly/assemb
 - Uppercase all names
 - Convert . to _
 - Convert - to __ //double underscore
-
-And here
-https://www.eclipse.org/che/docs/pages/che-7/administration-guide/examples/system-variables.html
 */
 
 locals {

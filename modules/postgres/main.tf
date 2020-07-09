@@ -43,9 +43,8 @@ locals {
 
         volume_mounts = [
           {
-            name          = var.volume_claim_template_name
-            mount_path    = "/data"
-            sub_path_expr = "${var.namespace}/${var.name}/$(POD_NAME)"
+            name       = var.volume_claim_template_name
+            mount_path = "/data"
           },
           {
             name       = "shm"

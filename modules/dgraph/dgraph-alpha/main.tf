@@ -1,9 +1,4 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+
 
 locals {
   parameters = {
@@ -11,7 +6,9 @@ locals {
     namespace                   = var.namespace
     replicas                    = var.replicas
     ports                       = var.ports
+
     enable_service_links        = false
+    pod_management_policy       = "Parallel"
     publish_not_ready_addresses = true
 
     containers = [
@@ -89,7 +86,6 @@ locals {
           {
             name          = var.volume_claim_template_name
             mount_path    = "/dgraph"
-            sub_path_expr = "${var.name}/$(POD_NAME)"
           }
         ] : []
       },

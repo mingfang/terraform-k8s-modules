@@ -9,3 +9,7 @@ output "service" {
 output "deployment" {
   value = module.deployment-service.deployment
 }
+
+output "ports" {
+  value = var.ports
+}

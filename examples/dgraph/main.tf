@@ -4,48 +4,14 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
-module "nfs-server" {
-  source    = "../../modules/nfs-server-empty-dir"
-  name      = "nfs-server"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-}
-
-module "dgraph-zero-storage" {
-  source        = "../../modules/kubernetes/storage-nfs"
-  name          = "dgraph-zero"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
-  replicas      = 3
-  mount_options = module.nfs-server.mount_options
-  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
-  storage       = "1Gi"
-
-  annotations = {
-    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
-  }
-}
-
 module "dgraph-zero" {
   source    = "../../modules/dgraph/dgraph-zero"
   name      = "${var.name}-zero"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas      = module.dgraph-zero-storage.replicas
-  storage       = module.dgraph-zero-storage.storage
-  storage_class = module.dgraph-zero-storage.storage_class_name
-}
-
-module "dgraph-alpha-storage" {
-  source        = "../../modules/kubernetes/storage-nfs"
-  name          = "dgraph-alpha"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = 3
-  mount_options = module.nfs-server.mount_options
-  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
   storage       = "1Gi"
-
-  annotations = {
-    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
-  }
+  storage_class = var.storage_class_name
 }
 
 module "dgraph-alpha" {
@@ -53,9 +19,9 @@ module "dgraph-alpha" {
   name      = "${var.name}-alpha"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas      = module.dgraph-alpha-storage.replicas
-  storage       = module.dgraph-alpha-storage.storage
-  storage_class = module.dgraph-alpha-storage.storage_class_name
+  replicas      = 3
+  storage       = "1Gi"
+  storage_class = var.storage_class_name
 
   peer = module.dgraph-zero.peer
 }
@@ -102,7 +68,7 @@ module "dgraph-nginx" {
     EOF
 }
 
-resource "k8s_extensions_v1beta1_ingress" "dgraph-nginx" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-nginx" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -113,12 +79,62 @@ resource "k8s_extensions_v1beta1_ingress" "dgraph-nginx" {
   }
   spec {
     rules {
-      host = module.dgraph-nginx.name
+      host = "${module.dgraph-nginx.name}.${var.namespace}"
       http {
         paths {
           backend {
             service_name = module.dgraph-nginx.name
             service_port = 80
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-grpc" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"                  = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"     = "dgraph-grpc.*"
+      "nginx.ingress.kubernetes.io/backend-protocol" = "GRPC"
+    }
+    name      = "${module.dgraph-alpha.name}-grpc"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "${module.dgraph-alpha.name}-grpc.${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.dgraph-alpha.name
+            service_port = 9080
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-alpha" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "dgraph-alpha.*"
+    }
+    name      = module.dgraph-alpha.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "${module.dgraph-alpha.name}.${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.dgraph-alpha.name
+            service_port = module.dgraph-alpha.ports[0].port
           }
           path = "/"
         }

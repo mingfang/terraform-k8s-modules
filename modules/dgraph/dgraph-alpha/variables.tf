@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -11,10 +9,6 @@ variable "replicas" {
 variable "ports" {
   default = [
     {
-      name = "grpc-int"
-      port = 7080
-    },
-    {
       name = "http"
       port = 8080
     },
@@ -22,11 +16,15 @@ variable "ports" {
       name = "grpc"
       port = 9080
     },
+    {
+      name = "grpc-int"
+      port = 7080
+    },
   ]
 }
 
 variable "image" {
-  default = "dgraph/dgraph"
+  default = "dgraph/dgraph:v20.03.1"
 }
 
 variable "env" {

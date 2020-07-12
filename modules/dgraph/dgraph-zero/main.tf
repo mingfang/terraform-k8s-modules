@@ -1,9 +1,4 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+
 
 locals {
   peer = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:5080"
@@ -13,7 +8,9 @@ locals {
     namespace                   = var.namespace
     replicas                    = var.replicas
     ports                       = var.ports
+
     enable_service_links        = false
+    pod_management_policy       = "Parallel"
     publish_not_ready_addresses = true
 
     containers = [
@@ -59,9 +56,9 @@ locals {
           ordinal=$${BASH_REMATCH[1]}
           idx=$(($ordinal + 1))
           if [[ $ordinal -eq 0 ]]; then
-            exec dgraph zero --my=$(hostname -f):5080 --idx $idx --replicas 3
+            exec dgraph zero --my=$(hostname -f):5080 --idx $idx --replicas ${var.replicas}
           else
-            exec dgraph zero --my=$(hostname -f):5080 --peer ${local.peer} --idx $idx --replicas 3
+            exec dgraph zero --my=$(hostname -f):5080 --peer ${local.peer} --idx $idx --replicas ${var.replicas}
           fi
           EOF
         ]
@@ -98,7 +95,6 @@ locals {
           {
             name          = var.volume_claim_template_name
             mount_path    = "/dgraph"
-            sub_path_expr = "${var.name}/$(POD_NAME)"
           }
         ] : []
       },

@@ -43,7 +43,6 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "aws_node_termination_h
       "extensions",
     ]
     resources = [
-      "replicasets",
       "daemonsets",
     ]
     verbs = [
@@ -59,7 +58,6 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "aws_node_termination_h
     ]
     verbs = [
       "get",
-      "delete",
     ]
   }
 }

@@ -7,8 +7,9 @@ function tfextract() {
 export DIR=modules/aws/aws-node-termination-handler
 mkdir -p ${DIR}
 
-tfextract -dir ${DIR} -url https://github.com/aws/aws-node-termination-handler/releases/download/v1.3.1/all-resources.yaml
+tfextract -dir ${DIR} -url https://github.com/aws/aws-node-termination-handler/releases/download/v1.6.1/all-resources.yaml
 
+rm ${DIR}/aws_node_termination_handler_win-daemon_set.tf
 sed -i -e 's|.* = false||' ${DIR}/*.tf
 sed -i -e 's|namespace *= ".*"|namespace = var.namespace|g' ${DIR}/*.tf
 

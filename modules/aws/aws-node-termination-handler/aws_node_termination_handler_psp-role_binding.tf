@@ -3,7 +3,7 @@ resource "k8s_rbac_authorization_k8s_io_v1_role_binding" "aws_node_termination_h
     labels = {
       "app.kubernetes.io/instance" = "aws-node-termination-handler"
       "app.kubernetes.io/name"     = "aws-node-termination-handler"
-      "app.kubernetes.io/version"  = "1.3.1"
+      "app.kubernetes.io/version"  = "1.6.1"
       "k8s-app"                    = "aws-node-termination-handler"
     }
     name = "aws-node-termination-handler-psp"

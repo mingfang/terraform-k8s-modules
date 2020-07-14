@@ -2,10 +2,6 @@ variable "namespace" {
   default = "kube-system"
 }
 
-variable "tolerations" {
-  default = []
-}
-
 variable "DELETE_LOCAL_DATA" {
   default = ""
 }
@@ -38,4 +34,25 @@ variable "ENABLE_SPOT_INTERRUPTION_DRAINING" {
 }
 variable "ENABLE_SCHEDULED_EVENT_DRAINING" {
   default = ""
+}
+variable "METADATA_TRIES" {
+  default = ""
+}
+variable "CORDON_ONLY" {
+  default = ""
+}
+variable "JSON_LOGGING" {
+  default = ""
+}
+variable "WEBHOOK_PROXY" {
+  default = ""
+}
+variable "UPTIME_FROM_FILE" {
+  default = ""
+}
+variable "ENABLE_PROMETHEUS_SERVER" {
+  default = "false"
+}
+variable "TAINT_NODE" {
+  default = "false"
 }

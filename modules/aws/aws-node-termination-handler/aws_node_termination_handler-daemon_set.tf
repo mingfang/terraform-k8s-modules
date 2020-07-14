@@ -3,7 +3,7 @@ resource "k8s_apps_v1_daemon_set" "aws_node_termination_handler" {
     labels = {
       "app.kubernetes.io/instance" = "aws-node-termination-handler"
       "app.kubernetes.io/name"     = "aws-node-termination-handler"
-      "app.kubernetes.io/version"  = "1.3.1"
+      "app.kubernetes.io/version"  = "1.6.1"
       "k8s-app"                    = "aws-node-termination-handler"
     }
     name      = "aws-node-termination-handler"
@@ -14,6 +14,7 @@ resource "k8s_apps_v1_daemon_set" "aws_node_termination_handler" {
       match_labels = {
         "app.kubernetes.io/instance" = "aws-node-termination-handler"
         "app.kubernetes.io/name"     = "aws-node-termination-handler"
+        "kubernetes.io/os"           = "linux"
       }
     }
     template {
@@ -22,6 +23,7 @@ resource "k8s_apps_v1_daemon_set" "aws_node_termination_handler" {
           "app.kubernetes.io/instance" = "aws-node-termination-handler"
           "app.kubernetes.io/name"     = "aws-node-termination-handler"
           "k8s-app"                    = "aws-node-termination-handler"
+          "kubernetes.io/os"           = "linux"
         }
       }
       spec {
@@ -32,17 +34,26 @@ resource "k8s_apps_v1_daemon_set" "aws_node_termination_handler" {
               node_selector_terms {
 
                 match_expressions {
-                  key      = "beta.kubernetes.io/os"
+                  key      = "kubernetes.io/os"
                   operator = "In"
                   values = [
                     "linux",
                   ]
                 }
                 match_expressions {
-                  key      = "beta.kubernetes.io/arch"
+                  key      = "kubernetes.io/arch"
                   operator = "In"
                   values = [
                     "amd64",
+                    "arm64",
+                    "arm",
+                  ]
+                }
+                match_expressions {
+                  key      = "eks.amazonaws.com/compute-type"
+                  operator = "NotIn"
+                  values = [
+                    "fargate",
                   ]
                 }
               }
@@ -132,7 +143,39 @@ resource "k8s_apps_v1_daemon_set" "aws_node_termination_handler" {
             name  = "ENABLE_SCHEDULED_EVENT_DRAINING"
             value = var.ENABLE_SCHEDULED_EVENT_DRAINING
           }
-          image             = "amazon/aws-node-termination-handler:v1.3.1"
+          env {
+            name  = "METADATA_TRIES"
+            value = var.METADATA_TRIES
+          }
+          env {
+            name  = "CORDON_ONLY"
+            value = var.CORDON_ONLY
+          }
+          env {
+            name  = "TAINT_NODE"
+            value = var.TAINT_NODE
+          }
+          env {
+            name  = "JSON_LOGGING"
+            value = var.JSON_LOGGING
+          }
+          env {
+            name  = "WEBHOOK_PROXY"
+            value = var.WEBHOOK_PROXY
+          }
+          env {
+            name  = "UPTIME_FROM_FILE"
+            value = var.UPTIME_FROM_FILE
+          }
+          env {
+            name  = "ENABLE_PROMETHEUS_SERVER"
+            value = var.ENABLE_PROMETHEUS_SERVER
+          }
+          env {
+            name  = "PROMETHEUS_SERVER_PORT"
+            value = "9092"
+          }
+          image             = "amazon/aws-node-termination-handler:v1.6.1"
           image_pull_policy = "IfNotPresent"
           name              = "aws-node-termination-handler"
           resources {
@@ -145,26 +188,30 @@ resource "k8s_apps_v1_daemon_set" "aws_node_termination_handler" {
               "memory" = "64Mi"
             }
           }
+          security_context {
+
+            read_only_root_filesystem = true
+            run_asgroup               = 1000
+            run_asnon_root            = true
+            run_asuser                = 1000
+          }
 
           volume_mounts {
             mount_path = "/proc/uptime"
             name       = "uptime"
+            read_only  = true
           }
         }
-        dns_policy           = "ClusterFirstWithHostNet"
-        host_network         = true
+        dns_policy   = "ClusterFirstWithHostNet"
+        host_network = true
+        node_selector = {
+          "kubernetes.io/os" = "linux"
+        }
         priority_class_name  = "system-node-critical"
         service_account_name = "aws-node-termination-handler"
 
-        dynamic "tolerations" {
-          for_each = var.tolerations
-          content {
-            effect             = lookup(tolerations.value, "effect", null)
-            key                = lookup(tolerations.value, "key", null)
-            operator           = lookup(tolerations.value, "operator", null)
-            toleration_seconds = lookup(tolerations.value, "toleration_seconds", null)
-            value              = lookup(tolerations.value, "value", null)
-          }
+        tolerations {
+          operator = "Exists"
         }
 
         volumes {

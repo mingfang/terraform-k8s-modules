@@ -1,6 +1,6 @@
 //GENERATE DYNAMIC//k8s_core_v1_service////
 resource "k8s_core_v1_service" "this" {
-  count = var.enable_service ? 1 :0
+  count = local.enable_service ? 1 : 0
 
   metadata {
     annotations = lookup(local.k8s_core_v1_service_parameters, "annotations", null)

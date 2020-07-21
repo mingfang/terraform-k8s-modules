@@ -27,4 +27,6 @@ locals {
     var.parameters,
     { labels = local.labels, selector = local.selector, annotations = local.podAnnotations, service_name = var.parameters.name },
   )
+
+  enable_service = length(lookup(var.parameters, "ports", [])) > 0
 }

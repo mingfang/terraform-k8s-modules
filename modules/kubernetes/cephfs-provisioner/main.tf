@@ -51,5 +51,4 @@ locals {
 module "deployment-service" {
   source         = "../../../archetypes/deployment-service"
   parameters     = merge(local.parameters, var.overrides)
-  enable_service = false
 }

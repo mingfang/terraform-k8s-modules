@@ -39,6 +39,15 @@ module "cassandra" {
 }
  */
 
+resource "k8s_storage_k8s_io_v1_storage_class" "this" {
+  metadata {
+    name = "${var.namespace}-${var.name}"
+  }
+
+  _provisioner = "ebs.csi.aws.com"
+  allow_volume_expansion = true
+}
+
 resource "k8s_core_v1_persistent_volume" "this" {
   count = length(var.aws_ebs_volumes)
 
@@ -48,7 +57,7 @@ resource "k8s_core_v1_persistent_volume" "this" {
   }
 
   spec {
-    storage_class_name               = "${var.namespace}-${var.name}"
+    storage_class_name               = k8s_storage_k8s_io_v1_storage_class.this.metadata[0].name
     persistent_volume_reclaim_policy = "Retain"
     volume_mode                      = "Filesystem"
     access_modes                     = ["ReadWriteOnce"]

@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -54,4 +52,8 @@ variable "cassandra" {}
 
 variable "keyspace" {
   default = "cortex"
+}
+
+variable "extra-args" {
+  default = []
 }

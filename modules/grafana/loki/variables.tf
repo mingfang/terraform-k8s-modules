@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -33,8 +31,21 @@ variable "overrides" {
   default = {}
 }
 
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "500m"
+      memory = "1Gi"
+    }
+  }
+}
+
 variable "config_file" {
   default = ""
+}
+
+variable "auth_enabled" {
+  default = "true"
 }
 
 variable "cassandra" {}

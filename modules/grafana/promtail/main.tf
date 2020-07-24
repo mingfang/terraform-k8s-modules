@@ -1,9 +1,3 @@
-/**
- * [Fluent Bit](https://fluentbit.io)
- *
- * FluentBit Runs as a daemonset sending logs directly to Elasticsearch
- */
-
 locals {
   parameters = {
     name      = var.name
@@ -96,30 +90,3 @@ module "daemonset" {
   parameters = merge(local.parameters, var.overrides)
 }
 
-module "rbac" {
-  source    = "../../../modules/kubernetes/rbac"
-  name      = var.name
-  namespace = var.namespace
-  cluster_role_rules = [
-    {
-      api_groups = [
-        "",
-      ]
-
-      resources = [
-        "endpoints",
-        "namespaces",
-        "nodes",
-        "nodes/proxy",
-        "pods",
-        "services",
-      ]
-
-      verbs = [
-        "get",
-        "list",
-        "watch",
-      ]
-    },
-  ]
-}

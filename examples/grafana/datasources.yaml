@@ -7,8 +7,21 @@ datasources:
   url: http://loki:3100
   jsonData:
     maxLines: 1000
+    httpHeaderName1: X-Scope-OrgID
+  secureJsonData:
+    httpHeaderValue1: fake
 
 - name: Prometheus
   type: prometheus
   access: proxy
-  url: http://prometheus.cadence-example:9090
+  url: http://prometheus.prometheus:9090
+
+- name: Cortex
+  type: prometheus
+  access: proxy
+  url: http://cortex.cortex-example:9009/api/prom
+  jsonData:
+    httpHeaderName1: X-Scope-OrgID
+  secureJsonData:
+    httpHeaderValue1: rebelsoft
+

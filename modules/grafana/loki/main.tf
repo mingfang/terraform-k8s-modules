@@ -26,12 +26,7 @@ locals {
           },
         ], var.env)
 
-        resources = {
-          requests = {
-            cpu    = "500m"
-            memory = "1Gi"
-          }
-        }
+        resources = var.resources
 
         volume_mounts = [
           {
@@ -60,7 +55,8 @@ module "config" {
   namespace = var.namespace
   from-map = {
     "local-config.yaml" = templatefile("${path.module}/config.yml", {
-      cassandra = var.cassandra
+      auth_enabled = var.auth_enabled
+      cassandra    = var.cassandra
     })
   }
 }

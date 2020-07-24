@@ -1,30 +1,6 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
-    labels = {
-      "istio-injection" = "disabled"
-    }
-
     name = var.namespace
-  }
-}
-
-module "nfs-server" {
-  source    = "../../modules/nfs-server-empty-dir"
-  name      = "nfs-server"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-}
-
-module "cassandra-storage" {
-  source        = "../../modules/kubernetes/storage-nfs"
-  name          = "cassandra"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
-  replicas      = 3
-  mount_options = module.nfs-server.mount_options
-  nfs_server    = module.nfs-server.service.spec[0].cluster_ip
-  storage       = "1Gi"
-
-  annotations = {
-    "nfs-server-uid" = module.nfs-server.deployment.metadata[0].uid
   }
 }
 
@@ -33,50 +9,103 @@ module "cassandra" {
   name      = "cassandra"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas      = module.cassandra-storage.replicas
-  storage       = module.cassandra-storage.storage
-  storage_class = module.cassandra-storage.storage_class_name
+  replicas      = 3
+  storage       = "1Gi"
+  storage_class = var.storage_class_name
 }
 
 module "loki" {
   source    = "../../modules/grafana/loki"
   name      = "loki"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = var.replicas
+  replicas  = 1
   cassandra = module.cassandra.name
 }
 
+resource "k8s_networking_k8s_io_v1beta1_ingress" "loki" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"                       = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"          = "loki-example.*"
+      "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
+      if ($request_method !~ ^(POST)$) { return 405; }
+      EOF
+    }
+    name      = module.loki.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "${module.loki.name}.${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.loki.name
+            service_port = module.loki.service.spec[0].ports[0].port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
+/*
 module "promtail" {
   source    = "../../modules/grafana/promtail"
   name      = "promtail"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  loki_url  = "http://${module.loki.name}:3100/loki/api/v1/push"
+  loki_url  = "http://loki.rebelsoft.com/loki/api/v1/push"
+}
+*/
+
+resource "k8s_core_v1_persistent_volume_claim" "grafana" {
+  metadata {
+    name      = var.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = var.storage_class_name
+  }
 }
 
+module "datasource" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "datasource"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  from-file = "${path.module}/datasources.yaml"
+}
+
+
 module "grafana" {
-  source           = "../../modules/grafana/grafana"
-  name             = "grafana"
-  namespace        = k8s_core_v1_namespace.this.metadata[0].name
-  datasources_file = "${path.module}/datasources.yaml"
+  source                      = "../../modules/grafana/grafana"
+  name                        = "grafana"
+  namespace                   = k8s_core_v1_namespace.this.metadata[0].name
+  pvc_name                    = k8s_core_v1_persistent_volume_claim.grafana.metadata[0].name
+  datasources_config_map_name = module.datasource.config_map.metadata[0].name
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "grafana" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "grafana.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "grafana-example.*"
     }
     name      = module.grafana.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.grafana.name
+      host = "${module.grafana.name}.${var.namespace}"
       http {
         paths {
           backend {
             service_name = module.grafana.name
-            service_port = 3000
+            service_port = module.grafana.service.spec[0].ports[0].port
           }
           path = "/"
         }

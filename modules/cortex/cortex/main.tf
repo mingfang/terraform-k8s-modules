@@ -13,7 +13,7 @@ locals {
       {
         name  = "cortex"
         image = var.image
-        args  = ["-config.file=/etc/cortex/config.yaml"]
+        args  = concat(["-config.file=/etc/cortex/config.yaml"], var.extra-args)
 
         env = concat([
           {
@@ -48,6 +48,11 @@ locals {
       },
     ]
   }
+
+  podAnnotations = {
+    "prometheus.io/scrape" = "true"
+    "prometheus.io/port" = "9009"
+  }
 }
 
 module "config" {
@@ -66,4 +71,5 @@ module "config" {
 module "deployment-service" {
   source     = "../../../archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
+  podAnnotations = local.podAnnotations
 }

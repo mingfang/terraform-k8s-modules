@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "grafana/grafana:7.0.1"
+  default = "grafana/grafana:7.1.1"
 }
 
 variable "env" {

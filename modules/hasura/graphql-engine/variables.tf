@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "hasura/graphql-engine:v1.2.2"
+  default = "hasura/graphql-engine:v1.3.0"
 }
 
 variable "replicas" {

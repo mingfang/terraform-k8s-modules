@@ -23,6 +23,15 @@ locals {
             }
           },
           {
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
             name = "LIMITS_MEMORY"
             value_from = {
               resource_field_ref = {
@@ -34,7 +43,7 @@ locals {
           {
             name  = "JAVA_OPTS"
             value = <<-EOF
-            -Xmx$(LIMITS_MEMORY)m
+            -Xmx$(REQUESTS_MEMORY)m
             -XshowSettings:vm
             -Dhudson.slaves.NodeProvisioner.initialDelay=0
             -Dhudson.slaves.NodeProvisioner.MARGIN=50

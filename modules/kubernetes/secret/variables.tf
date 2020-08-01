@@ -2,6 +2,11 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable type {
+  default     = "Opaque"
+  description = "Opaque or kubernetes.io/dockerconfigjson"
+}
+
 variable "from-dir" {
   default = null
 }

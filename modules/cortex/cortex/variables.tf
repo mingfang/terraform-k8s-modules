@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "quay.io/cortexproject/cortex:v1.1.0"
+  default = "quay.io/cortexproject/cortex:v1.2.0"
 }
 
 variable "env" {

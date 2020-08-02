@@ -24,8 +24,9 @@ locals {
         ], var.env)
 
         security_context = {
-          privileged = true
-          run_asuser = "0"
+          capabilities = {
+            add = ["SYS_TIME"]
+          }
         }
 
         volume_mounts = [
@@ -33,6 +34,11 @@ locals {
             name       = "config"
             mount_path = "/etc/agent"
           },
+          {
+            name = "rootfs"
+            mount_path = "/host"
+            read_only = true
+          }
         ]
       },
     ]
@@ -44,6 +50,12 @@ locals {
           name = module.config.name
         }
       },
+      {
+        name = "rootfs"
+        host_path = {
+          path = "/"
+        }
+      }
     ]
   }
 }

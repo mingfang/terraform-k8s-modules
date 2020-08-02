@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "sonarqube:8.2-community"
+  default = "sonarqube:8.4-community"
 }
 
 variable "env" {

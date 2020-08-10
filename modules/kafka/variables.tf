@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,7 @@ variable ports {
 }
 
 variable image {
-  default = "confluentinc/cp-kafka:5.4.1"
+  default = "confluentinc/cp-kafka:5.5.1"
 }
 
 variable "env" {

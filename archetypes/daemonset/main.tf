@@ -1,9 +1,10 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
 
 locals {
   labels = lookup(var.parameters, "labels", {

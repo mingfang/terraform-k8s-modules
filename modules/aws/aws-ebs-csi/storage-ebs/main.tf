@@ -39,6 +39,14 @@ module "cassandra" {
 }
  */
 
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 resource "k8s_storage_k8s_io_v1_storage_class" "this" {
   metadata {
     name = "${var.namespace}-${var.name}"

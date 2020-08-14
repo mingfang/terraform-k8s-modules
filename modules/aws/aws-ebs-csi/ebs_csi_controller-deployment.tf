@@ -54,7 +54,7 @@ resource "k8s_apps_v1_deployment" "ebs_csi_controller" {
               }
             }
           }
-          image             = "amazon/aws-ebs-csi-driver:v0.5.0"
+          image             = "amazon/aws-ebs-csi-driver:v0.6.0"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             failure_threshold = 5
@@ -92,7 +92,7 @@ resource "k8s_apps_v1_deployment" "ebs_csi_controller" {
             name  = "ADDRESS"
             value = "/var/lib/csi/sockets/pluginproxy/csi.sock"
           }
-          image = "quay.io/k8scsi/csi-provisioner:v1.3.0"
+          image = "quay.io/k8scsi/csi-provisioner:v1.5.0"
           name  = "csi-provisioner"
 
           volume_mounts {

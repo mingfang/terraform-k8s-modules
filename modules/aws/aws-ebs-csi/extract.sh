@@ -7,7 +7,7 @@ function tfextract() {
 export DIR=modules/aws/aws-ebs-csi
 mkdir -p ${DIR}
 
-kubectl kustomize https://github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master > /tmp/aws-ebs-csi.yaml
+kubectl kustomize https://github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=v0.6.0 > /tmp/aws-ebs-csi.yaml
 tfextract -dir ${DIR} -file /tmp/aws-ebs-csi.yaml
 
 sed -i -e 's|namespace *= ".*"|namespace = var.namespace|g' ${DIR}/*.tf

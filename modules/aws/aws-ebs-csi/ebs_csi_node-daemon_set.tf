@@ -51,7 +51,7 @@ resource "k8s_apps_v1_daemon_set" "ebs_csi_node" {
             name  = "CSI_ENDPOINT"
             value = "unix:/csi/csi.sock"
           }
-          image = "amazon/aws-ebs-csi-driver:v0.5.0"
+          image = "amazon/aws-ebs-csi-driver:v0.6.0"
           liveness_probe {
             failure_threshold = 5
             http_get {

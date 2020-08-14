@@ -1,18 +1,26 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
 
 locals {
+  servers = join(",", [
+      for i in range(0, var.replicas) :
+        "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:7100"
+  ])
+
   parameters = {
     name                        = var.name
     namespace                   = var.namespace
     annotations                 = var.annotations
     replicas                    = var.replicas
     ports                       = var.ports
+
     enable_service_links        = false
+    pod_management_policy       = "Parallel"
     publish_not_ready_addresses = true
 
     containers = [
@@ -46,9 +54,9 @@ locals {
           "-cx",
           <<-EOF
           /home/yugabyte/bin/yb-master \
-            --master_addresses=${join(",", data.template_file.servers.*.rendered)} \
-            --rpc_bind_addresses=$(HOSTNAME).${var.name}.${var.namespace}:7100 \
-            --fs_data_dirs=/data/$(HOSTNAME) \
+            --master_addresses=${local.servers} \
+            --server_broadcast_addresses=$(HOSTNAME).${var.name}.${var.namespace}.svc.cluster.local:7100 \
+            --fs_data_dirs=/data \
             --replication_factor=${var.replicas} \
             --undefok=num_cpus,enable_ysql \
             --metric_node_name=$(HOSTNAME) \
@@ -68,7 +76,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           }
         ]
       },
@@ -119,7 +126,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           }
         ]
       },
@@ -164,9 +170,4 @@ locals {
 module "statefulset-service" {
   source     = "../../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
-}
-
-data "template_file" "servers" {
-  count    = var.replicas
-  template = "${var.name}-${count.index}.${var.name}.${var.namespace}:7100"
 }

@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 3
@@ -22,7 +20,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "yugabytedb/yugabyte:latest"
+  default = "yugabytedb/yugabyte:2.2.0.0-b80"
 }
 
 variable "env" {

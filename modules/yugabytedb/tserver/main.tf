@@ -1,9 +1,11 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 
 locals {
   parameters = {
@@ -12,7 +14,9 @@ locals {
     annotations                 = var.annotations
     replicas                    = var.replicas
     ports                       = var.ports
+
     enable_service_links        = false
+    pod_management_policy       = "Parallel"
     publish_not_ready_addresses = true
 
     containers = [
@@ -47,11 +51,11 @@ locals {
           <<-EOF
           /home/yugabyte/bin/yb-tserver \
             --tserver_master_addrs=${var.tserver_master_addrs} \
+            --server_broadcast_addresses=$(HOSTNAME).${var.name}.${var.namespace}.svc.cluster.local:9100 \
+            --pgsql_proxy_bind_address=$(HOSTNAME).${var.name}.${var.namespace}.svc.cluster.local:5433 \
+            --cql_proxy_bind_address=$(HOSTNAME).${var.name}.${var.namespace}.svc.cluster.local:9042 \
             --start_pgsql_proxy \
-            --pgsql_proxy_bind_address $(HOSTNAME):5433 \
-            --cql_proxy_bind_address $(HOSTNAME):9042 \
-            --rpc_bind_addresses=$(HOSTNAME).${var.name}.${var.namespace}:9100 \
-            --fs_data_dirs=/data/$(HOSTNAME) \
+            --fs_data_dirs=/data \
             --replication_factor=${var.replicas} \
             --undefok=num_cpus,enable_ysql \
             --metric_node_name=$(HOSTNAME) \
@@ -71,7 +75,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           }
         ]
       },
@@ -122,7 +125,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           }
         ]
       },

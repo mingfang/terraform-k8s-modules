@@ -15,5 +15,5 @@ output "statefulset" {
 }
 
 output "master_addrs" {
-  value = join(",", data.template_file.servers.*.rendered)
+  value = local.servers
 }

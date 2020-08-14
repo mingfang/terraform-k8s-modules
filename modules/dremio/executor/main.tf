@@ -1,4 +1,10 @@
-
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
 
 locals {
   parameters = {
@@ -34,12 +40,26 @@ locals {
             }
           },
           {
-            name  = "DREMIO_MAX_HEAP_MEMORY_SIZE_MB"
-            value = "4096"
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
           },
           {
-            name  = "DREMIO_MAX_DIRECT_MEMORY_SIZE_MB"
-            value = "12288"
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name  = "DREMIO_MAX_MEMORY_SIZE_MB"
+            value = "$(REQUESTS_MEMORY)"
           },
           {
             name  = "DREMIO_JAVA_EXTRA_OPTS"
@@ -51,12 +71,12 @@ locals {
 
         volume_mounts = concat([
           {
-            mount_path = "/opt/dremio/data"
-            name       = var.volume_claim_template_name
+            name       = "config"
+            mount_path = "/opt/dremio/conf"
           },
           {
-            mount_path = "/opt/dremio/conf"
-            name       = "config"
+            name       = var.volume_claim_template_name
+            mount_path = "/opt/dremio/data/pdfs"
           },
         ], lookup(var.overrides, "volume_mounts", []))
       },
@@ -64,25 +84,21 @@ locals {
 
     init_containers = [
       {
+        name  = "wait-for-zk"
+        image = "busybox"
         command = [
           "sh",
-          "-c",
+          "-cx",
           "until ping -c 1 -W 1 ${var.zookeeper} > /dev/null; do echo waiting for zookeeper host; sleep 5; done;",
         ]
         image = "busybox"
         name  = "wait-for-zk"
       },
       {
-        args = [
-          "dremio:dremio",
-          "/opt/dremio/data",
-        ]
-        command = [
-          "chown",
-        ]
+        name              = "chown"
         image             = var.image
-        image_pull_policy = "IfNotPresent"
-        name              = "chown-data-directory"
+        command = ["chown"]
+        args = ["dremio:dremio", "/opt/dremio/data/pdfs"]
 
         security_context = {
           run_asuser = "0"
@@ -90,8 +106,8 @@ locals {
 
         volume_mounts = [
           {
-            mount_path = "/opt/dremio/data"
             name       = var.volume_claim_template_name
+            mount_path = "/opt/dremio/data/pdfs"
           },
         ]
       },
@@ -99,11 +115,11 @@ locals {
 
     volumes = [
       {
+        name = "config"
         config_map = {
           name = var.config_map
         }
-        name = "config"
-      }
+      },
     ]
 
     volume_claim_templates = [
@@ -119,6 +135,7 @@ locals {
         }
       }
     ]
+
   }
 
   volumes = concat(local.parameters.volumes, lookup(var.overrides, "volumes", []))
@@ -128,5 +145,7 @@ locals {
 
 module "statefulset-service" {
   source     = "../../../archetypes/statefulset-service"
-  parameters = merge(local.parameters, var.overrides, { "volumes" = local.volumes })
+  parameters = merge(local.parameters, var.overrides, {
+    "volumes" = local.volumes
+  })
 }

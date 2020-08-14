@@ -1,11 +1,9 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "image" {
-  default = "dremio/dremio-oss:4.3.1"
+  default = "dremio/dremio-oss:4.6.1"
 }
 
 variable "ports" {

@@ -1,4 +1,10 @@
-
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
 
 locals {
   parameters = {
@@ -34,16 +40,30 @@ locals {
             }
           },
           {
-            name  = "DREMIO_MAX_HEAP_MEMORY_SIZE_MB"
-            value = "4096"
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
           },
           {
-            name  = "DREMIO_MAX_DIRECT_MEMORY_SIZE_MB"
-            value = "12288"
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name  = "DREMIO_MAX_MEMORY_SIZE_MB"
+            value = "$(REQUESTS_MEMORY)"
           },
           {
             name  = "DREMIO_JAVA_EXTRA_OPTS"
-            value = "-Dzookeeper=${var.zookeeper} -Dservices.coordinator.master.embedded-zookeeper.enabled=false -Dservices.executor.enabled=false"
+            value = "-Dzookeeper=${var.zookeeper} -Dservices.coordinator.master.embedded-zookeeper.enabled=false -Dservices.executor.enabled=false ${var.extra_args}"
           },
         ], var.env)
 
@@ -61,12 +81,12 @@ locals {
 
         volume_mounts = concat([
           {
-            mount_path = "/opt/dremio/data"
-            name       = var.volume_claim_template_name
+            name       = "config"
+            mount_path = "/opt/dremio/conf"
           },
           {
-            mount_path = "/opt/dremio/conf"
-            name       = "config"
+            name       = "data"
+            mount_path = "/opt/dremio/data"
           },
         ], lookup(var.overrides, "volume_mounts", []))
       },
@@ -74,34 +94,33 @@ locals {
 
     init_containers = [
       {
+        name  = "start-only-one-master"
+        image = "busybox"
         command = [
           "sh",
-          "-c",
+          "-cx",
           "INDEX=$${HOSTNAME##*-}; if [ $INDEX -ne 0 ]; then echo Only one master should be running.; exit 1; fi; ",
         ]
-        image = "busybox"
-        name  = "start-only-one-master"
       },
       {
+        name  = "wait-for-zk"
+        image = "busybox"
         command = [
           "sh",
-          "-c",
+          "-cx",
           "until ping -c 1 -W 1 ${var.zookeeper} > /dev/null; do echo waiting for zookeeper host; sleep 2; done;",
         ]
-        image = "busybox"
-        name  = "wait-for-zk"
       },
       {
-        args = [
-          "dremio:dremio",
-          "/opt/dremio/data",
-        ]
+        name  = "chown"
+        image = var.image
         command = [
-          "chown",
+          "sh",
+          "-cx",
+          <<-EOF
+          chown dremio:dremio /opt/dremio/data
+          EOF
         ]
-        image             = var.image
-        image_pull_policy = "IfNotPresent"
-        name              = "chown-data-directory"
 
         security_context = {
           run_asuser = "0"
@@ -109,25 +128,25 @@ locals {
 
         volume_mounts = [
           {
-            name       = var.volume_claim_template_name
+            name       = "data"
             mount_path = "/opt/dremio/data"
           },
         ]
       },
       {
-        args = [
-          "upgrade",
-        ]
-        command = [
-          "/opt/dremio/bin/dremio-admin",
-        ]
+        name              = "upgrade"
         image             = var.image
-        image_pull_policy = "IfNotPresent"
-        name              = "upgrade-task"
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          /opt/dremio/bin/dremio-admin upgrade
+          EOF
+        ]
 
         volume_mounts = [
           {
-            name       = var.volume_claim_template_name
+            name       = "data"
             mount_path = "/opt/dremio/data"
           }
         ]
@@ -136,23 +155,15 @@ locals {
 
     volumes = [
       {
+        name = "config"
         config_map = {
           name = var.config_map
         }
-        name = "config"
-      }
-    ]
-
-    volume_claim_templates = [
+      },
       {
-        name               = var.volume_claim_template_name
-        storage_class_name = var.storage_class_name
-        access_modes       = ["ReadWriteOnce"]
-
-        resources = {
-          requests = {
-            storage = var.storage
-          }
+        name = "data"
+        persistent_volume_claim = {
+          claim_name = var.pvc_name
         }
       }
     ]
@@ -164,6 +175,8 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "../../../archetypes/statefulset-service"
-  parameters = merge(local.parameters, var.overrides, { "volumes" = local.volumes })
+  source = "../../../archetypes/statefulset-service"
+  parameters = merge(local.parameters, var.overrides, {
+    "volumes" = local.volumes
+  })
 }

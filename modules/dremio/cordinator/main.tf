@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 locals {
   parameters = {
     name        = var.name
@@ -12,6 +20,9 @@ locals {
 
     containers = [
       {
+        name  = "dremio"
+        image = var.image
+
         args = [
           "start-fg",
         ]
@@ -29,21 +40,32 @@ locals {
             }
           },
           {
-            name  = "DREMIO_MAX_HEAP_MEMORY_SIZE_MB"
-            value = "4096"
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
           },
           {
-            name  = "DREMIO_MAX_DIRECT_MEMORY_SIZE_MB"
-            value = "12288"
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name  = "DREMIO_MAX_MEMORY_SIZE_MB"
+            value = "$(REQUESTS_MEMORY)"
           },
           {
             name  = "DREMIO_JAVA_EXTRA_OPTS"
             value = "-Dzookeeper=${var.zookeeper} -Dservices.coordinator.master.enabled=false -Dservices.executor.enabled=false"
           },
         ], var.env)
-
-        image = var.image
-        name  = "dremio"
 
         liveness_probe = {
           http_get = {

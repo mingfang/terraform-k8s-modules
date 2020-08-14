@@ -1,11 +1,9 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "image" {
-  default = "dremio/dremio-oss:4.3.1"
+  default = "dremio/dremio-oss:4.6.1"
 }
 
 variable "ports" {
@@ -36,14 +34,6 @@ variable "node_selector" {
   default = null
 }
 
-variable "storage" {}
-
-variable "storage_class_name" {}
-
-variable "volume_claim_template_name" {
-  default = "pvc"
-}
-
 variable "overrides" {
   default = {}
 }
@@ -52,7 +42,7 @@ variable "resources" {
   default = {
     requests = {
       cpu    = "500m"
-      memory = "100Mi"
+      memory = "4Gi"
     }
   }
 }
@@ -60,3 +50,9 @@ variable "resources" {
 variable "config_map" {}
 
 variable "zookeeper" {}
+
+variable "pvc_name" {}
+
+variable "extra_args" {
+  default = ""
+}

@@ -1,11 +1,7 @@
 variable "name" {
-  default = "kafka"
+  default = "confluentinc"
 }
 
 variable "namespace" {
-  default = "kafka-example"
-}
-
-variable "replicas" {
-  default = 3
+  default = "confluentinc-example"
 }

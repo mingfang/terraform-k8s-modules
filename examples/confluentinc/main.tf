@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    k8s = {
+      source = "mingfang/k8s"
+    }
+  }
+}
+
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
@@ -21,7 +29,7 @@ module "kafka" {
 
   storage_class = "cephfs"
   storage       = "1Gi"
-  replicas      = var.replicas
+  replicas      = 3
 
   KAFKA_ZOOKEEPER_CONNECT = "${module.zookeeper.name}:${module.zookeeper.ports[0].port}"
 }

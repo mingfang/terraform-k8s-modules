@@ -1,3 +1,10 @@
+terraform {
+  required_providers {
+    k8s = {
+      source = "mingfang/k8s"
+    }
+  }
+}
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
@@ -11,7 +18,7 @@ module "zookeeper" {
 
   storage       = "1Gi"
   storage_class = "cephfs"
-  replicas      = 3
+  replicas      = 1
 }
 
 module "config" {
@@ -47,26 +54,27 @@ locals {
   overrides = {}
 }
 
-module "master-cordinator" {
-  source             = "../../modules/dremio/master-cordinator"
-  name               = "${var.name}-master-cordinator"
-  namespace          = k8s_core_v1_namespace.this.metadata[0].name
-  storage            = "1Gi"
-  storage_class_name = "cephfs"
-  config_map         = module.config.config_map
-  zookeeper          = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
-  overrides          = local.overrides
+resource "k8s_core_v1_persistent_volume_claim" "this" {
+  metadata {
+    name      = var.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = var.storage_class_name
+  }
 }
 
-module "cordinator" {
-  source            = "../../modules/dremio/cordinator"
-  name              = "${var.name}-cordinator"
-  namespace         = k8s_core_v1_namespace.this.metadata[0].name
-  replicas          = 2
-  config_map        = module.config.config_map
-  master-cordinator = module.master-cordinator.service.metadata[0].name
-  zookeeper         = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
-  overrides         = local.overrides
+module "master-cordinator" {
+  source     = "../../modules/dremio/master-cordinator"
+  name       = "${var.name}-master-cordinator"
+  namespace  = k8s_core_v1_namespace.this.metadata[0].name
+  config_map = module.config.config_map
+  zookeeper  = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
+  overrides  = local.overrides
+  pvc_name   = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
@@ -76,30 +84,23 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/proxy-body-size"       = "1024m" // for large file uploads
-      "cert-manager.io/cluster-issuer"                    = "letsencrypt-prod"
+      "nginx.ingress.kubernetes.io/server-alias"          = "dremio-example.*"
     }
-    name      = "${var.name}.${var.namespace}.rebelsoft.com"
+    name      = var.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${var.name}.${var.namespace}.rebelsoft.com"
+      host = "${var.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.cordinator.name
-            service_port = module.cordinator.service.spec[0].ports[0].port
+            service_name = module.master-cordinator.name
+            service_port = module.master-cordinator.service.spec[0].ports[0].port
           }
           path = "/"
         }
       }
-    }
-
-    tls {
-      hosts = [
-        "${var.name}.${var.namespace}.rebelsoft.com"
-      ]
-      secret_name = "${var.name}.${var.namespace}.rebelsoft.com-tls"
     }
   }
 }

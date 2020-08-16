@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 locals {
   parameters = {
     name                 = var.name
@@ -27,7 +35,11 @@ locals {
           },
           {
             name = "NAMESPACE"
-            value = var.NAMESPACE
+            value = coalesce(var.JOB_NAMESPACE, var.namespace)
+          },
+          {
+            name = "IMAGE_PULL_POLICY"
+            value = var.IMAGE_PULL_POLICY
           },
           {
             name = "IMAGE_PULL_SECRETS"
@@ -52,10 +64,6 @@ locals {
           {
             name = "JOB_CPU_LIMIT"
             value = var.JOB_CPU_LIMIT
-          },
-          {
-            name = "IMAGE_PULL_POLICY"
-            value = var.IMAGE_PULL_POLICY
           },
           {
             name = "SERVICE_ACCOUNT_NAME"
@@ -104,7 +112,7 @@ locals {
           },
           {
             name = "NAMESPACE"
-            value = var.NAMESPACE
+            value = var.JOB_NAMESPACE
           },
         ],var.env)
 

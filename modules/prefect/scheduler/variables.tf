@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "prefecthq/server:0.12.5"
+  default = "prefecthq/server:0.12.6"
 }
 
 variable "replicas" {

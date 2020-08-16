@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "prefecthq/prefect:all_extras-0.12.5"
+  default = "prefecthq/prefect:all_extras-0.12.6"
 }
 
 variable "replicas" {
@@ -40,7 +40,10 @@ variable "PREFECT__CLOUD__API" {
   description = "http://prefect-apollo:4200"
 }
 
-variable "NAMESPACE" {
+variable "JOB_NAMESPACE" {
+  default = ""
+}
+variable "IMAGE_PULL_POLICY" {
   default = ""
 }
 variable "IMAGE_PULL_SECRETS" {
@@ -59,9 +62,6 @@ variable "JOB_CPU_REQUEST" {
   default = ""
 }
 variable "JOB_CPU_LIMIT" {
-  default = ""
-}
-variable "IMAGE_PULL_POLICY" {
   default = ""
 }
 variable "SERVICE_ACCOUNT_NAME" {

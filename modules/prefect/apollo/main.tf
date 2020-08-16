@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 locals {
   parameters = {
     name                 = var.name

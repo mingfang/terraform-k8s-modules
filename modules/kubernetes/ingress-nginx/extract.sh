@@ -7,8 +7,7 @@ function tfextract() {
 export DIR=modules/kubernetes/ingress-nginx
 mkdir -p ${DIR}
 
-tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
-tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/baremetal/service-nodeport.yaml
+tfextract -dir ${DIR} -url https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.34.1/deploy/static/provider/kind/deploy.yaml
 
 # remove limits
 rm ${DIR}/*limit_range.tf

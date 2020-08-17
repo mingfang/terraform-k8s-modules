@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
@@ -32,9 +40,6 @@ module "jenkins" {
   source    = "../../modules/jenkins/jenkins"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  annotations = {
-    checksum = module.casc_configs.checksum
-  }
 
   resources = {
     requests = {

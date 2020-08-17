@@ -1,11 +1,9 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
-  default = 3
+  default = 1
 }
 
 variable "ports" {
@@ -37,6 +35,10 @@ variable "annotations" {
   default = {}
 }
 
+variable "overrides" {
+  default = {}
+}
+
 variable "resources" {
   default = {
     requests = {
@@ -44,10 +46,6 @@ variable "resources" {
       memory = "1Gi"
     }
   }
-}
-
-variable "overrides" {
-  default = {}
 }
 
 variable "storage" {}

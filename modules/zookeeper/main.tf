@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    k8s = {
+      source  = "mingfang/k8s"
+    }
+  }
+}
+
 locals {
   zoo-servers = join(" ",
     [
@@ -29,6 +37,15 @@ locals {
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
+              }
+            }
+          },
+          {
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor = "1Mi"
               }
             }
           },
@@ -92,15 +109,8 @@ locals {
           "sh",
           "-cx",
           <<-EOF
-          chown zookeeper $ZOO_DATA_DIR
+          chown zookeeper /data
           EOF
-        ]
-
-        env = [
-          {
-            name  = "ZOO_DATA_DIR"
-            value = "/data"
-          },
         ]
 
         security_context = {

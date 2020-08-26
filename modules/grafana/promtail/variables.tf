@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable image {
-  default = "grafana/promtail:1.5.0"
+  default = "grafana/promtail:1.6.1"
 }
 
 variable "env" {
@@ -15,8 +15,7 @@ variable "annotations" {
 }
 
 variable "node_selector" {
-  type    = map
-  default = null
+  default = {}
 }
 
 variable "overrides" {

@@ -1,5 +1,9 @@
 output "name" {
-  value = module.deployment-service.name
+  value = var.name
+}
+
+output "ports" {
+  value = var.ports
 }
 
 output "service" {

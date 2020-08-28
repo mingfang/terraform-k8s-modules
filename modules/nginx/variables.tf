@@ -1,7 +1,9 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
+variable "namespace" {}
+
+variable "image" {
+  default = "nginx:1.17.8"
 }
 
 variable "replicas" {
@@ -15,10 +17,6 @@ variable "ports" {
       port = 80
     },
   ]
-}
-
-variable "image" {
-  default = "nginx:1.17.8"
 }
 
 variable "env" {

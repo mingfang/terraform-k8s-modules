@@ -28,17 +28,26 @@ locals {
           },
         ], var.env)
 
-        volume_mounts = var.default-conf != null ? [
-          {
-            name       = "config"
-            mount_path = "/etc/nginx/conf.d/default.conf"
-            sub_path   = "default.conf"
-          },
-        ] : []
+        volume_mounts = concat(
+          var.nginx-conf != null ? [
+            {
+              name       = "config"
+              mount_path = "/etc/nginx/nginx.conf"
+              sub_path   = "nginx.conf"
+            },
+          ] : [],
+          var.default-conf != null ? [
+            {
+              name       = "config"
+              mount_path = "/etc/nginx/conf.d/default.conf"
+              sub_path   = "default.conf"
+            },
+          ] : [],
+        )
       }
     ]
 
-    volumes = var.default-conf != null ? [
+    volumes = var.nginx-conf != null || var.default-conf != null ? [
       {
         config_map = {
           name = var.name

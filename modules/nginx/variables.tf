@@ -31,6 +31,12 @@ variable "overrides" {
   default = {}
 }
 
+// optional - override nginx.conf
+variable "nginx-conf" {
+  type    = string
+  default = null
+}
+
 // optional - override default.conf
 variable "default-conf" {
   type    = string

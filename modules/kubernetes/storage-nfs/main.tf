@@ -1,5 +1,5 @@
 /**
- * Create a set of PersistentVolumes and a coresponding set of PersistentVolumeClaims.
+ * Create a set of PersistentVolumes and a corresponding set of PersistentVolumeClaims.
  *
  * Useful for used with the VolumeClaimTemplates of StatefulSets.
  *
@@ -9,7 +9,7 @@ resource "k8s_core_v1_persistent_volume" "this" {
   count = var.replicas
 
   metadata {
-    name        = "${var.namespace}-${var.name}-${count.index}"
+    name        = "pvc-${var.name}-${count.index}"
     annotations = var.annotations
   }
 
@@ -35,7 +35,7 @@ resource "k8s_core_v1_persistent_volume_claim" "this" {
   count = var.replicas
 
   metadata {
-    name        = "pvc-${var.name}-${count.index}"
+    name        = element(k8s_core_v1_persistent_volume.this.*.metadata.0.name, count.index)
     namespace   = var.namespace
     annotations = merge(var.annotations, map("pv-uid", element(k8s_core_v1_persistent_volume.this.*.metadata.0.uid, count.index)))
   }

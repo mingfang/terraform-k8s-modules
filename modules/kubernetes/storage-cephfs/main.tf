@@ -1,5 +1,5 @@
 /**
- * Create a set of PersistentVolumes and a coresponding set of PersistentVolumeClaims.
+ * Create a set of PersistentVolumes and a corresponding set of PersistentVolumeClaims.
  *
  * Useful for used with the VolumeClaimTemplates of StatefulSets.
  *
@@ -38,7 +38,7 @@ resource "k8s_core_v1_persistent_volume" "this" {
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "this" {
-  count = var.replicas
+  count = length(k8s_core_v1_persistent_volume.this.*)
 
   metadata {
     name        = element(k8s_core_v1_persistent_volume.this.*.metadata.0.name, count.index)

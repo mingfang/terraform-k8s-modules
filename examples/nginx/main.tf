@@ -58,7 +58,7 @@ module "nginx" {
     EOF
 }
 
-resource "k8s_extensions_v1beta1_ingress" "nginx" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "nginx" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"

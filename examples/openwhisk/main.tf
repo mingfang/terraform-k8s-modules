@@ -178,8 +178,8 @@ module "nginx" {
   name      = "nginx"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  controller = module.controller.name
-  apigateway = module.apigateway.name
+  controller_fqdn = "${module.controller.name}.${var.namespace}.svc.cluster.local"
+  apigateway_fqdn = "${module.apigateway.name}.${var.namespace}.svc.cluster.local"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "nginx" {

@@ -9,5 +9,9 @@ variable "ports" {
   ]
 }
 
-variable "controller" {}
-variable "apigateway" {}
+variable "controller_fqdn" {
+  description = "<controller>.<namespace>.svc.cluster.local"
+}
+variable "apigateway_fqdn" {
+  description = "<apigateway>.<namespace>.svc.cluster.local"
+}

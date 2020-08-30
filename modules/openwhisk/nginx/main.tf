@@ -38,25 +38,25 @@ module "nginx" {
               if ($namespace) {
                   rewrite    /(.*) /api/v1/web/$${namespace}/$1 break;
               }
-              proxy_pass http://${var.controller}:8080;
+              proxy_pass http://${var.controller_fqdn}:8080;
               proxy_read_timeout 75s; # 70+5 additional seconds to allow controller to terminate request
           }
 
           location /api/v1 {
-              proxy_pass http://${var.controller}:8080;
+              proxy_pass http://${var.controller_fqdn}:8080;
               proxy_read_timeout 75s; # 70+5 additional seconds to allow controller to terminate request
           }
 
           location /api {
-              proxy_pass http://${var.apigateway}:8080;
+              proxy_pass http://${var.apigateway_fqdn}:8080;
           }
 
           location /v1/health-check {
-              proxy_pass http://${var.apigateway}:9000;
+              proxy_pass http://${var.apigateway_fqdn}:9000;
           }
 
           location /v2 {
-              proxy_pass http://${var.apigateway}:9000;
+              proxy_pass http://${var.apigateway_fqdn}:9000;
           }
 
 
@@ -64,7 +64,7 @@ module "nginx" {
               if ($namespace) {
                 rewrite    /(.*) /api/v1/web/$${namespace}/$1 break;
               }
-              proxy_pass http://${var.controller}:8080;
+              proxy_pass http://${var.controller_fqdn}:8080;
               proxy_read_timeout 75s; # 70+5 additional seconds to allow controller to terminate request
           }
 

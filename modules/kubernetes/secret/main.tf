@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source  = "mingfang/k8s"
-    }
-  }
-}
-
 locals {
   data = merge(
     var.from-dir != null ? { for f in fileset(var.from-dir, "*") : f => base64encode(file("${var.from-dir}/${f}")) } : {},

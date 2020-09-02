@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -45,9 +43,9 @@ variable "TZ" {
   default = "UTC"
 }
 
-//caching_sha2_password or mysql_native_password
 variable "default-authentication-plugin" {
   default = "caching_sha2_password"
+  description = "caching_sha2_password or mysql_native_password."
 }
 
 variable MYSQL_USER {}

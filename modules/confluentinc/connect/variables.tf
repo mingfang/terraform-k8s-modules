@@ -10,13 +10,17 @@ variable ports {
   default = [
     {
       name = "http"
-      port = 8088
+      port = 8083
+    },
+    {
+      name = "tcp2"
+      port = 5005
     },
   ]
 }
 
 variable image {
-  default = "confluentinc/ksqldb-server:0.11.0"
+  default = "confluentinc/cp-kafka-connect:5.5.1"
 }
 
 variable "env" {
@@ -35,29 +39,28 @@ variable "overrides" {
   default = {}
 }
 
-variable KSQL_BOOTSTRAP_SERVERS {}
+variable CONNECT_BOOTSTRAP_SERVERS {}
 
-variable KSQL_KSQL_SCHEMA_REGISTRY_URL {
+variable CONNECT_SCHEMA_REGISTRY_URL {
   default = null
 }
 
-variable "KSQL_KSQL_CONNECT_URL" {
-  default = null
-  description = ""
-}
-variable "KSQL_CONNECT_KEY_CONVERTER" {
+variable "CONNECT_KEY_CONVERTER" {
   default = "io.confluent.connect.avro.AvroConverter"
 }
-variable "KSQL_CONNECT_VALUE_CONVERTER" {
+variable "CONNECT_VALUE_CONVERTER" {
   default = "io.confluent.connect.avro.AvroConverter"
 }
-variable "KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR" {
+variable "CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR" {
   default = 1
 }
-variable "KSQL_CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR" {
+variable "CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR" {
   default = 1
 }
-variable "KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR" {
+variable "CONNECT_STATUS_STORAGE_REPLICATION_FACTOR" {
   default = 1
 }
 
+variable "CONNECT_PLUGIN_PATH" {
+  default = "/home/appuser/plugins"
+}

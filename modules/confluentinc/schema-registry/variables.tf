@@ -35,4 +35,11 @@ variable "overrides" {
   default = {}
 }
 
-variable SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS {}
+variable SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL {
+  default = null
+  description = "ZooKeeper URL for the Kafka cluster."
+}
+variable SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS {
+  default = null
+  description = "Kafka Bootstrap Servers."
+}

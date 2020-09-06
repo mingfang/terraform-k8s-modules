@@ -37,7 +37,12 @@ variable "overrides" {
 
 variable CONTROL_CENTER_ZOOKEEPER_CONNECT {}
 variable CONTROL_CENTER_BOOTSTRAP_SERVERS {}
-variable CONTROL_CENTER_SCHEMA_REGISTRY_URL {}
+variable CONTROL_CENTER_SCHEMA_REGISTRY_URL {
+  default = ""
+}
 variable CONTROL_CENTER_REPLICATION_FACTOR {
   default = 1
+}
+variable "CONTROL_CENTER_CONNECT_CLUSTER" {
+  default = null
 }

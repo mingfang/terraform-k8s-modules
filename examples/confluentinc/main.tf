@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source = "mingfang/k8s"
-    }
-  }
-}
-
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
@@ -42,14 +34,27 @@ module "schema-registry" {
   SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS = "${module.kafka.name}:${module.kafka.ports[0].port}"
 }
 
+module "connect" {
+  source    = "../../modules/confluentinc/connect"
+  name      = "connect"
+  namespace = var.namespace
+  replicas  = 3
+  image     = "registry.rebelsoft.com/kafka-connect"
+
+  CONNECT_BOOTSTRAP_SERVERS   = "${module.kafka.name}:${module.kafka.ports[0].port}"
+  CONNECT_SCHEMA_REGISTRY_URL = "http://${module.schema-registry.name}:${module.schema-registry.ports[0].port}"
+}
+
 module "ksqldb-server" {
   source    = "../../modules/confluentinc/ksqldb-server"
   name      = "ksqldb-server"
   namespace = var.namespace
-  image     = "registry.rebelsoft.com/ksqldb-server"
+  replicas  = 3
+  //  image     = "registry.rebelsoft.com/ksqldb-server"
 
   KSQL_BOOTSTRAP_SERVERS        = "${module.kafka.name}:${module.kafka.ports[0].port}"
   KSQL_KSQL_SCHEMA_REGISTRY_URL = "http://${module.schema-registry.name}:${module.schema-registry.ports[0].port}"
+  KSQL_KSQL_CONNECT_URL         = "http://${module.connect.name}:${module.connect.ports[0].port}"
 }
 
 module "control-center" {
@@ -65,6 +70,10 @@ module "control-center" {
     {
       name  = "CONTROL_CENTER_KSQL_${module.ksqldb-server.name}_URL"
       value = "${module.ksqldb-server.name}:${module.ksqldb-server.ports[0].port}"
+    },
+    {
+      name  = "CONTROL_CENTER_CONNECT_CLUSTER"
+      value = "${module.connect.name}:${module.connect.ports[0].port}"
     },
   ]
 }

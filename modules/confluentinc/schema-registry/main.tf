@@ -14,11 +14,15 @@ locals {
         image = var.image
         env = concat([
           {
+            name  = "SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL"
+            value = var.SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL
+          },
+          {
             name  = "SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS"
             value = var.SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
           },
           {
-            name = "SCHEMA_REGISTRY_KAFKASTORE_LISTENERS"
+            name = "SCHEMA_REGISTRY_LISTENERS"
             value = "http://0.0.0.0:${var.ports[0].port}"
           },
           {

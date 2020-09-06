@@ -17,6 +17,19 @@ locals {
         image = var.image
         env = concat([
           {
+            name = "POD_NAME"
+
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
+              }
+            }
+          },
+          {
+            name = "KSQL_KSQL_SCHEMA_REGISTRY_URL"
+            value = var.KSQL_KSQL_SCHEMA_REGISTRY_URL
+          },
+          {
             name  = "KSQL_BOOTSTRAP_SERVERS"
             value = var.KSQL_BOOTSTRAP_SERVERS
           },
@@ -29,8 +42,12 @@ locals {
             value = "http://0.0.0.0:${var.ports[0].port}"
           },
           {
-            name = "KSQL_KSQL_SCHEMA_REGISTRY_URL"
-            value = var.KSQL_KSQL_SCHEMA_REGISTRY_URL
+            name = "KSQL_KSQL_ADVERTISED_LISTENER"
+            value = "http://$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local:${var.ports[0].port}"
+          },
+          {
+            name  = "KSQL_KSQL_CONNECT_URL"
+            value = coalesce(var.KSQL_KSQL_CONNECT_URL, "localhost:8083")
           },
           {
             name  = "KSQL_CONNECT_BOOTSTRAP_SERVERS"
@@ -38,7 +55,7 @@ locals {
           },
           {
             name  = "KSQL_CONNECT_GROUP_ID"
-            value = "${var.name}-${var.namespace}"
+            value = "${var.name}_${var.namespace}"
           },
           {
             name  = "KSQL_CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL"
@@ -58,15 +75,15 @@ locals {
           },
           {
             name = "KSQL_CONNECT_CONFIG_STORAGE_TOPIC"
-            value = "${var.name}-${var.namespace}-${var.KSQL_CONNECT_CONFIG_STORAGE_TOPIC}"
+            value = "${var.name}-${var.namespace}.config"
           },
           {
             name = "KSQL_CONNECT_OFFSET_STORAGE_TOPIC"
-            value = "${var.name}-${var.namespace}-${var.KSQL_CONNECT_OFFSET_STORAGE_TOPIC}"
+            value = "${var.name}-${var.namespace}.offset"
           },
           {
             name = "KSQL_CONNECT_STATUS_STORAGE_TOPIC"
-            value = "${var.name}-${var.namespace}-${var.KSQL_CONNECT_STATUS_STORAGE_TOPIC}"
+            value = "${var.name}-${var.namespace}.status"
           },
           {
             name = "KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR"
@@ -80,10 +97,6 @@ locals {
             name = "KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR"
             value = var.KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
           },
-          {
-            name = "KSQL_CONNECT_PLUGIN_PATH"
-            value = var.KSQL_CONNECT_PLUGIN_PATH
-          }
         ], var.env)
       },
     ]

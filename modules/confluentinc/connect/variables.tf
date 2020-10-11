@@ -20,7 +20,7 @@ variable ports {
 }
 
 variable image {
-  default = "confluentinc/cp-kafka-connect:5.5.1"
+  default = "confluentinc/cp-kafka-connect:6.0.0"
 }
 
 variable "env" {

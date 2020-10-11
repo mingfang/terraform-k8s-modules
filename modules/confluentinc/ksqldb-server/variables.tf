@@ -16,7 +16,7 @@ variable ports {
 }
 
 variable image {
-  default = "confluentinc/ksqldb-server:0.11.0"
+  default = "confluentinc/ksqldb-server:0.12.0"
 }
 
 variable "env" {

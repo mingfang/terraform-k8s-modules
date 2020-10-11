@@ -16,7 +16,7 @@ variable ports {
 }
 
 variable image {
-  default = "confluentinc/cp-enterprise-control-center:5.5.1"
+  default = "confluentinc/cp-enterprise-control-center:6.0.0"
 }
 
 variable "env" {

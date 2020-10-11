@@ -16,7 +16,7 @@ variable ports {
 }
 
 variable image {
-  default = "confluentinc/cp-schema-registry:5.5.1"
+  default = "confluentinc/cp-schema-registry:6.0.0"
 }
 
 variable "env" {

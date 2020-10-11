@@ -6,7 +6,9 @@ locals {
     replicas    = var.replicas
     ports       = var.ports
 
-    enable_service_links  = false
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
@@ -36,22 +38,31 @@ locals {
             value = var.KAFKA_ZOOKEEPER_CONNECT
           },
           {
-            name = "KAFKA_LOG4J_LOGGERS"
+            name  = "KAFKA_LOG4J_LOGGERS"
             value = var.KAFKA_LOG4J_LOGGERS
           },
           {
-            name = "KAFKA_METRIC_REPORTERS"
+            name  = "KAFKA_METRIC_REPORTERS"
             value = var.KAFKA_METRIC_REPORTERS
           },
           {
-            name = "KAFKA_CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS"
+            name  = "KAFKA_CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS"
             value = "${var.name}.${var.namespace}:${var.ports[0].port}"
           },
           {
-            name = "KAFKA_CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT"
+            name  = "KAFKA_CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT"
             value = var.KAFKA_ZOOKEEPER_CONNECT
           },
         ], var.env)
+
+        startup_probe = {
+          failure_threshold = 30
+          period_seconds    = 10
+
+          tcp_socket = {
+            port = var.ports.0.port
+          }
+        }
 
         liveness_probe = {
           initial_delay_seconds = 1
@@ -61,7 +72,7 @@ locals {
             command = [
               "sh",
               "-ec",
-              "/usr/bin/jps | /bin/grep -q SupportedKafka",
+              "/usr/bin/jps | /bin/grep -q Kafka",
             ]
           }
         }
@@ -76,10 +87,37 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
+          }
+        ]
+      },
+    ]
+
+    init_containers = [
+      {
+        name  = "init"
+        image = var.image
+
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          chown -R appuser /data
+          EOF
+        ]
+
+        security_context = {
+          run_asuser = "0"
+        }
+
+        volume_mounts = [
+          {
+            name       = var.volume_claim_template_name
+            mount_path = "/data"
           },
         ]
       },
     ]
+
     volume_claim_templates = [
       {
         name               = var.volume_claim_template_name

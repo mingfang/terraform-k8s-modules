@@ -35,7 +35,7 @@ locals {
           },
           {
             name  = "KSQL_KSQL_SERVICE_ID"
-            value = "${var.name}-${var.namespace}"
+            value = "${var.name}-${var.namespace}_"
           },
           {
             name = "KSQL_LISTENERS"
@@ -52,6 +52,10 @@ locals {
           {
             name  = "KSQL_CONNECT_BOOTSTRAP_SERVERS"
             value = var.KSQL_BOOTSTRAP_SERVERS
+          },
+          {
+            name  = "KSQL_CONNECT_REST_ADVERTISED_HOST_NAME"
+            value = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local"
           },
           {
             name  = "KSQL_CONNECT_GROUP_ID"
@@ -75,15 +79,15 @@ locals {
           },
           {
             name = "KSQL_CONNECT_CONFIG_STORAGE_TOPIC"
-            value = "${var.name}-${var.namespace}.config"
+            value = "${var.name}-${var.namespace}-connect.config"
           },
           {
             name = "KSQL_CONNECT_OFFSET_STORAGE_TOPIC"
-            value = "${var.name}-${var.namespace}.offset"
+            value = "${var.name}-${var.namespace}-connect.offset"
           },
           {
             name = "KSQL_CONNECT_STATUS_STORAGE_TOPIC"
-            value = "${var.name}-${var.namespace}.status"
+            value = "${var.name}-${var.namespace}-connect.status"
           },
           {
             name = "KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR"

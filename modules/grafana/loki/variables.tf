@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "grafana/loki:1.5.0"
+  default = "grafana/loki:1.6.1"
 }
 
 variable "env" {

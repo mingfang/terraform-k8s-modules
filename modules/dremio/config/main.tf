@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source  = "mingfang/k8s"
-    }
-  }
-}
-
 resource "k8s_core_v1_config_map" "this" {
   data = {
     "core-site.xml"      = <<-EOF

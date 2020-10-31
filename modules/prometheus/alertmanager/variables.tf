@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,11 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "prom/alertmanager:v0.20.0"
+  default = "prom/alertmanager:v0.21.0"
+}
+
+variable "env" {
+  default = []
 }
 
 variable "annotations" {
@@ -29,7 +31,11 @@ variable "overrides" {
   default = {}
 }
 
-// path to config.yml, e.g. ${path.module}/config.yml
+variable "resources" {
+  default = null
+}
+
 variable "config_file" {
-  default = ""
+  default     = null
+  description = "path to config.yml, e.g. $${path.module}/config.yml"
 }

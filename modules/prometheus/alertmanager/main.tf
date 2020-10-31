@@ -1,10 +1,3 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
   parameters = {
     name                 = var.name
@@ -14,14 +7,14 @@ locals {
     enable_service_links = false
 
     // restart on config change
-    annotations = merge(var.annotations, { checksum = md5(data.template_file.config.rendered) })
+    annotations = merge(var.annotations, { checksum = module.config.checksum })
 
     containers = [
       {
         name  = "alertmanager"
         image = var.image
 
-        env = [
+        env = concat([
           {
             name = "POD_NAME"
 
@@ -40,13 +33,15 @@ locals {
               }
             }
           },
-        ]
+        ], var.env)
 
         args = [
           "--config.file=/etc/alertmanager/config.yml",
           "--storage.path=/alertmanager",
           "--cluster.advertise-address=$(POD_IP):6783",
         ]
+
+        resources = var.resources
 
         volume_mounts = [
           {
@@ -55,22 +50,27 @@ locals {
             sub_path   = "config.yml"
           },
         ]
-      }
+      },
     ]
+
     volumes = [
       {
         name = "config"
-
         config_map = {
-          name = k8s_core_v1_config_map.this.metadata.0.name
+          name = module.config.name
         }
       },
     ]
   }
 }
 
-data "template_file" "config" {
-  template = file(coalesce(var.config_file, "${path.module}/config.yml"))
+module "config" {
+  source    = "../../kubernetes/config-map"
+  name      = var.name
+  namespace = var.namespace
+  from-map = {
+    "config.yml" = file(coalesce(var.config_file, "${path.module}/config.yml"))
+  }
 }
 
 module "deployment-service" {

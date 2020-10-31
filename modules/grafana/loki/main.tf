@@ -13,7 +13,7 @@ locals {
       {
         name  = "loki"
         image = var.image
-
+        args  = concat(["-config.file=/etc/loki/local-config.yaml"], var.args)
         env = concat([
           {
             name = "POD_NAME"
@@ -24,40 +24,78 @@ locals {
               }
             }
           },
+          {
+            name = "POD_IP"
+
+            value_from = {
+              field_ref = {
+                field_path = "status.podIP"
+              }
+            }
+          },
         ], var.env)
 
         resources = var.resources
 
-        volume_mounts = [
-          {
-            name       = "config"
-            mount_path = "/etc/loki/local-config.yaml"
-            sub_path   = "local-config.yaml"
-          },
-        ]
+        volume_mounts = concat(
+          [
+            {
+              name       = "config"
+              mount_path = "/etc/loki/local-config.yaml"
+              sub_path   = "local-config.yaml"
+            },
+          ],
+          [for tenant in keys(var.rules) :
+            {
+              name       = "rules-${tenant}"
+              mount_path = "/loki/rules/${tenant}"
+            }
+          ]
+        )
       },
     ]
 
-    volumes = [
-      {
-        config_map = {
-          name = module.config.name
+    volumes = concat(
+      [
+        {
+          name = "config"
+          config_map = {
+            name = module.config.name
+          }
+        },
+      ],
+      [for tenant in keys(var.rules) :
+        {
+          name = "rules-${tenant}"
+          config_map = {
+            name = "rules-${tenant}"
+          }
         }
-        name = "config"
-      },
-    ]
+      ]
+    )
   }
 }
 
 module "config" {
   source    = "../../kubernetes/config-map"
-  name      = var.name
+  name      = "config"
   namespace = var.namespace
   from-map = {
-    "local-config.yaml" = templatefile("${path.module}/config.yml", {
-      auth_enabled = var.auth_enabled
-      cassandra    = var.cassandra
+    "local-config.yaml" = templatefile(coalesce(var.config_file, "${path.module}/config.yaml"), {
+      auth_enabled     = var.auth_enabled
+      cassandra        = var.cassandra
+      alertmanager_url = var.alertmanager_url
     })
+  }
+}
+
+module "rules" {
+  for_each  = var.rules
+  source    = "../../kubernetes/config-map"
+  name      = "rules-${each.key}"
+  namespace = var.namespace
+  from-map = {
+    "rules.yaml" = file(each.value)
   }
 }
 

@@ -43,3 +43,20 @@ limits_config:
 table_manager:
   retention_deletes_enabled: true
   retention_period: 336h
+
+ruler:
+  alertmanager_url: ${alertmanager_url}
+  enable_alertmanager_v2: true
+  enable_api: true
+  enable_sharding: false
+  evaluation_interval: 5s
+  ring:
+    kvstore:
+      store: inmemory
+  rule_path: /dev/shm/rules
+  storage:
+    type: local
+    local:
+      directory: /loki/rules
+  ruler_client:
+    tls_insecure_skip_verify: true

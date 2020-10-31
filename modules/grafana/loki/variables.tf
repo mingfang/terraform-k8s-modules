@@ -16,7 +16,11 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "grafana/loki:1.6.1"
+  default = "grafana/loki:2.0.0"
+}
+
+variable "args" {
+  default = []
 }
 
 variable "env" {
@@ -41,7 +45,12 @@ variable "resources" {
 }
 
 variable "config_file" {
-  default = ""
+  default = null
+}
+
+variable "rules" {
+  default = {}
+  description = "map of rule files {tenant=file}"
 }
 
 variable "auth_enabled" {
@@ -49,3 +58,8 @@ variable "auth_enabled" {
 }
 
 variable "cassandra" {}
+
+variable "alertmanager_url" {
+  default = ""
+}
+

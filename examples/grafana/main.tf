@@ -20,14 +20,22 @@ module "loki" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
   cassandra = module.cassandra.name
+
+  rules = {
+    fake = "${path.module}/rules.yaml"
+    foobar = "${path.module}/rules.yaml"
+  }
+  alertmanager_url = "http://${module.alertmanager.name}:${module.alertmanager.ports[0].port}"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "loki" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"                       = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"          = "loki-example.*"
-      "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
+      "kubernetes.io/ingress.class"                         = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"            = "loki-example.*"
+      "nginx.ingress.kubernetes.io/enable-access-log"       = "false"
+      "nginx.ingress.kubernetes.io/client-body-buffer-size" = "1M"
+      "nginx.ingress.kubernetes.io/configuration-snippet"   = <<-EOF
       if ($request_method !~ ^(POST)$) { return 405; }
       EOF
     }
@@ -50,14 +58,13 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "loki" {
   }
 }
 
-/*
 module "promtail" {
   source    = "../../modules/grafana/promtail"
   name      = "promtail"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  loki_url  = "http://loki.rebelsoft.com/loki/api/v1/push"
+  tenant_id = "fake"
+  loki_url  = "http://loki-example.rebelsoft.com/loki/api/v1/push"
 }
-*/
 
 resource "k8s_core_v1_persistent_volume_claim" "grafana" {
   metadata {
@@ -79,7 +86,6 @@ module "datasource" {
 
   from-file = "${path.module}/datasources.yaml"
 }
-
 
 module "grafana" {
   source                      = "../../modules/grafana/grafana"
@@ -106,6 +112,37 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "grafana" {
           backend {
             service_name = module.grafana.name
             service_port = module.grafana.service.spec[0].ports[0].port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
+module "alertmanager" {
+  source    = "../../modules/prometheus/alertmanager"
+  name      = "alertmanager"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "alertmanager-example.*"
+    }
+    name      = module.alertmanager.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = module.alertmanager.name
+      http {
+        paths {
+          backend {
+            service_name = module.alertmanager.name
+            service_port = module.alertmanager.ports[0].port
           }
           path = "/"
         }

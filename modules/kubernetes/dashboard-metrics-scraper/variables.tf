@@ -1,9 +1,12 @@
-variable "name" {}
+variable "name" {
+  default     = "dashboard-metrics-scraper"
+  description = "do not change"
+}
 
 variable "namespace" {}
 
 variable "image" {
-  default = "kubernetesui/dashboard:v2.0.4"
+  default = "kubernetesui/metrics-scraper:v1.0.6"
 }
 
 variable "replicas" {
@@ -14,17 +17,10 @@ variable "ports" {
   default = [
     {
       name = "http"
-      port = 9090
+      port = 8000
     },
   ]
-}
-
-variable "args" {
-  default = ""
-}
-
-variable "env" {
-  default = []
+  description = "do not change"
 }
 
 variable "annotations" {

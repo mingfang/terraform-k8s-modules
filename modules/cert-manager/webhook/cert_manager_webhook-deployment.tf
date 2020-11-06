@@ -1,12 +1,10 @@
 resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
   metadata {
     labels = {
-      "app"                          = "webhook"
-      "app.kubernetes.io/component"  = "webhook"
-      "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Helm"
-      "app.kubernetes.io/name"       = "webhook"
-      "helm.sh/chart"                = "cert-manager-v0.14.0"
+      "app"                         = "webhook"
+      "app.kubernetes.io/component" = "webhook"
+      "app.kubernetes.io/instance"  = "cert-manager"
+      "app.kubernetes.io/name"      = "webhook"
     }
     name      = "cert-manager-webhook"
     namespace = var.namespace
@@ -23,12 +21,10 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
     template {
       metadata {
         labels = {
-          "app"                          = "webhook"
-          "app.kubernetes.io/component"  = "webhook"
-          "app.kubernetes.io/instance"   = "cert-manager"
-          "app.kubernetes.io/managed-by" = "Helm"
-          "app.kubernetes.io/name"       = "webhook"
-          "helm.sh/chart"                = "cert-manager-v0.14.0"
+          "app"                         = "webhook"
+          "app.kubernetes.io/component" = "webhook"
+          "app.kubernetes.io/instance"  = "cert-manager"
+          "app.kubernetes.io/name"      = "webhook"
         }
       }
       spec {
@@ -37,8 +33,9 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
           args = [
             "--v=2",
             "--secure-port=10250",
-            "--tls-cert-file=/certs/tls.crt",
-            "--tls-private-key-file=/certs/tls.key",
+            "--dynamic-serving-ca-secret-namespace=$(POD_NAMESPACE)",
+            "--dynamic-serving-ca-secret-name=cert-manager-webhook-ca",
+            "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc",
           ]
 
           env {
@@ -49,39 +46,42 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-webhook:v0.14.0"
+          image             = "quay.io/jetstack/cert-manager-webhook:v1.0.4"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
+            failure_threshold = 3
             http_get {
               path   = "/livez"
               port   = "6080"
               scheme = "HTTP"
             }
+            initial_delay_seconds = 60
+            period_seconds        = 10
+            success_threshold     = 1
+            timeout_seconds       = 1
           }
           name = "cert-manager"
+
+          ports {
+            container_port = 10250
+            name           = "https"
+          }
           readiness_probe {
+            failure_threshold = 3
             http_get {
               path   = "/healthz"
               port   = "6080"
               scheme = "HTTP"
             }
+            initial_delay_seconds = 5
+            period_seconds        = 5
+            success_threshold     = 1
+            timeout_seconds       = 1
           }
           resources {
           }
-
-          volume_mounts {
-            mount_path = "/certs"
-            name       = "certs"
-          }
         }
         service_account_name = "cert-manager-webhook"
-
-        volumes {
-          name = "certs"
-          secret {
-            secret_name = "cert-manager-webhook-tls"
-          }
-        }
       }
     }
   }

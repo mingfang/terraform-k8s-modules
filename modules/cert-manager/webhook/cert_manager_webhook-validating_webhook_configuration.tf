@@ -1,25 +1,27 @@
-resource "k8s_admissionregistration_k8s_io_v1beta1_validating_webhook_configuration" "cert_manager_webhook" {
+resource "k8s_admissionregistration_k8s_io_v1_validating_webhook_configuration" "cert_manager_webhook" {
   metadata {
     annotations = {
-      "cert-manager.io/inject-ca-from-secret" = "cert-manager/cert-manager-webhook-tls"
+      "cert-manager.io/inject-ca-from-secret" = "cert-manager/cert-manager-webhook-ca"
     }
     labels = {
-      "app"                          = "webhook"
-      "app.kubernetes.io/component"  = "webhook"
-      "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Helm"
-      "app.kubernetes.io/name"       = "webhook"
-      "helm.sh/chart"                = "cert-manager-v0.14.0"
+      "app"                         = "webhook"
+      "app.kubernetes.io/component" = "webhook"
+      "app.kubernetes.io/instance"  = "cert-manager"
+      "app.kubernetes.io/name"      = "webhook"
     }
     name = "cert-manager-webhook"
   }
 
   webhooks {
+    admission_review_versions = [
+      "v1",
+      "v1beta1",
+    ]
     client_config {
       service {
         name      = "cert-manager-webhook"
         namespace = var.namespace
-        path      = "/mutate"
+        path      = "/validate"
       }
     }
     failure_policy = "Fail"
@@ -48,7 +50,7 @@ resource "k8s_admissionregistration_k8s_io_v1beta1_validating_webhook_configurat
         "acme.cert-manager.io",
       ]
       api_versions = [
-        "v1alpha2",
+        "*",
       ]
       operations = [
         "CREATE",

@@ -1,12 +1,10 @@
-resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "cert_manager_controller_clusterissuers" {
+resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "cert_manager_controller_clusterissuers" {
   metadata {
     labels = {
-      "app"                          = "cert-manager"
-      "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Helm"
-      "app.kubernetes.io/name"       = "cert-manager"
-      "helm.sh/chart"                = "cert-manager-v0.14.0"
+      "app"                         = "cert-manager"
+      "app.kubernetes.io/component" = "controller"
+      "app.kubernetes.io/instance"  = "cert-manager"
+      "app.kubernetes.io/name"      = "cert-manager"
     }
     name = "cert-manager-controller-clusterissuers"
   }

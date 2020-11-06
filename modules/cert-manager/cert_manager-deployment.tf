@@ -1,12 +1,10 @@
 resource "k8s_apps_v1_deployment" "cert_manager" {
   metadata {
     labels = {
-      "app"                          = "cert-manager"
-      "app.kubernetes.io/component"  = "controller"
-      "app.kubernetes.io/instance"   = "cert-manager"
-      "app.kubernetes.io/managed-by" = "Helm"
-      "app.kubernetes.io/name"       = "cert-manager"
-      "helm.sh/chart"                = "cert-manager-v0.14.0"
+      "app"                         = "cert-manager"
+      "app.kubernetes.io/component" = "controller"
+      "app.kubernetes.io/instance"  = "cert-manager"
+      "app.kubernetes.io/name"      = "cert-manager"
     }
     name      = "cert-manager"
     namespace = var.namespace
@@ -28,12 +26,10 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
           "prometheus.io/scrape" = "true"
         }
         labels = {
-          "app"                          = "cert-manager"
-          "app.kubernetes.io/component"  = "controller"
-          "app.kubernetes.io/instance"   = "cert-manager"
-          "app.kubernetes.io/managed-by" = "Helm"
-          "app.kubernetes.io/name"       = "cert-manager"
-          "helm.sh/chart"                = "cert-manager-v0.14.0"
+          "app"                         = "cert-manager"
+          "app.kubernetes.io/component" = "controller"
+          "app.kubernetes.io/instance"  = "cert-manager"
+          "app.kubernetes.io/name"      = "cert-manager"
         }
       }
       spec {
@@ -43,10 +39,6 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
             "--v=2",
             "--cluster-resource-namespace=$(POD_NAMESPACE)",
             "--leader-election-namespace=kube-system",
-            "--webhook-namespace=$(POD_NAMESPACE)",
-            "--webhook-ca-secret=cert-manager-webhook-ca",
-            "--webhook-serving-secret=cert-manager-webhook-tls",
-            "--webhook-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc",
           ]
 
           env {
@@ -57,7 +49,7 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-controller:v0.14.0"
+          image             = "quay.io/jetstack/cert-manager-controller:v1.0.4"
           image_pull_policy = "IfNotPresent"
           name              = "cert-manager"
 

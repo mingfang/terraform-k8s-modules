@@ -71,7 +71,7 @@ resource "k8s_core_v1_persistent_volume" "this" {
     access_modes                     = ["ReadWriteOnce"]
 
     capacity = {
-      storage = "${var.aws_ebs_volumes[count.index].size}Gi"
+      storage = "1Gi"
     }
 
     csi {

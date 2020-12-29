@@ -1,11 +1,24 @@
 /**
 // Example: Create a Cassandra cluster
 
-variable "name" {}
-variable "namespace" {}
-variable "availability_zone" {}
-variable "replicas" {}
-variable "size" {}
+variable "name" {
+  default = "cassandra"
+}
+variable "namespace" {
+  default = "cassandra"
+}
+variable "availability_zone" {
+  default = [
+    "us-east-1a",
+    "us-east-1b",
+  ]
+}
+variable "replicas" {
+  default = 4
+}
+variable "size" {
+  default = 10
+}
 
 resource "aws_ebs_volume" "volumes" {
   count             = var.replicas
@@ -15,7 +28,6 @@ resource "aws_ebs_volume" "volumes" {
 
   tags = {
     Name   = "${var.namespace}-${var.name}-${count.index}"
-    Backup = "default"
   }
 }
 
@@ -34,18 +46,10 @@ module "cassandra" {
   namespace = var.namespace
 
   replicas      = module.storage-ebs.replicas
-  storage       = module.storage-ebs.storage
+  storage       = "1Gi"
   storage_class = module.storage-ebs.storage_class_name
 }
  */
-
-terraform {
-  required_providers {
-    k8s = {
-      source  = "mingfang/k8s"
-    }
-  }
-}
 
 resource "k8s_storage_k8s_io_v1_storage_class" "this" {
   metadata {

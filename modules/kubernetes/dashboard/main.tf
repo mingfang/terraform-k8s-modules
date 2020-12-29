@@ -47,10 +47,16 @@ module "kubernetes-dashboard-csrf" {
   }
 }
 
-module "kubernetes-dashboard-key-holder" {
-  source    = "../../../modules/kubernetes/secret"
-  name      = "kubernetes-dashboard-key-holder"
-  namespace = var.namespace
+resource "k8s_core_v1_secret" "kubernetes-dashboard-key-holder" {
+  metadata {
+    name      = "kubernetes-dashboard-key-holder"
+    namespace = var.namespace
+  }
+
+  lifecycle {
+    //dashboard will update at runtime
+    ignore_changes = [data]
+  }
 }
 
 module "kubernetes-dashboard-settings" {

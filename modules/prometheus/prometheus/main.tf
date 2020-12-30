@@ -62,7 +62,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/prometheus-data"
-            sub_path   = var.name
           },
         ]
       },

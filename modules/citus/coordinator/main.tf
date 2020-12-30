@@ -5,7 +5,6 @@ locals {
     annotations                 = var.annotations
     replicas                    = 1
     ports                       = var.ports
-
     enable_service_links        = false
     pod_management_policy       = "Parallel"
     publish_not_ready_addresses = true
@@ -66,8 +65,22 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-          }
+          },
+          {
+            name       = "shm"
+            mount_path = "/dev/shm"
+          },
         ]
+      },
+    ]
+
+    volumes = [
+      {
+        name = "shm"
+
+        empty_dir = {
+          "medium" = "Memory"
+        }
       },
     ]
 

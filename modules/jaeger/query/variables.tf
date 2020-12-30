@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "jaegertracing/jaeger-query:1.9.0"
+  default = "jaegertracing/jaeger-query:1.20.0"
 }
 
 variable "env" {

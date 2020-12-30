@@ -32,7 +32,7 @@ locals {
           {
             name = "SPAN_STORAGE_TYPE"
             value_from = {
-              config_map_key_ref = {
+              config_map_keyref = {
                 name = var.config_map_name
                 key  = "span-storage-type"
               }

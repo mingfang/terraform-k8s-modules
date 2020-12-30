@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -11,22 +9,26 @@ variable "replicas" {
 variable "ports" {
   default = [
     {
-      name = "tchannel"
-      port = 14267
-    },
-    {
-      name = "http"
+      name = "http-jaeger"
       port = 14268
     },
     {
-      name = "zipkin"
+      name = "http-admin"
+      port = 14269
+    },
+    {
+      name = "http-zipkin"
       port = 9411
+    },
+    {
+      name = "grpc"
+      port = 14250
     },
   ]
 }
 
 variable "image" {
-  default = "jaegertracing/jaeger-collector:1.9.0"
+  default = "jaegertracing/jaeger-collector:1.20.0"
 }
 
 variable "env" {

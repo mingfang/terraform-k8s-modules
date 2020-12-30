@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "memcached:1.4"
+  default = "memcached:1.6.5"
 }
 
 variable "env" {

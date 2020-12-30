@@ -20,7 +20,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "yandex/clickhouse-server:19.11"
+  default = "yandex/clickhouse-server:19.17"
 }
 
 variable "env" {

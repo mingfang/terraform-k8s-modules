@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "openproject/community:10.5.0"
+  default = "openproject/community:10.5.1"
 }
 
 variable "env" {

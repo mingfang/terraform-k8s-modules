@@ -1,8 +1,6 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
@@ -18,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "jboss/keycloak:8.0.0"
+  default = "jboss/keycloak:9.0.3"
 }
 
 variable "env" {

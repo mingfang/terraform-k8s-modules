@@ -1,28 +1,27 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
+  servers = [
+    for i in range(0, var.replicas) :
+    "http://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local/data/${var.name}-${i}"
+  ]
+
   parameters = {
     name        = var.name
     namespace   = var.namespace
     annotations = var.annotations
     replicas    = var.replicas
-    ports = [
-      {
-        name = "http"
-        port = 9000
-      },
-    ]
+    ports       = var.ports
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
-        args = concat([
-          "server",
-        ], data.template_file.this.*.rendered)
+        name  = "minio"
+        image = var.image
+
+        args = coalescelist(var.args, concat(["server"], local.servers))
+
         env = concat([
           {
             name = "POD_NAME"
@@ -43,14 +42,10 @@ locals {
           },
         ], var.env)
 
-        image = var.image
-        name  = "minio"
-
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           }
         ]
       },
@@ -76,9 +71,4 @@ locals {
 module "statefulset-service" {
   source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
-}
-
-data "template_file" "this" {
-  count    = var.replicas
-  template = "http://${var.name}-${count.index}.${var.name}.${var.namespace}.svc.cluster.local/data/${var.name}-${count.index}"
 }

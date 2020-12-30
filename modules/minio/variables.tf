@@ -1,15 +1,22 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
   default = 1
 }
 
+variable "ports" {
+  default = [
+    {
+      name = "http"
+      port = 9000
+    },
+  ]
+}
+
 variable "image" {
-  default = "minio/minio:RELEASE.2020-03-14T02-21-58Z"
+  default = "minio/minio:RELEASE.2020-08-04T23-10-51Z"
 }
 
 variable "env" {
@@ -38,3 +45,6 @@ variable "overrides" {
 
 variable "minio_access_key" {}
 variable "minio_secret_key" {}
+variable "args" {
+  default = []
+}

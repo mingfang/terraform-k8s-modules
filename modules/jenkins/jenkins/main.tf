@@ -113,7 +113,7 @@ locals {
     ]
 
     security_context = {
-      fsgroup : 1000
+      fsgroup = 1000
     }
 
     service_account_name = module.rbac.service_account.metadata[0].name

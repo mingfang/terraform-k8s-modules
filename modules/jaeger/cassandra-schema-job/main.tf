@@ -1,5 +1,4 @@
 resource "k8s_batch_v1beta1_cron_job" "this" {
-
   metadata {
     name      = var.name
     namespace = var.namespace

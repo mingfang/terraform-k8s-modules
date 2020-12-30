@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "getsentry/snuba:latest"
+  default = "getsentry/snuba:a5074a3687de7a280d1ba66db70dc9e59d1b5057"
 }
 
 variable "replicas" {

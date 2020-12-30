@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "getsentry/sentry:6e6ed91"
+  default = "getsentry/sentry:c6fa004"
 }
 
 variable "replicas" {

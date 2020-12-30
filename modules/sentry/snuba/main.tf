@@ -69,7 +69,7 @@ locals {
           "sh",
           "-cx",
           <<-EOF
-          /usr/src/snuba/bin/consumer --dataset events --auto-offset-reset=latest --max-batch-time-ms 750
+          /usr/src/snuba/bin/consumer --storage events --auto-offset-reset=latest --max-batch-time-ms 750
           EOF
         ]
       },
@@ -81,7 +81,7 @@ locals {
           "sh",
           "-cx",
           <<-EOF
-          /usr/src/snuba/bin/consumer --dataset outcomes --auto-offset-reset=earliest --max-batch-time-ms 750
+          /usr/src/snuba/bin/consumer --storage outcomes_raw --auto-offset-reset=earliest --max-batch-time-ms 750
           EOF
         ]
       },

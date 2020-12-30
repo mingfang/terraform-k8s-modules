@@ -1,11 +1,9 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
 variable "replicas" {
-  default = 3
+  default = 1
 }
 
 variable "ports" {
@@ -34,7 +32,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "cassandra:3.11.6"
+  default = "cassandra:3.11.8"
 }
 
 variable "env" {

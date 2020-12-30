@@ -27,6 +27,10 @@ variable "annotations" {
   default = {}
 }
 
+variable "resources" {
+  default = {}
+}
+
 variable "overrides" {
   default = {}
 }

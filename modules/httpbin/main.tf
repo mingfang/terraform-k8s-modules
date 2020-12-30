@@ -2,6 +2,7 @@ locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
+    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
@@ -11,6 +12,8 @@ locals {
         name  = "httpbin"
         image = var.image
         env   = var.env
+
+        resources = var.resources
       },
     ]
   }

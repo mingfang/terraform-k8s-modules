@@ -4,9 +4,7 @@ variable "namespace" {}
 
 variable "command" {}
 
-variable image {
-  default = "registry.rebelsoft.com/base"
-}
+variable image {}
 
 variable restart_policy {
   default = "Never"
@@ -26,9 +24,9 @@ resource "k8s_batch_v1_job" "this" {
     template {
       spec {
         containers {
-          name    = "base"
+          name    = "job"
           image   = var.image
-          command = ["bash", "-cx", var.command]
+          command = var.command
         }
 
         restart_policy = var.restart_policy

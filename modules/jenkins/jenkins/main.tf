@@ -56,9 +56,21 @@ locals {
 
         resources = var.resources
 
+        startup_probe = {
+          initial_delay_seconds = 30
+          period_seconds        = 10
+          failure_threshold     = 30
+
+          http_get = {
+            path = "/login"
+            port = 8080
+          }
+        }
+
         liveness_probe = {
-          initial_delay_seconds = 300
-          failure_threshold     = 12
+          initial_delay_seconds = 30
+          period_seconds        = 10
+          failure_threshold     = 3
 
           http_get = {
             path = "/login"
@@ -67,8 +79,9 @@ locals {
         }
 
         readiness_probe = {
-          initial_delay_seconds = 60
-          failure_threshold     = 12
+          initial_delay_seconds = 30
+          period_seconds        = 10
+          failure_threshold     = 3
 
           http_get = {
             path = "/login"

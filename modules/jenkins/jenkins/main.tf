@@ -57,7 +57,7 @@ locals {
         resources = var.resources
 
         liveness_probe = {
-          initial_delay_seconds = 60
+          initial_delay_seconds = 300
           failure_threshold     = 12
 
           http_get = {

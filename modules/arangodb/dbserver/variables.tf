@@ -16,7 +16,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "arangodb/arangodb:3.7.5"
+  default = "arangodb/arangodb:3.7.6"
 }
 
 variable "env" {

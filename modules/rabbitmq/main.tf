@@ -17,7 +17,7 @@ locals {
 
       #stomp
       stomp.proxy_protocol = true
-      web_stomp.proxy_protocol = true
+      web_stomp.proxy_protocol = false
       EOF
   }
 

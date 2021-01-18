@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "quay.io/oauth2-proxy/oauth2-proxy:v5.1.0"
+  default = "quay.io/oauth2-proxy/oauth2-proxy:v6.1.1"
 }
 
 variable "replicas" {

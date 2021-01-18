@@ -1,9 +1,4 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
+
 
 locals {
   parameters = {
@@ -28,7 +23,6 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
-            sub_path   = var.name
           },
           {
             mount_path = "/data/config.yml"

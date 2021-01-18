@@ -35,7 +35,7 @@ resource "k8s_core_v1_config_map" "this" {
       gamemode=survival
       server-port=25565
       allow-nether=true
-      enable-command-block=false
+      enable-command-block=true
       enable-rcon=false
       enable-query=false
       op-permission-level=4

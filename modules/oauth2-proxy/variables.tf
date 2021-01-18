@@ -71,7 +71,7 @@ variable "OAUTH2_PROXY_KEYCLOAK_GROUP" {
 
 variable "OAUTH2_PROXY_COOKIE_SECRET" {}
 
-variable "OAUTH2_PROXY_COOKIE_DOMAIN" {
+variable "OAUTH2_PROXY_COOKIE_DOMAINS" {
   default = ""
 }
 

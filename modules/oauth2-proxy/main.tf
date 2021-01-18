@@ -48,8 +48,8 @@ locals {
             value = var.OAUTH2_PROXY_COOKIE_SECRET
           },
           {
-            name  = "OAUTH2_PROXY_COOKIE_DOMAIN"
-            value = var.OAUTH2_PROXY_COOKIE_DOMAIN
+            name  = "OAUTH2_PROXY_COOKIE_DOMAINS"
+            value = var.OAUTH2_PROXY_COOKIE_DOMAINS
           },
           {
             name  = "OAUTH2_PROXY_EMAIL_DOMAINS"

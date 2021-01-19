@@ -7,9 +7,9 @@ output "ports" {
 }
 
 output "service" {
-  value = module.deployment-service.service
+  value = module.statefulset-service.service
 }
 
-output "deployment" {
-  value = module.deployment-service.deployment
+output "statefulset" {
+  value = module.statefulset-service.statefulset
 }

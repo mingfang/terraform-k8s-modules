@@ -85,7 +85,7 @@ locals {
   }
 }
 
-module "deployment-service" {
-  source     = "../../archetypes/deployment-service"
+module "statefulset-service" {
+  source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

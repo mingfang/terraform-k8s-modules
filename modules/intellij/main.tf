@@ -15,7 +15,10 @@ locals {
         command = [
           "bash",
           "-cx",
-          "./run.sh",
+          <<-EOF
+          cd /
+          ./run.sh
+          EOF
         ]
 
         env = concat([

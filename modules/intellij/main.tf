@@ -42,6 +42,39 @@ locals {
           },
         ], var.env)
 
+        startup_probe = {
+          initial_delay_seconds = 30
+          period_seconds        = 10
+          failure_threshold     = 30
+
+          http_get = {
+            path = "/"
+            port = var.ports[0].port
+          }
+        }
+
+        liveness_probe = {
+          initial_delay_seconds = 30
+          period_seconds        = 10
+          failure_threshold     = 3
+
+          http_get = {
+            path = "/"
+            port = var.ports[0].port
+          }
+        }
+
+        readiness_probe = {
+          initial_delay_seconds = 30
+          period_seconds        = 10
+          failure_threshold     = 3
+
+          http_get = {
+            path = "/"
+            port = var.ports[0].port
+          }
+        }
+
         volume_mounts = var.pvc != null ? [
           {
             name       = "data"

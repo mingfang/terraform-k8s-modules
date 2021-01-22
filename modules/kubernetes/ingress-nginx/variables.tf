@@ -50,6 +50,10 @@ variable "extra_args" {
   default = []
 }
 
+variable "config_map_data" {
+  default = {}
+}
+
 variable "tcp_services_data" {
   default = {}
 }

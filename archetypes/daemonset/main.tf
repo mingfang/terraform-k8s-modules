@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source  = "mingfang/k8s"
-    }
-  }
-}
-
 locals {
   labels = lookup(var.parameters, "labels", {
     app     = var.parameters.name

@@ -32,7 +32,7 @@ variable "overrides" {
 }
 
 variable "OAUTH2_PROXY_REVERSE_PROXY" {
-  default = true
+  default     = true
   description = "should always be true when using an ingress controller"
 }
 
@@ -46,7 +46,7 @@ variable "OAUTH2_PROXY_PROVIDER" {
 }
 
 variable "OAUTH2_PROXY_SCOPE" {
-  default = "email"
+  default     = "email"
   description = "must be set 'email' when provider is keycloak"
 }
 
@@ -91,4 +91,9 @@ variable "OAUTH2_PROXY_EMAIL_DOMAINS" {
 
 variable "OAUTH2_PROXY_WHITELIST_DOMAINS" {
   default = ""
+}
+
+variable "OAUTH2_PROXY_SET_XAUTHREQUEST" {
+  default     = true
+  description = "sends headers using this ingress annotation: \"nginx.ingress.kubernetes.io/auth-response-headers\" = \"X-Auth-Request-User, X-Auth-Request-Email\""
 }

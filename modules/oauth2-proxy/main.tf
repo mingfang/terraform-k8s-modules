@@ -67,6 +67,10 @@ locals {
             name  = "OAUTH2_PROXY_WHITELIST_DOMAINS"
             value = var.OAUTH2_PROXY_WHITELIST_DOMAINS
           },
+          {
+            name  = "OAUTH2_PROXY_SET_XAUTHREQUEST"
+            value = var.OAUTH2_PROXY_SET_XAUTHREQUEST
+          },
         ], var.env)
       },
     ]

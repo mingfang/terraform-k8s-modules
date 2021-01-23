@@ -40,6 +40,11 @@ variable "OAUTH2_PROXY_PROVIDER" {
   description = "keycloak"
 }
 
+variable "OAUTH2_PROXY_SCOPE" {
+  default = "email"
+  description = "must be set 'email' when provider is keycloak"
+}
+
 variable "OAUTH2_PROXY_CLIENT_ID" {
   default     = ""
   description = "client you have created"

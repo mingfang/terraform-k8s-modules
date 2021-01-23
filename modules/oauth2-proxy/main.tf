@@ -20,6 +20,10 @@ locals {
             value = var.OAUTH2_PROXY_PROVIDER
           },
           {
+            name  = "OAUTH2_PROXY_SCOPE"
+            value = var.OAUTH2_PROXY_SCOPE
+          },
+          {
             name  = "OAUTH2_PROXY_CLIENT_ID"
             value = var.OAUTH2_PROXY_CLIENT_ID
           },

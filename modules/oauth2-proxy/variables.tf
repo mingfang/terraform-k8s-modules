@@ -31,6 +31,11 @@ variable "overrides" {
   default = {}
 }
 
+variable "OAUTH2_PROXY_REVERSE_PROXY" {
+  default = true
+  description = "should always be true when using an ingress controller"
+}
+
 variable "OAUTH2_PROXY_HTTP_ADDRESS" {
   default     = "0.0.0.0:4180"
   description = "make sure same as port"

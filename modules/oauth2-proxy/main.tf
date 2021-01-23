@@ -12,6 +12,10 @@ locals {
         image = var.image
         env = concat([
           {
+            name  = "OAUTH2_PROXY_REVERSE_PROXY"
+            value = var.OAUTH2_PROXY_REVERSE_PROXY
+          },
+          {
             name  = "OAUTH2_PROXY_HTTP_ADDRESS"
             value = var.OAUTH2_PROXY_HTTP_ADDRESS
           },

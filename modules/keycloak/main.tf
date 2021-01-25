@@ -1,5 +1,3 @@
-
-
 locals {
   parameters = {
     name                 = var.name

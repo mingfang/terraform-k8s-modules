@@ -58,7 +58,7 @@ variable "ZALENIUM_KUBERNETES_MEMORY_LIMIT" {
   default = "2Gi"
 }
 variable "DESIRED_CONTAINERS" {
-  default = 2
+  default = 1
 }
 variable "MAX_DOCKER_SELENIUM_CONTAINERS" {
   default = 10

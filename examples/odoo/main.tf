@@ -43,6 +43,7 @@ module "odoo" {
   pvc = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
 
   HOST     = module.postgres.name
+  PORT     = module.postgres.ports[0].port
   USER     = "odoo"
   PASSWORD = "odoo"
 }

@@ -40,5 +40,6 @@ variable "pvc" {
 }
 
 variable "HOST" {}
+variable "PORT" {}
 variable "USER" {}
 variable "PASSWORD" {}

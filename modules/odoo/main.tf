@@ -27,6 +27,10 @@ locals {
             value = var.HOST
           },
           {
+            name  = "PORT"
+            value = var.PORT
+          },
+          {
             name  = "USER"
             value = var.USER
           },

@@ -41,7 +41,7 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "cert_manager_controlle
   }
   rules {
     api_groups = [
-      "extensions",
+      "networking.k8s.io",
     ]
     resources = [
       "ingresses",
@@ -54,7 +54,7 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "cert_manager_controlle
   }
   rules {
     api_groups = [
-      "extensions",
+      "networking.k8s.io",
     ]
     resources = [
       "ingresses/finalizers",

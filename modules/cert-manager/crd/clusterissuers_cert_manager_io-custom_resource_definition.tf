@@ -29,6 +29,9 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
     }
     group = "cert-manager.io"
     names {
+      categories = [
+        "cert-manager",
+      ]
       kind      = "ClusterIssuer"
       list_kind = "ClusterIssuerList"
       plural    = "clusterissuers"
@@ -89,6 +92,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                       "email": {
                         "description": "Email is the email address to be associated with the ACME account. This field is optional, but it is strongly recommended to be set. It will be used to contact you in case of issues with your account or certificates, including expiry notification emails. This field may be updated after the account is initially registered.",
                         "type": "string"
+                      },
+                      "enableDurationFeature": {
+                        "description": "Enables requesting a Not After date on certificates that matches the duration of the certificate. This is not supported by all ACME servers like Let's Encrypt. If set to true when the ACME server does not support it it will create an error on the Order. Defaults to false.",
+                        "type": "boolean"
                       },
                       "externalAccountBinding": {
                         "description": "ExternalAccountBinding is a reference to a CA external account of the ACME server. If set, upon registration cert-manager will attempt to associate the given external account credentials with the registered ACME account.",
@@ -1189,6 +1196,13 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                         },
                         "type": "array"
                       },
+                      "ocspServers": {
+                        "description": "The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate wil be issued with no OCSP servers set. For example, an OCSP server URL could be \"http://ocsp.int-x3.letsencrypt.org\".",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
                       "secretName": {
                         "description": "SecretName is the name of the secret used to sign Certificates issued by this Issuer.",
                         "type": "string"
@@ -1448,7 +1462,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -1457,7 +1471,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready').",
+                          "description": "Type of the condition, known values are (`Ready`).",
                           "type": "string"
                         }
                       },
@@ -1539,6 +1553,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                         "description": "Email is the email address to be associated with the ACME account. This field is optional, but it is strongly recommended to be set. It will be used to contact you in case of issues with your account or certificates, including expiry notification emails. This field may be updated after the account is initially registered.",
                         "type": "string"
                       },
+                      "enableDurationFeature": {
+                        "description": "Enables requesting a Not After date on certificates that matches the duration of the certificate. This is not supported by all ACME servers like Let's Encrypt. If set to true when the ACME server does not support it it will create an error on the Order. Defaults to false.",
+                        "type": "boolean"
+                      },
                       "externalAccountBinding": {
                         "description": "ExternalAccountBinding is a reference to a CA external account of the ACME server. If set, upon registration cert-manager will attempt to associate the given external account credentials with the registered ACME account.",
                         "properties": {
@@ -2638,6 +2656,13 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                         },
                         "type": "array"
                       },
+                      "ocspServers": {
+                        "description": "The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate wil be issued with no OCSP servers set. For example, an OCSP server URL could be \"http://ocsp.int-x3.letsencrypt.org\".",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
                       "secretName": {
                         "description": "SecretName is the name of the secret used to sign Certificates issued by this Issuer.",
                         "type": "string"
@@ -2897,7 +2922,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -2906,7 +2931,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready').",
+                          "description": "Type of the condition, known values are (`Ready`).",
                           "type": "string"
                         }
                       },
@@ -2987,6 +3012,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                       "email": {
                         "description": "Email is the email address to be associated with the ACME account. This field is optional, but it is strongly recommended to be set. It will be used to contact you in case of issues with your account or certificates, including expiry notification emails. This field may be updated after the account is initially registered.",
                         "type": "string"
+                      },
+                      "enableDurationFeature": {
+                        "description": "Enables requesting a Not After date on certificates that matches the duration of the certificate. This is not supported by all ACME servers like Let's Encrypt. If set to true when the ACME server does not support it it will create an error on the Order. Defaults to false.",
+                        "type": "boolean"
                       },
                       "externalAccountBinding": {
                         "description": "ExternalAccountBinding is a reference to a CA external account of the ACME server. If set, upon registration cert-manager will attempt to associate the given external account credentials with the registered ACME account.",
@@ -4087,6 +4116,13 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                         },
                         "type": "array"
                       },
+                      "ocspServers": {
+                        "description": "The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate wil be issued with no OCSP servers set. For example, an OCSP server URL could be \"http://ocsp.int-x3.letsencrypt.org\".",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
                       "secretName": {
                         "description": "SecretName is the name of the secret used to sign Certificates issued by this Issuer.",
                         "type": "string"
@@ -4346,7 +4382,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -4355,7 +4391,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready').",
+                          "description": "Type of the condition, known values are (`Ready`).",
                           "type": "string"
                         }
                       },
@@ -4440,6 +4476,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                         "description": "Email is the email address to be associated with the ACME account. This field is optional, but it is strongly recommended to be set. It will be used to contact you in case of issues with your account or certificates, including expiry notification emails. This field may be updated after the account is initially registered.",
                         "type": "string"
                       },
+                      "enableDurationFeature": {
+                        "description": "Enables requesting a Not After date on certificates that matches the duration of the certificate. This is not supported by all ACME servers like Let's Encrypt. If set to true when the ACME server does not support it it will create an error on the Order. Defaults to false.",
+                        "type": "boolean"
+                      },
                       "externalAccountBinding": {
                         "description": "ExternalAccountBinding is a reference to a CA external account of the ACME server. If set, upon registration cert-manager will attempt to associate the given external account credentials with the registered ACME account.",
                         "properties": {
@@ -5539,6 +5579,13 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                         },
                         "type": "array"
                       },
+                      "ocspServers": {
+                        "description": "The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate wil be issued with no OCSP servers set. For example, an OCSP server URL could be \"http://ocsp.int-x3.letsencrypt.org\".",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
                       "secretName": {
                         "description": "SecretName is the name of the secret used to sign Certificates issued by this Issuer.",
                         "type": "string"
@@ -5798,7 +5845,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -5807,7 +5854,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "clusterissuer
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready').",
+                          "description": "Type of the condition, known values are (`Ready`).",
                           "type": "string"
                         }
                       },

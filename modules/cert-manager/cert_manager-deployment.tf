@@ -49,7 +49,7 @@ resource "k8s_apps_v1_deployment" "cert_manager" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-controller:v1.0.4"
+          image             = "quay.io/jetstack/cert-manager-controller:v1.2.0"
           image_pull_policy = "IfNotPresent"
           name              = "cert-manager"
 

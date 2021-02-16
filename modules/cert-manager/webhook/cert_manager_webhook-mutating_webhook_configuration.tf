@@ -43,6 +43,7 @@ resource "k8s_admissionregistration_k8s_io_v1_mutating_webhook_configuration" "c
         "*/*",
       ]
     }
-    side_effects = "None"
+    side_effects    = "None"
+    timeout_seconds = 10
   }
 }

@@ -29,6 +29,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
     }
     group = "acme.cert-manager.io"
     names {
+      categories = [
+        "cert-manager",
+        "cert-manager-acme",
+      ]
       kind      = "Order"
       list_kind = "OrderList"
       plural    = "orders"
@@ -81,7 +85,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
               "spec": {
                 "properties": {
                   "commonName": {
-                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames`. This field must match the corresponding field on the DER encoded CSR.",
+                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames` or `ipAddresses`. This field must match the corresponding field on the DER encoded CSR.",
                     "type": "string"
                   },
                   "csr": {
@@ -91,6 +95,17 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
                   },
                   "dnsNames": {
                     "description": "DNSNames is a list of DNS names that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "duration": {
+                    "description": "Duration is the duration for the not after date for the requested certificate. this is set on order creation as pe the ACME spec.",
+                    "type": "string"
+                  },
+                  "ipAddresses": {
+                    "description": "IPAddresses is a list of IP addresses that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
                     "items": {
                       "type": "string"
                     },
@@ -120,7 +135,6 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
                 },
                 "required": [
                   "csr",
-                  "dnsNames",
                   "issuerRef"
                 ],
                 "type": "object"
@@ -291,7 +305,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
               "spec": {
                 "properties": {
                   "commonName": {
-                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames`. This field must match the corresponding field on the DER encoded CSR.",
+                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames` or `ipAddresses`. This field must match the corresponding field on the DER encoded CSR.",
                     "type": "string"
                   },
                   "csr": {
@@ -301,6 +315,17 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
                   },
                   "dnsNames": {
                     "description": "DNSNames is a list of DNS names that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "duration": {
+                    "description": "Duration is the duration for the not after date for the requested certificate. this is set on order creation as pe the ACME spec.",
+                    "type": "string"
+                  },
+                  "ipAddresses": {
+                    "description": "IPAddresses is a list of IP addresses that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
                     "items": {
                       "type": "string"
                     },
@@ -330,7 +355,6 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
                 },
                 "required": [
                   "csr",
-                  "dnsNames",
                   "issuerRef"
                 ],
                 "type": "object"
@@ -501,11 +525,22 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
               "spec": {
                 "properties": {
                   "commonName": {
-                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames`. This field must match the corresponding field on the DER encoded CSR.",
+                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames` or `ipAddresses`. This field must match the corresponding field on the DER encoded CSR.",
                     "type": "string"
                   },
                   "dnsNames": {
                     "description": "DNSNames is a list of DNS names that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "duration": {
+                    "description": "Duration is the duration for the not after date for the requested certificate. this is set on order creation as pe the ACME spec.",
+                    "type": "string"
+                  },
+                  "ipAddresses": {
+                    "description": "IPAddresses is a list of IP addresses that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
                     "items": {
                       "type": "string"
                     },
@@ -539,7 +574,6 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
                   }
                 },
                 "required": [
-                  "dnsNames",
                   "issuerRef",
                   "request"
                 ],
@@ -712,11 +746,22 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
               "spec": {
                 "properties": {
                   "commonName": {
-                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames`. This field must match the corresponding field on the DER encoded CSR.",
+                    "description": "CommonName is the common name as specified on the DER encoded CSR. If specified, this value must also be present in `dnsNames` or `ipAddresses`. This field must match the corresponding field on the DER encoded CSR.",
                     "type": "string"
                   },
                   "dnsNames": {
                     "description": "DNSNames is a list of DNS names that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "duration": {
+                    "description": "Duration is the duration for the not after date for the requested certificate. this is set on order creation as pe the ACME spec.",
+                    "type": "string"
+                  },
+                  "ipAddresses": {
+                    "description": "IPAddresses is a list of IP addresses that should be included as part of the Order validation process. This field must match the corresponding field on the DER encoded CSR.",
                     "items": {
                       "type": "string"
                     },
@@ -750,7 +795,6 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
                   }
                 },
                 "required": [
-                  "dnsNames",
                   "issuerRef",
                   "request"
                 ],

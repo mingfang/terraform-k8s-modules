@@ -29,6 +29,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "challenges_ac
     }
     group = "acme.cert-manager.io"
     names {
+      categories = [
+        "cert-manager",
+        "cert-manager-acme",
+      ]
       kind      = "Challenge"
       list_kind = "ChallengeList"
       plural    = "challenges"

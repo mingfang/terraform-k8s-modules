@@ -29,6 +29,9 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
     }
     group = "cert-manager.io"
     names {
+      categories = [
+        "cert-manager",
+      ]
       kind      = "CertificateRequest"
       list_kind = "CertificateRequestList"
       plural    = "certificaterequests"
@@ -73,7 +76,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       schema {
         open_apiv3_schema = <<-JSON
           {
-            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a 'one-shot' resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
+            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a one-shot resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
             "properties": {
               "apiVersion": {
                 "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -103,7 +106,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to 'cert-manager.io' if empty.",
+                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to `cert-manager.io` if empty.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -195,7 +198,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -204,7 +207,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', 'InvalidRequest').",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
                           "type": "string"
                         }
                       },
@@ -270,7 +273,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       schema {
         open_apiv3_schema = <<-JSON
           {
-            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a 'one-shot' resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
+            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a one-shot resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
             "properties": {
               "apiVersion": {
                 "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -300,7 +303,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to 'cert-manager.io' if empty.",
+                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to `cert-manager.io` if empty.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -392,7 +395,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -401,7 +404,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', 'InvalidRequest').",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
                           "type": "string"
                         }
                       },
@@ -467,7 +470,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       schema {
         open_apiv3_schema = <<-JSON
           {
-            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a 'one-shot' resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
+            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a one-shot resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
             "properties": {
               "apiVersion": {
                 "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -492,7 +495,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to 'cert-manager.io' if empty.",
+                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to `cert-manager.io` if empty.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -589,7 +592,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -598,7 +601,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', 'InvalidRequest').",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
                           "type": "string"
                         }
                       },
@@ -667,7 +670,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       schema {
         open_apiv3_schema = <<-JSON
           {
-            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a 'one-shot' resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
+            "description": "A CertificateRequest is used to request a signed certificate from one of the configured issuers. \n All fields within the CertificateRequest's `spec` are immutable after creation. A CertificateRequest will either succeed or fail, as denoted by its `status.state` field. \n A CertificateRequest is a one-shot resource, meaning it represents a single point in time request for a certificate and cannot be re-used.",
             "properties": {
               "apiVersion": {
                 "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -692,7 +695,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to 'cert-manager.io' if empty.",
+                    "description": "IssuerRef is a reference to the issuer for this CertificateRequest.  If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the CertificateRequest will be used.  If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times. The group field refers to the API group of the issuer which defaults to `cert-manager.io` if empty.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -789,7 +792,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -798,7 +801,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', 'InvalidRequest').",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
                           "type": "string"
                         }
                       },

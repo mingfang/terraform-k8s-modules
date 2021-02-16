@@ -60,6 +60,7 @@ resource "k8s_admissionregistration_k8s_io_v1_validating_webhook_configuration" 
         "*/*",
       ]
     }
-    side_effects = "None"
+    side_effects    = "None"
+    timeout_seconds = 10
   }
 }

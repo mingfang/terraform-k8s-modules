@@ -28,4 +28,18 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "cert_manager_edit" {
       "update",
     ]
   }
+  rules {
+    api_groups = [
+      "acme.cert-manager.io",
+    ]
+    resources = [
+      "challenges",
+      "orders",
+    ]
+    verbs = [
+      "get",
+      "list",
+      "watch",
+    ]
+  }
 }

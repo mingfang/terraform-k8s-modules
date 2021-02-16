@@ -43,7 +43,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_cainjector" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-cainjector:v1.0.4"
+          image             = "quay.io/jetstack/cert-manager-cainjector:v1.2.0"
           image_pull_policy = "IfNotPresent"
           name              = "cert-manager"
           resources {

@@ -35,7 +35,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
             "--secure-port=10250",
             "--dynamic-serving-ca-secret-namespace=$(POD_NAMESPACE)",
             "--dynamic-serving-ca-secret-name=cert-manager-webhook-ca",
-            "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc",
+            "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.$(POD_NAMESPACE),cert-manager-webhook.$(POD_NAMESPACE).svc",
           ]
 
           env {
@@ -46,7 +46,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-webhook:v1.0.4"
+          image             = "quay.io/jetstack/cert-manager-webhook:v1.2.0"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             failure_threshold = 3

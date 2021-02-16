@@ -29,6 +29,9 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
     }
     group = "cert-manager.io"
     names {
+      categories = [
+        "cert-manager",
+      ]
       kind      = "Certificate"
       list_kind = "CertificateList"
       plural    = "certificates"
@@ -116,6 +119,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     },
                     "type": "array"
                   },
+                  "encodeUsagesInRequest": {
+                    "description": "EncodeUsagesInRequest controls whether key usages should be present in the CertificateRequest",
+                    "type": "boolean"
+                  },
                   "ipAddresses": {
                     "description": "IPAddresses is a list of IP address subjectAltNames to be set on the Certificate.",
                     "items": {
@@ -128,7 +135,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this certificate. If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the Certificate will be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times.",
+                    "description": "IssuerRef is a reference to the issuer for this certificate. If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the Certificate will be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -149,7 +156,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "object"
                   },
                   "keyAlgorithm": {
-                    "description": "KeyAlgorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either \"rsa\" or \"ecdsa\" If `keyAlgorithm` is specified and `keySize` is not provided, key size of 256 will be used for \"ecdsa\" key algorithm and key size of 2048 will be used for \"rsa\" key algorithm.",
+                    "description": "KeyAlgorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `rsa` or `ecdsa` If `keyAlgorithm` is specified and `keySize` is not provided, key size of 256 will be used for `ecdsa` key algorithm and key size of 2048 will be used for `rsa` key algorithm.",
                     "enum": [
                       "rsa",
                       "ecdsa"
@@ -157,7 +164,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "string"
                   },
                   "keyEncoding": {
-                    "description": "KeyEncoding is the private key cryptography standards (PKCS) for this certificate's private key to be encoded in. If provided, allowed values are \"pkcs1\" and \"pkcs8\" standing for PKCS#1 and PKCS#8, respectively. If KeyEncoding is not specified, then PKCS#1 will be used by default.",
+                    "description": "KeyEncoding is the private key cryptography standards (PKCS) for this certificate's private key to be encoded in. If provided, allowed values are `pkcs1` and `pkcs8` standing for PKCS#1 and PKCS#8, respectively. If KeyEncoding is not specified, then `pkcs1` will be used by default.",
                     "enum": [
                       "pkcs1",
                       "pkcs8"
@@ -165,9 +172,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "string"
                   },
                   "keySize": {
-                    "description": "KeySize is the key bit size of the corresponding private key for this certificate. If `keyAlgorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `keyAlgorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
-                    "maximum": 8192,
-                    "minimum": 0,
+                    "description": "KeySize is the key bit size of the corresponding private key for this certificate. If `keyAlgorithm` is set to `rsa`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `keyAlgorithm` is set to `ecdsa`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
                     "type": "integer"
                   },
                   "keystores": {
@@ -384,7 +389,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -393,7 +398,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', `Issuing`).",
+                          "description": "Type of the condition, known values are (`Ready`, `Issuing`).",
                           "type": "string"
                         }
                       },
@@ -525,6 +530,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     },
                     "type": "array"
                   },
+                  "encodeUsagesInRequest": {
+                    "description": "EncodeUsagesInRequest controls whether key usages should be present in the CertificateRequest",
+                    "type": "boolean"
+                  },
                   "ipAddresses": {
                     "description": "IPAddresses is a list of IP address subjectAltNames to be set on the Certificate.",
                     "items": {
@@ -537,7 +546,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this certificate. If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the Certificate will be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times.",
+                    "description": "IssuerRef is a reference to the issuer for this certificate. If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the Certificate will be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -558,7 +567,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "object"
                   },
                   "keyAlgorithm": {
-                    "description": "KeyAlgorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either \"rsa\" or \"ecdsa\" If `keyAlgorithm` is specified and `keySize` is not provided, key size of 256 will be used for \"ecdsa\" key algorithm and key size of 2048 will be used for \"rsa\" key algorithm.",
+                    "description": "KeyAlgorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `rsa` or `ecdsa` If `keyAlgorithm` is specified and `keySize` is not provided, key size of 256 will be used for `ecdsa` key algorithm and key size of 2048 will be used for `rsa` key algorithm.",
                     "enum": [
                       "rsa",
                       "ecdsa"
@@ -566,7 +575,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "string"
                   },
                   "keyEncoding": {
-                    "description": "KeyEncoding is the private key cryptography standards (PKCS) for this certificate's private key to be encoded in. If provided, allowed values are \"pkcs1\" and \"pkcs8\" standing for PKCS#1 and PKCS#8, respectively. If KeyEncoding is not specified, then PKCS#1 will be used by default.",
+                    "description": "KeyEncoding is the private key cryptography standards (PKCS) for this certificate's private key to be encoded in. If provided, allowed values are `pkcs1` and `pkcs8` standing for PKCS#1 and PKCS#8, respectively. If KeyEncoding is not specified, then `pkcs1` will be used by default.",
                     "enum": [
                       "pkcs1",
                       "pkcs8"
@@ -574,9 +583,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "string"
                   },
                   "keySize": {
-                    "description": "KeySize is the key bit size of the corresponding private key for this certificate. If `keyAlgorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `keyAlgorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
-                    "maximum": 8192,
-                    "minimum": 0,
+                    "description": "KeySize is the key bit size of the corresponding private key for this certificate. If `keyAlgorithm` is set to `rsa`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `keyAlgorithm` is set to `ecdsa`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
                     "type": "integer"
                   },
                   "keystores": {
@@ -586,7 +593,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "description": "JKS configures options for storing a JKS keystore in the `spec.secretName` Secret resource.",
                         "properties": {
                           "create": {
-                            "description": "Create enables JKS keystore creation for the Certificate. If true, a file named `keystore.jks` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance.",
+                            "description": "Create enables JKS keystore creation for the Certificate. If true, a file named `keystore.jks` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance. A file named `truststore.jks` will also be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef` containing the issuing Certificate Authority.",
                             "type": "boolean"
                           },
                           "passwordSecretRef": {
@@ -617,7 +624,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "description": "PKCS12 configures options for storing a PKCS12 keystore in the `spec.secretName` Secret resource.",
                         "properties": {
                           "create": {
-                            "description": "Create enables PKCS12 keystore creation for the Certificate. If true, a file named `keystore.p12` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance.",
+                            "description": "Create enables PKCS12 keystore creation for the Certificate. If true, a file named `keystore.p12` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance. A file named `truststore.p12` will also be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef` containing the issuing Certificate Authority.",
                             "type": "boolean"
                           },
                           "passwordSecretRef": {
@@ -793,7 +800,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -802,7 +809,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', `Issuing`).",
+                          "description": "Type of the condition, known values are (`Ready`, `Issuing`).",
                           "type": "string"
                         }
                       },
@@ -934,6 +941,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     },
                     "type": "array"
                   },
+                  "encodeUsagesInRequest": {
+                    "description": "EncodeUsagesInRequest controls whether key usages should be present in the CertificateRequest",
+                    "type": "boolean"
+                  },
                   "ipAddresses": {
                     "description": "IPAddresses is a list of IP address subjectAltNames to be set on the Certificate.",
                     "items": {
@@ -946,7 +957,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this certificate. If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the Certificate will be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times.",
+                    "description": "IssuerRef is a reference to the issuer for this certificate. If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the Certificate will be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -1038,7 +1049,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "description": "Options to control private keys used for the Certificate.",
                     "properties": {
                       "algorithm": {
-                        "description": "Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either \"rsa\" or \"ecdsa\" If `algorithm` is specified and `size` is not provided, key size of 256 will be used for \"ecdsa\" key algorithm and key size of 2048 will be used for \"rsa\" key algorithm.",
+                        "description": "Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `RSA` or `ECDSA` If `algorithm` is specified and `size` is not provided, key size of 256 will be used for `ECDSA` key algorithm and key size of 2048 will be used for `RSA` key algorithm.",
                         "enum": [
                           "RSA",
                           "ECDSA"
@@ -1046,7 +1057,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "type": "string"
                       },
                       "encoding": {
-                        "description": "The private key cryptography standards (PKCS) encoding for this certificate's private key to be encoded in. If provided, allowed values are \"pkcs1\" and \"pkcs8\" standing for PKCS#1 and PKCS#8, respectively. Defaults to PKCS#1 if not specified.",
+                        "description": "The private key cryptography standards (PKCS) encoding for this certificate's private key to be encoded in. If provided, allowed values are `PKCS1` and `PKCS8` standing for PKCS#1 and PKCS#8, respectively. Defaults to `PKCS1` if not specified.",
                         "enum": [
                           "PKCS1",
                           "PKCS8"
@@ -1059,8 +1070,6 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                       },
                       "size": {
                         "description": "Size is the key bit size of the corresponding private key for this certificate. If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `algorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
-                        "maximum": 8192,
-                        "minimum": 0,
                         "type": "integer"
                       }
                     },
@@ -1202,7 +1211,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -1211,7 +1220,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', `Issuing`).",
+                          "description": "Type of the condition, known values are (`Ready`, `Issuing`).",
                           "type": "string"
                         }
                       },
@@ -1346,6 +1355,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     },
                     "type": "array"
                   },
+                  "encodeUsagesInRequest": {
+                    "description": "EncodeUsagesInRequest controls whether key usages should be present in the CertificateRequest",
+                    "type": "boolean"
+                  },
                   "ipAddresses": {
                     "description": "IPAddresses is a list of IP address subjectAltNames to be set on the Certificate.",
                     "items": {
@@ -1358,7 +1371,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "boolean"
                   },
                   "issuerRef": {
-                    "description": "IssuerRef is a reference to the issuer for this certificate. If the 'kind' field is not set, or set to 'Issuer', an Issuer resource with the given name in the same namespace as the Certificate will be used. If the 'kind' field is set to 'ClusterIssuer', a ClusterIssuer with the provided name will be used. The 'name' field in this stanza is required at all times.",
+                    "description": "IssuerRef is a reference to the issuer for this certificate. If the `kind` field is not set, or set to `Issuer`, an Issuer resource with the given name in the same namespace as the Certificate will be used. If the `kind` field is set to `ClusterIssuer`, a ClusterIssuer with the provided name will be used. The `name` field in this stanza is required at all times.",
                     "properties": {
                       "group": {
                         "description": "Group of the resource being referred to.",
@@ -1385,7 +1398,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "description": "JKS configures options for storing a JKS keystore in the `spec.secretName` Secret resource.",
                         "properties": {
                           "create": {
-                            "description": "Create enables JKS keystore creation for the Certificate. If true, a file named `keystore.jks` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance.",
+                            "description": "Create enables JKS keystore creation for the Certificate. If true, a file named `keystore.jks` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance. A file named `truststore.jks` will also be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef` containing the issuing Certificate Authority",
                             "type": "boolean"
                           },
                           "passwordSecretRef": {
@@ -1416,7 +1429,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "description": "PKCS12 configures options for storing a PKCS12 keystore in the `spec.secretName` Secret resource.",
                         "properties": {
                           "create": {
-                            "description": "Create enables PKCS12 keystore creation for the Certificate. If true, a file named `keystore.p12` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance.",
+                            "description": "Create enables PKCS12 keystore creation for the Certificate. If true, a file named `keystore.p12` will be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef`. The keystore file will only be updated upon re-issuance. A file named `truststore.p12` will also be created in the target Secret resource, encrypted using the password stored in `passwordSecretRef` containing the issuing Certificate Authority",
                             "type": "boolean"
                           },
                           "passwordSecretRef": {
@@ -1450,7 +1463,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "description": "Options to control private keys used for the Certificate.",
                     "properties": {
                       "algorithm": {
-                        "description": "Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either \"rsa\" or \"ecdsa\" If `algorithm` is specified and `size` is not provided, key size of 256 will be used for \"ecdsa\" key algorithm and key size of 2048 will be used for \"rsa\" key algorithm.",
+                        "description": "Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `RSA` or `ECDSA` If `algorithm` is specified and `size` is not provided, key size of 256 will be used for `ECDSA` key algorithm and key size of 2048 will be used for `RSA` key algorithm.",
                         "enum": [
                           "RSA",
                           "ECDSA"
@@ -1458,7 +1471,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "type": "string"
                       },
                       "encoding": {
-                        "description": "The private key cryptography standards (PKCS) encoding for this certificate's private key to be encoded in. If provided, allowed values are \"pkcs1\" and \"pkcs8\" standing for PKCS#1 and PKCS#8, respectively. Defaults to PKCS#1 if not specified.",
+                        "description": "The private key cryptography standards (PKCS) encoding for this certificate's private key to be encoded in. If provided, allowed values are `PKCS1` and `PKCS8` standing for PKCS#1 and PKCS#8, respectively. Defaults to `PKCS1` if not specified.",
                         "enum": [
                           "PKCS1",
                           "PKCS8"
@@ -1471,8 +1484,6 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                       },
                       "size": {
                         "description": "Size is the key bit size of the corresponding private key for this certificate. If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `algorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
-                        "maximum": 8192,
-                        "minimum": 0,
                         "type": "integer"
                       }
                     },
@@ -1614,7 +1625,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "status": {
-                          "description": "Status of the condition, one of ('True', 'False', 'Unknown').",
+                          "description": "Status of the condition, one of (`True`, `False`, `Unknown`).",
                           "enum": [
                             "True",
                             "False",
@@ -1623,7 +1634,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are ('Ready', `Issuing`).",
+                          "description": "Type of the condition, known values are (`Ready`, `Issuing`).",
                           "type": "string"
                         }
                       },

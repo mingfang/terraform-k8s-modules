@@ -17,9 +17,9 @@ module "mongodb" {
   name      = "mongodb"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas           = 1
-  storage            = "1Gi"
-  storage_class_name = "cephfs"
+  replicas      = 1
+  storage       = "1Gi"
+  storage_class = "cephfs"
 
   MONGO_INITDB_DATABASE      = "appsmith"
   MONGO_INITDB_ROOT_USERNAME = "mongodb"
@@ -30,6 +30,7 @@ module "server" {
   source    = "../../modules/appsmith/server"
   name      = "server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+  image     = "registry.rebelsoft.com/appsmith-server:latest"
 
   APPSMITH_REDIS_URL           = "redis://${module.redis.name}:${module.redis.ports[0].port}"
   APPSMITH_MONGODB_URI         = "mongodb://mongodb:mongodb@${module.mongodb.name}/appsmith?retryWrites=true&authSource=admin"

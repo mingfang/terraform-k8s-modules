@@ -4,3 +4,5 @@
 terraform.tfstate*
 crash.log
 kubeconfig
+tmp
+.terraform.lock.hcl

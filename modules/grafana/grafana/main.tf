@@ -36,7 +36,7 @@ locals {
             name       = "dashboards"
             mount_path = "/etc/grafana/provisioning/dashboards"
           } : null,
-          var.datasources_config_map_name != null ? {
+          var.datasources_config_map != null ? {
             name       = "datasources"
             mount_path = "/etc/grafana/provisioning/datasources"
           } : null,
@@ -84,10 +84,10 @@ locals {
           name = var.dashboards_config_map_name
         }
       } : null,
-      var.datasources_config_map_name != null ? {
+      var.datasources_config_map != null ? {
         name = "datasources"
         config_map = {
-          name = var.datasources_config_map_name
+          name = var.datasources_config_map
         }
       } : null,
       var.pvc_name != null ? {

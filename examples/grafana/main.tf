@@ -14,18 +14,33 @@ module "cassandra" {
   storage_class = var.storage_class_name
 }
 
+locals {
+  fake = <<-EOF
+      groups:
+      - name: ingress
+        rules:
+        - alert: ingress404
+          expr: |
+            sum(rate({app_kubernetes_io_name="ingress-nginx"} |= " 404 " [1m])) by (job) > 0
+          for: 0s
+          labels:
+            severity: warning
+          annotations:
+            summary: Not found count = {{ $value }}
+            service_key: ${pagerduty_service_integration.ingress.integration_key}
+      EOF
+}
+
 module "loki" {
   source    = "../../modules/grafana/loki"
   name      = "loki"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
-  cassandra = module.cassandra.name
 
-  rules = {
-    fake = "${path.module}/rules.yaml"
-    foobar = "${path.module}/rules.yaml"
-  }
+  cassandra        = module.cassandra.name
   alertmanager_url = "http://${module.alertmanager.name}:${module.alertmanager.ports[0].port}"
+  rules = {
+    fake = local.fake
+  }
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "loki" {
@@ -62,6 +77,7 @@ module "promtail" {
   source    = "../../modules/grafana/promtail"
   name      = "promtail"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+
   tenant_id = "fake"
   loki_url  = "http://loki-example.rebelsoft.com/loki/api/v1/push"
 }
@@ -88,11 +104,12 @@ module "datasource" {
 }
 
 module "grafana" {
-  source                      = "../../modules/grafana/grafana"
-  name                        = "grafana"
-  namespace                   = k8s_core_v1_namespace.this.metadata[0].name
-  pvc_name                    = k8s_core_v1_persistent_volume_claim.grafana.metadata[0].name
-  datasources_config_map_name = module.datasource.config_map.metadata[0].name
+  source    = "../../modules/grafana/grafana"
+  name      = "grafana"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  pvc_name               = k8s_core_v1_persistent_volume_claim.grafana.metadata[0].name
+  datasources_config_map = module.datasource.name
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "grafana" {
@@ -120,10 +137,23 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "grafana" {
   }
 }
 
+module "alertmanager-config" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "alertmanager-config"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  from-file = "${path.module}/alertmanager.yml"
+}
+
 module "alertmanager" {
   source    = "../../modules/prometheus/alertmanager"
   name      = "alertmanager"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = {
+    "checksum" = module.alertmanager-config.checksum
+  }
+
+  config_map = module.alertmanager-config.name
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
@@ -150,3 +180,5 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
     }
   }
 }
+
+

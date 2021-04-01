@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "grafana/loki:2.0.0"
+  default = "grafana/loki:2.2.0"
 }
 
 variable "args" {
@@ -49,7 +49,7 @@ variable "config_file" {
 }
 
 variable "rules" {
-  default = {}
+  default     = {}
   description = "map of rule files {tenant=file}"
 }
 

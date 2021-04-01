@@ -2,17 +2,21 @@ locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
+    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
-
-    // restart on config change
-    annotations = merge(var.annotations, { checksum = module.config.checksum })
 
     containers = [
       {
         name  = "alertmanager"
         image = var.image
+
+        args = [
+          "--config.file=/etc/alertmanager/alertmanager.yml",
+          "--storage.path=/alertmanager",
+          "--cluster.advertise-address=$(POD_IP):6783",
+        ]
 
         env = concat([
           {
@@ -35,41 +39,26 @@ locals {
           },
         ], var.env)
 
-        args = [
-          "--config.file=/etc/alertmanager/config.yml",
-          "--storage.path=/alertmanager",
-          "--cluster.advertise-address=$(POD_IP):6783",
-        ]
-
         resources = var.resources
 
-        volume_mounts = [
+        volume_mounts = var.config_map != null ? [
           {
             name       = "config"
-            mount_path = "/etc/alertmanager/config.yml"
-            sub_path   = "config.yml"
+            mount_path = "/etc/alertmanager/alertmanager.yml"
+            sub_path   = "alertmanager.yml"
           },
-        ]
-      },
+        ] : []
+      }
     ]
 
-    volumes = [
+    volumes = var.config_map != null ? [
       {
-        name = "config"
         config_map = {
-          name = module.config.name
+          name = var.config_map
         }
+        name = "config"
       },
-    ]
-  }
-}
-
-module "config" {
-  source    = "../../kubernetes/config-map"
-  name      = var.name
-  namespace = var.namespace
-  from-map = {
-    "config.yml" = file(coalesce(var.config_file, "${path.module}/config.yml"))
+    ] : []
   }
 }
 

@@ -35,7 +35,7 @@ variable "resources" {
   default = null
 }
 
-variable "config_file" {
+variable "config_map" {
   default     = null
-  description = "path to config.yml, e.g. $${path.module}/config.yml"
+  description = "configmap with alertmanager.yml key"
 }

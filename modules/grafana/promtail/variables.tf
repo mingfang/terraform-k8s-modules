@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable image {
-  default = "grafana/promtail:1.6.1"
+  default = "grafana/promtail:2.2.0"
 }
 
 variable "env" {

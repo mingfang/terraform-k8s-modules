@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "grafana/grafana:7.3.7"
+  default = "grafana/grafana:7.5.2"
 }
 
 variable "env" {
@@ -41,6 +41,6 @@ variable "dashboards_config_map_name" {
   default = null
 }
 
-variable "datasources_config_map_name" {
+variable "datasources_config_map" {
   default = null
 }

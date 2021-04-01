@@ -2,12 +2,10 @@ locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
+    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
     enable_service_links = false
-
-    // restart on config change
-    annotations = merge(var.annotations, { checksum = module.config.checksum })
 
     containers = [
       {
@@ -95,7 +93,7 @@ module "rules" {
   name      = "rules-${each.key}"
   namespace = var.namespace
   from-map = {
-    "rules.yaml" = file(each.value)
+    "rules.yaml" = each.value
   }
 }
 

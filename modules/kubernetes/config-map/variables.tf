@@ -6,6 +6,10 @@ variable "labels" {
   default = null
 }
 
+variable "annotations" {
+  default = {}
+}
+
 variable "from-dir" {
   default = null
 }

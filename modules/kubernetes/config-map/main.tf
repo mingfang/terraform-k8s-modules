@@ -11,9 +11,10 @@ locals {
 
 resource "k8s_core_v1_config_map" "this" {
   metadata {
-    name      = var.name
-    namespace = var.namespace
-    labels    = var.labels
+    name        = var.name
+    namespace   = var.namespace
+    labels      = var.labels
+    annotations = var.annotations
   }
 
   data = local.data

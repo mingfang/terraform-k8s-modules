@@ -14,21 +14,56 @@ module "cassandra" {
   storage_class = var.storage_class_name
 }
 
-locals {
-  fake = <<-EOF
+module "loki-rules-ingress" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "loki-rules-ingress"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  labels = {
+    "loki-rules" = "true"
+  }
+  annotations = {
+    "k8s-sidecar-target-directory" = "/tmp/data/fake"
+  }
+  from-map = {
+    "rule" = <<-EOF
       groups:
       - name: ingress
         rules:
         - alert: ingress404
           expr: |
-            sum(rate({app_kubernetes_io_name="ingress-nginx"} |= " 404 " [1m])) by (job) > 0
+            sum by (job, log) (rate({job="default/ingress-nginx"} |= " 404 " |regexp "(?P<log>.*)" [1m])) > 0
           for: 0s
           labels:
             severity: warning
           annotations:
-            summary: Not found count = {{ $value }}
+            client_url: "http://grafana-example.rebelsoft.com/explore?orgId=1&left=%5B%22now-1h%22,%22now%22,%22Loki%22,%7B%22exemplar%22:true,%22expr%22:%22%7Bjob%3D%5C%22default%2Fingress-nginx%5C%22%7D%20%7C%3D%20%5C%22%20404%20%5C%22%22%7D%5D"
             service_key: ${pagerduty_service_integration.ingress.integration_key}
       EOF
+  }
+}
+
+resource "k8s_core_v1_persistent_volume_claim" "rules" {
+  metadata {
+    name      = "rules"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = var.storage_class_name
+  }
+}
+
+module "k8s-sidecar" {
+  source    = "../../modules/kiwigrid/k8s-sidecar"
+  name      = "k8s-sidecar"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  pvc_name         = k8s_core_v1_persistent_volume_claim.rules.metadata[0].name
+  LABEL            = "loki-rules"
+  NAMESPACE        = "ALL"
+  UNIQUE_FILENAMES = true
 }
 
 module "loki" {
@@ -38,9 +73,7 @@ module "loki" {
 
   cassandra        = module.cassandra.name
   alertmanager_url = "http://${module.alertmanager.name}:${module.alertmanager.ports[0].port}"
-  rules = {
-    fake = local.fake
-  }
+  pvc_name         = k8s_core_v1_persistent_volume_claim.rules.metadata[0].name
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "loki" {

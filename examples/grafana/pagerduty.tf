@@ -1,5 +1,5 @@
 provider "pagerduty" {
-  token = "<your pagerduty token>"
+  token = var.pagerduty_token
 }
 
 data "pagerduty_escalation_policy" "default" {
@@ -7,7 +7,7 @@ data "pagerduty_escalation_policy" "default" {
 }
 
 resource "pagerduty_service" "ingress" {
-  name                    = "Ingress"
+  name                    = "default:ingress-nginx"
   auto_resolve_timeout    = 14400
   acknowledgement_timeout = 600
   escalation_policy       = data.pagerduty_escalation_policy.default.id

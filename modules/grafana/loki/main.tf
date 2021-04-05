@@ -36,32 +36,42 @@ locals {
         resources = var.resources
 
         volume_mounts = concat(
-          [
+          [for x in [
             {
               name       = "config"
               mount_path = "/etc/loki/local-config.yaml"
               sub_path   = "local-config.yaml"
             },
-          ],
+            var.pvc_name != null ? {
+              name       = "rules"
+              mount_path = "/loki/rules"
+            } : null,
+          ] : x if x != null],
           [for tenant in keys(var.rules) :
             {
               name       = "rules-${tenant}"
               mount_path = "/loki/rules/${tenant}"
             }
-          ]
+          ],
         )
       },
     ]
 
     volumes = concat(
-      [
+      [for x in [
         {
           name = "config"
           config_map = {
             name = module.config.name
           }
         },
-      ],
+        var.pvc_name != null ? {
+          name = "rules"
+          persistent_volume_claim = {
+            claim_name = var.pvc_name
+          }
+        } : null,
+      ] : x if x != null],
       [for tenant in keys(var.rules) :
         {
           name = "rules-${tenant}"

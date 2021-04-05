@@ -48,6 +48,10 @@ variable "config_file" {
   default = null
 }
 
+variable "pvc_name" {
+  default = null
+}
+
 variable "rules" {
   default     = {}
   description = "map of rule files {tenant=file}"

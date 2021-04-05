@@ -36,14 +36,19 @@ receivers:
   pagerduty_configs:
   # trick to dynamically set service_key using alert annotation
   - client: "Loki"
+
     # link to grafana
-    client_url: "{{ .CommonAnnotations.client_url }}"
+    client_url: "https://grafana-example.rebelsoft.com/explore?orgId={{ .CommonAnnotations.orgId }}&left=%5B%22{{ .CommonAnnotations.timestamp }}-1h%22,%22{{ .CommonAnnotations.timestamp }}%22,%22Loki%22,%7B%22exemplar%22:true,%22expr%22:%22{{ .CommonAnnotations.expr }}%22%7D%5D"
+
     # use regexp to set log line as label
     description: "{{ .CommonLabels.log }}"
+
     # allow each service to dynamically set key
     service_key: "{{ .CommonAnnotations.service_key }}"
+
     # don't update resolve status; only resolve using pagerduty
     send_resolved: false
+
     # clear unused details
     details:
       firing: ""

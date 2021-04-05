@@ -15,31 +15,15 @@ module "cassandra" {
 }
 
 module "loki-rules-ingress" {
-  source    = "../../modules/kubernetes/config-map"
+  source    = "../../modules/grafana/loki-rule"
   name      = "loki-rules-ingress"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  labels = {
-    "loki-rules" = "true"
-  }
-  annotations = {
-    "k8s-sidecar-target-directory" = "/tmp/data/fake"
-  }
-  from-map = {
-    "rule" = <<-EOF
-      groups:
-      - name: ingress
-        rules:
-        - alert: ingress404
-          expr: |
-            sum by (job, log) (rate({job="default/ingress-nginx"} |= " 404 " |regexp "(?P<log>.*)" [1m])) > 0
-          for: 0s
-          labels:
-            severity: warning
-          annotations:
-            client_url: "http://grafana-example.rebelsoft.com/explore?orgId=1&left=%5B%22now-1h%22,%22now%22,%22Loki%22,%7B%22exemplar%22:true,%22expr%22:%22%7Bjob%3D%5C%22default%2Fingress-nginx%5C%22%7D%20%7C%3D%20%5C%22%20404%20%5C%22%22%7D%5D"
-            service_key: ${pagerduty_service_integration.ingress.integration_key}
-      EOF
-  }
+
+  orgId       = "fake"
+  service_key = pagerduty_service_integration.ingress.integration_key
+  expr        = <<-EOF
+    {job="default/ingress-nginx"} |= " 404 "
+  EOF
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "rules" {

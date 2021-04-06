@@ -49,7 +49,7 @@ locals {
       {
         name    = "openproject"
         image   = var.image
-        command = ["/app/docker/web"]
+        command = ["/app/docker/prod/web"]
         env     = local.env
 
         volume_mounts = [
@@ -62,13 +62,13 @@ locals {
       {
         name    = "worker"
         image   = var.image
-        command = ["/app/docker/worker"]
+        command = ["/app/docker/prod/worker"]
         env     = local.env
       },
       {
         name    = "cron"
         image   = var.image
-        command = ["/app/docker/cron"]
+        command = ["/app/docker/prod/cron"]
         env     = local.env
       },
     ]
@@ -77,7 +77,7 @@ locals {
       {
         name    = "seeder"
         image   = var.image
-        command = ["/app/docker/seeder"]
+        command = ["/app/docker/prod/seeder"]
         env     = local.env
       },
     ]

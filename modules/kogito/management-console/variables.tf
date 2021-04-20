@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "quay.io/kiegroup/kogito-management-console:1.3.0"
+  default = "quay.io/kiegroup/kogito-management-console:1.5.0"
 }
 
 variable "env" {
@@ -30,6 +30,3 @@ variable "annotations" {
 variable "overrides" {
   default = {}
 }
-
-
-variable "KOGITO_DATAINDEX_HTTP_URL" {}

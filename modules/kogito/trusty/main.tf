@@ -9,7 +9,7 @@ locals {
 
     containers = [
       {
-        name  = "data-index"
+        name  = "trusty"
         image = var.image
 
         env = concat([
@@ -21,10 +21,6 @@ locals {
                 field_path = "metadata.name"
               }
             }
-          },
-          {
-            name  = "QUARKUS_INFINISPAN_CLIENT_SERVER_LIST"
-            value = var.QUARKUS_INFINISPAN_CLIENT_SERVER_LIST
           },
         ], var.env)
       }

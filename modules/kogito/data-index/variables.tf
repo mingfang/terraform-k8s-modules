@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "quay.io/kiegroup/kogito-data-index-infinispan:1.3.0"
+  default = "quay.io/kiegroup/kogito-data-index-infinispan:1.5.0"
 }
 
 variable "env" {

@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "quay.io/kiegroup/kogito-trusty-ui:1.3.0"
+  default = "quay.io/kiegroup/kogito-trusty-ui:1.5.0"
 }
 
 variable "env" {

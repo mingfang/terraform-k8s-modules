@@ -22,10 +22,6 @@ locals {
               }
             }
           },
-          {
-            name  = "KOGITO_DATAINDEX_HTTP_URL"
-            value = var.KOGITO_DATAINDEX_HTTP_URL
-          },
         ], var.env)
       }
     ]

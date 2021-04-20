@@ -30,6 +30,3 @@ variable "annotations" {
 variable "overrides" {
   default = {}
 }
-
-
-variable "QUARKUS_INFINISPAN_CLIENT_SERVER_LIST" {}

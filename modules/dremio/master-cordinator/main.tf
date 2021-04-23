@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source  = "mingfang/k8s"
-    }
-  }
-}
-
 locals {
   parameters = {
     name        = var.name
@@ -134,8 +126,8 @@ locals {
         ]
       },
       {
-        name              = "upgrade"
-        image             = var.image
+        name  = "upgrade"
+        image = var.image
         command = [
           "sh",
           "-cx",

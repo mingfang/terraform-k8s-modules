@@ -129,7 +129,7 @@ locals {
           "sh",
           "-cx",
           <<-EOF
-          chown -R druid /opt/druid/var
+          chown -R druid:druid /opt/druid/var
           EOF
         ]
 

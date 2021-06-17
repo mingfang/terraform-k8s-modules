@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "jboss/keycloak:12.0.2"
+  default = "jboss/keycloak:13.0.1"
 }
 
 variable "env" {

@@ -30,6 +30,22 @@ module "postgres_password" {
 locals {
   env = [
     {
+      name  = "DAGSTER_PG_HOST"
+      value = module.postgres.name
+    },
+    {
+      name  = "DAGSTER_PG_PORT"
+      value = 5432
+    },
+    {
+      name  = "DAGSTER_PG_DB"
+      value = "dagster"
+    },
+    {
+      name  = "DAGSTER_PG_USER"
+      value = "dagster"
+    },
+    {
       name = "DAGSTER_PG_PASSWORD"
       value_from = {
         secret_key_ref = {
@@ -38,6 +54,18 @@ locals {
         }
       }
     },
+    {
+      name  = "DAGSTER_K8S_PG_PASSWORD_SECRET"
+      value = module.postgres_password.name
+    },
+    {
+      name  = "DAGSTER_K8S_INSTANCE_CONFIG_MAP"
+      value = module.config_map_job.name
+    },
+    {
+      name  = "DAGSTER_K8S_PIPELINE_RUN_ENV_CONFIGMAP"
+      value = module.config_map_job_env.name
+    }
   ]
 }
 
@@ -52,31 +80,23 @@ module "dagster-daemon" {
   source    = "../../modules/dagster/dagster-daemon"
   name      = "dagster-daemon"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
 
-  service_account_name = module.rbac.name
-  config_map           = module.config_map_instance.name
   env                  = local.env
-  config_map_env       = module.config_map_pipeline.name
+  service_account_name = module.rbac.name
+
+  config_map_dagster = module.config_map_dagster.name
 }
 
-module "example-user-code" {
-  source    = "../../modules/dagster/example-user-code"
-  name      = "example-user-code"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
-}
 
 module "dagit" {
   source    = "../../modules/dagster/dagit"
   name      = "dagit"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
 
-  service_account_name = module.rbac.name
-  config_map           = module.config_map_instance.name
   env                  = local.env
-  config_map_env       = module.config_map_pipeline.name
+  service_account_name = module.rbac.name
+
+  config_map_dagster   = module.config_map_dagster.name
   config_map_workspace = module.config_map_workspace.name
 }
 

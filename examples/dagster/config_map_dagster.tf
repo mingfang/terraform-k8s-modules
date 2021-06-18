@@ -1,6 +1,6 @@
-module "config_map_instance" {
+module "config_map_dagster" {
   source    = "../../modules/kubernetes/config-map"
-  name      = "${var.name}-instance"
+  name      = "${var.name}-dagster"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   from-map = {
@@ -24,6 +24,12 @@ module "config_map_instance" {
               env: DAGSTER_PG_DB
             port:
               env: DAGSTER_PG_PORT
+
+      run_coordinator:
+        module: dagster.core.run_coordinator
+        class: QueuedRunCoordinator
+        config:
+          max_concurrent_runs: 25
 
       run_launcher:
         module: dagster_k8s

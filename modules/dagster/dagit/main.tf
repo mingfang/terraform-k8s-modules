@@ -34,14 +34,6 @@ locals {
           },
         ], var.env)
 
-        env_from = [
-          {
-            config_map_ref = {
-              name = var.config_map_env
-            }
-          },
-        ]
-
         startup_probe = {
           http_get = {
             path = "/dagit_info"
@@ -84,7 +76,7 @@ locals {
     volumes = [
       {
         config_map = {
-          name = var.config_map
+          name = var.config_map_dagster
         }
         name = "dagster-instance"
       },

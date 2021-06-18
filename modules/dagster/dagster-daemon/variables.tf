@@ -31,8 +31,7 @@ variable "overrides" {
   default = {}
 }
 
-variable "config_map" {}
+variable "config_map_dagster" {}
 
-variable "config_map_env" {}
 
 variable "service_account_name" {}

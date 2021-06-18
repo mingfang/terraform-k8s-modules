@@ -33,14 +33,6 @@ locals {
           },
         ], var.env)
 
-        env_from = [
-          {
-            config_map_ref = {
-              name = var.config_map_env
-            }
-          },
-        ]
-
         startup_probe = {
           exec = {
             command = [
@@ -80,7 +72,7 @@ locals {
     volumes = [
       {
         config_map = {
-          name = var.config_map
+          name = var.config_map_dagster
         }
         name = "dagster-instance"
       },

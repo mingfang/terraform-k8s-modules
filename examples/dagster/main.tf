@@ -65,25 +65,25 @@ locals {
     {
       name  = "DAGSTER_K8S_PIPELINE_RUN_ENV_CONFIGMAP"
       value = module.config_map_job_env.name
+    },
+    {
+      name  = "DAGSTER_K8S_JOB_NAMESPACE"
+      value = var.namespace
+    },
+    {
+      name  = "DAGSTER_K8S_JOB_SERVICE_ACCOUNT"
+      value = "default"
     }
   ]
 }
 
-
-module "rbac" {
-  source    = "../../modules/dagster/rbac"
-  name      = var.name
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-}
-
 module "dagster-daemon" {
-  source    = "../../modules/dagster/dagster-daemon"
-  name      = "dagster-daemon"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  source      = "../../modules/dagster/dagster-daemon"
+  name        = "dagster-daemon"
+  namespace   = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = { "dagster-checksum" = module.config_map_dagster.checksum }
 
-  env                  = local.env
-  service_account_name = module.rbac.name
-
+  env                = local.env
   config_map_dagster = module.config_map_dagster.name
 }
 
@@ -92,10 +92,12 @@ module "dagit" {
   source    = "../../modules/dagster/dagit"
   name      = "dagit"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = {
+    "dagster-checksum"   = module.config_map_dagster.checksum
+    "workspace-checksum" = module.config_map_workspace.checksum
+  }
 
   env                  = local.env
-  service_account_name = module.rbac.name
-
   config_map_dagster   = module.config_map_dagster.name
   config_map_workspace = module.config_map_workspace.name
 }

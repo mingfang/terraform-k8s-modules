@@ -71,8 +71,6 @@ locals {
       }
     ]
 
-    service_account_name = var.service_account_name
-
     volumes = [
       {
         config_map = {

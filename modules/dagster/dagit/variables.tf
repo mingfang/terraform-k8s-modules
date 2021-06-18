@@ -34,5 +34,3 @@ variable "overrides" {
 variable "config_map_dagster" {}
 
 variable "config_map_workspace" {}
-
-variable "service_account_name" {}

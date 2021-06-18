@@ -36,8 +36,10 @@ module "config_map_dagster" {
         class: K8sRunLauncher
         config:
           load_incluster_config: true
-          job_namespace: ${var.namespace}
-          service_account_name: ${module.rbac.name}
+          job_namespace:
+            env: DAGSTER_K8S_JOB_NAMESPACE
+          service_account_name:
+            env: DAGSTER_K8S_JOB_SERVICE_ACCOUNT
           dagster_home:
             env: DAGSTER_HOME
           instance_config_map:

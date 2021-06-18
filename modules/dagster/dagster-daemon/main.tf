@@ -67,7 +67,7 @@ locals {
       }
     ]
 
-    service_account_name = var.service_account_name
+    service_account_name = module.rbac.name
 
     volumes = [
       {

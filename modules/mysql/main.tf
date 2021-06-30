@@ -1,4 +1,3 @@
-
 locals {
   parameters = {
     name                 = var.name
@@ -12,7 +11,7 @@ locals {
       {
         name  = "mysql"
         image = var.image
-        args  = ["--default-authentication-plugin=${var.default-authentication-plugin}"]
+        args  = var.args
 
         env = concat([
           {

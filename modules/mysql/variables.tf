@@ -19,6 +19,10 @@ variable "image" {
   default = "mysql:8.0.19"
 }
 
+variable "args" {
+  default = ["--default-authentication-plugin=caching_sha2_password"]
+}
+
 variable "env" {
   default = []
 }
@@ -44,7 +48,7 @@ variable "TZ" {
 }
 
 variable "default-authentication-plugin" {
-  default = "caching_sha2_password"
+  default     = "caching_sha2_password"
   description = "caching_sha2_password or mysql_native_password."
 }
 

@@ -138,7 +138,7 @@ locals {
 
         volume_mounts = [
           {
-            name       = "sites"
+            name       = "bench"
             mount_path = "/home/frappe/frappe-bench"
           },
         ],
@@ -164,7 +164,7 @@ locals {
 
         volume_mounts = [
           {
-            name       = "sites"
+            name       = "bench"
             mount_path = "/home/frappe/frappe-bench"
           },
         ]
@@ -189,7 +189,7 @@ locals {
 
         volume_mounts = [
           {
-            name       = "sites"
+            name       = "bench"
             mount_path = "/home/frappe/frappe-bench"
           },
         ]
@@ -198,9 +198,9 @@ locals {
 
     volumes = [
       {
-        name = "sites"
+        name = "bench"
         persistent_volume_claim = {
-          claim_name = var.pvc_sites
+          claim_name = var.pvc_bench
         }
       },
     ]

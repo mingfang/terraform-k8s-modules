@@ -94,6 +94,6 @@ variable "SOCKETIO_PORT" {
   description = "443"
 }
 
-variable "pvc_sites" {
+variable "pvc_bench" {
   default = null
 }

@@ -24,6 +24,15 @@ locals {
             }
           },
           {
+            name = "POD_IP"
+
+            value_from = {
+              field_ref = {
+                field_path = "status.podIP"
+              }
+            }
+          },
+          {
             name  = "POSTGRES_USER"
             value = var.POSTGRES_USER
           },
@@ -39,7 +48,13 @@ locals {
             name  = "PGDATA"
             value = "/data"
           },
+          {
+            name  = "POSTGRES_PORT"
+            value = var.ports[0].port
+          },
         ], var.env)
+
+        resources = var.resources
 
         volume_mounts = [
           {

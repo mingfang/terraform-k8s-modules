@@ -1,10 +1,8 @@
-variable "name" {}
+variable "name" {
+  default = "postgres"
+}
 
 variable "namespace" {}
-
-variable "replicas" {
-  default = 1
-}
 
 variable "ports" {
   default = [
@@ -13,6 +11,10 @@ variable "ports" {
       port = 5432
     },
   ]
+}
+
+variable "replicas" {
+  default = 1
 }
 
 variable "image" {
@@ -27,6 +29,15 @@ variable "annotations" {
   default = {}
 }
 
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "100m"
+      memory = "128Mi"
+    }
+  }
+}
+
 variable "overrides" {
   default = {}
 }
@@ -39,8 +50,6 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable POSTGRES_USER {}
-
-variable POSTGRES_PASSWORD {}
-
-variable POSTGRES_DB {}
+variable "POSTGRES_USER" {}
+variable "POSTGRES_PASSWORD" {}
+variable "POSTGRES_DB" {}

@@ -53,3 +53,6 @@ variable "volume_claim_template_name" {
 variable "POSTGRES_USER" {}
 variable "POSTGRES_PASSWORD" {}
 variable "POSTGRES_DB" {}
+variable "PGDATA" {
+	default = "/data"
+}

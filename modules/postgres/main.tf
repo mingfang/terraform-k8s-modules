@@ -46,7 +46,7 @@ locals {
           },
           {
             name  = "PGDATA"
-            value = "/data"
+            value = var.PGDATA
           },
           {
             name  = "POSTGRES_PORT"

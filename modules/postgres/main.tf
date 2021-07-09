@@ -46,7 +46,7 @@ locals {
           },
           {
             name  = "PGDATA"
-            value = "/data"
+            value = "/data/keycloak/postgres/postgres-0"
           },
           {
             name  = "POSTGRES_PORT"

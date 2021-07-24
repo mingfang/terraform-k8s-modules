@@ -130,7 +130,7 @@ module "nginx" {
       listen      80;
 
       location ~ /proxy/(.*)/(.*) {
-        resolver 172.27.0.2 ipv6=off;
+        resolver kube-dns.kube-system.svc.cluster.local valid=5s;
         proxy_pass http://${module.intellij.name}-0.${module.intellij.name}.${k8s_core_v1_namespace.this.metadata[0].name}.svc.cluster.local:$1/$2;
       }
     }

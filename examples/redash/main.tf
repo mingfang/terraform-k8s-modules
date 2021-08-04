@@ -43,18 +43,18 @@ module "scheduler" {
   REDASH_DATABASE_URL = "postgresql://redash:redash@${module.postgres.name}:${module.postgres.ports[0].port}"
 }
 
-module "scheduled-worker" {
+module "worker-scheduled" {
   source    = "../../modules/redash/worker"
-  name      = "scheduled-worker"
+  name      = "worker-scheduled"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   REDASH_REDIS_URL    = "redis://${module.redis.name}:${module.redis.ports[0].port}"
   REDASH_DATABASE_URL = "postgresql://redash:redash@${module.postgres.name}:${module.postgres.ports[0].port}"
 }
 
-module "adhoc-worker" {
+module "worker-adhoc" {
   source    = "../../modules/redash/worker"
-  name      = "adhoc-worker"
+  name      = "worker-adhoc"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   QUEUES        = "queries"

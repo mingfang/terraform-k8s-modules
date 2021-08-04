@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "redash/redash:8.0.0.b32245"
+  default = "redash/redash:10.0.0-beta.b49597"
 }
 
 variable "env" {
@@ -27,7 +27,7 @@ variable "REDASH_DATABASE_URL" {}
 variable "REDASH_REDIS_URL" {}
 
 variable "QUEUES" {
-  default = "scheduled_queries,schemas"
+  default = "scheduled_queries,schemas,default,periodic"
 }
 variable "WORKERS_COUNT" {
   default = 1

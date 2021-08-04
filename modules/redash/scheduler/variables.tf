@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "redash/redash:8.0.0.b32245"
+  default = "redash/redash:10.0.0-beta.b49597"
 }
 
 variable "env" {

@@ -36,7 +36,7 @@ locals {
 
     init_containers = [
       {
-        name  = "init"
+        name  = "db-create"
         image = var.image
         args  = ["create_db"]
 
@@ -45,17 +45,17 @@ locals {
             name  = "REDASH_DATABASE_URL"
             value = var.REDASH_DATABASE_URL
           },
+        ], var.env)
+      },
+      {
+        name  = "db-upgrade"
+        image = var.image
+        args  = ["manage", "db", "upgrade"]
+
+        env = concat([
           {
-            name  = "REDASH_REDIS_URL"
-            value = var.REDASH_REDIS_URL
-          },
-          {
-            name  = "REDASH_WEB_WORKERS"
-            value = var.REDASH_WEB_WORKERS
-          },
-          {
-            name  = "PYTHONUNBUFFERED"
-            value = "0"
+            name  = "REDASH_DATABASE_URL"
+            value = var.REDASH_DATABASE_URL
           },
         ], var.env)
       }

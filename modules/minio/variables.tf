@@ -12,11 +12,15 @@ variable "ports" {
       name = "http"
       port = 9000
     },
+    {
+      name = "http-console"
+      port = 9001
+    },
   ]
 }
 
 variable "image" {
-  default = "minio/minio:RELEASE.2020-08-04T23-10-51Z"
+  default = "minio/minio:RELEASE.2021-08-05T22-01-19Z"
 }
 
 variable "env" {

@@ -20,7 +20,7 @@ locals {
         name  = "minio"
         image = var.image
 
-        args = coalescelist(var.args, concat(["server"], local.servers))
+        args = coalescelist(var.args, concat(["server", "--console-address", ":${var.ports[1].port}"], local.servers))
 
         env = concat([
           {
@@ -33,14 +33,27 @@ locals {
             }
           },
           {
-            name  = "MINIO_ACCESS_KEY"
+            name  = "MINIO_ROOT_USER"
             value = var.minio_access_key
           },
           {
-            name  = "MINIO_SECRET_KEY"
+            name  = "MINIO_ROOT_PASSWORD"
             value = var.minio_secret_key
           },
         ], var.env)
+
+        liveness_probe = {
+          failure_threshold = 3
+          http_get = {
+            path   = "/minio/health/live"
+            port   = var.ports[0].port
+            scheme = "HTTP"
+          }
+          initial_delay_seconds = 60
+          period_seconds        = 30
+          success_threshold     = 1
+          timeout_seconds       = 20
+        }
 
         volume_mounts = [
           {

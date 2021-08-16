@@ -23,6 +23,54 @@ module "splitgraph" {
   SG_S3_BUCKET = "splitgraph"
 }
 
+resource "k8s_core_v1_persistent_volume_claim" "pgadmin" {
+  metadata {
+    name      = "pgadmin"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = "cephfs"
+  }
+}
+
+module "pgadmin" {
+  source    = "../../modules/pgadmin"
+  name      = "pgadmin"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  pvc_name                 = k8s_core_v1_persistent_volume_claim.pgadmin.metadata[0].name
+  PGADMIN_DEFAULT_EMAIL    = "splitgraph@example.com"
+  PGADMIN_DEFAULT_PASSWORD = "splitgraph"
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-pgadmin.*"
+    }
+    name      = module.pgadmin.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "${var.namespace}-pgadmin"
+      http {
+        paths {
+          backend {
+            service_name = module.pgadmin.name
+            service_port = module.pgadmin.ports[0].port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
 module "minio" {
   source    = "../../modules/minio"
   name      = "minio"

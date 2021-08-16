@@ -62,6 +62,31 @@ locals {
           }
         ]
       },
+      {
+        name    = "mc"
+        image   = "minio/mc"
+        command = ["sleep", "infinity"]
+
+        env = concat([
+          {
+            name = "POD_NAME"
+
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
+              }
+            }
+          },
+          {
+            name  = "MINIO_ROOT_USER"
+            value = var.minio_access_key
+          },
+          {
+            name  = "MINIO_ROOT_PASSWORD"
+            value = var.minio_secret_key
+          },
+        ], var.env)
+      },
     ]
 
     volume_claim_templates = [

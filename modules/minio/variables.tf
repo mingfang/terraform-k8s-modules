@@ -52,3 +52,7 @@ variable "minio_secret_key" {}
 variable "args" {
   default = []
 }
+
+variable "create_buckets" {
+  default = []
+}

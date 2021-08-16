@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source = "mingfang/k8s"
-    }
-  }
-}
-
 locals {
   parameters = {
     name                 = var.name
@@ -37,8 +29,47 @@ locals {
             value = var.PGADMIN_DEFAULT_PASSWORD
           },
         ], var.env)
+
+        volume_mounts = var.pvc_name != null ? [
+          {
+            name       = "data"
+            mount_path = "/var/lib/pgadmin"
+          },
+        ] : []
       },
     ]
+
+    init_containers = var.pvc_name != null ? [
+      {
+        name  = "init"
+        image = var.image
+        command = [
+          "sh",
+          "-cx",
+          "chown pgadmin /var/lib/pgadmin"
+        ]
+
+        security_context = {
+          run_asuser = "0"
+        }
+
+        volume_mounts = [
+          {
+            name       = "data"
+            mount_path = "/var/lib/pgadmin"
+          },
+        ]
+      }
+    ] : []
+
+    volumes = var.pvc_name != null ? [
+      {
+        name = "data"
+        persistent_volume_claim = {
+          claim_name = var.pvc_name
+        }
+      },
+    ] : []
   }
 }
 

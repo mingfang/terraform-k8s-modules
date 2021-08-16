@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "dpage/pgadmin4:5.5"
+  default = "dpage/pgadmin4:5.6"
 }
 
 variable "replicas" {
@@ -29,6 +29,10 @@ variable "annotations" {
 
 variable "overrides" {
   default = {}
+}
+
+variable "pvc_name" {
+  default = null
 }
 
 variable "PGADMIN_DEFAULT_EMAIL" {}

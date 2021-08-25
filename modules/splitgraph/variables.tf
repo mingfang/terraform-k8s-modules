@@ -75,3 +75,8 @@ variable "SG_S3_PWD" {
 variable "SG_LOGLEVEL" {
   default = "INFO"
 }
+
+variable "sgconfig" {
+  default = null
+}
+

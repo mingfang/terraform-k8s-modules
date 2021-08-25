@@ -2,9 +2,9 @@ locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
-    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
+    annotations          = var.annotations
     enable_service_links = false
 
     containers = [
@@ -83,32 +83,57 @@ locals {
             name  = "SG_LOGLEVEL"
             value = var.SG_LOGLEVEL
           },
-        ], var.env)
+          ],
+          var.sgconfig != null ? [
+            {
+              name  = "SG_CONFIG_FILE"
+              value = "/etc/sgconfig/sgconfig"
+            }
+          ] : [],
+        var.env)
 
         resources = var.resources
 
-        volume_mounts = [
-          {
-            name       = var.volume_claim_template_name
-            mount_path = "/data"
-          },
-          {
-            name       = "shm"
-            mount_path = "/dev/shm"
-          },
-        ]
+        volume_mounts = concat(
+          [
+            {
+              name       = var.volume_claim_template_name
+              mount_path = "/data"
+            },
+            {
+              name       = "shm"
+              mount_path = "/dev/shm"
+            },
+          ],
+          var.sgconfig != null ? [
+            {
+              name       = "sgconfig"
+              mount_path = "/etc/sgconfig"
+            },
+          ] : []
+        )
       },
     ]
 
-    volumes = [
-      {
-        name = "shm"
+    volumes = concat(
+      [
+        {
+          name = "shm"
 
-        empty_dir = {
-          "medium" = "Memory"
-        }
-      },
-    ]
+          empty_dir = {
+            "medium" = "Memory"
+          }
+        },
+      ],
+      var.sgconfig != null ? [
+        {
+          config_map = {
+            name = var.sgconfig
+          }
+          name = "sgconfig"
+        },
+      ] : []
+    )
 
     volume_claim_templates = [
       {

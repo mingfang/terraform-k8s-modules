@@ -14,6 +14,10 @@ locals {
 
         env = concat([
           {
+            name  = "NODE_ENV"
+            value = "production"
+          },
+          {
             name  = "PRIVATE_BACKEND_URL"
             value = var.PRIVATE_BACKEND_URL
           },

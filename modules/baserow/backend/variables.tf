@@ -31,8 +31,13 @@ variable "overrides" {
   default = {}
 }
 
+variable "pvc_media" {
+  default = null
+}
+
 variable "PUBLIC_BACKEND_URL" {}
 variable "PUBLIC_WEB_FRONTEND_URL" {}
+variable "MEDIA_URL" {}
 
 variable "REDIS_HOST" {}
 variable "REDIS_PORT" {

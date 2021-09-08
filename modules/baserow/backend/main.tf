@@ -4,7 +4,7 @@ locals {
     namespace            = var.namespace
     annotations          = var.annotations
     ports                = var.ports
-    replicas             = 1
+    replicas             = var.replicas
     enable_service_links = false
 
     containers = [
@@ -33,6 +33,10 @@ locals {
           {
             name  = "PUBLIC_WEB_FRONTEND_URL"
             value = var.PUBLIC_WEB_FRONTEND_URL
+          },
+          {
+            name  = "MEDIA_URL"
+            value = var.MEDIA_URL
           },
           {
             name  = "REDIS_HOST"
@@ -83,8 +87,47 @@ locals {
             value = var.SYNC_TEMPLATES_ON_STARTUP
           },
         ], var.env)
+
+        volume_mounts = var.pvc_media != null ? [
+          {
+            name       = "media"
+            mount_path = "/baserow/media"
+          },
+        ] : []
       }
     ]
+
+    init_containers = [
+      {
+        name  = "chown"
+        image = var.image
+        command = [
+          "sh",
+          "-cx",
+          <<-EOF
+          chown baserow_docker_user /baserow/media
+          EOF
+        ]
+        security_context = {
+          run_asuser = "0"
+        }
+        volume_mounts = var.pvc_media != null ? [
+          {
+            name       = "media"
+            mount_path = "/baserow/media"
+          },
+        ] : []
+      },
+    ]
+
+    volumes = var.pvc_media != null ? [
+      {
+        name = "media"
+        persistent_volume_claim = {
+          claim_name = var.pvc_media
+        }
+      },
+    ] : []
   }
 }
 

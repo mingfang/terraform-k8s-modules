@@ -22,10 +22,25 @@ module "postgres" {
   POSTGRES_DB       = "baserow"
 }
 
+resource "k8s_core_v1_persistent_volume_claim" "media" {
+  metadata {
+    name      = "media"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteMany"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = var.storage_class_name
+  }
+}
+
 module "backend" {
   source    = "../../modules/baserow/backend"
   name      = "baserow-backend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  pvc_media = k8s_core_v1_persistent_volume_claim.media.metadata[0].name
 
   REDIS_HOST        = module.redis.name
   DATABASE_HOST     = module.postgres.name
@@ -33,15 +48,16 @@ module "backend" {
   DATABASE_USER     = "baserow"
   DATABASE_PASSWORD = "baserow"
 
-  PUBLIC_BACKEND_URL      = "https://baserow-backend-example.rebelsoft.com"
-  PUBLIC_WEB_FRONTEND_URL = "https://baserow-example.rebelsoft.com"
+  PUBLIC_BACKEND_URL      = "https://${var.namespace}-backend.rebelsoft.com"
+  PUBLIC_WEB_FRONTEND_URL = "https://${var.namespace}.rebelsoft.com"
+  MEDIA_URL               = "https://${var.namespace}-media.rebelsoft.com/media/"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "backend" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"          = "baserow-backend-example.*"
+      "nginx.ingress.kubernetes.io/server-alias"          = "${var.namespace}-backend.*"
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
     }
@@ -64,13 +80,48 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "backend" {
   }
 }
 
+module "media" {
+  source    = "../../modules/baserow/media"
+  name      = "media"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  pvc_media = k8s_core_v1_persistent_volume_claim.media.metadata[0].name
+}
+
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "media" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-media.*"
+    }
+    name      = module.media.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "${module.media.name}.${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.media.name
+            service_port = module.media.ports[0].port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
 module "web-frontend" {
   source    = "../../modules/baserow/web-frontend"
   name      = "baserow-web-frontend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  PRIVATE_BACKEND_URL = "http://${module.backend.name}:${module.backend.ports[0].port}"
-  PUBLIC_BACKEND_URL  = "https://baserow-backend-example.rebelsoft.com"
+  PRIVATE_BACKEND_URL     = "http://${module.backend.name}:${module.backend.ports[0].port}"
+  PUBLIC_BACKEND_URL      = "https://${var.namespace}-backend.rebelsoft.com"
+  PUBLIC_WEB_FRONTEND_URL = "https://${var.namespace}.rebelsoft.com"
 }
 
 
@@ -78,7 +129,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "web-frontend" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "baserow-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.web-frontend.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

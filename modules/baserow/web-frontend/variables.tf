@@ -33,10 +33,7 @@ variable "overrides" {
 
 variable "PRIVATE_BACKEND_URL" {}
 variable "PUBLIC_BACKEND_URL" {}
-
-variable "PUBLIC_WEB_FRONTEND_URL" {
-  default = null
-}
+variable "PUBLIC_WEB_FRONTEND_URL" {}
 variable "INITIAL_TABLE_DATA_LIMIT" {
-  default = 100
+  default = null
 }

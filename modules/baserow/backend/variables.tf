@@ -55,3 +55,10 @@ variable "DATABASE_PORT" {
 variable "DATABASE_NAME" {}
 variable "DATABASE_USER" {}
 variable "DATABASE_PASSWORD" {}
+
+variable "MIGRATE_ON_STARTUP" {
+  default = "true"
+}
+variable "SYNC_TEMPLATES_ON_STARTUP" {
+  default = "true"
+}

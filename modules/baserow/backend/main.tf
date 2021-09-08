@@ -74,6 +74,14 @@ locals {
             name  = "DATABASE_PORT"
             value = var.DATABASE_PORT
           },
+          {
+            name  = "MIGRATE_ON_STARTUP"
+            value = var.MIGRATE_ON_STARTUP
+          },
+          {
+            name  = "SYNC_TEMPLATES_ON_STARTUP"
+            value = var.SYNC_TEMPLATES_ON_STARTUP
+          },
         ], var.env)
       }
     ]

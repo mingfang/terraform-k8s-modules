@@ -48,36 +48,9 @@ module "backend" {
   DATABASE_USER     = "baserow"
   DATABASE_PASSWORD = "baserow"
 
-  PUBLIC_BACKEND_URL      = "https://${var.namespace}-backend.rebelsoft.com"
+  PUBLIC_BACKEND_URL      = "https://${var.namespace}.rebelsoft.com"
   PUBLIC_WEB_FRONTEND_URL = "https://${var.namespace}.rebelsoft.com"
-  MEDIA_URL               = "https://${var.namespace}-media.rebelsoft.com/media/"
-}
-
-resource "k8s_networking_k8s_io_v1beta1_ingress" "backend" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"                       = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"          = "${var.namespace}-backend.*"
-      "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
-      "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
-    }
-    name      = module.backend.name
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
-  }
-  spec {
-    rules {
-      host = "${module.backend.name}.${var.namespace}"
-      http {
-        paths {
-          backend {
-            service_name = module.backend.name
-            service_port = module.backend.ports[0].port
-          }
-          path = "/"
-        }
-      }
-    }
-  }
+  MEDIA_URL               = "https://${var.namespace}.rebelsoft.com/media/"
 }
 
 module "media" {
@@ -88,48 +61,23 @@ module "media" {
   pvc_media = k8s_core_v1_persistent_volume_claim.media.metadata[0].name
 }
 
-
-resource "k8s_networking_k8s_io_v1beta1_ingress" "media" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-media.*"
-    }
-    name      = module.media.name
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
-  }
-  spec {
-    rules {
-      host = "${module.media.name}.${var.namespace}"
-      http {
-        paths {
-          backend {
-            service_name = module.media.name
-            service_port = module.media.ports[0].port
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}
-
 module "web-frontend" {
   source    = "../../modules/baserow/web-frontend"
   name      = "baserow-web-frontend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   PRIVATE_BACKEND_URL     = "http://${module.backend.name}:${module.backend.ports[0].port}"
-  PUBLIC_BACKEND_URL      = "https://${var.namespace}-backend.rebelsoft.com"
+  PUBLIC_BACKEND_URL      = "https://${var.namespace}.rebelsoft.com"
   PUBLIC_WEB_FRONTEND_URL = "https://${var.namespace}.rebelsoft.com"
 }
 
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "web-frontend" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "baserow" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
+      "kubernetes.io/ingress.class"                 = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"    = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/proxy-body-size" = "10240m"
     }
     name      = module.web-frontend.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
@@ -144,6 +92,27 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "web-frontend" {
             service_port = module.web-frontend.ports[0].port
           }
           path = "/"
+        }
+        paths {
+          backend {
+            service_name = module.backend.name
+            service_port = module.backend.ports[0].port
+          }
+          path = "/api"
+        }
+        paths {
+          backend {
+            service_name = module.backend.name
+            service_port = module.backend.ports[0].port
+          }
+          path = "/ws"
+        }
+        paths {
+          backend {
+            service_name = module.media.name
+            service_port = module.media.ports[0].port
+          }
+          path = "/media"
         }
       }
     }

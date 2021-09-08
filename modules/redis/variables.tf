@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "redis:4.0.6-alpine"
+  default = "redis:6.0"
 }
 
 variable "ports" {

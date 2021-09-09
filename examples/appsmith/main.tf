@@ -39,6 +39,14 @@ module "server" {
   // hack to integrate Appsmith with Keycloak
   env = [
     {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_GOOGLE_ISSUER-URI"
+      value = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft"
+    },
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_GOOGLE_USER-NAME-ATTRIBUTE"
+      value = "email"
+    },
+    {
       name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-ID"
       value = "appsmith"
     },
@@ -53,14 +61,6 @@ module "server" {
     {
       name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI"
       value = "{baseUrl}/login/oauth2/code/{registrationId}"
-    },
-    {
-      name  = "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_GOOGLE_USER-NAME-ATTRIBUTE"
-      value = "email"
-    },
-    {
-      name  = "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_GOOGLE_ISSUER-URI"
-      value = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft"
     },
   ]
 }
@@ -94,7 +94,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
           }
         }
         paths {
-          path = "/oauth"
+          path = "/oauth2"
           backend {
             service_name = module.server.name
             service_port = module.server.ports[0].port
@@ -105,13 +105,6 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
           backend {
             service_name = module.server.name
             service_port = module.server.ports[0].port
-          }
-        }
-        paths {
-          path = "/static"
-          backend {
-            service_name = module.editor.name
-            service_port = module.editor.ports[0].port
           }
         }
         paths {

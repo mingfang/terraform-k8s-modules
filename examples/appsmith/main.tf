@@ -30,18 +30,47 @@ module "server" {
   source    = "../../modules/appsmith/server"
   name      = "server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  image     = "registry.rebelsoft.com/appsmith-server:latest"
 
   APPSMITH_REDIS_URL           = "redis://${module.redis.name}:${module.redis.ports[0].port}"
   APPSMITH_MONGODB_URI         = "mongodb://mongodb:mongodb@${module.mongodb.name}/appsmith?retryWrites=true&authSource=admin"
   APPSMITH_ENCRYPTION_PASSWORD = "appsmith"
   APPSMITH_ENCRYPTION_SALT     = "appsmith"
+
+  // hack to integrate Appsmith with Keycloak
+  env = [
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-ID"
+      value = "appsmith"
+    },
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-SECRET"
+      value = "10858fa0-11a5-41a3-862e-d100fb6f6387"
+    },
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_AUTHORIZATION-GRANT-TYPE"
+      value = "authorization_code"
+    },
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI"
+      value = "{baseUrl}/login/oauth2/code/{registrationId}"
+    },
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_GOOGLE_USER-NAME-ATTRIBUTE"
+      value = "email"
+    },
+    {
+      name  = "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_GOOGLE_ISSUER-URI"
+      value = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft"
+    },
+  ]
 }
 
 module "editor" {
   source    = "../../modules/appsmith/editor"
   name      = "editor"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+  // hack to enable logging in using the server config above
+  APPSMITH_OAUTH2_GOOGLE_CLIENT_ID = "hack"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {

@@ -78,6 +78,12 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
       "nginx.ingress.kubernetes.io/server-alias" = "appsmith-example.*"
+      // auto login using oauth
+      "nginx.ingress.kubernetes.io/server-snippet" = <<-EOF
+        location ~ /user/login {
+          return 301 /oauth2/authorization/google;
+        }
+        EOF
     }
     name      = module.editor.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

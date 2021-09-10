@@ -76,11 +76,15 @@ module "editor" {
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "appsmith-example.*"
+      "kubernetes.io/ingress.class"                    = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"       = "appsmith-example.*"
+      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
       // auto login using oauth
       "nginx.ingress.kubernetes.io/server-snippet" = <<-EOF
-        location ~ /user/login {
+        location = / {
+          return 301 /oauth2/authorization/google;
+        }
+        location /user/login {
           return 301 /oauth2/authorization/google;
         }
         EOF

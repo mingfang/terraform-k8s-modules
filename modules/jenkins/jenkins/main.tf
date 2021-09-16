@@ -44,7 +44,6 @@ locals {
             name  = "JAVA_OPTS"
             value = <<-EOF
             -Xmx$(REQUESTS_MEMORY)m
-            -XshowSettings:vm
             -Dhudson.slaves.NodeProvisioner.initialDelay=0
             -Dhudson.slaves.NodeProvisioner.MARGIN=50
             -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85

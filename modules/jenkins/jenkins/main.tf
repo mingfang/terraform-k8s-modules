@@ -67,7 +67,7 @@ locals {
         }
 
         liveness_probe = {
-          initial_delay_seconds = 30
+          initial_delay_seconds = 120
           period_seconds        = 10
           failure_threshold     = 3
 

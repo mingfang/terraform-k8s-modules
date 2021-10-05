@@ -75,9 +75,8 @@ module "intellij" {
 
       volume_mounts = [
         {
-          name          = "data"
-          mount_path    = "/var/lib/docker"
-          sub_path_expr = ".docker/$(POD_NAME)/var/lib/docker"
+          name       = "data"
+          mount_path = "/home/projector-user"
         },
       ]
     }
@@ -86,13 +85,23 @@ module "intellij" {
   pvc = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
 }
 
-// IntelliJ URL https://<namespace>.<your domain>
+// access IntelliJ using https://<namespace>.<your domain>
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
       "nginx.ingress.kubernetes.io/server-alias"       = "${var.namespace}.*"
       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/enable-access-log"  = "false"
+
+      /*
+      "nginx.ingress.kubernetes.io/auth-url"       = "https://oauth.rebelsoft.com/oauth2/auth"
+      "nginx.ingress.kubernetes.io/auth-signin"    = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
+      "nginx.ingress.kubernetes.io/auth-cache-key" = "$cookie__oauth2_proxy"
+      "nginx.ingress.kubernetes.io/auth-snippet"   = <<-EOF
+        access_log off;
+      EOF
+*/
     }
     name      = module.intellij.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
@@ -119,12 +128,32 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "proxy" {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/proxy-body-size"    = "10240m"
 
+      /*
+      "nginx.ingress.kubernetes.io/auth-url"       = "https://oauth.rebelsoft.com/oauth2/auth"
+      "nginx.ingress.kubernetes.io/auth-signin"    = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
+      "nginx.ingress.kubernetes.io/auth-cache-key" = "$cookie__oauth2_proxy"
+*/
       "nginx.ingress.kubernetes.io/server-snippet" = <<-EOF
         server_name ~^${var.namespace}-(?<port>[0-9]+)\..*;
         location ~ / {
           resolver kube-dns.kube-system.svc.cluster.local valid=5s;
           proxy_pass http://${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local:$port;
+
+          proxy_redirect          off;
+          proxy_set_header        Host            $host;
+          proxy_set_header        X-Forwarded-Proto $scheme;
+          proxy_set_header        X-Real-IP       $remote_addr;
+          proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection $connection_upgrade;
+          proxy_cache_bypass $http_upgrade;
+
+          proxy_send_timeout                      3600s;
+          proxy_read_timeout                      3600s;
         }
         EOF
     }

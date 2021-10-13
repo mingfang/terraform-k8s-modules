@@ -16,17 +16,15 @@ module "redis" {
   source    = "../../modules/redis"
   name      = "redis"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  replicas = 1
 }
 
 module "mariadb" {
-  source        = "../../modules/mysql"
-  name          = "mariadb"
-  namespace     = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/mysql"
+  name      = "mariadb"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
   storage_class = "cephfs"
   storage       = "1Gi"
-  replicas      = 1
 
   image = "appwrite/mariadb:1.2.0"
   args = [

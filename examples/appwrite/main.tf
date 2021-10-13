@@ -4,6 +4,14 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
+locals {
+  _APP_ENV         = "development"
+  _APP_USAGE_STATS = "enabled"
+  _APP_DB_SCHEMA   = "appwrite"
+  _APP_DB_USER     = "appwrite"
+  _APP_DB_PASS     = "appwrite"
+}
+
 module "redis" {
   source    = "../../modules/redis"
   name      = "redis"
@@ -25,10 +33,10 @@ module "mariadb" {
     "--innodb-flush-method=fsync",
   ]
 
-  MYSQL_USER          = "appwrite"
-  MYSQL_PASSWORD      = "appwrite"
-  MYSQL_ROOT_PASSWORD = "appwrite"
-  MYSQL_DATABASE      = "appwrite"
+  MYSQL_USER          = local._APP_DB_USER
+  MYSQL_PASSWORD      = local._APP_DB_PASS
+  MYSQL_ROOT_PASSWORD = local._APP_DB_PASS
+  MYSQL_DATABASE      = local._APP_DB_SCHEMA
 }
 
 # volumes
@@ -66,15 +74,15 @@ module "appwrite" {
   pvc_uploads   = k8s_core_v1_persistent_volume_claim.uploads.metadata[0].name
   pvc_functions = k8s_core_v1_persistent_volume_claim.functions.metadata[0].name
 
-  _APP_ENV           = "development"
-  _APP_USAGE_STATS   = "enabled"
+  _APP_ENV           = local._APP_ENV
+  _APP_USAGE_STATS   = local._APP_USAGE_STATS
   _APP_REDIS_HOST    = module.redis.name
   _APP_REDIS_PORT    = module.redis.ports[0].port
   _APP_DB_HOST       = module.mariadb.name
   _APP_DB_PORT       = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA     = "appwrite"
-  _APP_DB_USER       = "appwrite"
-  _APP_DB_PASS       = "appwrite"
+  _APP_DB_SCHEMA     = local._APP_DB_SCHEMA
+  _APP_DB_USER       = local._APP_DB_USER
+  _APP_DB_PASS       = local._APP_DB_PASS
   _APP_INFLUXDB_HOST = module.influxdb.name
   _APP_INFLUXDB_PORT = module.influxdb.ports[0].port
 }
@@ -84,15 +92,15 @@ module "realtime" {
   name      = "realtime"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV         = "development"
-  _APP_USAGE_STATS = "enabled"
+  _APP_ENV         = local._APP_ENV
+  _APP_USAGE_STATS = local._APP_USAGE_STATS
   _APP_REDIS_HOST  = module.redis.name
   _APP_REDIS_PORT  = module.redis.ports[0].port
   _APP_DB_HOST     = module.mariadb.name
   _APP_DB_PORT     = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA   = "appwrite"
-  _APP_DB_USER     = "appwrite"
-  _APP_DB_PASS     = "appwrite"
+  _APP_DB_SCHEMA   = local._APP_DB_SCHEMA
+  _APP_DB_USER     = local._APP_DB_USER
+  _APP_DB_PASS     = local._APP_DB_PASS
 }
 
 module "worker-usage" {
@@ -100,7 +108,7 @@ module "worker-usage" {
   name      = "worker-usage"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV         = "development"
+  _APP_ENV         = local._APP_ENV
   _APP_REDIS_HOST  = module.redis.name
   _APP_REDIS_PORT  = module.redis.ports[0].port
   _APP_STATSD_HOST = module.telegraf.name
@@ -112,14 +120,14 @@ module "worker-audits" {
   name      = "worker-audits"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV        = "development"
+  _APP_ENV        = local._APP_ENV
   _APP_REDIS_HOST = module.redis.name
   _APP_REDIS_PORT = module.redis.ports[0].port
   _APP_DB_HOST    = module.mariadb.name
   _APP_DB_PORT    = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA  = "appwrite"
-  _APP_DB_USER    = "appwrite"
-  _APP_DB_PASS    = "appwrite"
+  _APP_DB_SCHEMA  = local._APP_DB_SCHEMA
+  _APP_DB_USER    = local._APP_DB_USER
+  _APP_DB_PASS    = local._APP_DB_PASS
 }
 
 module "worker-webhook" {
@@ -127,7 +135,7 @@ module "worker-webhook" {
   name      = "webhook"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV        = "development"
+  _APP_ENV        = local._APP_ENV
   _APP_REDIS_HOST = module.redis.name
   _APP_REDIS_PORT = module.redis.ports[0].port
 }
@@ -137,14 +145,14 @@ module "worker-tasks" {
   name      = "worker-tasks"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV        = "development"
+  _APP_ENV        = local._APP_ENV
   _APP_REDIS_HOST = module.redis.name
   _APP_REDIS_PORT = module.redis.ports[0].port
   _APP_DB_HOST    = module.mariadb.name
   _APP_DB_PORT    = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA  = "appwrite"
-  _APP_DB_USER    = "appwrite"
-  _APP_DB_PASS    = "appwrite"
+  _APP_DB_SCHEMA  = local._APP_DB_SCHEMA
+  _APP_DB_USER    = local._APP_DB_USER
+  _APP_DB_PASS    = local._APP_DB_PASS
 }
 
 module "worker-deletes" {
@@ -154,14 +162,14 @@ module "worker-deletes" {
 
   pvc_uploads = k8s_core_v1_persistent_volume_claim.uploads.metadata[0].name
 
-  _APP_ENV        = "development"
+  _APP_ENV        = local._APP_ENV
   _APP_REDIS_HOST = module.redis.name
   _APP_REDIS_PORT = module.redis.ports[0].port
   _APP_DB_HOST    = module.mariadb.name
   _APP_DB_PORT    = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA  = "appwrite"
-  _APP_DB_USER    = "appwrite"
-  _APP_DB_PASS    = "appwrite"
+  _APP_DB_SCHEMA  = local._APP_DB_SCHEMA
+  _APP_DB_USER    = local._APP_DB_USER
+  _APP_DB_PASS    = local._APP_DB_PASS
 }
 
 module "worker-functions" {
@@ -171,15 +179,15 @@ module "worker-functions" {
 
   pvc_functions = k8s_core_v1_persistent_volume_claim.functions.metadata[0].name
 
-  _APP_ENV         = "development"
-  _APP_USAGE_STATS = "enabled"
+  _APP_ENV         = local._APP_ENV
+  _APP_USAGE_STATS = local._APP_USAGE_STATS
   _APP_REDIS_HOST  = module.redis.name
   _APP_REDIS_PORT  = module.redis.ports[0].port
   _APP_DB_HOST     = module.mariadb.name
   _APP_DB_PORT     = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA   = "appwrite"
-  _APP_DB_USER     = "appwrite"
-  _APP_DB_PASS     = "appwrite"
+  _APP_DB_SCHEMA   = local._APP_DB_SCHEMA
+  _APP_DB_USER     = local._APP_DB_USER
+  _APP_DB_PASS     = local._APP_DB_PASS
 }
 
 module "schedule" {
@@ -187,7 +195,7 @@ module "schedule" {
   name      = "schedule"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV        = "development"
+  _APP_ENV        = local._APP_ENV
   _APP_REDIS_HOST = module.redis.name
   _APP_REDIS_PORT = module.redis.ports[0].port
 }
@@ -197,7 +205,7 @@ module "maintenance" {
   name      = "maintenance"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  _APP_ENV        = "development"
+  _APP_ENV        = local._APP_ENV
   _APP_REDIS_HOST = module.redis.name
   _APP_REDIS_PORT = module.redis.ports[0].port
 }

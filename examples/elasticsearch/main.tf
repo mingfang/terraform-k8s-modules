@@ -17,8 +17,9 @@ module "elasticsearch" {
 resource "k8s_networking_k8s_io_v1beta1_ingress" "elasticsearch" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.${var.namespace}.*"
+      "kubernetes.io/ingress.class"                    = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"       = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
     }
     name      = module.elasticsearch.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

@@ -53,7 +53,7 @@ module "intellij" {
   additional_containers = [
     {
       name  = "dind"
-      image = "docker:19-dind"
+      image = "docker:20.10.9-dind"
       args  = ["--insecure-registry=0.0.0.0/0"]
       env = [
         {

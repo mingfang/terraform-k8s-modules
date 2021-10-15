@@ -22,6 +22,3 @@ terraform {
 ```
 terraform state replace-provider 'registry.terraform.io/-/k8s' 'mingfang/k8s'
 ```
-
-## Open In LegionX
-https://legionx.com/https://github.com/mingfang/terraform-k8s-modules

@@ -18,7 +18,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "splitgraph/engine:0.2.15-postgis"
+  default = "splitgraph/engine:0.2.17-postgis"
 }
 
 variable "env" {

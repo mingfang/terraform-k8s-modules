@@ -34,3 +34,12 @@ variable "additional_containers" {
 variable "pvc" {
   default = null
 }
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
+}

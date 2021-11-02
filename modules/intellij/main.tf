@@ -75,6 +75,8 @@ locals {
           }
         }
 
+        resources = var.resources
+
         volume_mounts = var.pvc != null ? [
           {
             name       = "data"

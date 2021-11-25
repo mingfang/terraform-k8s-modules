@@ -90,6 +90,13 @@ module "config-rbac-assignments" {
     roles:
       - system_admin
     EOF
+
+    "stanley.yaml" = <<-EOF
+    ---
+    username: stanley
+    roles:
+      - admin
+    EOF
   }
 }
 
@@ -376,3 +383,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "st2web" {
     }
   }
 }
+
+# job to install core packs and apply rbac changes
+module "init-job" {
+  source    = "../../modules/stackstorm/init-job"
+  name      = "init-job"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = {
+    "config-checksum"      = module.config.checksum
+    "config-rbac-checksum" = module.config-rbac-assignments.checksum
+  }
+
+  config_map                        = module.config.name
+  config_map_rbac_assignments       = module.config-rbac-assignments.name
+  stackstorm_packs_configs_pvc_name = k8s_core_v1_persistent_volume_claim.stackstorm-packs-configs.metadata[0].name
+  stackstorm_packs_pvc_name         = k8s_core_v1_persistent_volume_claim.stackstorm-packs.metadata[0].name
+}
+

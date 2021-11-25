@@ -102,16 +102,18 @@ locals {
 
     volumes = [
       {
+        name = "config"
+
         config_map = {
           name = var.config_map
         }
-        name = "config"
       },
       {
+        name = "config-rbac-assignments"
+
         config_map = {
           name = var.config_map_rbac_assignments
         }
-        name = "config-rbac-assignments"
       },
       {
         name = "stackstorm-keys"
@@ -121,6 +123,7 @@ locals {
       },
       {
         name = "stackstorm-packs-configs"
+
         persistent_volume_claim = {
           claim_name = var.stackstorm_packs_configs_pvc_name
         }

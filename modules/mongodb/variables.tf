@@ -39,8 +39,14 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable "MONGO_INITDB_ROOT_USERNAME" {}
+variable "MONGO_INITDB_ROOT_USERNAME" {
+  default = ""
+}
 
-variable "MONGO_INITDB_ROOT_PASSWORD" {}
+variable "MONGO_INITDB_ROOT_PASSWORD" {
+  default = ""
+}
 
-variable "MONGO_INITDB_DATABASE" {}
+variable "MONGO_INITDB_DATABASE" {
+  default = ""
+}

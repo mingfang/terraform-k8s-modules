@@ -1,5 +1,5 @@
 
-# Module `archetypes/daemonset`
+# Module `archetypes/job`
 
 Provider Requirements:
 * **k8s (`mingfang/k8s`):** (any version)
@@ -7,10 +7,6 @@ Provider Requirements:
 ## Input Variables
 * `parameters` (default `null`)
 
-## Output Values
-* `daemonset`
-* `name`
-
 ## Managed Resources
-* `k8s_apps_v1_daemon_set.this` from `k8s`
+* `k8s_batch_v1_job.this` from `k8s`
 

@@ -1,1 +1,20 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/archetypes/statefulset-service/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `archetypes/statefulset-service`
+
+Provider Requirements:
+* **k8s (`mingfang/k8s`):** (any version)
+
+## Input Variables
+* `parameters` (default `null`)
+* `podAnnotations` (default `{}`)
+
+## Output Values
+* `labels`
+* `name`
+* `service`
+* `statefulset`
+
+## Managed Resources
+* `k8s_apps_v1_stateful_set.this` from `k8s`
+* `k8s_core_v1_service.this` from `k8s`
+

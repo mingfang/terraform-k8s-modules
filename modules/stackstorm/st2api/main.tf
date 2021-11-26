@@ -116,7 +116,15 @@ locals {
         }
       },
       {
+        name = "config-chatbot-aliases"
+
+        config_map = {
+          name = var.config_map_chatbot_aliases
+        }
+      },
+      {
         name = "stackstorm-keys"
+
         persistent_volume_claim = {
           claim_name = var.stackstorm_keys_pvc_name
         }

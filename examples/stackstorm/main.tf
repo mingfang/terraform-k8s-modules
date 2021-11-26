@@ -100,6 +100,23 @@ module "config-rbac-assignments" {
   }
 }
 
+module "config-chatbot-aliases" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "config-chatbot-aliases"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  from-map = {
+    "remote.yaml" = <<-EOF
+    ---
+    name: "remote_shell_cmd"
+    action_ref: "core.remote"
+    description: "Execute a command on a remote host via SSH."
+    formats:
+    - "run {{cmd}} on {{hosts}}"
+    EOF
+  }
+}
+
 # shared persistent volumes
 
 resource "k8s_core_v1_persistent_volume_claim" "stackstorm-packs-configs" {
@@ -172,6 +189,7 @@ module "st2api" {
 
   config_map                        = module.config.name
   config_map_rbac_assignments       = module.config-rbac-assignments.name
+  config_map_chatbot_aliases        = module.config-chatbot-aliases.name
   stackstorm_keys_pvc_name          = k8s_core_v1_persistent_volume_claim.stackstorm-keys.metadata[0].name
   stackstorm_packs_configs_pvc_name = k8s_core_v1_persistent_volume_claim.stackstorm-packs-configs.metadata[0].name
   stackstorm_packs_pvc_name         = k8s_core_v1_persistent_volume_claim.stackstorm-packs.metadata[0].name
@@ -259,6 +277,7 @@ module "st2actionrunner" {
       name  = "dind"
       image = "docker:20.10.9-dind"
       args  = ["--insecure-registry=0.0.0.0/0"]
+
       env = [
         {
           name = "POD_NAME"
@@ -396,6 +415,7 @@ module "init-job" {
 
   config_map                        = module.config.name
   config_map_rbac_assignments       = module.config-rbac-assignments.name
+  config_map_chatbot_aliases        = module.config-chatbot-aliases.name
   stackstorm_packs_configs_pvc_name = k8s_core_v1_persistent_volume_claim.stackstorm-packs-configs.metadata[0].name
   stackstorm_packs_pvc_name         = k8s_core_v1_persistent_volume_claim.stackstorm-packs.metadata[0].name
 }

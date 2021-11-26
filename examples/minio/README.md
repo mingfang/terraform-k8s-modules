@@ -1,1 +1,26 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/examples/minio/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `minio`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Input Variables
+* `minio_access_key` (default `"IUWU60H2527LP7DOYJVP"`)
+* `minio_secret_key` (default `"bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"`)
+* `name` (default `"minio"`)
+* `namespace` (default `"minio-example"`)
+* `replicas` (default `4`)
+
+## Output Values
+* `minio_access_key`
+* `minio_secret_key`
+
+## Managed Resources
+* `k8s_core_v1_namespace.this` from `k8s`
+* `k8s_networking_k8s_io_v1beta1_ingress.this` from `k8s`
+
+## Child Modules
+* `minio` from [../../modules/minio](../../modules/minio)
+* `minio-storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
+* `nfs-server` from [../../modules/nfs-server-empty-dir](../../modules/nfs-server-empty-dir)
+

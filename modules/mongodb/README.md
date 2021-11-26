@@ -1,1 +1,31 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/mongodb/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `mongodb`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Input Variables
+* `MONGO_INITDB_DATABASE` (default `""`)
+* `MONGO_INITDB_ROOT_PASSWORD` (default `""`)
+* `MONGO_INITDB_ROOT_USERNAME` (default `""`)
+* `annotations` (default `{}`)
+* `env` (default `[]`)
+* `image` (default `"mongo"`)
+* `name` (required)
+* `namespace` (required)
+* `overrides` (default `{}`)
+* `ports` (default `[{"name":"tcp","port":27017}]`)
+* `replicas` (default `1`)
+* `storage` (required)
+* `storage_class` (required)
+* `volume_claim_template_name` (default `"pvc"`)
+
+## Output Values
+* `name`
+* `ports`
+* `service`
+* `statefulset`
+
+## Child Modules
+* `statefulset-service` from [../../archetypes/statefulset-service](../../archetypes/statefulset-service)
+

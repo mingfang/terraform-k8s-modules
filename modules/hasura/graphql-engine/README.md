@@ -1,1 +1,27 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/hasura/graphql-engine/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `hasura/graphql-engine`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Input Variables
+* `HASURA_GRAPHQL_DATABASE_URL` (required)
+* `HASURA_GRAPHQL_ENABLE_CONSOLE` (default `"false"`)
+* `annotations` (default `{}`)
+* `env` (default `[]`)
+* `image` (default `"hasura/graphql-engine:v1.3.0"`)
+* `name` (required)
+* `namespace` (required)
+* `overrides` (default `{}`)
+* `ports` (default `[{"name":"http","port":8080}]`)
+* `replicas` (default `1`)
+
+## Output Values
+* `deployment`
+* `name`
+* `ports`
+* `service`
+
+## Child Modules
+* `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)
+

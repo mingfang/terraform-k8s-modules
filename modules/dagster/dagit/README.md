@@ -1,1 +1,27 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/dagster/dagit/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `dagster/dagit`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Input Variables
+* `annotations` (default `{}`)
+* `config_map_dagster` (required)
+* `config_map_workspace` (required)
+* `env` (default `[]`)
+* `image` (default `"docker.io/dagster/dagster-celery-k8s:latest"`)
+* `name` (required)
+* `namespace` (required)
+* `overrides` (default `{}`)
+* `ports` (default `[{"name":"http","port":80}]`)
+* `replicas` (default `1`)
+
+## Output Values
+* `deployment`
+* `name`
+* `ports`
+* `service`
+
+## Child Modules
+* `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)
+

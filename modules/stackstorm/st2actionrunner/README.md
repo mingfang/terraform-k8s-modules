@@ -1,6 +1,9 @@
 
 # Module `stackstorm/st2actionrunner`
 
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
 ## Input Variables
 * `additional_containers` (default `[]`)
 * `annotations` (default `{}`)

@@ -1,8 +1,14 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/examples/guestbook/diagram.svg?sanitize=true)<img src="diagram.svg"/>
-[Guessbook Example](https://github.com/kubernetes/examples/tree/master/guestbook)
 
-This was created using the Extraction tool like this
-```
-tfextract -url https://raw.githubusercontent.com/kubernetes/examples/master/guestbook/all-in-one/guestbook-all-in-one.yaml -dir example/guestbook
-```
+# Module `guestbook`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Managed Resources
+* `k8s_apps_v1_deployment.frontend` from `k8s`
+* `k8s_apps_v1_deployment.redis-master` from `k8s`
+* `k8s_apps_v1_deployment.redis-slave` from `k8s`
+* `k8s_core_v1_service.frontend` from `k8s`
+* `k8s_core_v1_service.redis-master` from `k8s`
+* `k8s_core_v1_service.redis-slave` from `k8s`
 

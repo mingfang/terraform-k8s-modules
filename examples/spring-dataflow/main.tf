@@ -96,7 +96,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dataflow" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "dataflow-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.dataflow-server.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

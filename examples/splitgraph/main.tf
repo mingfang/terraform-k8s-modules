@@ -83,6 +83,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
 }
 
 // metabase
+/*
 module "metabase" {
   source    = "../../modules/metabase"
   name      = "metabase"
@@ -140,6 +141,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "metabase" {
     }
   }
 }
+*/
 
 // minio
 module "minio" {

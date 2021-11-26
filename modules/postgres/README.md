@@ -1,6 +1,9 @@
 
 # Module `postgres`
 
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
 ## Input Variables
 * `POSTGRES_DB` (required)
 * `POSTGRES_PASSWORD` (required)

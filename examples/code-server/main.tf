@@ -80,7 +80,7 @@ module "code-server" {
   pvc = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "code-server" {
+resource "k8s_networking_k8s_io_v1_ingress" "code-server" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -95,11 +95,15 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "code-server" {
       host = "${module.code-server.name}-${var.namespace}"
       http {
         paths {
-          backend {
-            service_name = module.code-server.name
-            service_port = module.code-server.ports[0].port
-          }
           path = "/"
+          backend {
+            service {
+              name = module.code-server.name
+              port {
+                number = module.code-server.ports[0].port
+              }
+            }
+          }
         }
       }
     }

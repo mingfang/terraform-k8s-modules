@@ -30,6 +30,10 @@ locals {
             name  = "PYTHONUNBUFFERED"
             value = "0"
           },
+          {
+            name  = "SQLALCHEMY_ENABLE_POOL_PRE_PING"
+            value = "true"
+          },
         ], var.env)
       }
     ]

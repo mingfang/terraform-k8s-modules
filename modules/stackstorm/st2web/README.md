@@ -1,6 +1,9 @@
 
 # Module `stackstorm/st2web`
 
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
 ## Input Variables
 * `ST2_API_URL` (required)
 * `ST2_AUTH_URL` (required)

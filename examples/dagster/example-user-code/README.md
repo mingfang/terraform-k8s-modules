@@ -1,1 +1,25 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/examples/dagster/example-user-code/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `dagster/example-user-code`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Input Variables
+* `annotations` (default `{}`)
+* `env` (default `[]`)
+* `image` (default `"docker.io/dagster/user-code-example:latest"`)
+* `name` (required)
+* `namespace` (required)
+* `overrides` (default `{}`)
+* `ports` (default `[{"name":"http","port":3030}]`)
+* `replicas` (default `1`)
+
+## Output Values
+* `deployment`
+* `name`
+* `ports`
+* `service`
+
+## Child Modules
+* `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)
+

@@ -1,6 +1,9 @@
 
 # Module `matomo`
 
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
 ## Input Variables
 * `MATOMO_DATABASE_DBNAME` (default `null`)
 * `MATOMO_DATABASE_HOST` (required)

@@ -1,6 +1,9 @@
 
 # Module `stackstorm/st2sensorcontainer`
 
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
 ## Input Variables
 * `annotations` (default `{}`)
 * `config_map` (required)

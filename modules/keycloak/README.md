@@ -1,6 +1,9 @@
 
 # Module `keycloak`
 
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
 ## Input Variables
 * `DB_ADDR` (default `""`)
 * `DB_DATABASE` (default `""`)

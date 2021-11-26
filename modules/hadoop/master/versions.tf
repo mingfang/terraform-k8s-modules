@@ -1,4 +1,7 @@
-
 terraform {
-  required_version = ">= 0.12"
+  required_providers {
+    k8s = {
+      source = "mingfang/k8s"
+    }
+  }
 }

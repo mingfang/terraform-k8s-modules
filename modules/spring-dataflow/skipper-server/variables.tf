@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "springcloud/spring-cloud-skipper-server:2.7.0-SNAPSHOT"
+  default = "springcloud/spring-cloud-skipper-server:latest"
 }
 
 variable "env" {

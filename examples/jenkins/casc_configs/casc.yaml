@@ -1,0 +1,176 @@
+credentials:
+  system:
+    domainCredentials:
+jenkins:
+  agentProtocols:
+    - "JNLP4-connect"
+    - "Ping"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  clouds:
+    - kubernetes:
+        connectTimeout: 10
+        containerCap: 10
+        containerCapStr: "10"
+        jenkinsUrl: "http://jenkins:8080"
+        maxRequestsPerHost: 64
+        maxRequestsPerHostStr: "64"
+        name: "kubernetes"
+        namespace: "jenkins"
+        readTimeout: 20
+        templates:
+          - annotations:
+              - key: "sidecar.istio.io/inject"
+                value: "false"
+            containers:
+              - alwaysPullImage: true
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                command: "jenkins-slave"
+                image: "registry.rebelsoft.com/jenkins-slave:latest"
+                name: "jnlp"
+                resourceRequestCpu: "100m"
+                resourceRequestMemory: "256Mi"
+            id: "f23db2cb-408f-4cb8-af6b-0a3c1399f887"
+            label: "jenkins-slave"
+            name: "jenkins-slave"
+            nodeUsageMode: NORMAL
+            showRawYaml: false
+            volumes:
+              - hostPathVolume:
+                  hostPath: "/var/run/docker.sock"
+                  mountPath: "/var/run/docker.sock"
+              - hostPathVolume:
+                  hostPath: "jenkins_nodejs_npm_cache"
+                  mountPath: "/root/.npm"
+              - hostPathVolume:
+                  hostPath: "sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+              - hostPathVolume:
+                  hostPath: "bazel_cache"
+                  mountPath: "/root/.cache/bazel"
+            workspaceVolume:
+              persistentVolumeClaimWorkspaceVolume:
+                claimName: "jenkins"
+                readOnly: false
+            yamlMergeStrategy: "override"
+          - annotations:
+              - key: "sidecar.istio.io/inject"
+                value: "false"
+            containers:
+              - alwaysPullImage: true
+                args: "^${computer.jnlpmac} ^${computer.name}"
+                command: "jenkins-slave"
+                envVars:
+                  - envVar:
+                      key: "DOCKER_HOST"
+                      value: "tcp://localhost:2375"
+                image: "registry.rebelsoft.com/jenkins-slave:latest"
+                name: "jnlp"
+                resourceRequestCpu: "100m"
+                resourceRequestMemory: "256Mi"
+              - alwaysPullImage: true
+                args: "--insecure-registry=0.0.0.0/0"
+                envVars:
+                  - envVar:
+                      key: "DOCKER_TLS_CERTDIR"
+                image: "docker:dind"
+                name: "dind"
+                privileged: true
+                resourceRequestCpu: "100m"
+                resourceRequestMemory: "256Mi"
+            id: "7581f112-9a94-4986-b18b-f775494c66ea"
+            label: "jenkins-dind"
+            name: "jenkins-dind"
+            showRawYaml: false
+            volumes:
+              - hostPathVolume:
+                  hostPath: "jenkins_nodejs_npm_cache"
+                  mountPath: "/root/.npm"
+              - hostPathVolume:
+                  hostPath: "sonar_cache"
+                  mountPath: "/root/.sonar/cache"
+            workspaceVolume:
+              persistentVolumeClaimWorkspaceVolume:
+                claimName: "jenkins"
+                readOnly: false
+            yamlMergeStrategy: "override"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: true
+  disableRememberMe: false
+  disabledAdministrativeMonitors:
+    - "OldData"
+    - "jenkins.diagnostics.RootUrlNotSetMonitor"
+    - "jenkins.security.ResourceDomainRecommendation"
+    - "jenkins.security.s2m.MasterKillSwitchWarning"
+  labelAtoms:
+    - name: "jenkins-dind"
+    - name: "jenkins-slave"
+    - name: "master"
+  labelString: "master"
+  markupFormatter: "plainText"
+  mode: EXCLUSIVE
+  myViewsTabBar: "standard"
+  numExecutors: 4
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: false
+  scmCheckoutRetryCount: 2
+  securityRealm: "keycloak"
+  slaveAgentPort: 50000
+  systemMessage: |+
+    Jenkins configured automatically by Jenkins Configuration as Code plugin
+
+  updateCenter:
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins.io/update-center.json"
+  views:
+    - buildMonitor:
+        includeRegex: ".*"
+        name: "Overview"
+        recurse: true
+        title: "Overview"
+    - all:
+        name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  envInject:
+    enableLoadingFromMaster: false
+    enablePermissions: false
+    hideInjectedVars: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+  sSHD:
+    port: -1
+unclassified:
+  keycloakSecurityRealm:
+    keycloakJson: |-
+      {
+        "realm": "kkr",
+        "auth-server-url": "https://login.build.kkr.com/auth/",
+        "ssl-required": "external",
+        "resource": "jenkins-prod",
+        "public-client": true,
+        "confidential-port": 0,
+        "disable-trust-manager": true
+      }
+    keycloakRespectAccessTokenTimeout: true
+    keycloakValidate: false
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "https://jenkins.app.kkr.com/"
+tool:
+  git:
+    installations:
+      - home: "git"
+        name: "Default"

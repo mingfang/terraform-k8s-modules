@@ -9,3 +9,7 @@ variable "namespace" {
 variable "storage_class_name" {
   default = "cephfs"
 }
+
+variable "pagerduty_token" {
+  default = "u+FavsUZYehAQCaxUV_Q"
+}

@@ -1,5 +1,5 @@
 
-# Module `archetypes/deployment-service`
+# Module `deployment-service`
 
 Provider Requirements:
 * **k8s (`mingfang/k8s`):** (any version)

@@ -1,5 +1,5 @@
 
-# Module `archetypes/daemonset`
+# Module `daemonset`
 
 Provider Requirements:
 * **k8s (`mingfang/k8s`):** (any version)

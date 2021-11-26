@@ -1,5 +1,5 @@
 
-# Module `archetypes/job`
+# Module `job`
 
 Provider Requirements:
 * **k8s (`mingfang/k8s`):** (any version)

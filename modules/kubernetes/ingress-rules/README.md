@@ -1,1 +1,21 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/kubernetes/ingress-rules/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `kubernetes/ingress-rules`
+
+Provider Requirements:
+* **k8s:** (any version)
+
+## Input Variables
+* `annotations` (default `{}`)
+* `ingress_class` (default `null`)
+* `name` (required)
+* `namespace` (default `null`)
+* `overrides` (default `{}`)
+* `rules` (required)
+* `tls` (default `null`)
+
+## Output Values
+* `rules`
+
+## Managed Resources
+* `k8s_extensions_v1beta1_ingress.this` from `k8s`
+

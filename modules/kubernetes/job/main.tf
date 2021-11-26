@@ -1,19 +1,3 @@
-variable "name" {}
-
-variable "namespace" {}
-
-variable "command" {}
-
-variable image {}
-
-variable restart_policy {
-  default = "Never"
-}
-
-variable backoff_limit {
-  default = 4
-}
-
 resource "k8s_batch_v1_job" "this" {
   metadata {
     name      = var.name

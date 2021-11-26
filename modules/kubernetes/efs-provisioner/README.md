@@ -2,7 +2,7 @@
 # Module `kubernetes/efs-provisioner`
 
 Provider Requirements:
-* **k8s (`mingfang/k8s`):** (any version)
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
 * `AWS_REGION` (default `null`): set if using standard DNS name, e.g. *file-system-id*.efs.*aws-region*.amazonaws.com

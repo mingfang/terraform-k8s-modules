@@ -3,25 +3,26 @@ Documentation
 
 terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
 
-## Inputs
+Provider Requirements:
+* **k8s:** (any version)
+* **template:** (any version)
 
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| storm\_zookeeper\_servers |  | list | n/a | yes |
-| annotations |  | map | `{}` | no |
-| dns\_policy |  | string | `""` | no |
-| image |  | string | `"registry.rebelsoft.com/storm:latest"` | no |
-| name |  | string | `"storm-nimbus"` | no |
-| namespace |  | string | `""` | no |
-| node\_selector |  | map | `{}` | no |
-| ports | list of name,port pairs | list | `[ { "name": "tcp-thrift", "port": 6627 } ]` | no |
-| priority\_class\_name |  | string | `""` | no |
-| replicas |  | string | `"1"` | no |
-| restart\_policy |  | string | `""` | no |
-| scheduler\_name |  | string | `""` | no |
-| service\_type |  | string | `""` | no |
-| session\_affinity |  | string | `""` | no |
-| termination\_grace\_period\_seconds |  | string | `"30"` | no |
+## Input Variables
+* `annotations` (default `{}`)
+* `dns_policy` (default `""`)
+* `image` (default `"registry.rebelsoft.com/storm:latest"`)
+* `name` (default `"storm-nimbus"`)
+* `namespace` (default `""`)
+* `node_selector` (default `{}`)
+* `ports` (default `[{"name":"tcp-thrift","port":6627}]`)
+* `priority_class_name` (default `""`)
+* `replicas` (default `1`)
+* `restart_policy` (default `""`)
+* `scheduler_name` (default `""`)
+* `service_type` (default `""`)
+* `session_affinity` (default `""`)
+* `storm_zookeeper_servers` (required)
+* `termination_grace_period_seconds` (default `30`)
 
 ## Outputs
 

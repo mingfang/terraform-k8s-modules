@@ -2,7 +2,7 @@
 # Module `kubernetes/storage-cephfs`
 
 Provider Requirements:
-* **k8s (`mingfang/k8s`):** (any version)
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
 * `annotations` (default `{}`)

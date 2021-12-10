@@ -9,6 +9,7 @@ locals {
       {
         name  = "node-termination-handler"
         image = var.image
+
         env = concat([
           {
             name = "NODE_NAME"
@@ -91,6 +92,22 @@ locals {
             value = var.ENABLE_SCHEDULED_EVENT_DRAINING
           },
           {
+            name  = "ENABLE_REBALANCE_MONITORING"
+            value = var.ENABLE_REBALANCE_MONITORING
+          },
+          {
+            name  = "ENABLE_REBALANCE_DRAINING"
+            value = var.ENABLE_REBALANCE_DRAINING
+          },
+          {
+            name  = "CHECK_ASG_TAG_BEFORE_DRAINING"
+            value = var.CHECK_ASG_TAG_BEFORE_DRAINING
+          },
+          {
+            name  = "MANAGED_ASG_TAG"
+            value = var.MANAGED_ASG_TAG
+          },
+          {
             name  = "METADATA_TRIES"
             value = var.METADATA_TRIES
           },
@@ -107,12 +124,12 @@ locals {
             value = var.JSON_LOGGING
           },
           {
-            name  = "WEBHOOK_PROXY"
-            value = var.WEBHOOK_PROXY
+            name  = "LOG_LEVEL"
+            value = var.LOG_LEVEL
           },
           {
-            name  = "UPTIME_FROM_FILE"
-            value = var.UPTIME_FROM_FILE
+            name  = "WEBHOOK_PROXY"
+            value = var.WEBHOOK_PROXY
           },
           {
             name  = "ENABLE_PROMETHEUS_SERVER"
@@ -121,7 +138,23 @@ locals {
           {
             name  = "PROMETHEUS_SERVER_PORT"
             value = "9092"
-          }
+          },
+          {
+            name  = "ENABLE_PROBES_SERVER"
+            value = var.ENABLE_PROBES_SERVER
+          },
+          {
+            name  = "PROBES_SERVER_PORT"
+            value = var.PROBES_SERVER_PORT
+          },
+          {
+            name  = "EMIT_KUBERNETES_EVENTS"
+            value = var.EMIT_KUBERNETES_EVENTS
+          },
+          {
+            name  = "KUBERNETES_EVENTS_EXTRA_ANNOTATIONS"
+            value = var.KUBERNETES_EVENTS_EXTRA_ANNOTATIONS
+          },
         ], var.env)
 
         volume_mounts = [

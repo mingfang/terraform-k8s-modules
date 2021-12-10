@@ -1,0 +1,40 @@
+variable "name" {
+  default = "aws-cluster-autoscaler"
+}
+
+variable "namespace" {}
+
+variable "replicas" {
+  default = 1
+}
+
+variable "image" {
+  default = "k8s.gcr.io/autoscaling/cluster-autoscaler:v1.21.0"
+}
+
+variable "env" {
+  default = []
+}
+
+variable "annotations" {
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    limits = {
+      cpu    = "100m"
+      memory = "600Mi"
+    }
+    requests = {
+      cpu    = "100m"
+      memory = "600Mi"
+    }
+  }
+}
+
+variable "overrides" {
+  default = {}
+}
+
+variable "CLUSTER_NAME" {}

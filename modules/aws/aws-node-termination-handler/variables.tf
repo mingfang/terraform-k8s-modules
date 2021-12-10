@@ -1,5 +1,38 @@
+variable "name" {
+  default = "aws-node-termination-handler"
+}
+
 variable "namespace" {
   default = "kube-system"
+}
+
+variable "image" {
+  default = "public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.14.0"
+}
+
+variable "env" {
+  default = []
+}
+
+variable "annotations" {
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    limits = {
+      cpu    = "100m"
+      memory = "128Mi"
+    }
+    requests = {
+      cpu    = "50m"
+      memory = "64Mi"
+    }
+  }
+}
+
+variable "overrides" {
+  default = {}
 }
 
 variable "DELETE_LOCAL_DATA" {

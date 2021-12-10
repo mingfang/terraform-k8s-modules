@@ -10,6 +10,7 @@ locals {
       {
         name  = "autoscaler"
         image = var.image
+
         command = [
           "./cluster-autoscaler",
           "--v=4",
@@ -20,6 +21,7 @@ locals {
           "--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/$(CLUSTER_NAME)",
           "--namespace=$(NAMESPACE)"
         ]
+
         env = concat([
           {
             name  = "CLUSTER_NAME"
@@ -34,11 +36,20 @@ locals {
             }
           },
         ], var.env)
+
+        resources = var.resources
       }
     ]
 
+    node_selector = merge(
+      {
+        "kubernetes.io/arch" = "amd64"
+        "kubernetes.io/os"   = "linux"
+      },
+      var.node_selector
+    )
+
     priority_class_name  = "system-cluster-critical"
-    resources            = var.resources
     service_account_name = module.rbac.name
 
     security_context = {

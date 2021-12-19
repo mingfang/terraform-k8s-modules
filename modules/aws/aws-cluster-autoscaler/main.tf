@@ -19,7 +19,8 @@ locals {
           "--skip-nodes-with-local-storage=false",
           "--expander=least-waste",
           "--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/$(CLUSTER_NAME)",
-          "--namespace=$(NAMESPACE)"
+          "--namespace=$(NAMESPACE)",
+          "--cordon-node-before-terminating=true",
         ]
 
         env = concat([

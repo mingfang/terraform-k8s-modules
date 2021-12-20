@@ -7,6 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `CLUSTER_NAME` (required)
 * `annotations` (default `{}`)
+* `cordon-node-before-terminating` (default `true`)
 * `env` (default `[]`)
 * `image` (default `"k8s.gcr.io/autoscaling/cluster-autoscaler:v1.22.1"`)
 * `name` (default `"aws-cluster-autoscaler"`)

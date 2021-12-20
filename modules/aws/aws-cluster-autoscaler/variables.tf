@@ -43,3 +43,7 @@ variable "overrides" {
 }
 
 variable "CLUSTER_NAME" {}
+
+variable "cordon-node-before-terminating" {
+  default = true
+}

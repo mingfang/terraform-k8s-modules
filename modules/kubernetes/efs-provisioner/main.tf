@@ -59,6 +59,17 @@ locals {
       type = "Recreate"
     }
 
+    tolerations = [
+      {
+        effect = "NoSchedule"
+        key    = "CriticalAddonsOnly"
+      },
+      {
+        effect = "NoSchedule"
+        key    = "node.kubernetes.io/master"
+      }
+    ]
+
     volumes = [
       {
         name = "pv-volume"
@@ -72,6 +83,6 @@ locals {
 }
 
 module "deployment-service" {
-  source         = "../../../archetypes/deployment-service"
-  parameters     = merge(local.parameters, var.overrides)
+  source     = "../../../archetypes/deployment-service"
+  parameters = merge(local.parameters, var.overrides)
 }

@@ -20,7 +20,6 @@ Provider Requirements:
 ## Output Values
 * `deployment`
 * `name`
-* `service`
 
 ## Child Modules
 * `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)

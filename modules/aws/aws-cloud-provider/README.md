@@ -9,17 +9,16 @@ Provider Requirements:
 * `env` (default `[]`)
 * `image` (default `"us.gcr.io/k8s-artifacts-prod/provider-aws/cloud-controller-manager:v1.22.0-alpha.0"`)
 * `name` (default `"aws-cloud-provider"`)
-* `namespace` (required)
+* `namespace` (default `"kube-system"`)
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
-* `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"200m"}}`)
 
 ## Output Values
-* `deployment`
+* `daemonset`
 * `name`
 
 ## Child Modules
-* `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)
+* `daemonset` from [../../../archetypes/daemonset](../../../archetypes/daemonset)
 * `rbac` from [../../../modules/kubernetes/rbac](../../../modules/kubernetes/rbac)
 

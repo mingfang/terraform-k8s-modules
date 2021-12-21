@@ -2,10 +2,8 @@ variable "name" {
   default = "aws-cloud-provider"
 }
 
-variable "namespace" {}
-
-variable "replicas" {
-  default = 1
+variable "namespace" {
+  default = "kube-system"
 }
 
 variable "image" {

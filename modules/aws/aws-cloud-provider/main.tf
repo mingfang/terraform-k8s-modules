@@ -3,7 +3,6 @@ locals {
     name                 = var.name
     namespace            = var.namespace
     annotations          = var.annotations
-    replicas             = var.replicas
     enable_service_links = false
 
     containers = [
@@ -59,7 +58,7 @@ locals {
   }
 }
 
-module "deployment-service" {
-  source     = "../../../archetypes/deployment-service"
+module "daemonset" {
+  source     = "../../../archetypes/daemonset"
   parameters = merge(local.parameters, var.overrides)
 }

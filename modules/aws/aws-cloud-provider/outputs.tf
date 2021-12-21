@@ -2,6 +2,6 @@ output "name" {
   value = var.name
 }
 
-output "deployment" {
-  value = module.deployment-service.deployment
+output "daemonset" {
+  value = module.daemonset.daemonset
 }

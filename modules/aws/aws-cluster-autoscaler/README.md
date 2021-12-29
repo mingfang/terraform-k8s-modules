@@ -9,7 +9,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `cordon-node-before-terminating` (default `true`)
 * `env` (default `[]`)
-* `image` (default `"k8s.gcr.io/autoscaling/cluster-autoscaler:v1.22.1"`)
+* `image` (default `"k8s.gcr.io/autoscaling/cluster-autoscaler:v1.23.0"`)
 * `name` (default `"aws-cluster-autoscaler"`)
 * `namespace` (required)
 * `node_selector` (default `{}`)

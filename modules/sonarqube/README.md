@@ -10,7 +10,7 @@ Provider Requirements:
 * `SONAR_JDBC_USERNAME` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"sonarqube:8.4-community"`)
+* `image` (default `"sonarqube:9.2.4-community"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

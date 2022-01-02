@@ -1,5 +1,3 @@
-
-
 locals {
   parameters = {
     name                 = var.name
@@ -64,9 +62,9 @@ locals {
           "sh",
           "-cx",
           <<-EOF
-          chown 999:999 /opt/sonarqube/data
-          chown 999:999 /opt/sonarqube/extensions
-          chown 999:999 /opt/sonarqube/logs
+          chown 1000:1000 /opt/sonarqube/data
+          chown 1000:1000 /opt/sonarqube/extensions
+          chown 1000:1000 /opt/sonarqube/logs
           sysctl -w vm.max_map_count=262144
           EOF
         ]

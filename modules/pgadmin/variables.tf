@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "dpage/pgadmin4:5.6"
+  default = "dpage/pgadmin4:6.3"
 }
 
 variable "replicas" {

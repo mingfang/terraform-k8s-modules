@@ -9,7 +9,7 @@ Provider Requirements:
 * `PGADMIN_DEFAULT_PASSWORD` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"dpage/pgadmin4:5.6"`)
+* `image` (default `"dpage/pgadmin4:6.3"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

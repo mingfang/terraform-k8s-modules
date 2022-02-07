@@ -96,14 +96,28 @@ locals {
           "-cx",
           <<-EOF
           export ZEEBE_BROKER_CLUSTER_NODEID="$${HOSTNAME##*-}"
-          exec /usr/local/zeebe/bin/broker
+          exec /usr/local/bin/startup.sh
           EOF
         ]
 
         readiness_probe = {
           initial_delay_seconds = 10
           http_get = {
-            path = "/ready"
+            path = "/health"
+            port = 9600
+          }
+        }
+        liveness_probe = {
+          initial_delay_seconds = 10
+          http_get = {
+            path = "/actuator/health/liveness"
+            port = 9600
+          }
+        }
+        startup_probe = {
+          initial_delay_seconds = 10
+          http_get = {
+            path = "/actuator/health/startup"
             port = 9600
           }
         }

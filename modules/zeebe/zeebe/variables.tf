@@ -24,15 +24,11 @@ variable "ports" {
       name = "monitoring"
       port = 9600
     },
-    {
-      name = "hazelcast"
-      port = 5701
-    },
   ]
 }
 
 variable "image" {
-  default = "camunda/zeebe:0.23.2"
+  default = "camunda/zeebe:1.3.3"
 }
 
 variable "env" {

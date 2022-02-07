@@ -5,10 +5,10 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `CAMUNDA_OPERATE_ELASTICSEARCH_HOST` (required)
-* `CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST` (required)
-* `CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT` (required)
-* `image` (default `"camunda/operate:0.23.2"`)
+* `CAMUNDA_OPERATE_ELASTICSEARCH_URL` (required)
+* `CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL` (required)
+* `CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS` (required)
+* `image` (default `"camunda/operate:1.3.1"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

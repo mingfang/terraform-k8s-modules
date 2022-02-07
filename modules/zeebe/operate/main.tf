@@ -1,5 +1,3 @@
-
-
 locals {
   parameters = {
     name                 = var.name
@@ -24,16 +22,16 @@ locals {
             }
           },
           {
-            name  = "CAMUNDA_OPERATE_ELASTICSEARCH_HOST"
-            value = var.CAMUNDA_OPERATE_ELASTICSEARCH_HOST
+            name  = "CAMUNDA_OPERATE_ELASTICSEARCH_URL"
+            value = var.CAMUNDA_OPERATE_ELASTICSEARCH_URL
           },
           {
-            name  = "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST"
-            value = var.CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST
+            name  = "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL"
+            value = var.CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL
           },
           {
-            name  = "CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT"
-            value = var.CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT
+            name  = "CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS"
+            value = var.CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS
           },
         ]
       }

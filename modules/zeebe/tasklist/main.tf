@@ -9,7 +9,7 @@ locals {
 
     containers = [
       {
-        name  = "worker"
+        name  = "tasklist"
         image = var.image
 
         env = concat([
@@ -23,20 +23,16 @@ locals {
             }
           },
           {
-            name  = "ZEEBE_CLIENT_BROKER_CONTACTPOINT"
-            value = var.ZEEBE_CLIENT_BROKER_CONTACTPOINT
+            name  = "CAMUNDA_TASKLIST_ELASTICSEARCH_URL"
+            value = var.CAMUNDA_TASKLIST_ELASTICSEARCH_URL
           },
           {
-            name  = "ZEEBE_CLIENT_SECURITY_PLAINTEXT"
-            value = var.ZEEBE_CLIENT_SECURITY_PLAINTEXT
+            name  = "CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL"
+            value = var.CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL
           },
           {
-            name  = "ZEEBE_WORKER_DEFAULTNAME"
-            value = var.ZEEBE_WORKER_DEFAULTNAME
-          },
-          {
-            name  = "ZEEBE_WORKER_DEFAULTTYPE"
-            value = var.ZEEBE_WORKER_DEFAULTTYPE
+            name  = "CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS"
+            value = var.CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS
           },
         ], var.env)
       }

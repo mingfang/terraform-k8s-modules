@@ -4,29 +4,37 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
+# Zeebe
+
 module "zeebe" {
   source    = "../../modules/zeebe/zeebe"
   name      = "zeebe"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  image     = "registry.rebelsoft.com/zeebe:latest"
 
-  replicas      = 1
+  replicas      = 3
   storage       = "1Gi"
   storage_class = var.storage_class_name
 
-  ZEEBE_LOG_LEVEL = "debug"
+  ZEEBE_BROKER_CLUSTER_REPLICATIONFACTOR = 2
+  ZEEBE_LOG_LEVEL                        = "debug"
 
   env = [
     {
-      name  = "ZEEBE_BROKER_EXPORTERS_HAZELCAST_CLASSNAME"
-      value = "io.zeebe.hazelcast.exporter.HazelcastExporter"
+      name  = "ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME"
+      value = "io.camunda.zeebe.exporter.ElasticsearchExporter"
     },
     {
-      name  = "ZEEBE_BROKER_EXPORTERS_HAZELCAST_JARPATH"
-      value = "/usr/local/zeebe/exporters/zeebe-hazelcast-exporter.jar"
+      name  = "ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL"
+      value = "http://${module.elasticsearch.name}:${module.elasticsearch.ports[0].port}"
     },
+    {
+      name  = "ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE"
+      value = 1
+    }
   ]
 }
+
+# Workers
 
 module "http-worker" {
   source    = "../../modules/zeebe/http-worker"
@@ -37,33 +45,62 @@ module "http-worker" {
   ZEEBE_CLIENT_BROKER_CONTACTPOINT = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
 }
 
-module "simple-monitor" {
-  source    = "../../modules/zeebe/simple-monitor"
-  name      = "simple-monitor"
+module "script-worker" {
+  source    = "../../modules/zeebe/script-worker"
+  name      = "script-worker"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
 
-  ZEEBE_CLIENT_BROKER_CONTACTPOINT         = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
-  ZEEBE_CLIENT_WORKER_HAZELCAST_CONNECTION = "${module.zeebe.name}:5701"
+  ZEEBE_CLIENT_BROKER_CONTACTPOINT = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "simple-monitor" {
+# Exporter
+
+module "elasticsearch" {
+  source    = "../../modules/elasticsearch"
+  name      = "elasticsearch"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 2
+
+  env = [
+    #    {
+    #      name  = "discovery.type"
+    #      value = "single-node"
+    #    },
+  ]
+  storage       = "1Gi"
+  storage_class = var.storage_class_name
+}
+
+# Tasklist
+
+module "tasklist" {
+  source    = "../../modules/zeebe/tasklist"
+  name      = "tasklist"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  CAMUNDA_TASKLIST_ELASTICSEARCH_URL      = "http://${module.elasticsearch.name}:${module.elasticsearch.ports[0].port}"
+  CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL = "http://${module.elasticsearch.name}:${module.elasticsearch.ports[0].port}"
+  CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS   = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "tasklist" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "zeebe-monitor.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "tasklist-${var.namespace}.*"
     }
-    name      = "simple-monitor"
+    name      = "tasklist-${var.namespace}"
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${module.simple-monitor.name}-${var.namespace}"
+      host = "tasklist-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.simple-monitor.name
-            service_port = module.simple-monitor.ports[0].port
+            service_name = module.tasklist.name
+            service_port = module.tasklist.ports[0].port
           }
           path = "/"
         }
@@ -72,54 +109,30 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "simple-monitor" {
   }
 }
 
-/*
-module "elasticsearch" {
-  source    = "../../modules/elasticsearch"
-  name      = "elasticsearch"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  image     = "docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.10"
-  replicas      = 1
-
-  env = [
-    {
-      name = "discovery.type"
-      value = "single-node"
-    },
-    {
-      name = "discovery.seed_hosts"
-      value = ""
-    },
-    {
-      name = "cluster.initial_master_nodes"
-      value = ""
-    },
-  ]
-  storage       = "1Gi"
-  storage_class = var.storage_class_name
-}
+# Operate
 
 module "operate" {
   source    = "../../modules/zeebe/operate"
   name      = "operate"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  CAMUNDA_OPERATE_ELASTICSEARCH_HOST       = module.elasticsearch.name
-  CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST  = module.elasticsearch.name
-  CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
+  CAMUNDA_OPERATE_ELASTICSEARCH_URL      = "http://${module.elasticsearch.name}:${module.elasticsearch.ports[0].port}"
+  CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL = "http://${module.elasticsearch.name}:${module.elasticsearch.ports[0].port}"
+  CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS   = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "operate" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "zeebe-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "operate-${var.namespace}.*"
     }
-    name      = var.name
+    name      = "operate-${var.namespace}"
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${var.name}-${var.namespace}"
+      host = "operate-${var.namespace}"
       http {
         paths {
           backend {
@@ -132,7 +145,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     }
   }
 }
-*/
+
 
 
 

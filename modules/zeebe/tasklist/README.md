@@ -1,17 +1,16 @@
 
-# Module `zeebe/http-worker`
+# Module `zeebe/tasklist`
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `ZEEBE_CLIENT_BROKER_CONTACTPOINT` (default `"127.0.0.1:26500"`)
-* `ZEEBE_CLIENT_SECURITY_PLAINTEXT` (default `true`)
-* `ZEEBE_WORKER_DEFAULTNAME` (default `"http-worker"`)
-* `ZEEBE_WORKER_DEFAULTTYPE` (default `"http"`)
+* `CAMUNDA_TASKLIST_ELASTICSEARCH_URL` (required)
+* `CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL` (required)
+* `CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"ghcr.io/camunda-community-hub/zeebe-http-worker:1.2.0"`)
+* `image` (default `"camunda/tasklist:1.3.1"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

@@ -24,7 +24,7 @@ variable "env" {
 }
 
 variable "image" {
-  default = "ghcr.io/camunda-community-hub/zeebe-http-worker:1.2.0"
+  default = "ghcr.io/camunda-community-hub/zeebe-script-worker:1.0.0"
 }
 
 variable "overrides" {
@@ -38,8 +38,8 @@ variable "ZEEBE_CLIENT_SECURITY_PLAINTEXT" {
   default = true
 }
 variable "ZEEBE_WORKER_DEFAULTNAME" {
-  default = "http-worker"
+  default = "script-worker"
 }
 variable "ZEEBE_WORKER_DEFAULTTYPE" {
-  default = "http"
+  default = "script"
 }

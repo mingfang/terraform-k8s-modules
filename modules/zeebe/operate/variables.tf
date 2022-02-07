@@ -16,16 +16,16 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "camunda/operate:0.23.2"
+  default = "camunda/operate:1.3.3"
 }
 
 variable "overrides" {
   default = {}
 }
 
-variable "CAMUNDA_OPERATE_ELASTICSEARCH_HOST" {
+variable "CAMUNDA_OPERATE_ELASTICSEARCH_URL" {
 }
-variable "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_HOST" {
+variable "CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL" {
 }
-variable "CAMUNDA_OPERATE_ZEEBE_BROKERCONTACTPOINT" {
+variable "CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS" {
 }

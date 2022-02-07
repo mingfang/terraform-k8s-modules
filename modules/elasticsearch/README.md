@@ -8,7 +8,7 @@ Provider Requirements:
 * `ES_JAVA_OPTS` (default `""`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"docker.elastic.co/elasticsearch/elasticsearch:7.8.0"`)
+* `image` (default `"docker.elastic.co/elasticsearch/elasticsearch:7.16.3"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `null`)

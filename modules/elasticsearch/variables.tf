@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable image {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:7.8.0"
+  default = "docker.elastic.co/elasticsearch/elasticsearch:7.16.3"
 }
 
 variable "env" {

@@ -22,11 +22,7 @@ locals {
           sysctl -w vm.max_map_count=262144
           ulimit -l unlimited
           su elasticsearch
-          if [[ "$POD_NAME" == "${var.name}-0" ]]; then
-            env node.master=true node.data=false node.ingest=false /usr/local/bin/docker-entrypoint.sh
-          else
-            env node.master=false node.data=true node.ingest=true /usr/local/bin/docker-entrypoint.sh
-          fi
+          /usr/local/bin/docker-entrypoint.sh eswrapper
           EOF
         ]
 

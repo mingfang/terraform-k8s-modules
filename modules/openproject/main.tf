@@ -64,6 +64,12 @@ locals {
         image   = var.image
         command = ["/app/docker/prod/worker"]
         env     = local.env
+        volume_mounts = [
+          {
+            name       = "data"
+            mount_path = "/var/openproject/assets"
+          },
+        ]
       },
       {
         name    = "cron"

@@ -1,9 +1,6 @@
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
-    labels = {
-      istio-injection = "enabled"
-    }
   }
 }
 
@@ -26,7 +23,7 @@ module "memcached" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_core_v1_persistent_volume_claim" "this" {
+resource "k8s_core_v1_persistent_volume_claim" "assets" {
   metadata {
     name      = var.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
@@ -46,7 +43,7 @@ module "openproject" {
   source    = "../../modules/openproject"
   name      = "openproject"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  pvc_name  = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
+  pvc_name  = k8s_core_v1_persistent_volume_claim.assets.metadata[0].name
 
   DATABASE_URL                        = "postgres://openproject:openproject@${module.postgres.name}/openproject"
   RAILS_CACHE_STORE                   = "memcache"
@@ -57,7 +54,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "openproject-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.openproject.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

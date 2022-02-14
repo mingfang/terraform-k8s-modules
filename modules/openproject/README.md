@@ -13,7 +13,7 @@ Provider Requirements:
 * `USE_PUMA` (default `"true"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"openproject/community:11.4.1"`)
+* `image` (default `"openproject/community:12"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

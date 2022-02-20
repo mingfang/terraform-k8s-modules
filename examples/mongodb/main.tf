@@ -44,7 +44,7 @@ module "mongo-express" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
 
-  ME_CONFIG_MONGODB_URL = "mongodb://mongo:mongo@${module.mongodb.name}:${module.mongodb.ports[0].port}"
+  ME_CONFIG_MONGODB_URL = "mongodb://mongo:mongo@${module.mongodb.seed_list}"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "mongo-express" {
@@ -80,7 +80,7 @@ module "restheart" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
 
-  MONGO_URI = "mongodb://mongo:mongo@${module.mongodb.name}:${module.mongodb.ports[0].port}"
+  MONGO_URI = "mongodb://mongo:mongo@${module.mongodb.seed_list}"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "restheart" {

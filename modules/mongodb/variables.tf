@@ -51,6 +51,11 @@ variable "MONGO_INITDB_DATABASE" {
   default = ""
 }
 
+variable "replica_set" {
+  default     = "rs0"
+  description = "replica set name"
+}
+
 variable "keyfile_secret" {
-  default = ""
+  description = "secret with keyfile key, value must be base64 encoded"
 }

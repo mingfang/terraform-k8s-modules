@@ -17,7 +17,7 @@ module "init-job" {
     "/bin/bash",
     "-c",
     <<-EOF
-    until mongo --host ${local.host} -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --eval 'if (!rs.status().ok) rs.initiate({ _id: "rs0", members: [${local.members}]});'; do
+    until mongo --host ${local.host} -u "$MONGO_INITDB_ROOT_USERNAME" -p "$MONGO_INITDB_ROOT_PASSWORD" --eval 'if (!rs.status().ok) rs.initiate({ _id: "${var.replica_set}", members: [${local.members}]});'; do
       sleep 3;
     done
     for i in $(seq $FROMHERE 1 ${var.replicas - 1}); do

@@ -20,7 +20,7 @@ locals {
           cp /dev/shm/mongodb/keyfile /etc/mongodb/keyfile
           chown mongodb:mongodb /etc/mongodb/keyfile
           chmod 400 /etc/mongodb/keyfile
-          docker-entrypoint.sh --bind_ip_all --replSet rs0 -keyFile /etc/mongodb/keyfile
+          docker-entrypoint.sh --bind_ip_all --replSet ${var.replica_set} -keyFile /etc/mongodb/keyfile
           EOF
         ]
 

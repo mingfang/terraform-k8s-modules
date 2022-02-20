@@ -11,11 +11,12 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `env` (default `[]`)
 * `image` (default `"mongo:5.0.6"`)
-* `keyfile_secret` (default `""`)
+* `keyfile_secret` (required): secret with keyfile key, value must be base64 encoded
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":27017}]`)
+* `replica_set` (default `"rs0"`): replica set name
 * `replicas` (default `1`)
 * `storage` (required)
 * `storage_class` (required)
@@ -24,6 +25,7 @@ Provider Requirements:
 ## Output Values
 * `name`
 * `ports`
+* `seed_list`
 * `service`
 * `statefulset`
 

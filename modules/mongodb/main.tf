@@ -9,8 +9,20 @@ locals {
 
     containers = [
       {
-        name  = "mongo"
+        name  = "mongodb"
         image = var.image
+
+        command = [
+          "bash",
+          "-cx",
+          <<-EOF
+          mkdir -p /etc/mongodb
+          cp /dev/shm/mongodb/keyfile /etc/mongodb/keyfile
+          chown mongodb:mongodb /etc/mongodb/keyfile
+          chmod 400 /etc/mongodb/keyfile
+          docker-entrypoint.sh --bind_ip_all --replSet rs0 -keyFile /etc/mongodb/keyfile
+          EOF
+        ]
 
         env = concat([
           {
@@ -27,7 +39,13 @@ locals {
           },
         ], var.env)
 
+
         volume_mounts = [
+          {
+            name       = "keyfile"
+            mount_path = "/dev/shm/mongodb/keyfile"
+            sub_path   = "keyfile"
+          },
           {
             name       = var.volume_claim_template_name
             mount_path = "/data/db"
@@ -35,6 +53,16 @@ locals {
         ]
       },
     ]
+
+    volumes = [
+      {
+        name = "keyfile"
+        secret = {
+          secret_name = var.keyfile_secret
+        }
+      }
+    ]
+
     volume_claim_templates = [
       {
         name               = var.volume_claim_template_name

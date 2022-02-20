@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "mongo"
+  default = "mongo:5.0.6"
 }
 
 variable "env" {
@@ -48,5 +48,9 @@ variable "MONGO_INITDB_ROOT_PASSWORD" {
 }
 
 variable "MONGO_INITDB_DATABASE" {
+  default = ""
+}
+
+variable "keyfile_secret" {
   default = ""
 }

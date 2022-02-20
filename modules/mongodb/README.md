@@ -10,7 +10,8 @@ Provider Requirements:
 * `MONGO_INITDB_ROOT_USERNAME` (default `""`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"mongo"`)
+* `image` (default `"mongo:5.0.6"`)
+* `keyfile_secret` (default `""`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
@@ -27,5 +28,6 @@ Provider Requirements:
 * `statefulset`
 
 ## Child Modules
+* `init-job` from [../kubernetes/job](../kubernetes/job)
 * `statefulset-service` from [../../archetypes/statefulset-service](../../archetypes/statefulset-service)
 

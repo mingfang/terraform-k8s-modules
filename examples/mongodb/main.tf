@@ -51,14 +51,14 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "mongo-express" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "mongo-express-${var.namespace}.*"
     }
     name      = module.mongo-express.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.mongo-express.name
+      host = "mongo-express-${var.namespace}"
       http {
         paths {
           backend {
@@ -94,12 +94,57 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "restheart" {
   }
   spec {
     rules {
-      host = module.restheart.name
+      host = "restheart-${var.namespace}"
       http {
         paths {
           backend {
             service_name = module.restheart.name
             service_port = module.restheart.ports[0].port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
+/* Eve */
+
+module "domain" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "eve-domain"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  from-file = "${path.module}/domain.json"
+}
+
+module "eve" {
+  source    = "../../modules/eve"
+  name      = "eve"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+
+  MONGO_URI     = "mongodb://mongo:mongo@mongodb-0.mongodb.mongodb-example:27017/eve?replicaSet=rs0&authSource=admin"
+  domain_config = module.domain.name
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "eve" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "eve-${var.namespace}.*"
+    }
+    name      = module.eve.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "eve-${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.eve.name
+            service_port = module.eve.ports[0].port
           }
           path = "/"
         }

@@ -14,10 +14,12 @@ Provider Requirements:
 * `keyfile_secret` (required): secret with keyfile key, value must be base64 encoded
 * `name` (required)
 * `namespace` (required)
+* `node_selector` (default `null`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":27017}]`)
 * `replica_set` (default `"rs0"`): replica set name
 * `replicas` (default `1`)
+* `resources` (default `{"limits":{"memory":"4Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}`)
 * `storage` (required)
 * `storage_class` (required)
 * `volume_claim_template_name` (default `"pvc"`)

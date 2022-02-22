@@ -31,6 +31,22 @@ variable "overrides" {
   default = {}
 }
 
+variable "node_selector" {
+  default = null
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "1Gi"
+    }
+    limits = {
+      memory = "4Gi"
+    }
+  }
+}
+
 variable "storage" {}
 
 variable "storage_class" {}

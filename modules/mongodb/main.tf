@@ -1,11 +1,14 @@
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = var.annotations
-    replicas             = var.replicas
-    ports                = var.ports
-    enable_service_links = false
+    name        = var.name
+    namespace   = var.namespace
+    annotations = var.annotations
+    replicas    = var.replicas
+    ports       = var.ports
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
@@ -39,6 +42,7 @@ locals {
           },
         ], var.env)
 
+        resources = var.resources
 
         volume_mounts = [
           {
@@ -53,6 +57,8 @@ locals {
         ]
       },
     ]
+
+    node_selector = var.node_selector
 
     volumes = [
       {

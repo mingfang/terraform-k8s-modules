@@ -478,7 +478,7 @@ resource "k8s_batch_v1_job" "this" {
                     type              = seccomp_profile.value.type
                   }
                 }
-*/
+                */
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {
@@ -837,6 +837,7 @@ resource "k8s_batch_v1_job" "this" {
                 run_asgroup               = lookup(security_context.value, "run_asgroup", null)
                 run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
                 run_asuser                = lookup(security_context.value, "run_asuser", null)
+                /*
                 dynamic "seccomp_profile" {
                   for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
                   content {
@@ -844,6 +845,7 @@ resource "k8s_batch_v1_job" "this" {
                     type              = seccomp_profile.value.type
                   }
                 }
+                */
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {

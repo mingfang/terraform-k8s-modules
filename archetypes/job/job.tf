@@ -1325,6 +1325,7 @@ resource "k8s_batch_v1_job" "this" {
             run_asgroup           = lookup(security_context.value, "run_asgroup", null)
             run_asnon_root        = lookup(security_context.value, "run_asnon_root", null)
             run_asuser            = lookup(security_context.value, "run_asuser", null)
+            /*
             dynamic "seccomp_profile" {
               for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
               content {
@@ -1332,6 +1333,7 @@ resource "k8s_batch_v1_job" "this" {
                 type              = seccomp_profile.value.type
               }
             }
+*/
             dynamic "selinux_options" {
               for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
               content {
@@ -1359,9 +1361,11 @@ resource "k8s_batch_v1_job" "this" {
             }
           }
         }
-        service_account                  = lookup(local.k8s_batch_v1_job_parameters, "service_account", null)
-        service_account_name             = lookup(local.k8s_batch_v1_job_parameters, "service_account_name", null)
+        service_account      = lookup(local.k8s_batch_v1_job_parameters, "service_account", null)
+        service_account_name = lookup(local.k8s_batch_v1_job_parameters, "service_account_name", null)
+        /*
         set_hostname_asfqdn              = lookup(local.k8s_batch_v1_job_parameters, "set_hostname_asfqdn", null)
+*/
         share_process_namespace          = lookup(local.k8s_batch_v1_job_parameters, "share_process_namespace", null)
         subdomain                        = lookup(local.k8s_batch_v1_job_parameters, "subdomain", null)
         termination_grace_period_seconds = lookup(local.k8s_batch_v1_job_parameters, "termination_grace_period_seconds", null)
@@ -1527,6 +1531,7 @@ resource "k8s_batch_v1_job" "this" {
                 size_limit = lookup(empty_dir.value, "size_limit", null)
               }
             }
+            /*
             dynamic "ephemeral" {
               for_each = lookup(volumes.value, "ephemeral", null) == null ? [] : [volumes.value.ephemeral]
               content {
@@ -1584,6 +1589,7 @@ resource "k8s_batch_v1_job" "this" {
                 }
               }
             }
+*/
             dynamic "fc" {
               for_each = lookup(volumes.value, "fc", null) == null ? [] : [volumes.value.fc]
               content {

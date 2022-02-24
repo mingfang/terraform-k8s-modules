@@ -122,7 +122,10 @@ module "eve" {
   source    = "../../modules/eve"
   name      = "eve"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
+  annotations = {
+    "domain-checksum" = module.domain.checksum
+  }
+  replicas = 1
 
   MONGO_URI     = "mongodb://mongo:mongo@mongodb-0.mongodb.mongodb-example:27017/eve?replicaSet=rs0&authSource=admin"
   domain_config = module.domain.name

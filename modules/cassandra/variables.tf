@@ -9,6 +9,10 @@ variable "replicas" {
 variable "ports" {
   default = [
     {
+      name = "cql"
+      port = 9042
+    },
+    {
       name = "intra-node"
       port = 7000
     },
@@ -24,15 +28,11 @@ variable "ports" {
       name = "rpc"
       port = 9160
     },
-    {
-      name = "cql"
-      port = 9042
-    },
   ]
 }
 
 variable "image" {
-  default = "cassandra:3.11.8"
+  default = "cassandra:4.0.3"
 }
 
 variable "env" {

@@ -18,7 +18,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "getmeili/meilisearch:v0.25.2"
+  default = "getmeili/meilisearch:v0.26.0"
 }
 
 variable "env" {

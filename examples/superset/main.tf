@@ -102,10 +102,6 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "superset" {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
       "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
-
-      "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
-      "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
-      "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
     }
     name      = module.superset.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

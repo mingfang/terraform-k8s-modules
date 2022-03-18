@@ -1,9 +1,9 @@
 variable "name" {
-  default = "prefect"
+  default = "superset"
 }
 
 variable "namespace" {
-  default = "prefect-example"
+  default = "superset-example"
 }
 
 variable "replicas" {

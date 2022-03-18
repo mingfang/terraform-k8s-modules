@@ -1,28 +1,24 @@
 
-# Module `superset`
+# Module `superset/celery`
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
 * `annotations` (default `{}`)
-* `command` (default `null`): Override the default command to run as worker. e.g.  or celery --app=superset.tasks.celery_app:app worker
 * `config_configmap` (default `null`)
 * `env` (default `[]`)
 * `image` (default `"apache/superset"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
-* `ports` (default `[{"name":"http","port":8088}]`)
 * `replicas` (default `1`)
+* `type` (default `"worker"`): worker or beat
 
 ## Output Values
 * `deployment`
 * `name`
-* `ports`
-* `service`
 
 ## Child Modules
-* `deployment-service` from [../../archetypes/deployment-service](../../archetypes/deployment-service)
-* `init-job` from [../kubernetes/job](../kubernetes/job)
+* `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)
 

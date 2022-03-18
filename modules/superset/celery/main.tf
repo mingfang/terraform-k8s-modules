@@ -3,15 +3,14 @@ locals {
     name                 = var.name
     namespace            = var.namespace
     replicas             = var.replicas
-    ports                = var.ports
     annotations          = var.annotations
     enable_service_links = false
 
     containers = [
       {
-        name    = "superset"
+        name    = var.type
         image   = var.image
-        command = var.command
+        command = ["bash", "-c", "celery --app=superset.tasks.celery_app:app ${var.type} --pidfile /tmp/celery.pid --schedule /tmp/celery-schedule"]
         env     = var.env
 
         volume_mounts = var.config_configmap != null ? [
@@ -39,6 +38,6 @@ locals {
 }
 
 module "deployment-service" {
-  source     = "../../archetypes/deployment-service"
+  source     = "../../../archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

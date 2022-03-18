@@ -3,25 +3,23 @@
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+* **random:** (any version)
 
 ## Input Variables
-* `name` (default `"prefect"`)
-* `namespace` (default `"prefect-example"`)
+* `name` (default `"superset"`)
+* `namespace` (default `"superset-example"`)
 * `replicas` (default `1`)
 * `storage_class_name` (default `"cephfs"`)
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.hasura` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.prefect` from `k8s`
+* `k8s_networking_k8s_io_v1beta1_ingress.superset` from `k8s`
+* `random_password.secret_key` from `random`
 
 ## Child Modules
-* `hasura` from [../../modules/hasura/graphql-engine](../../modules/hasura/graphql-engine)
-* `nginx` from [../../modules/nginx](../../modules/nginx)
+* `config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
+* `env` from [../../modules/kubernetes/env](../../modules/kubernetes/env)
 * `postgres` from [../../modules/postgres](../../modules/postgres)
-* `prefect-agent` from [../../modules/prefect/agent](../../modules/prefect/agent)
-* `prefect-apollo` from [../../modules/prefect/apollo](../../modules/prefect/apollo)
-* `prefect-scheduler` from [../../modules/prefect/scheduler](../../modules/prefect/scheduler)
-* `prefect-server` from [../../modules/prefect/server](../../modules/prefect/server)
-* `prefect-ui` from [../../modules/prefect/ui](../../modules/prefect/ui)
+* `redis` from [../../modules/redis](../../modules/redis)
+* `superset` from [../../modules/superset](../../modules/superset)
 

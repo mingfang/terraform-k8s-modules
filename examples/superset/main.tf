@@ -12,127 +12,112 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "prefect"
-  POSTGRES_PASSWORD = "prefect"
-  POSTGRES_DB       = "prefect"
+  POSTGRES_USER     = "superset"
+  POSTGRES_PASSWORD = "superset"
+  POSTGRES_DB       = "superset"
 }
 
-module "hasura" {
-  source    = "../../modules/hasura/graphql-engine"
-  name      = "graphql-engine"
+module "redis" {
+  source    = "../../modules/redis"
+  name      = "redis"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+}
+
+module "config" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  HASURA_GRAPHQL_DATABASE_URL   = "postgres://prefect:prefect@${module.postgres.name}:${module.postgres.ports[0].port}/prefect"
-  HASURA_GRAPHQL_ENABLE_CONSOLE = "true"
+  from-file = "${path.module}/superset_config.py"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "hasura" {
+resource "random_password" "secret_key" {
+  length  = 256
+  special = false
+}
+
+module "env" {
+  source = "../../modules/kubernetes/env"
+  from-map = {
+    DATABASE_DIALECT  = "postgresql"
+    DATABASE_HOST     = module.postgres.name
+    DATABASE_PORT     = module.postgres.ports[0].port
+    DATABASE_DB       = "superset"
+    DATABASE_USER     = "superset"
+    DATABASE_PASSWORD = "superset"
+    REDIS_HOST        = module.redis.name
+
+    FLASK_ENV      = "production"
+    SUPERSET_ENV   = "production",
+    SECRET_KEY     = random_password.secret_key.result
+    CYPRESS_CONFIG = false
+    SUPERSET_PORT  = 8088
+    ADMIN_USERNAME = "admin",
+    ADMIN_PASSWORD = "admin",
+
+    SUPERSET_LOAD_EXAMPLES = "yes"
+  }
+}
+
+module "superset" {
+  source    = "../../modules/superset"
+  name      = "superset"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = {
+    "config_checksum" = module.config.checksum
+  }
+
+  config_configmap = module.config.config_map
+  env              = module.env.kubernetes_env
+}
+
+module "superset-beat" {
+  source    = "../../modules/superset/celery"
+  name      = "superset-beat"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = {
+    "config_checksum" = module.config.checksum
+  }
+
+  config_configmap = module.config.config_map
+  env              = module.env.kubernetes_env
+  type             = "beat"
+}
+
+module "superset-worker" {
+  source    = "../../modules/superset/celery"
+  name      = "superset-worker"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  annotations = {
+    "config_checksum" = module.config.checksum
+  }
+
+  config_configmap = module.config.config_map
+  env              = module.env.kubernetes_env
+  type             = "worker"
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "superset" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "prefect-graphql-engine-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
+
+      "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
+      "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
+      "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
     }
-    name      = module.hasura.name
+    name      = module.superset.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${module.hasura.name}-${var.namespace}"
+      host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.hasura.name
-            service_port = module.hasura.ports[0].port
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}
-
-module "prefect-server" {
-  source    = "../../modules/prefect/server"
-  name      = "prefect-server"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  PREFECT_SERVER__DATABASE__CONNECTION_URL = "postgres://prefect:prefect@${module.postgres.name}:${module.postgres.ports[0].port}/prefect"
-  PREFECT_SERVER__HASURA__HOST             = module.hasura.name
-  PREFECT_SERVER__HASURA__PORT             = module.hasura.ports[0].port
-}
-
-module "prefect-scheduler" {
-  source    = "../../modules/prefect/scheduler"
-  name      = "prefect-scheduler"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  PREFECT_SERVER__HASURA__HOST = module.hasura.name
-  PREFECT_SERVER__HASURA__PORT = module.hasura.ports[0].port
-}
-
-module "prefect-apollo" {
-  source    = "../../modules/prefect/apollo"
-  name      = "prefect-apollo"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  HASURA_API_URL         = "http://${module.hasura.name}:${module.hasura.ports[0].port}/v1alpha1/graphql"
-  PREFECT_API_URL        = "http://${module.prefect-server.name}:${module.prefect-server.ports[0].port}/graphql/"
-  PREFECT_API_HEALTH_URL = "http://${module.prefect-server.name}:${module.prefect-server.ports[0].port}/health"
-}
-
-module "prefect-agent" {
-  source    = "../../modules/prefect/agent"
-  name      = "prefect-agent"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  PREFECT__CLOUD__API = "http://${module.prefect-apollo.name}:${module.prefect-apollo.ports[0].port}"
-}
-
-module "prefect-ui" {
-  source    = "../../modules/prefect/ui"
-  name      = "prefect-ui"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  PREFECT_SERVER__GRAPHQL_URL = "/graphql"
-}
-
-module "nginx" {
-  source    = "../../modules/nginx"
-  name      = "nginx"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  default-conf = <<-EOF
-    server {
-      listen      80;
-
-      location / {
-        proxy_pass http://${module.prefect-ui.name}:${module.prefect-ui.ports[0].port};
-      }
-
-      location /graphql {
-        proxy_pass http://${module.prefect-apollo.name}:${module.prefect-apollo.ports[0].port};
-      }
-    }
-    EOF
-}
-
-resource "k8s_networking_k8s_io_v1beta1_ingress" "prefect" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "prefect-example.*"
-    }
-    name      = module.nginx.name
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
-  }
-  spec {
-    rules {
-      host = "${module.nginx.name}-${var.namespace}"
-      http {
-        paths {
-          backend {
-            service_name = module.nginx.name
-            service_port = module.nginx.ports[0].port
+            service_name = module.superset.name
+            service_port = module.superset.ports[0].port
           }
           path = "/"
         }

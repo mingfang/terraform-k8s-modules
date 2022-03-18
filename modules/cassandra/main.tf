@@ -84,6 +84,10 @@ locals {
             name  = "CASSANDRA_SEEDS"
             value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
           },
+          {
+            name  = "CASSANDRA_NUM_TOKENS"
+            value = var.CASSANDRA_NUM_TOKENS
+          }
         ], var.env)
 
         lifecycle = {

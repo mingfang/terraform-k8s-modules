@@ -8,6 +8,7 @@ Provider Requirements:
 * `CASSANDRA_CLUSTER_NAME` (default `"cassandra"`)
 * `CASSANDRA_DC` (default `"dc1"`)
 * `CASSANDRA_ENDPOINT_SNITCH` (default `"GossipingPropertyFileSnitch"`)
+* `CASSANDRA_NUM_TOKENS` (default `16`)
 * `CASSANDRA_RACK` (default `"rack1"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)

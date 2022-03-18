@@ -79,3 +79,6 @@ variable "CASSANDRA_RACK" {
 variable "CASSANDRA_ENDPOINT_SNITCH" {
   default = "GossipingPropertyFileSnitch"
 }
+variable "CASSANDRA_NUM_TOKENS" {
+  default = 16
+}

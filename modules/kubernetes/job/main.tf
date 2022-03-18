@@ -9,13 +9,15 @@ locals {
         name  = var.name
         image = var.image
 
-        command = var.command
-        env     = var.env
+        command       = var.command
+        env           = var.env
+        volume_mounts = var.volume_mounts
       },
     ]
 
     backoff_limit  = var.backoff_limit
     restart_policy = var.restart_policy
+    volumes        = var.volumes
   }
 }
 

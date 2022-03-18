@@ -26,3 +26,10 @@ variable backoff_limit {
   default = 4
 }
 
+variable "volumes" {
+  default = null
+}
+
+variable "volume_mounts" {
+  default = null
+}

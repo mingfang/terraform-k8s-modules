@@ -22,4 +22,6 @@ Provider Requirements:
 * `postgres` from [../../modules/postgres](../../modules/postgres)
 * `redis` from [../../modules/redis](../../modules/redis)
 * `superset` from [../../modules/superset](../../modules/superset)
+* `superset-beat` from [../../modules/superset/celery](../../modules/superset/celery)
+* `superset-worker` from [../../modules/superset/celery](../../modules/superset/celery)
 

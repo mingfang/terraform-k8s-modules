@@ -2,7 +2,7 @@
 # Module `kubernetes/env`
 
 ## Input Variables
-* `from-file` (required)
+* `from-file` (default `null`)
 * `from-map` (default `{}`)
 
 ## Output Values

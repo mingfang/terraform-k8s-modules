@@ -46,6 +46,7 @@ module "env" {
     DATABASE_USER     = "superset"
     DATABASE_PASSWORD = "superset"
     REDIS_HOST        = module.redis.name
+    REDIS_PORT        = module.redis.ports[0].port
 
     FLASK_ENV      = "production"
     SUPERSET_ENV   = "production",
@@ -67,6 +68,7 @@ module "superset" {
     "config_checksum" = module.config.checksum
   }
 
+  image            = "registry.rebelsoft.com/superset"
   config_configmap = module.config.config_map
   env              = module.env.kubernetes_env
 }
@@ -79,6 +81,7 @@ module "superset-beat" {
     "config_checksum" = module.config.checksum
   }
 
+  image            = "registry.rebelsoft.com/superset"
   config_configmap = module.config.config_map
   env              = module.env.kubernetes_env
   type             = "beat"
@@ -91,7 +94,9 @@ module "superset-worker" {
   annotations = {
     "config_checksum" = module.config.checksum
   }
+  replicas = 2
 
+  image            = "registry.rebelsoft.com/superset"
   config_configmap = module.config.config_map
   env              = module.env.kubernetes_env
   type             = "worker"

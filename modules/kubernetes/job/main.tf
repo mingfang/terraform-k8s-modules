@@ -1,8 +1,9 @@
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
-    annotations = var.annotations
+    name                 = var.name
+    namespace            = var.namespace
+    annotations          = var.annotations
+    enable_service_links = false
 
     containers = [
       {

@@ -1,5 +1,5 @@
 import logging
-from flask import redirect, request
+from flask import g, redirect, request
 from flask_login import login_user
 from flask_appbuilder import expose
 from flask_appbuilder.security.manager import AuthRemoteUserView
@@ -10,6 +10,9 @@ class CustomAuthRemoteUserView(AuthRemoteUserView):
 
     @expose("/login/")
     def login(self):
+        if g.user is not None and g.user.is_authenticated:
+            return redirect(self.appbuilder.get_url_for_index)
+
         # get user from headers
         email = request.headers.get('X-Auth-Request-Email')
         role = request.headers.get('X-Auth-Role', 'Admin')
@@ -33,7 +36,7 @@ class CustomAuthRemoteUserView(AuthRemoteUserView):
 
         # login user
         login_user(user)
-        return redirect('/')
+        return redirect(self.appbuilder.get_url_for_index)
 
 
 class CustomSecurityManager(SupersetSecurityManager):

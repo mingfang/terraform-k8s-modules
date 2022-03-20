@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "trinodb/trino:373"
+  default = "trinodb/trino:374"
 }
 
 variable "env" {

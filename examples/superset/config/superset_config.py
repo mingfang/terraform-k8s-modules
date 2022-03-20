@@ -1,13 +1,9 @@
 from datetime import timedelta
-import logging
 import math
 import os
 from cachelib.redis import RedisCache
 from celery.schedules import crontab
 from flask_appbuilder.security.manager import AUTH_REMOTE_USER, AUTH_OAUTH
-from superset.security import SupersetSecurityManager
-
-logger = logging.getLogger()
 
 
 def env(key, default=None):
@@ -110,58 +106,40 @@ class CeleryConfig(object):
 
 CELERY_CONFIG = CeleryConfig
 
-# SSO
+# auto user registration
 
 AUTH_USER_REGISTRATION = True
 AUTH_USER_REGISTRATION_ROLE = 'Alpha'
 PUBLIC_ROLE_LIKE = 'Gamma'
 
-AUTH_TYPE = AUTH_OAUTH
-OAUTH_PROVIDERS = [
-    {
-        'name': 'keycloak',
-        'token_key': 'access_token',
-        'icon': 'fa-address-card',
-        'remote_app': {
-            'client_id': 'superset-example',
-            'client_secret': '8daf544f-23c3-47d9-aaba-c1fbb4aaf242',
-            'client_kwargs': {
-                'scope': 'openid email profile'
-            },
-            'server_metadata_url': 'https://keycloak.rebelsoft.com/auth/realms/rebelsoft/.well-known/openid-configuration',
-            'api_base_url': 'https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/',
-        }
-    }
-]
+
+# Custom remote user auth
+
+AUTH_TYPE = AUTH_REMOTE_USER
+from CustomSecurityManager import CustomSecurityManager
+CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 
 
-class CustomSsoSecurityManager(SupersetSecurityManager):
-
-    def oauth_user_info(self, provider, response=None):
-        logging.info(f'Oauth2 provider: {provider}.')
-
-        if provider == 'keycloak':
-            me = self.appbuilder.sm.oauth_remotes[provider].get('userinfo').json()
-
-            logger.info(" user_data: %s", me)
-            return {
-                'username': me['preferred_username'],
-                'name': me['name'],
-                'email': me['email'],
-                'first_name': me['given_name'],
-                'last_name': me['family_name'],
-                'roles': me.get('roles', ['Public']),
-                'is_active': True,
-            }
-
-    def auth_user_oauth(self, userinfo):
-        user = super(CustomSsoSecurityManager, self).auth_user_oauth(userinfo)
-        roles = [self.find_role(x) for x in userinfo['roles']]
-        roles = [x for x in roles if x is not None]
-        user.roles = roles
-        logger.info(' Update <User: %s> role to %s', user.username, roles)
-        self.update_user(user)  # update user roles
-        return user
-
-
-CUSTOM_SECURITY_MANAGER = CustomSsoSecurityManager
+# Keycloak SSO
+#
+# AUTH_TYPE = AUTH_OAUTH
+# OAUTH_PROVIDERS = [
+#     {
+#         'name': 'keycloak',
+#         'token_key': 'access_token',
+#         'icon': 'fa-address-card',
+#         'remote_app': {
+#             'client_id': 'superset-example',
+#             'client_secret': '8daf544f-23c3-47d9-aaba-c1fbb4aaf242',
+#             'client_kwargs': {
+#                 'scope': 'openid email profile'
+#             },
+#             'server_metadata_url': 'https://keycloak.rebelsoft.com/auth/realms/rebelsoft/.well-known/openid-configuration',
+#             'api_base_url': 'https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/',
+#         }
+#     }
+# ]
+#
+#
+# from KeycloakSecurityManager import KeycloakSecurityManager
+# CUSTOM_SECURITY_MANAGER = KeycloakSecurityManager

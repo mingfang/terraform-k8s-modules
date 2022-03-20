@@ -1,0 +1,3 @@
+databases:
+  - database_name: trino
+    sqlalchemy_uri: trino://trino@trino.mongodb-example:8080/mongodb

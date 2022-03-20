@@ -6,8 +6,8 @@ Provider Requirements:
 
 ## Input Variables
 * `annotations` (default `{}`)
-* `command` (default `null`): Override the default command to run as worker. e.g.  or celery --app=superset.tasks.celery_app:app worker
 * `config_configmap` (default `null`)
+* `datasources_configmap` (default `null`)
 * `env` (default `[]`)
 * `image` (default `"apache/superset"`)
 * `name` (required)
@@ -23,6 +23,7 @@ Provider Requirements:
 * `service`
 
 ## Child Modules
+* `datasources-job` from [../kubernetes/job](../kubernetes/job)
 * `deployment-service` from [../../archetypes/deployment-service](../../archetypes/deployment-service)
 * `init-job` from [../kubernetes/job](../kubernetes/job)
 

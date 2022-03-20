@@ -81,20 +81,29 @@ RESULTS_BACKEND = RedisCache(host=REDIS_HOST, port=REDIS_PORT, key_prefix='super
 
 
 class CeleryConfig(object):
-    BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
-    CELERY_IMPORTS = ("superset.sql_lab", "superset.tasks")
-    CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}"
-    CELERYD_LOG_LEVEL = "info"
+    BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}'
+    CELERY_IMPORTS = ('superset.sql_lab', "superset.tasks")
+    CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}'
+    CELERYD_LOG_LEVEL = 'info'
     CELERYD_PREFETCH_MULTIPLIER = 1
     CELERY_ACKS_LATE = False
     CELERYBEAT_SCHEDULE = {
-        "reports.scheduler": {
-            "task": "reports.scheduler",
-            "schedule": crontab(minute="*", hour="*"),
+        'reports.scheduler': {
+            'task': 'reports.scheduler',
+            'schedule': crontab(minute='*', hour='*'),
         },
-        "reports.prune_log": {
-            "task": "reports.prune_log",
-            "schedule": crontab(minute=10, hour=0),
+        'reports.prune_log': {
+            'task': 'reports.prune_log',
+            'schedule': crontab(minute=10, hour=0),
+        },
+        'cache-warmup-hourly': {
+            'task': 'cache-warmup',
+            'schedule': crontab(minute='*/30', hour='*'),
+            'kwargs': {
+                'strategy_name': 'top_n_dashboards',
+                'top_n': 10,
+                'since': '7 days ago',
+            },
         },
     }
 
@@ -104,8 +113,8 @@ CELERY_CONFIG = CeleryConfig
 # SSO
 
 AUTH_USER_REGISTRATION = True
-AUTH_USER_REGISTRATION_ROLE = "Alpha"
-PUBLIC_ROLE_LIKE = "Gamma"
+AUTH_USER_REGISTRATION_ROLE = 'Alpha'
+PUBLIC_ROLE_LIKE = 'Gamma'
 
 AUTH_TYPE = AUTH_OAUTH
 OAUTH_PROVIDERS = [
@@ -129,7 +138,7 @@ OAUTH_PROVIDERS = [
 class CustomSsoSecurityManager(SupersetSecurityManager):
 
     def oauth_user_info(self, provider, response=None):
-        logging.info("Oauth2 provider: {0}.".format(provider))
+        logging.info(f'Oauth2 provider: {provider}.')
 
         if provider == 'keycloak':
             me = self.appbuilder.sm.oauth_remotes[provider].get('userinfo').json()

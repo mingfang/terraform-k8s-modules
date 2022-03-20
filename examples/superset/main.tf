@@ -25,14 +25,22 @@ module "redis" {
 
 module "config" {
   source    = "../../modules/kubernetes/config-map"
-  name      = var.name
+  name      = "config"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   from-file = "${path.module}/superset_config.py"
 }
 
+module "datasources" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "datasources"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  from-file = "${path.module}/datasources.yaml"
+}
+
 resource "random_password" "secret_key" {
-  length  = 256
+  length  = 16
   special = false
 }
 
@@ -50,7 +58,7 @@ module "env" {
 
     FLASK_ENV      = "production"
     SUPERSET_ENV   = "production",
-    SECRET_KEY     = random_password.secret_key.result
+    SECRET_KEY     = base64encode(random_password.secret_key.result)
     CYPRESS_CONFIG = false
     SUPERSET_PORT  = 8088
     ADMIN_USERNAME = "admin",
@@ -68,9 +76,10 @@ module "superset" {
     "config_checksum" = module.config.checksum
   }
 
-  image            = "registry.rebelsoft.com/superset"
-  config_configmap = module.config.config_map
-  env              = module.env.kubernetes_env
+  image                 = "registry.rebelsoft.com/superset"
+  env                   = module.env.kubernetes_env
+  config_configmap      = module.config.config_map
+  datasources_configmap = module.datasources.config_map
 }
 
 module "superset-beat" {
@@ -82,8 +91,8 @@ module "superset-beat" {
   }
 
   image            = "registry.rebelsoft.com/superset"
-  config_configmap = module.config.config_map
   env              = module.env.kubernetes_env
+  config_configmap = module.config.config_map
   type             = "beat"
 }
 
@@ -97,8 +106,8 @@ module "superset-worker" {
   replicas = 2
 
   image            = "registry.rebelsoft.com/superset"
-  config_configmap = module.config.config_map
   env              = module.env.kubernetes_env
+  config_configmap = module.config.config_map
   type             = "worker"
 }
 

@@ -9,10 +9,9 @@ locals {
 
     containers = [
       {
-        name    = "superset"
-        image   = var.image
-        command = var.command
-        env     = var.env
+        name  = "superset"
+        image = var.image
+        env   = var.env
 
         volume_mounts = var.config_configmap != null ? [
           for k, v in var.config_configmap.data :

@@ -19,11 +19,6 @@ variable ports {
   ]
 }
 
-variable "command" {
-  default     = null
-  description = "Override the default command to run as worker. e.g.  or celery --app=superset.tasks.celery_app:app worker"
-}
-
 variable "env" {
   default = []
 }
@@ -37,5 +32,9 @@ variable "overrides" {
 }
 
 variable "config_configmap" {
+  default = null
+}
+
+variable "datasources_configmap" {
   default = null
 }

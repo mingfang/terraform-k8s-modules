@@ -18,6 +18,7 @@ Provider Requirements:
 
 ## Child Modules
 * `config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
+* `datasources` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 * `env` from [../../modules/kubernetes/env](../../modules/kubernetes/env)
 * `postgres` from [../../modules/postgres](../../modules/postgres)
 * `redis` from [../../modules/redis](../../modules/redis)

@@ -27,10 +27,9 @@ class CustomAuthRemoteUserView(AuthRemoteUserView):
             sm.add_user(
                 username=username,
                 first_name=username,
-                last_name='',
+                last_name='-',
                 email=email,
-                role=role,
-                is_active=True,
+                role=sm.find_role(role),
             )
             user = sm.auth_user_remote_user(username)
 

@@ -27,9 +27,9 @@ variable backoff_limit {
 }
 
 variable "volumes" {
-  default = null
+  default = []
 }
 
 variable "volume_mounts" {
-  default = null
+  default = []
 }

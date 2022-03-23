@@ -14,8 +14,8 @@ Provider Requirements:
 * `namespace` (required)
 * `overrides` (default `{}`)
 * `restart_policy` (default `"OnFailure"`)
-* `volume_mounts` (default `null`)
-* `volumes` (default `null`)
+* `volume_mounts` (default `[]`)
+* `volumes` (default `[]`)
 
 ## Child Modules
 * `job` from [../../../archetypes/job](../../../archetypes/job)

@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "apache/couchdb:2.3"
+  default = "couchdb:3.2.0"
 }
 
 variable "env" {
@@ -52,7 +52,7 @@ variable "volume_claim_template_name" {
 }
 
 variable "NODENAME" {
-  default = null
+  default     = null
   description = "defaults to pod name"
 }
 variable "db_secret_name" {

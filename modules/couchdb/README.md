@@ -11,7 +11,7 @@ Provider Requirements:
 * `db_secret_name` (default `""`)
 * `db_username_key` (default `""`)
 * `env` (default `[]`)
-* `image` (default `"apache/couchdb:2.3"`)
+* `image` (default `"couchdb:3.2.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
@@ -29,5 +29,6 @@ Provider Requirements:
 * `statefulset`
 
 ## Child Modules
+* `init-job` from [../kubernetes/job](../kubernetes/job)
 * `statefulset-service` from [../../archetypes/statefulset-service](../../archetypes/statefulset-service)
 

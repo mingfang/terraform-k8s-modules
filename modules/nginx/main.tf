@@ -6,10 +6,12 @@ locals {
     ports                = var.ports
     enable_service_links = false
 
-    annotations = var.default-conf != null ? merge(
+    annotations = merge(
       var.annotations,
-      { "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.this.0.data), values(k8s_core_v1_config_map.this.0.data))) },
-    ) : var.annotations
+      var.default-conf != null || var.nginx-conf != null ? {
+        "config_checksum" = md5(join("", keys(k8s_core_v1_config_map.this.0.data), values(k8s_core_v1_config_map.this.0.data)))
+      } : {},
+    )
 
     containers = [
       {

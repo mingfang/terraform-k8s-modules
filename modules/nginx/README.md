@@ -8,7 +8,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `default-conf` (default `null`)
 * `env` (default `[]`)
-* `image` (default `"nginx:1.17.8"`)
+* `image` (default `"nginx:1.21.6"`)
 * `name` (required)
 * `namespace` (required)
 * `nginx-conf` (default `null`)

@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "redis:6.0"
+  default = "redis:6.2.6"
 }
 
 variable "ports" {
@@ -36,5 +36,9 @@ variable "overrides" {
 }
 
 variable "pvc_name" {
+  default = null
+}
+
+variable "password" {
   default = null
 }

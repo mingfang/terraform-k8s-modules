@@ -12,6 +12,7 @@ locals {
         name  = "redis"
         image = var.image
 
+        args = var.password != null ? ["--requirepass", var.password] : []
         env = concat([
           {
             name = "POD_NAME"

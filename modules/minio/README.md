@@ -9,7 +9,7 @@ Provider Requirements:
 * `args` (default `[]`)
 * `create_buckets` (default `[]`)
 * `env` (default `[]`)
-* `image` (default `"minio/minio:RELEASE.2021-08-05T22-01-19Z"`)
+* `image` (default `"minio/minio:RELEASE.2021-08-25T00-41-18Z.hotfix.fa57120f2"`)
 * `minio_access_key` (required)
 * `minio_secret_key` (required)
 * `name` (required)

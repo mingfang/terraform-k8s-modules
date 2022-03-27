@@ -1,9 +1,4 @@
 locals {
-  servers = [
-    for i in range(0, var.replicas) :
-    "http://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local/data/${var.name}-${i}"
-  ]
-
   parameters = {
     name        = var.name
     namespace   = var.namespace
@@ -20,7 +15,12 @@ locals {
         name  = "minio"
         image = var.image
 
-        args = coalescelist(var.args, concat(["server", "--console-address", ":${var.ports[1].port}"], local.servers))
+        args = [
+          "server",
+          "--console-address",
+          ":${var.ports[1].port}",
+          "http://${var.name}-{0...${var.replicas - 1}}.${var.name}.${var.namespace}.svc.cluster.local/data"
+        ]
 
         env = concat([
           {

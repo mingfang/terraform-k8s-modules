@@ -40,6 +40,14 @@ locals {
             value = var.APPSMITH_ENCRYPTION_SALT
           },
         ], var.env)
+
+        liveness_probe = {
+          http_get = {
+            path = "/api/v1/users/me"
+            port = var.ports[0].port
+          }
+          initial_delay_seconds : 10
+        }
       }
     ]
   }

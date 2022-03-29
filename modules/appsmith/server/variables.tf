@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "appsmith/appsmith-server:latest"
+  default = "appsmith/appsmith-server:v1.6.16"
 }
 
 variable "env" {

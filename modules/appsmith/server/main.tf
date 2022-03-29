@@ -12,9 +12,19 @@ locals {
         name  = "server"
         image = var.image
 
+        command = [
+          "sh",
+          "-c",
+          <<-EOF
+          mkdir -p /appsmith-stacks/configuration
+          env|grep APPSMITH > /appsmith-stacks/configuration/docker.env
+          exec /entrypoint.sh
+          EOF
+        ]
+
         env = concat([
           {
-            name = "APPSMITH_REDIS_URL"
+            name  = "APPSMITH_REDIS_URL"
             value = var.APPSMITH_REDIS_URL
           },
           {

@@ -20,7 +20,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "minio/minio:RELEASE.2021-08-25T00-41-18Z.hotfix.fa57120f2"
+  default = "minio/minio:RELEASE.2021-08-05T22-01-19Z"
 }
 
 variable "env" {

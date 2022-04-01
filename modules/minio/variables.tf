@@ -50,7 +50,7 @@ variable "overrides" {
 variable "minio_access_key" {}
 variable "minio_secret_key" {}
 variable "args" {
-  default = []
+  default = null
 }
 
 variable "create_buckets" {

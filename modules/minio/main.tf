@@ -15,12 +15,12 @@ locals {
         name  = "minio"
         image = var.image
 
-        args = [
+        args = var.args == null ? [
           "server",
           "--console-address",
           ":${var.ports[1].port}",
           "http://${var.name}-{0...${var.replicas - 1}}.${var.name}.${var.namespace}.svc.cluster.local/data"
-        ]
+        ] : var.args
 
         env = concat([
           {

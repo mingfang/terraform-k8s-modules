@@ -38,6 +38,16 @@ module "rbac" {
       verbs = ["watch", "list", "get"]
     },
     {
+      api_groups = ["batch"]
+      resources  = ["jobs", "cronjobs"]
+      verbs      = ["get", "list", "watch"]
+    },
+    {
+      api_groups = ["batch", "extensions"]
+      resources  = ["jobs"]
+      verbs      = ["get", "list", "watch", "patch"]
+    },
+    {
       api_groups = ["extensions"]
       resources  = ["replicasets", "daemonsets"]
       verbs      = ["watch", "list", "get"]
@@ -58,9 +68,9 @@ module "rbac" {
       verbs      = ["watch", "list", "get"]
     },
     {
-      api_groups = ["batch", "extensions"]
-      resources  = ["jobs"]
-      verbs      = ["get", "list", "watch", "patch"]
+      api_groups = [""]
+      resources  = ["configmaps"]
+      verbs      = ["list", "watch"]
     },
     {
       api_groups = ["coordination.k8s.io"]
@@ -86,6 +96,12 @@ module "rbac" {
       resources : ["configmaps"]
       resourceNames : ["cluster-autoscaler-status", "cluster-autoscaler-priority-expander"]
       verbs : ["delete", "get", "update", "watch"]
+    },
+    {
+      api_groups = [""]
+      resources : ["configmaps"]
+      resourceNames : ["cluster-autoscaler"]
+      verbs : ["get", "update"]
     }
   ]
 

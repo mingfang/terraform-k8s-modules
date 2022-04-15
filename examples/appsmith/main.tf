@@ -4,12 +4,19 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
-module "redis" {
-  source    = "../../modules/redis"
-  name      = "redis"
+resource "random_password" "keyfile" {
+  length  = 256
+  special = false
+}
+
+module "secret" {
+  source    = "../../modules/kubernetes/secret"
+  name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas = 1
+  from-map = {
+    "keyfile" = base64encode(random_password.keyfile.result)
+  }
 }
 
 module "mongodb" {
@@ -24,6 +31,15 @@ module "mongodb" {
   MONGO_INITDB_DATABASE      = "appsmith"
   MONGO_INITDB_ROOT_USERNAME = "mongodb"
   MONGO_INITDB_ROOT_PASSWORD = "mongodb"
+  keyfile_secret             = module.secret.name
+}
+
+module "redis" {
+  source    = "../../modules/redis"
+  name      = "redis"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  replicas = 1
 }
 
 module "server" {
@@ -62,6 +78,10 @@ module "server" {
       name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_REDIRECT-URI"
       value = "{baseUrl}/login/oauth2/code/{registrationId}"
     },
+    {
+      name  = "APPSMITH_ADMIN_EMAILS"
+      value = "mingfang@mac.com"
+    }
   ]
 }
 
@@ -77,7 +97,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"       = "appsmith-example.*"
+      "nginx.ingress.kubernetes.io/server-alias"       = "${var.namespace}.*"
       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
       // auto login using oauth
       "nginx.ingress.kubernetes.io/server-snippet" = <<-EOF
@@ -94,7 +114,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   }
   spec {
     rules {
-      host = "${var.name}.${var.namespace}"
+      host = var.namespace
       http {
         paths {
           path = "/api"

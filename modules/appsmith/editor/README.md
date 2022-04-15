@@ -25,7 +25,7 @@ Provider Requirements:
 * `APPSMITH_VERSION_RELEASE_DATE` (default `""`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"appsmith/appsmith-editor:v1.6.16"`)
+* `image` (default `"appsmith/appsmith-editor:v1.6.20"`)
 * `name` (required)
 * `namespace` (required)
 * `nginx_conf_template` (default `null`)

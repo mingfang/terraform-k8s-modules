@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "appsmith/appsmith-editor:v1.6.16"
+  default = "appsmith/appsmith-editor:v1.6.20"
 }
 
 variable "replicas" {

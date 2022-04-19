@@ -15,6 +15,7 @@ Provider Requirements:
 * `ports` (default `[{"name":"http","port":8080},{"name":"slave","port":50000}]`)
 * `pvc_name` (required)
 * `resources` (default `{"limits":{"cpu":"2","memory":"1Gi"},"requests":{"cpu":"500m","memory":"500Mi"}}`)
+* `timezone` (default `"America/New_York"`)
 
 ## Output Values
 * `deployment`

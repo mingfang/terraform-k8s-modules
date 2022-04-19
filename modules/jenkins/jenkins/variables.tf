@@ -48,3 +48,6 @@ variable "casc_config_map_name" {}
 
 variable "pvc_name" {}
 
+variable "timezone" {
+  default = "America/New_York"
+}

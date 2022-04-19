@@ -49,6 +49,7 @@ locals {
             -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85
             -Dhudson.model.DirectoryBrowserSupport.CSP="default-src 'self' 'unsafe-inline'; img-src 'self' 'unsafe-inline' data:; style-src 'self' 'unsafe-inline'; child-src 'self' 'unsafe-inline'; frame-src 'self' 'unsafe-inline'; font-src 'self' data:;"
             -Djenkins.install.runSetupWizard=false
+            -Dorg.apache.commons.jelly.tags.fmt.timeZone=${var.timezone}
             EOF
           }
         ], var.env)
@@ -56,9 +57,9 @@ locals {
         resources = var.resources
 
         startup_probe = {
-          initial_delay_seconds = 30
+          initial_delay_seconds = 120
           period_seconds        = 10
-          failure_threshold     = 30
+          failure_threshold     = 3
 
           http_get = {
             path = "/login"

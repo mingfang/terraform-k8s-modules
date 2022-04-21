@@ -14,6 +14,9 @@ Provider Requirements:
 
 ## Child Modules
 * `contextionary` from [../../modules/weaviate/contextionary](../../modules/weaviate/contextionary)
+* `ner-transformers` from [../../modules/weaviate/ner-transformers](../../modules/weaviate/ner-transformers)
+* `qna-transformers` from [../../modules/weaviate/qna-transformers](../../modules/weaviate/qna-transformers)
 * `t2v-transformers` from [../../modules/weaviate/t2v-transformers](../../modules/weaviate/t2v-transformers)
+* `text-spellcheck` from [../../modules/weaviate/text-spellcheck](../../modules/weaviate/text-spellcheck)
 * `weaviate` from [../../modules/weaviate/weaviate](../../modules/weaviate/weaviate)
 

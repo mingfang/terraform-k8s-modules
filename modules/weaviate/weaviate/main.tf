@@ -38,6 +38,26 @@ locals {
             }
           },
           {
+            name  = "CONTEXTIONARY_URL"
+            value = var.CONTEXTIONARY_URL
+          },
+          {
+            name  = "TRANSFORMERS_INFERENCE_API"
+            value = var.TRANSFORMERS_INFERENCE_API
+          },
+          {
+            name  = "QNA_INFERENCE_API"
+            value = var.QNA_INFERENCE_API
+          },
+          {
+            name  = "NER_INFERENCE_API"
+            value = var.NER_INFERENCE_API
+          },
+          {
+            name  = "SPELLCHECK_INFERENCE_API"
+            value = var.SPELLCHECK_INFERENCE_API
+          },
+          {
             name  = "QUERY_DEFAULTS_LIMIT"
             value = var.QUERY_DEFAULTS_LIMIT
           },
@@ -47,7 +67,7 @@ locals {
           },
           {
             name  = "PERSISTENCE_DATA_PATH"
-            value = "/data"
+            value = var.PERSISTENCE_DATA_PATH
           },
           {
             name  = "DEFAULT_VECTORIZER_MODULE"
@@ -58,16 +78,8 @@ locals {
             value = var.ENABLE_MODULES
           },
           {
-            name  = "CONTEXTIONARY_URL"
-            value = var.CONTEXTIONARY_URL
-          },
-          {
-            name  = "TRANSFORMERS_INFERENCE_API"
-            value = var.TRANSFORMERS_INFERENCE_API
-          },
-          {
-            name  = "STANDALONE_MODE"
-            value = var.STANDALONE_MODE
+            name  = "CLUSTER_HOSTNAME"
+            value = "$(POD_NAME)"
           },
         ], var.env)
 

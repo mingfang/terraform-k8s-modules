@@ -16,7 +16,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "semitechnologies/transformers-inference:sentence-transformers-multi-qa-MiniLM-L6-cos-v1"
+  default = "semitechnologies/ner-transformers:dbmdz-bert-large-cased-finetuned-conll03-english"
 }
 
 variable "env" {

@@ -16,7 +16,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "semitechnologies/weaviate:1.2.1"
+  default = "semitechnologies/weaviate:1.12.2"
 }
 
 variable "env" {
@@ -48,11 +48,29 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
+variable "CONTEXTIONARY_URL" {
+  default = null
+}
+variable "TRANSFORMERS_INFERENCE_API" {
+  default = null
+}
+variable "QNA_INFERENCE_API" {
+  default = null
+}
+variable "NER_INFERENCE_API" {
+  default = null
+}
+variable "SPELLCHECK_INFERENCE_API" {
+  default = null
+}
 variable "QUERY_DEFAULTS_LIMIT" {
-  default = 20
+  default = 25
 }
 variable "AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED" {
   default = true
+}
+variable "PERSISTENCE_DATA_PATH" {
+  default = "/data"
 }
 variable "DEFAULT_VECTORIZER_MODULE" {
   default = ""
@@ -60,13 +78,3 @@ variable "DEFAULT_VECTORIZER_MODULE" {
 variable "ENABLE_MODULES" {
   default = ""
 }
-variable "CONTEXTIONARY_URL" {
-  default = null
-}
-variable "TRANSFORMERS_INFERENCE_API" {
-  default = null
-}
-variable "STANDALONE_MODE" {
-  default = true
-}
-

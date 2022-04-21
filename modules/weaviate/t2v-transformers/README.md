@@ -8,7 +8,7 @@ Provider Requirements:
 * `ENABLE_CUDA` (default `"0"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"semitechnologies/transformers-inference:distilbert-base-uncased"`)
+* `image` (default `"semitechnologies/transformers-inference:sentence-transformers-multi-qa-MiniLM-L6-cos-v1"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

@@ -20,6 +20,25 @@ module "t2v-transformers" {
   replicas  = 1
 }
 
+module "qna-transformers" {
+  source    = "../../modules/weaviate/qna-transformers"
+  name      = "qna-transformers"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+}
+module "ner-transformers" {
+  source    = "../../modules/weaviate/ner-transformers"
+  name      = "ner-transformers"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+}
+module "text-spellcheck" {
+  source    = "../../modules/weaviate/text-spellcheck"
+  name      = "text-spellcheck"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+}
+
 module "weaviate" {
   source    = "../../modules/weaviate/weaviate"
   name      = "weaviate"
@@ -29,10 +48,14 @@ module "weaviate" {
   storage       = "1Gi"
   storage_class = "cephfs"
 
-  ENABLE_MODULES             = "text2vec-contextionary, text2vec-transformers"
-  DEFAULT_VECTORIZER_MODULE  = "text2vec-contextionary"
-  CONTEXTIONARY_URL          = "contextionary:9999"
-  TRANSFORMERS_INFERENCE_API = "http://t2v-transformers:8080"
+  CONTEXTIONARY_URL          = "${module.contextionary.name}:${module.contextionary.ports[0].port}"
+  TRANSFORMERS_INFERENCE_API = "http://${module.t2v-transformers.name}:${module.t2v-transformers.ports[0].port}"
+  QNA_INFERENCE_API          = "http://${module.qna-transformers.name}:${module.qna-transformers.ports[0].port}"
+  NER_INFERENCE_API          = "http://${module.ner-transformers.name}:${module.ner-transformers.ports[0].port}"
+  SPELLCHECK_INFERENCE_API   = "http://${module.text-spellcheck.name}:${module.text-spellcheck.ports[0].port}"
+
+  ENABLE_MODULES            = "text2vec-contextionary,text2vec-transformers,qna-transformers,ner-transformers,text-spellcheck"
+  DEFAULT_VECTORIZER_MODULE = "text2vec-contextionary"
 }
 
 

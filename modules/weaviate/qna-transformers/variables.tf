@@ -16,7 +16,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "semitechnologies/transformers-inference:sentence-transformers-multi-qa-MiniLM-L6-cos-v1"
+  default = "semitechnologies/qna-transformers:distilbert-base-uncased-distilled-squad"
 }
 
 variable "env" {

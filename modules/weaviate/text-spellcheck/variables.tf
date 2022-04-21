@@ -16,7 +16,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "semitechnologies/transformers-inference:sentence-transformers-multi-qa-MiniLM-L6-cos-v1"
+  default = "semitechnologies/text-spellcheck-model:pyspellchecker-en"
 }
 
 variable "env" {
@@ -38,8 +38,4 @@ variable "resources" {
 
 variable "overrides" {
   default = {}
-}
-
-variable "ENABLE_CUDA" {
-  default = "0"
 }

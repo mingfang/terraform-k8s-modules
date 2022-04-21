@@ -1,24 +1,19 @@
 
-# Module `weaviate/contextionary`
+# Module `weaviate/text-spellcheck`
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `ENABLE_COMPOUND_SPLITTING` (default `false`)
-* `EXTENSIONS_STORAGE_MODE` (default `"weaviate"`)
-* `EXTENSIONS_STORAGE_ORIGIN` (required)
-* `NEIGHBOR_OCCURRENCE_IGNORE_PERCENTILE` (default `5`)
-* `OCCURRENCE_WEIGHT_LINEAR_FACTOR` (default `0.75`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"semitechnologies/contextionary:en0.16.0-v1.1.0"`)
+* `image` (default `"semitechnologies/text-spellcheck-model:pyspellchecker-en"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
-* `ports` (default `[{"name":"http","port":9999}]`)
+* `ports` (default `[{"name":"http","port":8080}]`)
 * `replicas` (default `1`)
-* `resources` (default `{"requests":{"cpu":"500m","memory":"500Mi"}}`)
+* `resources` (default `{"requests":{"cpu":"1000m","memory":"3000Mi"}}`)
 
 ## Output Values
 * `deployment`

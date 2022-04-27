@@ -17,7 +17,7 @@ Provider Requirements:
 * `SG_S3_SECURE` (default `null`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"splitgraph/engine:0.2.17-postgis"`)
+* `image` (default `"splitgraph/engine:0.3.9-postgis"`)
 * `name` (default `"splitgraph"`)
 * `namespace` (required)
 * `overrides` (default `{}`)

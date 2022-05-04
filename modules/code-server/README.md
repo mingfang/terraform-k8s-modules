@@ -9,7 +9,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `args` (default `[]`)
 * `env` (default `[]`)
-* `image` (default `"codercom/code-server:3.8.0"`)
+* `image` (default `"codercom/code-server:4.3.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

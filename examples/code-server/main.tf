@@ -43,11 +43,18 @@ module "code-server" {
   name      = "code-server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
+  env = [
+    {
+      name  = "DOCKER_HOST"
+      value = "tcp://localhost:2375"
+    }
+  ]
   args = ["--auth=none"]
+
   additional_containers = [
     {
       name  = "dind"
-      image = "docker:19-dind"
+      image = "docker:20.10.9-dind"
       args  = ["--insecure-registry=0.0.0.0/0"]
       env = [
         {
@@ -63,9 +70,8 @@ module "code-server" {
           value = ""
         }
       ]
-      security_context = {
-        privileged = true
-      }
+
+      security_context = { privileged = true }
 
       volume_mounts = [
         {
@@ -80,12 +86,13 @@ module "code-server" {
   pvc = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1_ingress" "code-server" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "vscode-example.*"
-      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
+      "kubernetes.io/ingress.class"                    = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"       = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/enable-access-log"  = "false"
     }
     name      = module.code-server.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
@@ -97,15 +104,12 @@ resource "k8s_networking_k8s_io_v1_ingress" "code-server" {
         paths {
           path = "/"
           backend {
-            service {
-              name = module.code-server.name
-              port {
-                number = module.code-server.ports[0].port
-              }
-            }
+            service_name = module.code-server.name
+            service_port = module.code-server.ports[0].port
           }
         }
       }
     }
   }
 }
+

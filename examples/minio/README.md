@@ -9,7 +9,6 @@ Provider Requirements:
 * `minio_secret_key` (default `"bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"`)
 * `name` (default `"minio"`)
 * `namespace` (default `"minio-example"`)
-* `replicas` (default `4`)
 
 ## Output Values
 * `minio_access_key`
@@ -21,6 +20,4 @@ Provider Requirements:
 
 ## Child Modules
 * `minio` from [../../modules/minio](../../modules/minio)
-* `minio-storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
-* `nfs-server` from [../../modules/nfs-server-empty-dir](../../modules/nfs-server-empty-dir)
 

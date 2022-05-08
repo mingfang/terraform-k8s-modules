@@ -63,29 +63,19 @@ locals {
         ]
       },
       {
-        name    = "mc"
-        image   = "minio/mc"
-        command = ["sleep", "infinity"]
-
-        env = concat([
-          {
-            name = "POD_NAME"
-
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
-              }
-            }
-          },
-          {
-            name  = "MINIO_ROOT_USER"
-            value = var.minio_access_key
-          },
-          {
-            name  = "MINIO_ROOT_PASSWORD"
-            value = var.minio_secret_key
-          },
-        ], var.env)
+        name  = "mc"
+        image = "minio/mc"
+        command = [
+          "bash",
+          "-c",
+          <<-EOF
+          until curl -s http://localhost:9000/minio/health/live; do
+            sleep 10
+          done
+          mc alias set local http://localhost:9000 ${var.minio_access_key} ${var.minio_secret_key}
+          exec sleep infinity
+          EOF
+        ]
       },
     ]
 

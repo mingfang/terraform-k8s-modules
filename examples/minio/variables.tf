@@ -6,10 +6,6 @@ variable "namespace" {
   default = "minio-example"
 }
 
-variable "replicas" {
-  default = 4
-}
-
 variable "minio_access_key" {
   default = "IUWU60H2527LP7DOYJVP"
 }

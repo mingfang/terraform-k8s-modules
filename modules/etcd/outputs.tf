@@ -1,5 +1,5 @@
 output "name" {
-  value = module.statefulset-service.name
+  value = var.name
 }
 
 output "ports" {

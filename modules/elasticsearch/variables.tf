@@ -2,8 +2,12 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable "image" {
+  default = "docker.elastic.co/elasticsearch/elasticsearch:7.17.0"
+}
+
 variable "replicas" {
-  default = 3
+  default = 1
 }
 
 variable "ports" {
@@ -15,10 +19,6 @@ variable "ports" {
   ]
 }
 
-variable image {
-  default = "docker.elastic.co/elasticsearch/elasticsearch:7.16.3"
-}
-
 variable "env" {
   default = []
 }
@@ -27,12 +27,8 @@ variable "annotations" {
   default = {}
 }
 
-variable "overrides" {
-  default = {}
-}
-
 variable "node_selector" {
-  default = null
+  default = {}
 }
 
 variable "resources" {
@@ -45,6 +41,15 @@ variable "resources" {
       memory = "4Gi"
     }
   }
+}
+
+variable "overrides" {
+  default = {}
+}
+
+variable "secret" {
+  default     = null
+  description = "secret containing ca.crt, tls.crt, and tls.key to enable TLS"
 }
 
 variable "storage" {}

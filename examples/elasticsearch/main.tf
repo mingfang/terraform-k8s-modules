@@ -8,10 +8,12 @@ module "elasticsearch" {
   source    = "../../modules/elasticsearch"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = var.replicas
+  replicas  = 3
 
   storage       = "1Gi"
   storage_class = var.storage_class_name
+
+  secret = module.cert_secret.secret
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "elasticsearch" {

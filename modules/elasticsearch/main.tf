@@ -2,9 +2,9 @@ locals {
   parameters = {
     name        = var.name
     namespace   = var.namespace
-    annotations = var.annotations
     replicas    = var.replicas
     ports       = var.ports
+    annotations = var.annotations
 
     enable_service_links        = false
     pod_management_policy       = "Parallel"
@@ -82,34 +82,55 @@ locals {
             name  = "path.data"
             value = "/data/$(POD_NAME)"
           },
-        ], var.env)
+          ], var.secret != null ? [
+          {
+            name  = "xpack.security.enabled"
+            value = "true"
+          },
+          {
+            name  = "xpack.security.authc.realms.native.native1.order"
+            value = "0"
+          },
+          {
+            name  = "xpack.security.transport.ssl.enabled"
+            value = "true"
+          },
+          {
+            name  = "xpack.security.transport.ssl.verification_mode"
+            value = "certificate"
+          },
+          {
+            name  = "xpack.security.transport.ssl.client_authentication"
+            value = "required"
+          },
+          {
+            name  = "xpack.security.transport.ssl.certificate_authorities"
+            value = "/usr/share/elasticsearch/config/ca.crt"
+          },
+          {
+            name  = "xpack.security.transport.ssl.certificate"
+            value = "/usr/share/elasticsearch/config/tls.crt"
+          },
+          {
+            name  = "xpack.security.transport.ssl.key"
+            value = "/usr/share/elasticsearch/config/tls.key"
+          },
+        ] : [], var.env)
 
         liveness_probe = {
-          failure_threshold     = 3
-          initial_delay_seconds = 120
-          period_seconds        = 10
-          success_threshold     = 1
-          timeout_seconds       = 1
-
-          http_get = {
-            path   = "/"
-            port   = var.ports.0.port
-            scheme = "HTTP"
+          tcp_socket = {
+            port = 9300
           }
+          initial_delay_seconds = 120
+          timeout_seconds       = 10
         }
 
         readiness_probe = {
-          failure_threshold     = 3
-          initial_delay_seconds = 30
-          period_seconds        = 10
-          success_threshold     = 1
-          timeout_seconds       = 1
-
-          http_get = {
-            path   = "/"
-            port   = var.ports.0.port
-            scheme = "HTTP"
+          tcp_socket = {
+            port = 9200
           }
+          initial_delay_seconds = 30
+          timeout_seconds       = 10
         }
 
         resources = var.resources
@@ -123,12 +144,22 @@ locals {
           privileged = true
         }
 
-        volume_mounts = [
-          {
-            name       = var.volume_claim_template_name
-            mount_path = "/data"
-          },
-        ]
+        volume_mounts = concat(
+          [
+            {
+              name       = var.volume_claim_template_name
+              mount_path = "/data"
+            },
+          ],
+          var.secret != null ? [
+            for k, v in var.secret.data :
+            {
+              name       = "secret"
+              mount_path = "/usr/share/elasticsearch/config/${k}"
+              sub_path   = k
+            }
+          ] : [],
+        )
       },
     ]
 
@@ -157,6 +188,18 @@ locals {
         ]
       },
     ]
+
+    node_selector = var.node_selector
+
+    volumes = var.secret != null ? [
+      {
+        name = "secret"
+
+        secret = {
+          secret_name = var.secret.metadata[0].name
+        }
+      }
+    ] : []
 
     volume_claim_templates = [
       {

@@ -1,31 +1,32 @@
 resource "k8s_admissionregistration_k8s_io_v1_mutating_webhook_configuration" "this" {
   metadata {
-    name = var.name
+    name      = var.name
+    namespace = var.namespace
   }
 
   webhooks {
-    name = "vault.hashicorp.com"
+    name = "${var.name}.hashicorp.com"
 
     client_config {
+      cabundle = ""
+
       service {
         name      = var.name
         namespace = var.namespace
         path      = "/mutate"
         port      = var.ports[0].port
       }
-      cabundle = ""
     }
 
     rules {
-      operations   = ["CREATE", "UPDATE"]
       api_groups   = [""]
       api_versions = ["v1"]
       resources    = ["deployments", "jobs", "pods", "statefulsets"]
+      operations   = ["CREATE", "UPDATE"]
     }
 
 
-    //not v1 compatible: expected webhook response of admission.k8s.io/v1, Kind=AdmissionReview, got /, Kind=
-    admission_review_versions = ["v1beta1"]
+    admission_review_versions = ["v1"]
     failure_policy            = "Ignore"
     side_effects              = "None"
     timeout_seconds           = 5

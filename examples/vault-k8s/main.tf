@@ -20,10 +20,9 @@ module "nginx" {
     //Vault role
     "vault.hashicorp.com/agent-inject" = "true"
     "vault.hashicorp.com/role"         = "vault-agent"
-    //init container
-    "vault.hashicorp.com/agent-init-first"   = "true"
-    "vault.hashicorp.com/agent-pre-populate" = "true"
-    //no sidecar
+    //init container, no sidecar
+    "vault.hashicorp.com/agent-init-first"        = "true"
+    "vault.hashicorp.com/agent-pre-populate"      = "true"
     "vault.hashicorp.com/agent-pre-populate-only" = "true"
     //secret stored on Vault
     "vault.hashicorp.com/agent-inject-secret-helloworld" = "secret/data/vault-agent/helloworld"

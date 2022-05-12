@@ -5,12 +5,8 @@ module "rbac" {
 
   cluster_role_rules = [
     {
-      api_groups = [
-        "admissionregistration.k8s.io",
-      ]
-      resources = [
-        "mutatingwebhookconfigurations",
-      ]
+      api_groups = ["admissionregistration.k8s.io"]
+      resources  = ["mutatingwebhookconfigurations"]
       verbs = [
         "get",
         "list",
@@ -22,19 +18,23 @@ module "rbac" {
 
   role_rules = [
     {
-      api_groups = [
-        "",
-      ]
-      resources = [
-        "endpoints",
-        "secrets",
-      ]
+      api_groups = [""]
+      resources  = ["secrets", "configmaps"]
       verbs = [
         "create",
         "get",
         "watch",
         "list",
         "update",
+      ]
+    },
+    {
+      api_groups = [""]
+      resources  = ["pods"]
+      verbs = [
+        "get",
+        "patch",
+        "delete",
       ]
     },
   ]

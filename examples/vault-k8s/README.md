@@ -10,8 +10,9 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
+* `k8s_core_v1_service.vault` from `k8s`
 * `k8s_networking_k8s_io_v1beta1_ingress.nginx` from `k8s`
-* `k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding.this` from `k8s`
+* `k8s_networking_k8s_io_v1beta1_ingress.vault` from `k8s`
 
 ## Child Modules
 * `nginx` from [../../modules/nginx](../../modules/nginx)

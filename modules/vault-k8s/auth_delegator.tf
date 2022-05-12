@@ -1,4 +1,4 @@
-resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "this" {
+resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "auth-delegator" {
   metadata {
     name = "${var.namespace}:system:auth-delegator"
   }

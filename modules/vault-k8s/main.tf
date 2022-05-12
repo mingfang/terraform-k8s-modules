@@ -10,90 +10,31 @@ locals {
 
     containers = [
       {
-        name  = "leader-elector"
-        image = var.image_leader_election
-
-        args = [
-          "--election=vault-agent-injector-leader",
-          "--election-namespace=$(NAMESPACE)",
-          "--http=0.0.0.0:4040",
-          "--ttl=60s",
-        ]
-
-        env = concat([
-          {
-            name = "POD_NAME"
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
-              }
-            }
-          },
-          {
-            name = "NAMESPACE"
-            value_from = {
-              field_ref = {
-                field_path = "metadata.namespace"
-              }
-            }
-          },
-        ], var.env)
-
-        liveness_probe = {
-          http_get = {
-            path   = "/"
-            port   = 4040
-            schema = "HTTP"
-          }
-          failure_threshold     = 2
-          initial_delay_seconds = 1
-          period_seconds        = 2
-          success_threshold     = 1
-          timeout_seconds       = 5
-        }
-
-        readiness_probe = {
-          http_get = {
-            path   = "/"
-            port   = 4040
-            schema = "HTTP"
-          }
-          failure_threshold     = 2
-          initial_delay_seconds = 2
-          period_seconds        = 2
-          success_threshold     = 1
-          timeout_seconds       = 5
-        }
-      },
-      {
         name  = "sidecar-injector"
         image = var.image
 
-        args = [
-          "agent-inject",
-          "2>&1",
-        ]
+        args = ["agent-inject", "2>&1", ]
 
         env = concat([
-          {
-            name = "POD_NAME"
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
-              }
-            }
-          },
           {
             name = "NAMESPACE"
             value_from = {
               field_ref = {
                 field_path = "metadata.namespace"
+              }
+            }
+          },
+          {
+            name = "POD_NAME"
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
               }
             }
           },
           {
             name  = "AGENT_INJECT_LISTEN"
-            value = "0.0.0.0:${var.ports[0].port}"
+            value = ":${var.ports[0].port}"
           },
           {
             name  = "AGENT_INJECT_LOG_LEVEL"
@@ -121,7 +62,7 @@ locals {
           },
           {
             name  = "AGENT_INJECT_USE_LEADER_ELECTOR"
-            value = "true"
+            value = "false"
           },
           {
             name  = "AGENT_INJECT_DEFAULT_TEMPLATE"

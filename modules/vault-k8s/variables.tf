@@ -10,17 +10,13 @@ variable "ports" {
   default = [
     {
       name = "https"
-      port = 443
+      port = 8443
     },
   ]
 }
 
 variable "image" {
-  default = "hashicorp/vault-k8s:0.10.0"
-}
-
-variable "image_leader_election" {
-  default = "k8s.gcr.io/leader-elector:0.4"
+  default = "hashicorp/vault-k8s:0.16.0"
 }
 
 variable "env" {
@@ -42,6 +38,6 @@ variable "AGENT_INJECT_LOG_LEVEL" {
 }
 
 variable "AGENT_INJECT_VAULT_IMAGE" {
-  default = "vault:1.7.0"
+  default = "hashicorp/vault:1.10.2"
 }
 

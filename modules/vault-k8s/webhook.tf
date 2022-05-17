@@ -1,7 +1,6 @@
 resource "k8s_admissionregistration_k8s_io_v1_mutating_webhook_configuration" "this" {
   metadata {
-    name      = var.name
-    namespace = var.namespace
+    name = var.name
   }
 
   webhooks {

@@ -8,7 +8,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `config_map` (required)
 * `env` (default `[]`)
-* `image` (default `"dremio/dremio-oss:15.0.0"`)
+* `image` (default `"dremio/dremio-oss:21.1.1"`)
 * `master-cordinator` (required)
 * `name` (required)
 * `namespace` (required)

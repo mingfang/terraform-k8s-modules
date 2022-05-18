@@ -107,10 +107,3 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "lakefs" {
     }
   }
 }
-
-/*
-Access Key ID:
-AKIAJ5JLHONNHBRQAZOQ
-Secret Access Key:
-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
-*/

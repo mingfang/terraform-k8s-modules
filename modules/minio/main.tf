@@ -69,10 +69,10 @@ locals {
           "bash",
           "-c",
           <<-EOF
-          until curl -s http://localhost:9000/minio/health/live; do
+          until mc alias set local http://localhost:9000 ${var.minio_access_key} ${var.minio_secret_key}; do
             sleep 10
           done
-          mc alias set local http://localhost:9000 ${var.minio_access_key} ${var.minio_secret_key}
+
           exec sleep infinity
           EOF
         ]

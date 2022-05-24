@@ -18,6 +18,15 @@ variable "node_selector" {
   default = {}
 }
 
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
+}
+
 variable "overrides" {
   default = {}
 }

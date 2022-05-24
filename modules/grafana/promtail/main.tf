@@ -25,6 +25,8 @@ locals {
           },
         ], var.env)
 
+        resources = var.resources
+
         volume_mounts = [
           {
             name       = "varlog"

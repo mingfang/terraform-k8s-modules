@@ -14,6 +14,7 @@ Provider Requirements:
 * `namespace` (required)
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 * `tenant_id` (default `""`)
 
 ## Child Modules

@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "kubernetesui/dashboard:v2.0.4"
+  default = "kubernetesui/dashboard:v2.5.0"
 }
 
 variable "replicas" {

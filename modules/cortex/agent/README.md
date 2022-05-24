@@ -12,9 +12,10 @@ Provider Requirements:
 * `log_level` (default `"info"`)
 * `name` (required)
 * `namespace` (required)
-* `node_selector` (default `null`)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `remote_write_url` (required)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Child Modules
 * `config` from [../../kubernetes/config-map](../../kubernetes/config-map)

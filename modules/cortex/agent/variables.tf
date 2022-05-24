@@ -15,8 +15,16 @@ variable "annotations" {
 }
 
 variable "node_selector" {
-  type    = map
-  default = null
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
 }
 
 variable "overrides" {

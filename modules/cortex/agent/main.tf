@@ -23,6 +23,8 @@ locals {
           },
         ], var.env)
 
+        resources = var.resources
+
         security_context = {
           capabilities = {
             add = ["SYS_TIME"]
@@ -35,9 +37,9 @@ locals {
             mount_path = "/etc/agent"
           },
           {
-            name = "rootfs"
+            name       = "rootfs"
             mount_path = "/host"
-            read_only = true
+            read_only  = true
           }
         ]
       },

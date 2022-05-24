@@ -1,4 +1,12 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   servers = [
     for i in range(0, var.replicas) :
     "http://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local/data/${var.name}-${i}"
@@ -7,9 +15,9 @@ locals {
   parameters = {
     name        = var.name
     namespace   = var.namespace
-    annotations = var.annotations
     replicas    = var.replicas
     ports       = var.ports
+    annotations = var.annotations
 
     enable_service_links        = false
     pod_management_policy       = "Parallel"
@@ -40,7 +48,7 @@ locals {
             name  = "MINIO_ROOT_PASSWORD"
             value = var.minio_secret_key
           },
-        ], var.env)
+        ], var.env, local.computed_env)
 
         liveness_probe = {
           failure_threshold = 3
@@ -54,6 +62,8 @@ locals {
           success_threshold     = 1
           timeout_seconds       = 20
         }
+
+        resources = var.resources
 
         volume_mounts = [
           {
@@ -79,6 +89,8 @@ locals {
       },
     ]
 
+    node_selector = var.node_selector
+
     volume_claim_templates = [
       {
         name               = var.volume_claim_template_name
@@ -94,7 +106,6 @@ locals {
     ]
   }
 }
-
 
 module "statefulset-service" {
   source     = "../../archetypes/statefulset-service"

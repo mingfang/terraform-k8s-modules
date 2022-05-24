@@ -2,6 +2,10 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable "image" {
+  default = "minio/minio:RELEASE.2021-08-05T22-01-19Z"
+}
+
 variable "replicas" {
   default = 1
 }
@@ -19,12 +23,14 @@ variable "ports" {
   ]
 }
 
-variable "image" {
-  default = "minio/minio:RELEASE.2021-08-05T22-01-19Z"
-}
-
 variable "env" {
   default = []
+}
+variable "env_map" {
+  default = {}
+}
+variable "env_file" {
+  default = null
 }
 
 variable "annotations" {
@@ -32,7 +38,20 @@ variable "annotations" {
 }
 
 variable "node_selector" {
-  default = null
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
+}
+
+variable "overrides" {
+  default = {}
 }
 
 variable "storage" {}
@@ -43,9 +62,6 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable "overrides" {
-  default = {}
-}
 
 variable "minio_access_key" {}
 variable "minio_secret_key" {}

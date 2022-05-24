@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "args" {
-  default = []
+  default = null
 }
 
 variable "env" {
@@ -25,6 +25,19 @@ variable "env" {
 
 variable "annotations" {
   default = {}
+}
+
+variable "node_selector" {
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
 }
 
 variable "overrides" {

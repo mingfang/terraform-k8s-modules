@@ -34,6 +34,8 @@ locals {
           },
         ], var.env)
 
+        resources = var.resources
+
         volume_mounts = var.pvc != null ? [
           {
             name       = "data"
@@ -68,6 +70,8 @@ locals {
         ] : []
       },
     ]
+
+    node_selector = var.node_selector
 
     volumes = var.pvc != null ? [
       {

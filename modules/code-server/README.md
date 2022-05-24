@@ -7,14 +7,16 @@ Provider Requirements:
 ## Input Variables
 * `additional_containers` (default `[]`)
 * `annotations` (default `{}`)
-* `args` (default `[]`)
+* `args` (default `null`)
 * `env` (default `[]`)
 * `image` (default `"codercom/code-server:4.3.0"`)
 * `name` (required)
 * `namespace` (required)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":8080}]`)
 * `pvc` (default `null`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Output Values
 * `name`

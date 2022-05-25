@@ -1,10 +1,15 @@
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
-    annotations = var.annotations
-    replicas    = var.replicas
-    ports       = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
+
+    annotations = merge(
+      var.annotations,
+      var.config_configmap != null ? { config_checksum = md5(join("", keys(var.config_configmap.data), values(var.config_configmap.data))) } : {},
+      var.catalog_configmap != null ? { catalog_checksum = md5(join("", keys(var.catalog_configmap.data), values(var.catalog_configmap.data))) } : {},
+    )
 
     enable_service_links        = false
     pod_management_policy       = "Parallel"

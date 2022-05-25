@@ -2,6 +2,10 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable "image" {
+  default = "trinodb/trino:381"
+}
+
 variable "replicas" {
   default = 1
 }
@@ -15,10 +19,6 @@ variable "ports" {
   ]
 }
 
-variable "image" {
-  default = "trinodb/trino:374"
-}
-
 variable "env" {
   default = []
 }
@@ -27,7 +27,7 @@ variable "annotations" {
   default = {}
 }
 
-variable "overrides" {
+variable "node_selector" {
   default = {}
 }
 
@@ -40,9 +40,14 @@ variable "resources" {
   }
 }
 
+variable "overrides" {
+  default = {}
+}
+
 variable "catalog_configmap" {
   default = null
 }
+
 variable "config_configmap" {
   default = null
 }

@@ -1,8 +1,15 @@
-variable "name" {
-  default = "postgres"
-}
+variable "name" {}
 
 variable "namespace" {}
+
+variable "image" {
+  default = "postgres:12.1"
+}
+
+variable "replicas" {
+  default     = 1
+  description = "hardcoded to 1"
+}
 
 variable "ports" {
   default = [
@@ -13,19 +20,28 @@ variable "ports" {
   ]
 }
 
-variable "replicas" {
-  default = 1
+variable "command" {
+  default = null
 }
-
-variable "image" {
-  default = "postgres:12.1"
+variable "args" {
+  default = null
 }
 
 variable "env" {
   default = []
 }
+variable "env_map" {
+  default = {}
+}
+variable "env_file" {
+  default = null
+}
 
 variable "annotations" {
+  default = {}
+}
+
+variable "node_selector" {
   default = {}
 }
 
@@ -38,18 +54,31 @@ variable "resources" {
   }
 }
 
+variable "service_account_name" {
+  default = null
+}
+
 variable "overrides" {
   default = {}
 }
 
+variable "configmap" {
+  default     = null
+  description = "keys must be *.sql files used for db initialization"
+}
+
 variable "storage" {}
-
 variable "storage_class" {}
-
 variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable "POSTGRES_USER" {}
-variable "POSTGRES_PASSWORD" {}
-variable "POSTGRES_DB" {}
+variable "POSTGRES_USER" {
+  default = null
+}
+variable "POSTGRES_PASSWORD" {
+  default = null
+}
+variable "POSTGRES_DB" {
+  default = null
+}

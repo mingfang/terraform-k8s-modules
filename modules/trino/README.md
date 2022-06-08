@@ -9,7 +9,7 @@ Provider Requirements:
 * `catalog_configmap` (default `null`)
 * `config_configmap` (default `null`)
 * `env` (default `[]`)
-* `image` (default `"trinodb/trino:380"`)
+* `image` (default `"trinodb/trino:384"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

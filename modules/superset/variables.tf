@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "apache/superset"
+  default = "apache/superset:48f3eb427300faf5aa0a5ba22b20997324df3d2d"
 }
 
 variable "replicas" {

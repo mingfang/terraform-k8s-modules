@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "dremio/dremio-oss:21.1.1"
+  default = "dremio/dremio-oss:21.2.0"
 }
 
 variable "ports" {

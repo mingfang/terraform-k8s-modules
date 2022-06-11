@@ -20,32 +20,7 @@ module "config" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-// optional Alluxio integration
 
-locals {
-  /*
-  overrides = {
-    annotations = {
-      "pvc" = k8s_core_v1_persistent_volume_claim.this.metadata[0].resource_version
-    }
-    volume_mounts = [
-      {
-        name       = "alluxio-fuse-mount"
-        mount_path = "/alluxio"
-      }
-    ]
-    volumes = [
-      {
-        name = "alluxio-fuse-mount"
-        persistent_volume_claim = {
-          claim_name = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
-        }
-      }
-    ]
-  }
-*/
-  overrides = {}
-}
 
 resource "k8s_core_v1_persistent_volume_claim" "this" {
   metadata {
@@ -66,7 +41,6 @@ module "master-cordinator" {
   namespace  = k8s_core_v1_namespace.this.metadata[0].name
   config_map = module.config.config_map
   zookeeper  = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
-  overrides  = local.overrides
   pvc_name   = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
 }
 
@@ -77,7 +51,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
       "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "3600"
       "nginx.ingress.kubernetes.io/proxy-read-timeout"    = "3600"
       "nginx.ingress.kubernetes.io/proxy-body-size"       = "1024m" // for large file uploads
-      "nginx.ingress.kubernetes.io/server-alias"          = "dremio-example.*"
+      "nginx.ingress.kubernetes.io/server-alias"          = "${var.namespace}.*"
     }
     name      = var.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
@@ -108,5 +82,4 @@ module "executor" {
   storage_class_name = "cephfs"
   config_map         = module.config.config_map
   zookeeper          = "${module.zookeeper.name}:${lookup(module.zookeeper.ports[0], "port")}"
-  overrides          = local.overrides
 }

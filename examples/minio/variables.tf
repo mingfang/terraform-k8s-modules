@@ -13,3 +13,6 @@ variable "minio_access_key" {
 variable "minio_secret_key" {
   default = "bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"
 }
+
+variable "AWS_ACCESS_KEY_ID" {}
+variable "AWS_SECRET_ACCESS_KEY" {}

@@ -32,15 +32,6 @@ locals {
 
         env = concat([
           {
-            name = "POD_NAME"
-
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
-              }
-            }
-          },
-          {
             name  = "MINIO_ROOT_USER"
             value = var.minio_access_key
           },
@@ -65,12 +56,12 @@ locals {
 
         resources = var.resources
 
-        volume_mounts = [
+        volume_mounts = var.storage != null ? [
           {
             name       = var.volume_claim_template_name
             mount_path = "/data"
           }
-        ]
+        ] : []
       },
       {
         name  = "mc"
@@ -79,19 +70,32 @@ locals {
           "bash",
           "-c",
           <<-EOF
-          until mc alias set local http://localhost:9000 ${var.minio_access_key} ${var.minio_secret_key}; do
-            sleep 10
-          done
+          if [ ! -z "$$MINIO_ROOT_USER" ]; then
+            until mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD; do
+              sleep 10
+            done
+          fi
 
           exec sleep infinity
           EOF
         ]
+
+        env = concat([
+          {
+            name  = "MINIO_ROOT_USER"
+            value = var.minio_access_key
+          },
+          {
+            name  = "MINIO_ROOT_PASSWORD"
+            value = var.minio_secret_key
+          },
+        ], var.env, local.computed_env)
       },
     ]
 
     node_selector = var.node_selector
 
-    volume_claim_templates = [
+    volume_claim_templates = var.storage != null ? [
       {
         name               = var.volume_claim_template_name
         storage_class_name = var.storage_class_name
@@ -103,7 +107,7 @@ locals {
           }
         }
       }
-    ]
+    ] : []
   }
 }
 

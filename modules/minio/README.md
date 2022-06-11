@@ -12,8 +12,8 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_map` (default `{}`)
 * `image` (default `"minio/minio:RELEASE.2021-08-05T22-01-19Z"`)
-* `minio_access_key` (required)
-* `minio_secret_key` (required)
+* `minio_access_key` (default `""`)
+* `minio_secret_key` (default `""`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)
@@ -21,8 +21,8 @@ Provider Requirements:
 * `ports` (default `[{"name":"http","port":9000},{"name":"http-console","port":9001}]`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
-* `storage` (required)
-* `storage_class_name` (required)
+* `storage` (default `null`)
+* `storage_class_name` (default `null`)
 * `volume_claim_template_name` (default `"pvc"`)
 
 ## Output Values

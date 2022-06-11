@@ -23,6 +23,10 @@ variable "ports" {
   ]
 }
 
+variable "args" {
+  default = []
+}
+
 variable "env" {
   default = []
 }
@@ -54,19 +58,25 @@ variable "overrides" {
   default = {}
 }
 
-variable "storage" {}
+variable "storage" {
+  default = null
+}
 
-variable "storage_class_name" {}
+variable "storage_class_name" {
+  default = null
+}
 
 variable "volume_claim_template_name" {
   default = "pvc"
 }
 
 
-variable "minio_access_key" {}
-variable "minio_secret_key" {}
-variable "args" {
-  default = []
+variable "minio_access_key" {
+  default = ""
+}
+
+variable "minio_secret_key" {
+  default = ""
 }
 
 variable "create_buckets" {

@@ -15,6 +15,8 @@ module "minio" {
 
   minio_access_key = var.minio_access_key
   minio_secret_key = var.minio_secret_key
+
+  create_buckets = ["test"]
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
@@ -35,6 +37,51 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
           backend {
             service_name = module.minio.name
             service_port = module.minio.ports[1].port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
+# gateway
+
+module "minio-s3" {
+  source    = "../../modules/minio"
+  name      = "minio-s3"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+
+  env_map = {
+    AWS_ACCESS_KEY_ID     = var.AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+    MINIO_CACHE           = "on"
+    MINIO_CACHE_DRIVES    = "/var/cache"
+  }
+  args             = ["gateway", "s3", "--console-address", ":9001"]
+  minio_access_key = var.minio_access_key
+  minio_secret_key = var.minio_secret_key
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "s3" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"                 = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"    = "s3-${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/proxy-body-size" = "10240m"
+    }
+    name      = "minio-s3"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+  spec {
+    rules {
+      host = "s3-${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.minio-s3.name
+            service_port = module.minio-s3.ports[1].port
           }
           path = "/"
         }

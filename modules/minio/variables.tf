@@ -54,6 +54,10 @@ variable "resources" {
   }
 }
 
+variable "service_account_name" {
+  default = null
+}
+
 variable "overrides" {
   default = {}
 }
@@ -81,4 +85,8 @@ variable "minio_secret_key" {
 
 variable "create_buckets" {
   default = []
+}
+
+variable "policies_configmap" {
+  default = null
 }

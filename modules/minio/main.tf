@@ -93,7 +93,8 @@ locals {
       },
     ]
 
-    node_selector = var.node_selector
+    node_selector        = var.node_selector
+    service_account_name = var.service_account_name
 
     volume_claim_templates = var.storage != null ? [
       {

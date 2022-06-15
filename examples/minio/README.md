@@ -22,6 +22,8 @@ Provider Requirements:
 * `k8s_networking_k8s_io_v1beta1_ingress.this` from `k8s`
 
 ## Child Modules
+* `image-pull-secret` from [../image-pull-secret](../image-pull-secret)
 * `minio` from [../../modules/minio](../../modules/minio)
 * `minio-s3` from [../../modules/minio](../../modules/minio)
+* `policies` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 

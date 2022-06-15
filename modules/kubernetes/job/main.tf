@@ -12,6 +12,7 @@ locals {
 
         command       = var.command
         env           = var.env
+        env_from      = var.env_from
         volume_mounts = var.volume_mounts
       },
     ]

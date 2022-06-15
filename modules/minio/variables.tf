@@ -79,11 +79,11 @@ variable "volume_claim_template_name" {
 
 
 variable "minio_access_key" {
-  default = ""
+  default = null
 }
 
 variable "minio_secret_key" {
-  default = ""
+  default = null
 }
 
 variable "create_buckets" {

@@ -34,11 +34,11 @@ locals {
           var.minio_access_key != null ? {
             name  = "MINIO_ROOT_USER"
             value = var.minio_access_key
-          } : {},
+          } : null,
           var.minio_secret_key != null ? {
             name  = "MINIO_ROOT_PASSWORD"
             value = var.minio_secret_key
-          }: {},
+          }: null,
         ], var.env, local.computed_env)
 
         env_from = var.env_from
@@ -86,11 +86,11 @@ locals {
           var.minio_access_key != null ? {
             name  = "MINIO_ROOT_USER"
             value = var.minio_access_key
-          } : {},
+          } : null,
           var.minio_secret_key != null ? {
             name  = "MINIO_ROOT_PASSWORD"
             value = var.minio_secret_key
-          }: {},
+          }: null,
         ], var.env, local.computed_env)
 
         env_from = var.env_from

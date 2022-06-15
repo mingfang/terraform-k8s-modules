@@ -16,6 +16,10 @@ variable "env" {
   default = []
 }
 
+variable "env_from" {
+  default =[]
+}
+
 variable "command" {}
 
 variable restart_policy {

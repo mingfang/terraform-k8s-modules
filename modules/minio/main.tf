@@ -90,6 +90,8 @@ locals {
             value = var.minio_secret_key
           },
         ], var.env, local.computed_env)
+
+        env_from = var.env_from
       },
     ]
 

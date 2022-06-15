@@ -30,6 +30,9 @@ variable "args" {
 variable "env" {
   default = []
 }
+variable "env_from" {
+  default = []
+}
 variable "env_map" {
   default = {}
 }

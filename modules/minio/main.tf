@@ -41,6 +41,8 @@ locals {
           },
         ], var.env, local.computed_env)
 
+        env_from = var.env_from
+
         liveness_probe = {
           failure_threshold = 3
           http_get = {

@@ -31,14 +31,14 @@ locals {
         args = coalescelist(var.args, concat(["server", "--console-address", ":${var.ports[1].port}"], local.servers))
 
         env = concat([
-          {
+          var.minio_access_key != null ? {
             name  = "MINIO_ROOT_USER"
             value = var.minio_access_key
-          },
-          {
+          } : {},
+          var.minio_secret_key != null ? {
             name  = "MINIO_ROOT_PASSWORD"
             value = var.minio_secret_key
-          },
+          }: {},
         ], var.env, local.computed_env)
 
         env_from = var.env_from
@@ -83,14 +83,14 @@ locals {
         ]
 
         env = concat([
-          {
+          var.minio_access_key != null ? {
             name  = "MINIO_ROOT_USER"
             value = var.minio_access_key
-          },
-          {
+          } : {},
+          var.minio_secret_key != null ? {
             name  = "MINIO_ROOT_PASSWORD"
             value = var.minio_secret_key
-          },
+          }: {},
         ], var.env, local.computed_env)
 
         env_from = var.env_from

@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "trinodb/trino:384"
+  default = "trinodb/trino:389"
 }
 
 variable "replicas" {
@@ -21,6 +21,10 @@ variable "ports" {
 
 variable "env" {
   default = []
+}
+
+variable "env_from" {
+  default = null
 }
 
 variable "annotations" {

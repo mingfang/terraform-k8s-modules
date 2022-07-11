@@ -23,6 +23,8 @@ locals {
         env = concat([
         ], var.env)
 
+        env_from = var.env_from
+
         resources = var.resources
 
         volume_mounts = concat(

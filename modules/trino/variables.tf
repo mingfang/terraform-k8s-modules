@@ -24,7 +24,7 @@ variable "env" {
 }
 
 variable "env_from" {
-  default = null
+  default = []
 }
 
 variable "annotations" {

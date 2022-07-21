@@ -14,8 +14,8 @@ locals {
     ports     = var.ports
     annotations = merge(
       var.annotations,
-      var.configmap != null ? {
-        config_checksum = md5(join("", keys(var.configmap.data), values(var.configmap.data)))
+      var.config_map != null ? {
+        config_checksum = md5(join("", keys(var.config_map.data), values(var.config_map.data)))
       } : {},
     )
 
@@ -58,11 +58,27 @@ locals {
               mount_path = "/data"
             },
           ] : [],
-          var.configmap != null ? [
-            for k, v in var.configmap.data :
+          var.config_map != null ? [
+            for k, v in var.config_map.data :
             {
               name       = "config"
-              mount_path = "/config/${var.name}/${k}"
+              mount_path = "/config/${k}"
+              sub_path   = k
+            }
+          ] : [],
+          var.policies_config_map != null ? [
+            for k, v in var.policies_config_map.data :
+            {
+              name       = "policies"
+              mount_path = "/policies/${k}"
+              sub_path   = k
+            }
+          ] : [],
+          var.schemas_config_map != null ? [
+            for k, v in var.schemas_config_map.data :
+            {
+              name       = "schemas"
+              mount_path = "/policies/_schemas/${k}"
               sub_path   = k
             }
           ] : [],
@@ -108,12 +124,30 @@ locals {
           }
         }
       ] : [],
-      var.configmap != null ? [
+      var.config_map != null ? [
         {
           name = "config"
 
           config_map = {
-            name = var.configmap.metadata[0].name
+            name = var.config_map.metadata[0].name
+          }
+        }
+      ] : [],
+      var.policies_config_map != null ? [
+        {
+          name = "policies"
+
+          config_map = {
+            name = var.policies_config_map.metadata[0].name
+          }
+        }
+      ] : [],
+      var.schemas_config_map != null ? [
+        {
+          name = "schemas"
+
+          config_map = {
+            name = var.schemas_config_map.metadata[0].name
           }
         }
       ] : [],

@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "ghcr.io/cerbos/cerbos:0.17.0"
+  default = "ghcr.io/cerbos/cerbos:0.19.0"
 }
 
 variable "replicas" {
@@ -65,7 +65,13 @@ variable "overrides" {
   default = {}
 }
 
-variable "configmap" {
+variable "config_map" {
+  default = null
+}
+variable "policies_config_map" {
+  default = null
+}
+variable "schemas_config_map" {
   default = null
 }
 

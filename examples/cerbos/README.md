@@ -15,7 +15,7 @@ Provider Requirements:
 
 ## Child Modules
 * `cerbos` from [../../modules/cerbos](../../modules/cerbos)
-* `config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
-* `postgres` from [../../modules/postgres](../../modules/postgres)
-* `postgres-config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
+* `cerbos_config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
+* `cerbos_policies` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
+* `cerbos_schemas` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 

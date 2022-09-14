@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "registry.rebelsoft.com/eve:latest"
+  default = "mingfang/eve:latest"
 }
 
 variable "replicas" {

@@ -21,6 +21,7 @@ locals {
           "--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/$(CLUSTER_NAME)",
           "--namespace=$(NAMESPACE)",
           "--cordon-node-before-terminating=${var.cordon-node-before-terminating}",
+          "--ignore-daemonsets-utilization=${var.ignore-daemonsets-utilization}",
         ]
 
         env = concat([

@@ -34,7 +34,7 @@ variable "node_selector" {
 variable "resources" {
   default = {
     requests = {
-      cpu    = "250m"
+      cpu    = "1000m"
       memory = "3Gi"
     }
     limits = {

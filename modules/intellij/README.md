@@ -8,12 +8,14 @@ Provider Requirements:
 * `additional_containers` (default `[]`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
+* `extra_pvcs` (default `[]`)
 * `image` (default `"registry.rebelsoft.com/projector-idea-c"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":8887}]`)
 * `pvc` (default `null`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Output Values
 * `name`

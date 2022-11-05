@@ -35,6 +35,10 @@ variable "pvc" {
   default = null
 }
 
+variable "extra_pvcs" {
+  default = []
+}
+
 variable "resources" {
   default = {
     requests = {

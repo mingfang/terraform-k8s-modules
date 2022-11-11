@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "trinodb/trino:389"
+  default = "trinodb/trino:402"
 }
 
 variable "replicas" {

@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "docker.io/dagster/dagster-celery-k8s:latest"
+  default = "docker.io/dagster/dagster-celery-k8s:1.0.17"
 }
 
 variable "env" {
@@ -32,3 +32,5 @@ variable "overrides" {
 }
 
 variable "config_map_dagster" {}
+
+variable "config_map_workspace" {}

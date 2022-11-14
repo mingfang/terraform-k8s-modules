@@ -9,7 +9,7 @@ Provider Requirements:
 * `config_map_dagster` (required)
 * `config_map_workspace` (required)
 * `env` (default `[]`)
-* `image` (default `"docker.io/dagster/dagster-celery-k8s:latest"`)
+* `image` (default `"docker.io/dagster/dagster-celery-k8s:1.0.17"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

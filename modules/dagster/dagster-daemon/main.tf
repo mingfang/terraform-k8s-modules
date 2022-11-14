@@ -14,7 +14,7 @@ locals {
           "/bin/bash",
           "-cx",
           <<-EOF
-          dagster-daemon run
+          dagster-daemon run -w $DAGSTER_HOME/workspace/workspace.yaml
           EOF
         ]
 
@@ -63,6 +63,10 @@ locals {
             name       = "dagster-instance"
             sub_path   = "dagster.yaml"
           },
+          {
+            mount_path = "/opt/dagster/dagster_home/workspace"
+            name       = "dagster-workspace-yaml"
+          },
         ]
       }
     ]
@@ -75,6 +79,12 @@ locals {
           name = var.config_map_dagster
         }
         name = "dagster-instance"
+      },
+      {
+        config_map = {
+          name = var.config_map_workspace
+        }
+        name = "dagster-workspace-yaml"
       },
     ]
   }

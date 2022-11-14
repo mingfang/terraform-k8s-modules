@@ -46,7 +46,7 @@ locals {
       value = "dagster"
     },
     {
-      name = "DAGSTER_PG_PASSWORD"
+      name       = "DAGSTER_PG_PASSWORD"
       value_from = {
         secret_key_ref = {
           key  = "postgresql-password"
@@ -59,11 +59,11 @@ locals {
       value = module.postgres_password.name
     },
     {
-      name  = "DAGSTER_K8S_INSTANCE_CONFIG_MAP"
+      name  = "DAGSTER_K8S_JOB_CONFIG_MAP"
       value = module.config_map_job.name
     },
     {
-      name  = "DAGSTER_K8S_PIPELINE_RUN_ENV_CONFIGMAP"
+      name  = "DAGSTER_K8S_JOB_ENV_CONFIGMAP"
       value = module.config_map_job_env.name
     },
     {
@@ -81,17 +81,21 @@ module "dagster-daemon" {
   source      = "../../modules/dagster/dagster-daemon"
   name        = "dagster-daemon"
   namespace   = k8s_core_v1_namespace.this.metadata[0].name
-  annotations = { "dagster-checksum" = module.config_map_dagster.checksum }
+  annotations = {
+    "dagster-checksum"   = module.config_map_dagster.checksum
+    "workspace-checksum" = module.config_map_workspace.checksum
+  }
 
-  env                = local.env
-  config_map_dagster = module.config_map_dagster.name
+  env                  = local.env
+  config_map_dagster   = module.config_map_dagster.name
+  config_map_workspace = module.config_map_workspace.name
 }
 
 
 module "dagit" {
-  source    = "../../modules/dagster/dagit"
-  name      = "dagit"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  source      = "../../modules/dagster/dagit"
+  name        = "dagit"
+  namespace   = k8s_core_v1_namespace.this.metadata[0].name
   annotations = {
     "dagster-checksum"   = module.config_map_dagster.checksum
     "workspace-checksum" = module.config_map_workspace.checksum
@@ -106,7 +110,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dagit" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "dagster-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
       "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
     }
     name      = module.dagit.name

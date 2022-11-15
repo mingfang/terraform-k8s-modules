@@ -72,7 +72,7 @@ locals {
     },
     {
       name  = "DAGSTER_K8S_JOB_SERVICE_ACCOUNT"
-      value = "default"
+      value = "dagster-daemon"
     }
   ]
 }

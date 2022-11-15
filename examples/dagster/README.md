@@ -20,7 +20,8 @@ Provider Requirements:
 * `config_map_workspace` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 * `dagit` from [../../modules/dagster/dagit](../../modules/dagster/dagit)
 * `dagster-daemon` from [../../modules/dagster/dagster-daemon](../../modules/dagster/dagster-daemon)
-* `example-user-code` from `./example-user-code`
+* `dagster-dbt` from [../../modules/dagster/user-repository](../../modules/dagster/user-repository)
+* `example-user-code` from [../../modules/dagster/user-repository](../../modules/dagster/user-repository)
 * `postgres` from [../../modules/postgres](../../modules/postgres)
 * `postgres_password` from [../../modules/kubernetes/secret](../../modules/kubernetes/secret)
 

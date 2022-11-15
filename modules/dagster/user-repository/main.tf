@@ -1,23 +1,26 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
-    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
+    annotations          = var.annotations
     enable_service_links = false
 
     containers = [
       {
-        name  = "example-user-code"
+        name    = var.name
         image = var.image
-        command = [
-          "/bin/bash",
-          "-cx",
-          <<-EOF
-          dagster api grpc -h 0.0.0.0 -p ${var.ports[0].port} -f /example_project/example_repo/repo.py
-          EOF
-        ]
+        command = var.command
+        args    = var.args
 
         env = concat([
           {
@@ -32,7 +35,11 @@ locals {
             name  = "DAGSTER_CURRENT_IMAGE"
             value = var.image
           },
-        ], var.env)
+        ], var.env, local.computed_env)
+
+        env_from = var.env_from
+
+        resources = var.resources
 
         startup_probe = {
           exec = {
@@ -69,6 +76,27 @@ locals {
         }
       }
     ]
+
+    affinity = {
+      pod_anti_affinity = {
+        required_during_scheduling_ignored_during_execution = [
+          {
+            label_selector = {
+              match_expressions = [
+                {
+                  key      = "name"
+                  operator = "In"
+                  values   = [var.name]
+                }
+              ]
+            }
+            topology_key = "kubernetes.io/hostname"
+          }
+        ]
+      }
+    }
+
+    node_selector        = var.node_selector
   }
 }
 

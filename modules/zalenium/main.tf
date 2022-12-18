@@ -137,6 +137,25 @@ locals {
       }
     ]
 
+    affinity = {
+      pod_anti_affinity = {
+        required_during_scheduling_ignored_during_execution = [
+          {
+            label_selector = {
+              match_expressions = [
+                {
+                  key      = "name"
+                  operator = "In"
+                  values   = [var.name]
+                }
+              ]
+            }
+            topology_key = "kubernetes.io/hostname"
+          }
+        ]
+      }
+    }
+
     volumes = var.pvc_name != null ? [
       {
         name = "videos"

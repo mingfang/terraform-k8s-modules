@@ -17,6 +17,7 @@ Provider Requirements:
 ## Output Values
 * `checksum`
 * `config_map`
+* `config_map_ref`
 * `name`
 
 ## Managed Resources

@@ -9,3 +9,7 @@ output "secret" {
 output "checksum" {
   value = md5(join("", keys(local.data), values(local.data)))
 }
+
+output "secret_ref" {
+  value = { secret_ref = { name = var.name } }
+}

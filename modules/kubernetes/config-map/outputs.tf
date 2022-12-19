@@ -9,3 +9,7 @@ output "config_map" {
 output "checksum" {
   value = md5(join("", keys(local.data), values(local.data)))
 }
+
+output "config_map_ref" {
+  value = { config_map_ref = { name = var.name } }
+}

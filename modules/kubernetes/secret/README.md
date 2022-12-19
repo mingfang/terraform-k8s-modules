@@ -17,6 +17,7 @@ Provider Requirements:
 * `checksum`
 * `name`
 * `secret`
+* `secret_ref`
 
 ## Managed Resources
 * `k8s_core_v1_secret.this` from `k8s`

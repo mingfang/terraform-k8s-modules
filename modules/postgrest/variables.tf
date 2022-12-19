@@ -4,6 +4,14 @@ variable "name" {
 
 variable "namespace" {}
 
+variable "image" {
+  default = "postgrest/postgrest:v10.1.1.20221215"
+}
+
+variable "replicas" {
+  default = 1
+}
+
 variable "ports" {
   default = [
     {
@@ -13,19 +21,35 @@ variable "ports" {
   ]
 }
 
-variable "replicas" {
-  default = 1
+variable "command" {
+  default = []
 }
 
-variable "image" {
-  default = "postgrest/postgrest:latest"
+variable "args" {
+  default = []
 }
 
 variable "env" {
   default = []
 }
 
+variable "env_map" {
+  default = {}
+}
+
+variable "env_file" {
+  default = null
+}
+
+variable "env_from" {
+  default = []
+}
+
 variable "annotations" {
+  default = {}
+}
+
+variable "node_selector" {
   default = {}
 }
 
@@ -38,19 +62,23 @@ variable "resources" {
   }
 }
 
+variable "service_account_name" {
+  default = null
+}
+
 variable "overrides" {
   default = {}
 }
 
-variable "PGRST_DB_URI" {
-  description = "postgres://user:password@host:port/db?sslmode=disable'"
+variable "configmap" {
+  default = null
 }
-variable "PGRST_DB_SCHEMA" {
-  default = "public"
+
+variable "pvc" {
+  default = null
 }
-variable "PGRST_DB_ANON_ROLE" {
-  default = "anon"
-}
-variable "PGRST_JWT_SECRET" {
-  description = "`openssl rand -base64 32`"
+
+variable "mount_path" {
+  default = "/data"
+  description = "pvc mount path"
 }

@@ -10,6 +10,6 @@ output "service" {
   value = module.deployment-service.service
 }
 
-output "statefulset" {
+output "deployment" {
   value = module.deployment-service.deployment
 }

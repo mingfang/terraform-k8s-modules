@@ -30,6 +30,14 @@ variable backoff_limit {
   default = 4
 }
 
+variable "configmap" {
+  default = null
+}
+
+variable "secret" {
+  default = null
+}
+
 variable "volumes" {
   default = []
 }

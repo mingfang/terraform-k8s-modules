@@ -4,11 +4,6 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
-module "image-pull-secret" {
-  source    = "../image-pull-secret"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-}
-
 module "minio" {
   source    = "../../modules/minio"
   name      = var.name
@@ -22,14 +17,6 @@ module "minio" {
   minio_secret_key = var.minio_secret_key
 
   create_buckets = ["test"]
-
-  overrides = {
-    image_pull_secrets = [
-      {
-        name = "image-pull-secret"
-      }
-    ]
-  }
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {

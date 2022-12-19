@@ -7,8 +7,8 @@ Provider Requirements:
 ## Input Variables
 * `AWS_ACCESS_KEY_ID` (required)
 * `AWS_SECRET_ACCESS_KEY` (required)
-* `minio_access_key` (default `"IUWU60H2527LP7DOYJVP"`)
-* `minio_secret_key` (default `"bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"`)
+* `minio_access_key` (required)
+* `minio_secret_key` (required)
 * `name` (default `"minio"`)
 * `namespace` (default `"minio-example"`)
 
@@ -22,7 +22,6 @@ Provider Requirements:
 * `k8s_networking_k8s_io_v1beta1_ingress.this` from `k8s`
 
 ## Child Modules
-* `image-pull-secret` from [../image-pull-secret](../image-pull-secret)
 * `minio` from [../../modules/minio](../../modules/minio)
 * `minio-s3` from [../../modules/minio](../../modules/minio)
 * `policies` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)

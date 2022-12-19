@@ -13,6 +13,4 @@ Provider Requirements:
 
 ## Child Modules
 * `mysql` from [../../modules/mysql](../../modules/mysql)
-* `mysql-storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
-* `nfs-server` from [../../modules/nfs-server-empty-dir](../../modules/nfs-server-empty-dir)
 

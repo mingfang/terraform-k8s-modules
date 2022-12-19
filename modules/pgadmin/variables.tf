@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "dpage/pgadmin4:6.3"
+  default = "dpage/pgadmin4:6.17"
 }
 
 variable "replicas" {
@@ -25,6 +25,19 @@ variable "env" {
 
 variable "annotations" {
   default = {}
+}
+
+variable "node_selector" {
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
 }
 
 variable "overrides" {

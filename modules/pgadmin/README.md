@@ -9,13 +9,15 @@ Provider Requirements:
 * `PGADMIN_DEFAULT_PASSWORD` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"dpage/pgadmin4:6.3"`)
+* `image` (default `"dpage/pgadmin4:6.17"`)
 * `name` (required)
 * `namespace` (required)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":80}]`)
 * `pvc_name` (default `null`)
 * `replicas` (default `1`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Output Values
 * `deployment`

@@ -1,15 +1,17 @@
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    replicas             = var.replicas
-    ports                = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
+
     enable_service_links = false
 
     containers = [
       {
         name  = "pgadmin"
         image = var.image
+
         env = concat([
           {
             name = "POD_NAME"
@@ -17,6 +19,15 @@ locals {
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
+              }
+            }
+          },
+          {
+            name = "POD_IP"
+
+            value_from = {
+              field_ref = {
+                field_path = "status.podIP"
               }
             }
           },
@@ -30,6 +41,8 @@ locals {
           },
         ], var.env)
 
+        resources = var.resources
+
         volume_mounts = var.pvc_name != null ? [
           {
             name       = "data"
@@ -41,8 +54,8 @@ locals {
 
     init_containers = var.pvc_name != null ? [
       {
-        name  = "init"
-        image = var.image
+        name    = "init"
+        image   = var.image
         command = [
           "sh",
           "-cx",
@@ -62,9 +75,12 @@ locals {
       }
     ] : []
 
+    node_selector = var.node_selector
+
     volumes = var.pvc_name != null ? [
       {
         name = "data"
+
         persistent_volume_claim = {
           claim_name = var.pvc_name
         }

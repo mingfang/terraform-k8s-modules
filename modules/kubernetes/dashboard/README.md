@@ -8,7 +8,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `args` (default `""`)
 * `env` (default `[]`)
-* `image` (default `"kubernetesui/dashboard:v2.5.0"`)
+* `image` (default `"kubernetesui/dashboard:v2.7.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

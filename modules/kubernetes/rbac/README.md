@@ -14,6 +14,7 @@ Provider Requirements:
 ## Output Values
 * `name`
 * `service_account`
+* `service_account_name`
 
 ## Managed Resources
 * `k8s_core_v1_service_account.this` from `k8s`

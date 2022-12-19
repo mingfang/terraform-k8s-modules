@@ -26,8 +26,8 @@ module "rbac" {
     },
     {
       api_groups = ["autoscaling.k8s.io"]
-      resources  = ["verticalpodautoscalers"]
-      verbs      = ["get", "list", "watch", "patch"]
+      resources  = ["verticalpodautoscalers", "verticalpodautoscalercheckpoints"]
+      verbs      = ["get", "list", "watch", "create", "patch"]
     },
     {
       api_groups = ["*"]
@@ -38,11 +38,11 @@ module "rbac" {
       api_groups = [""]
       resources  = ["replicationcontrollers"]
       verbs      = ["get", "list", "watch"]
-      }, {
+    }, {
       api_groups = ["apps"]
       resources  = ["daemonsets", "deployments", "replicasets", "statefulsets"]
       verbs      = ["get", "list", "watch"]
-      }, {
+    }, {
       api_groups = ["batch"]
       resources  = ["jobs", "cronjobs"]
       verbs      = ["get", "list", "watch"]

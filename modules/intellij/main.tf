@@ -57,6 +57,7 @@ locals {
           initial_delay_seconds = 30
           period_seconds        = 10
           failure_threshold     = 3
+          timeout_seconds       = 10
 
           http_get = {
             path = "/"
@@ -68,6 +69,7 @@ locals {
           initial_delay_seconds = 30
           period_seconds        = 10
           failure_threshold     = 3
+          timeout_seconds       = 10
 
           http_get = {
             path = "/"
@@ -91,7 +93,7 @@ locals {
             }
           ],
           [
-          for i, pvc in var.extra_pvcs : {
+            for i, pvc in var.extra_pvcs : {
             name       = "extra-pvc-${i}"
             mount_path = "/mnt/${pvc}"
           }
@@ -137,12 +139,12 @@ locals {
       ] : [],
       [
         {
-          name = "cache"
+          name      = "cache"
           empty_dir = {}
         }
       ],
       [
-      for i, pvc in var.extra_pvcs : {
+        for i, pvc in var.extra_pvcs : {
         name                    = "extra-pvc-${i}"
         persistent_volume_claim = {
           claim_name = pvc

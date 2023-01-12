@@ -1,26 +1,43 @@
-variable "name" {}
+variable "name" {
+  type = string
+}
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
+
+variable image {
+  type = string
+}
 
 variable "annotations" {
   default = {}
 }
 
-variable "overrides" {
-  default = {}
+variable "command" {
+  type    = list(string)
 }
 
-variable image {}
-
 variable "env" {
+  type    = list(object({ name = string, value = string }))
   default = []
 }
 
-variable "env_from" {
-  default =[]
+variable "env_map" {
+  type    = map
+  default = {}
 }
 
-variable "command" {}
+variable "env_file" {
+  type    = string
+  default = null
+}
+
+variable "env_from" {
+  type    = list
+  default = []
+}
+
 
 variable restart_policy {
   default = "OnFailure"
@@ -44,4 +61,8 @@ variable "volumes" {
 
 variable "volume_mounts" {
   default = []
+}
+
+variable "overrides" {
+  default = {}
 }

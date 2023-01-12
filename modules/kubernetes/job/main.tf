@@ -1,4 +1,12 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   parameters = {
     name        = var.name
     namespace   = var.namespace
@@ -16,26 +24,27 @@ locals {
         name  = var.name
         image = var.image
 
-        command       = var.command
-        env           = var.env
-        env_from      = var.env_from
+        command  = var.command
+        env      = concat(var.env, local.computed_env)
+        env_from = var.env_from
+
         volume_mounts = concat(
           var.volume_mounts,
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "/config/${k}"
+              sub_path   = k
+            }
           ] : [],
           var.secret != null ? [
-          for k, v in var.secret.data :
-          {
-            name       = "secret"
-            mount_path = "/config/${k}"
-            sub_path   = k
-          }
+            for k, v in var.secret.data :
+            {
+              name       = "secret"
+              mount_path = "/config/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], #hack - sometimes sub_path is ignored without this
         )
@@ -64,7 +73,7 @@ locals {
           }
         }
       ] : [],
-      )
+    )
   }
 }
 

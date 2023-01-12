@@ -5,6 +5,7 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
+* `PGRST_ADMIN_SERVER_PORT` (default `3001`)
 * `annotations` (default `{}`)
 * `args` (default `[]`)
 * `command` (default `[]`)

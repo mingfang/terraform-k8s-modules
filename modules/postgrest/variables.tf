@@ -82,3 +82,7 @@ variable "mount_path" {
   default = "/data"
   description = "pvc mount path"
 }
+
+variable "PGRST_ADMIN_SERVER_PORT" {
+  default = 3001
+}

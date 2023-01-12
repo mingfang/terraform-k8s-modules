@@ -46,9 +46,41 @@ locals {
               }
             }
           },
+          {
+            name = "PGRST_ADMIN_SERVER_PORT"
+            value = var.PGRST_ADMIN_SERVER_PORT
+          },
         ], var.env, local.computed_env)
 
         env_from = var.env_from
+
+        liveness_probe = {
+          initial_delay_seconds = 5
+          period_seconds        = 10
+          timeout_seconds       = 5
+          failure_threshold     = 3
+          success_threshold     = 1
+
+          http_get = {
+            scheme = "HTTP"
+            port   = var.PGRST_ADMIN_SERVER_PORT
+            path   = "/ready"
+          }
+        }
+
+        readiness_probe = {
+          initial_delay_seconds = 5
+          period_seconds        = 10
+          timeout_seconds       = 5
+          failure_threshold     = 3
+          success_threshold     = 1
+
+          http_get = {
+            scheme = "HTTP"
+            port   = var.PGRST_ADMIN_SERVER_PORT
+            path   = "/ready"
+          }
+        }
 
         resources = var.resources
 

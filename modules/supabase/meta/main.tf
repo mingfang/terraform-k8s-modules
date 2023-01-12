@@ -24,7 +24,7 @@ locals {
 
     containers = [
       {
-        name    = var.name
+        name    = "meta"
         image   = var.image
         command = var.command
         args    = var.args
@@ -50,10 +50,6 @@ locals {
             name  = "PORT"
             value = var.ports.0.port
           },
-          {
-            name  = "GOTRUE_API_HOST"
-            value = var.GOTRUE_API_HOST
-          },
         ], var.env, local.computed_env)
 
         env_from = var.env_from
@@ -68,12 +64,12 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "/config/${var.name}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )

@@ -4,6 +4,14 @@ variable "name" {
 
 variable "namespace" {}
 
+variable "image" {
+  default = "supabase/realtime:v2.1.0"
+}
+
+variable "replicas" {
+  default = 1
+}
+
 variable "ports" {
   default = [
     {
@@ -13,19 +21,35 @@ variable "ports" {
   ]
 }
 
-variable "replicas" {
-  default = 1
+variable "command" {
+  default = []
 }
 
-variable "image" {
-  default = "supabase/realtime:latest"
+variable "args" {
+  default = []
 }
 
 variable "env" {
   default = []
 }
 
+variable "env_map" {
+  default = {}
+}
+
+variable "env_file" {
+  default = null
+}
+
+variable "env_from" {
+  default = []
+}
+
 variable "annotations" {
+  default = {}
+}
+
+variable "node_selector" {
   default = {}
 }
 
@@ -38,19 +62,27 @@ variable "resources" {
   }
 }
 
+variable "service_account_name" {
+  default = null
+}
+
 variable "overrides" {
   default = {}
 }
 
-variable "DB_HOST" {}
-variable "DB_NAME" {}
-variable "DB_USER" {}
-variable "DB_PASSWORD" {}
-variable "DB_PORT" {}
+variable "configmap" {
+  default = null
+}
+
+variable "pvc" {
+  default = null
+}
+
+variable "mount_path" {
+  default = "/data"
+  description = "pvc mount path"
+}
+
 variable "HOSTNAME" {
   default = "0.0.0.0"
 }
-variable "SECURE_CHANNELS" {
-  default = "false"
-}
-variable "JWT_SECRET" {}

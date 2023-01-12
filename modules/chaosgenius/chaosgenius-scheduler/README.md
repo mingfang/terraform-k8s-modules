@@ -1,27 +1,29 @@
 
-# Module `supabase/kong`
+# Module `chaosgenius/chaosgenius-scheduler`
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `KONG_DECLARATIVE_CONFIG` (default `"/var/lib/kong/kong.yml"`)
-* `KONG_PLUGINS` (default `"request-transformer,cors,key-auth,http-log"`)
 * `annotations` (default `{}`)
+* `configmap` (default `null`)
 * `env` (default `[]`)
-* `image` (default `"registry.rebelsoft.com/supabase-kong"`)
-* `name` (default `"kong"`)
+* `image` (default `"chaosgenius/chaosgenius-server:0.7.0"`)
+* `name` (required)
 * `namespace` (required)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
-* `ports` (default `[{"name":"http","port":8000},{"name":"https","port":8443}]`)
+* `ports` (default `[{"name":"tcp","port":5000}]`)
+* `pvc` (default `null`)
 * `replicas` (default `1`)
-* `resources` (default `{"requests":{"cpu":"100m","memory":"128Mi"}}`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
+* `service_account_name` (default `null`)
 
 ## Output Values
+* `deployment`
 * `name`
 * `ports`
 * `service`
-* `statefulset`
 
 ## Child Modules
 * `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)

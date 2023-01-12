@@ -1,23 +1,37 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   parameters = {
-    name                        = var.name
-    namespace                   = var.namespace
-    annotations                 = var.annotations
-    replicas                    = var.replicas
-    ports                       = var.ports
-    enable_service_links        = false
-    pod_management_policy       = "Parallel"
-    publish_not_ready_addresses = true
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
+
+    annotations = merge(
+      var.annotations,
+      var.configmap != null ? {
+        config_checksum = md5(join("", keys(var.configmap.data), values(var.configmap.data)))
+      } : {},
+    )
+
+    enable_service_links = false
 
     containers = [
       {
-        name  = "realtime"
-        image = var.image
+        name    = "realtime"
+        image   = var.image
+        command = var.command
+        args    = var.args
 
         env = concat([
           {
-            name = "POD_NAME"
-
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -25,8 +39,7 @@ locals {
             }
           },
           {
-            name = "POD_IP"
-
+            name       = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -34,46 +47,105 @@ locals {
             }
           },
           {
-            name  = "DB_HOST"
-            value = var.DB_HOST
-          },
-          {
-            name  = "DB_NAME"
-            value = var.DB_NAME
-          },
-          {
-            name  = "DB_USER"
-            value = var.DB_USER
-          },
-          {
-            name  = "DB_PASSWORD"
-            value = var.DB_PASSWORD
-          },
-          {
-            name  = "DB_PORT"
-            value = var.DB_PORT
-          },
-          {
             name  = "PORT"
-            value = var.ports[0].port
+            value = var.ports.0.port
           },
           {
             name  = "HOSTNAME"
             value = var.HOSTNAME
           },
-          {
-            name  = "SECURE_CHANNELS"
-            value = var.SECURE_CHANNELS
-          },
-          {
-            name  = "JWT_SECRET"
-            value = var.JWT_SECRET
-          },
-        ], var.env)
+        ], var.env, local.computed_env)
+
+        env_from = var.env_from
 
         resources = var.resources
+
+        volume_mounts = concat(
+          var.pvc != null ? [
+            {
+              name       = "data"
+              mount_path = var.mount_path
+            },
+          ] : [],
+          var.configmap != null ? [
+          for k, v in var.configmap.data :
+          {
+            name       = "config"
+            mount_path = "/config/${var.name}/${k}"
+            sub_path   = k
+          }
+          ] : [],
+          [], //hack: without this, sub_path above stops working
+        )
       },
     ]
+
+    init_containers = var.pvc != null ? [
+      {
+        name  = "init"
+        image = var.image
+
+        command = [
+          "sh",
+          "-cx",
+          "chown 1000 ${var.mount_path}"
+        ]
+
+        security_context = {
+          run_asuser = "0"
+        }
+
+        volume_mounts = [
+          {
+            name       = "data"
+            mount_path = var.mount_path
+          },
+        ]
+      }
+    ] : []
+
+    affinity = {
+      pod_anti_affinity = {
+        required_during_scheduling_ignored_during_execution = [
+          {
+            label_selector = {
+              match_expressions = [
+                {
+                  key      = "name"
+                  operator = "In"
+                  values   = [var.name]
+                }
+              ]
+            }
+            topology_key = "kubernetes.io/hostname"
+          }
+        ]
+      }
+    }
+
+    node_selector        = var.node_selector
+    service_account_name = var.service_account_name
+
+    volumes = concat(
+      var.pvc != null ? [
+        {
+          name = "data"
+
+          persistent_volume_claim = {
+            claim_name = var.pvc
+          }
+        }
+      ] : [],
+      var.configmap != null ? [
+        {
+          name = "config"
+
+          config_map = {
+            name = var.configmap.metadata[0].name
+          }
+        }
+      ] : [],
+    )
   }
 }
 

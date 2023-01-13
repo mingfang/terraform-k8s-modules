@@ -8,7 +8,8 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "supabase/postgres-meta:v0.56.1"
+  type    = string
+  default = "supabase/postgres-meta:v0.56.4"
 }
 
 variable "replicas" {
@@ -18,12 +19,7 @@ variable "replicas" {
 
 variable "ports" {
   type    = list
-  default = [
-    {
-      name = "tcp"
-      port = 8080
-    },
-  ]
+  default = [{ name = "tcp", port = 8080 }]
 }
 
 variable "command" {
@@ -52,7 +48,12 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list
+  type = list(object({
+    prefix     = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 
@@ -87,7 +88,18 @@ variable "configmap" {
   default = null
 }
 
+variable "configmap_mount_path" {
+  type    = string
+  default = "/config"
+}
+
+variable "post_start_command" {
+  type    = list(string)
+  default = null
+}
+
 variable "pvc" {
+  type    = string
   default = null
 }
 

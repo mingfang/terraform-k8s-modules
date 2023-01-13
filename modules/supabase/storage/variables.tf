@@ -48,7 +48,12 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list
+  type = list(object({
+    prefix     = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 
@@ -75,7 +80,6 @@ variable "service_account_name" {
   default = null
 }
 
-
 variable "overrides" {
   default = {}
 }
@@ -85,7 +89,7 @@ variable "configmap" {
 }
 
 variable "configmap_mount_path" {
-  type = string
+  type    = string
   default = "/config"
 }
 
@@ -100,7 +104,7 @@ variable "pvc" {
 }
 
 variable "mount_path" {
-  type    = string
-  default = "/data"
+  type        = string
+  default     = "/data"
   description = "pvc mount path"
 }

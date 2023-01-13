@@ -54,6 +54,14 @@ locals {
 
         env_from = var.env_from
 
+        lifecycle = var.post_start_command  != null ? {
+          post_start = {
+            exec = {
+              command = var.post_start_command
+            }
+          }
+        } : null
+
         resources = var.resources
 
         volume_mounts = concat(
@@ -67,7 +75,7 @@ locals {
             for k, v in var.configmap.data :
             {
               name       = "config"
-              mount_path = "/config/${var.name}/${k}"
+            mount_path = "${var.configmap_mount_path}/${k}"
               sub_path   = k
             }
           ] : [],
@@ -82,8 +90,8 @@ locals {
         image = var.image
 
         command = [
-          "sh",
-          "-cx",
+          "bash",
+          "-c",
           "chown 1000 ${var.mount_path}"
         ]
 

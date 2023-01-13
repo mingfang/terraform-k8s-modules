@@ -4,31 +4,31 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
-locals {
-  POSTGRES_DB       = "postgres"
-  POSTGRES_USER     = "postgres"
-  POSTGRES_PASSWORD = "postgres"
-
-  STUDIO_DEFAULT_ORGANIZATION = "Default Organization"
-  STUDIO_DEFAULT_PROJECT      = "Default Project"
-  SUPABASE_PUBLIC_URL         = "https://${var.namespace}.rebelsoft.com"
-
-  JWT_SECRET       = "your-super-secret-jwt-token-with-at-least-32-characters-long"
-  ANON_KEY         = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE"
-  SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q"
-}
-
 module "secrets" {
   source    = "../../modules/kubernetes/secret"
   name      = var.namespace
   namespace = k8s_core_v1_namespace.this.metadata.0.name
 
   from-map = {
-    POSTGRES_DB       = base64encode(local.POSTGRES_DB)
-    POSTGRES_USER     = base64encode(local.POSTGRES_USER)
-    POSTGRES_PASSWORD = base64encode(local.POSTGRES_PASSWORD)
+    ANON_KEY    = base64encode(var.ANON_KEY)
+    SERVICE_KEY = base64encode(var.SERVICE_ROLE_KEY)
+    JWT_SECRET  = base64encode(var.JWT_SECRET)
+
+    POSTGRES_DB = base64encode(var.POSTGRES_DB)
+    PGDATABASE  = base64encode(var.POSTGRES_DB)
+    DB_NAME     = base64encode(var.POSTGRES_DB)
+
+    POSTGRES_USER = base64encode(var.POSTGRES_USER)
+    PGUSER        = base64encode(var.POSTGRES_USER)
+    DB_USER       = base64encode(var.POSTGRES_USER)
+
+    POSTGRES_PASSWORD = base64encode(var.POSTGRES_PASSWORD)
+    PGPASSWORD        = base64encode(var.POSTGRES_PASSWORD)
+    DB_PASSWORD       = base64encode(var.POSTGRES_PASSWORD)
   }
 }
+
+/* Postgres */
 
 module "postgres" {
   source      = "../../modules/postgres"
@@ -43,11 +43,7 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  env_map = {
-    POSTGRES_USER     = "postgres"
-    POSTGRES_PASSWORD = "postgres"
-    POSTGRES_DB       = "postgres"
-  }
+  env_from = [module.secrets.secret_ref]
 }
 
 module "postgres_init_config" {
@@ -64,12 +60,9 @@ module "postgres_init" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   image     = "postgres:15.1"
 
-  env_map = {
-    PGHOST            = module.postgres.name
-    PGUSER            = "postgres"
-    PGPASSWORD        = "postgres"
-    PGDATABASE        = "postgres"
-    POSTGRES_PASSWORD = "postgres"
+  env_from = [module.secrets.secret_ref]
+  env_map  = {
+    PGHOST = module.postgres.name
   }
   configmap = module.postgres_init_config.config_map
 
@@ -105,6 +98,8 @@ module "postgres_init" {
   ]
 }
 
+/* PostgREST */
+
 module "postgrest" {
   source    = "../../modules/postgrest"
   name      = "rest"
@@ -112,16 +107,53 @@ module "postgrest" {
   replicas  = 1
 
   /* https://postgrest.org/en/stable/configuration.html#env-variables-config */
-  env_map = {
+  env_from = [merge(module.secrets.secret_ref, { prefix = "PGRST_" }), module.secrets.secret_ref]
+  env_map  = {
     PGRST_DB_URI                   = "postgres://authenticator:postgres@${module.postgres.name}:${module.postgres.ports.0.port}/postgres?sslmode=disable"
     PGRST_DB_SCHEMAS               = "public,storage,graphql_public"
     PGRST_DB_ANON_ROLE             = "anon"
-    PGRST_JWT_SECRET               = local.JWT_SECRET
     PGRST_DB_USE_LEGACY_GUCS       = "false"
     PGRST_LOG_LEVEL                = "info"
-    PGRST_OPENAPI_SERVER_PROXY_URI = "${local.SUPABASE_PUBLIC_URL}/rest/v1"
+    PGRST_OPENAPI_SERVER_PROXY_URI = "${var.SUPABASE_PUBLIC_URL}/rest/v1"
   }
 }
+
+module "swagger_ui" {
+  source    = "../../modules/swagger-ui"
+  name      = "swagger-ui"
+  namespace = k8s_core_v1_namespace.this.metadata.0.name
+
+  env_map = {
+    URL = "${var.SUPABASE_PUBLIC_URL}/rest/v1/?apikey=${var.ANON_KEY}"
+  }
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "swagger_ui" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "${module.swagger_ui.name}-${var.namespace}.*"
+    }
+    name      = module.swagger_ui.name
+    namespace = k8s_core_v1_namespace.this.metadata.0.name
+  }
+  spec {
+    rules {
+      host = "${module.swagger_ui.name}-${var.namespace}"
+      http {
+        paths {
+          backend {
+            service_name = module.swagger_ui.name
+            service_port = module.swagger_ui.ports.0.port
+          }
+          path = "/"
+        }
+      }
+    }
+  }
+}
+
+/* gotrue */
 
 module "gotrue" {
   source    = "../../modules/supabase/gotrue"
@@ -130,9 +162,10 @@ module "gotrue" {
   replicas  = 1
 
   /* https://github.com/supabase/gotrue/blob/master/example.env */
-  env_map = {
-    API_EXTERNAL_URL = local.SUPABASE_PUBLIC_URL
-    GOTRUE_SITE_URL  = local.SUPABASE_PUBLIC_URL
+  env_from = [merge(module.secrets.secret_ref, { prefix = "GOTRUE_" }), module.secrets.secret_ref]
+  env_map  = {
+    API_EXTERNAL_URL = var.SUPABASE_PUBLIC_URL
+    GOTRUE_SITE_URL  = var.SUPABASE_PUBLIC_URL
 
     GOTRUE_DB_DRIVER       = "postgres"
     GOTRUE_DB_DATABASE_URL = "postgres://supabase_auth_admin:postgres@${module.postgres.name}:${module.postgres.ports.0.port}/postgres?sslmode=disable"
@@ -142,7 +175,6 @@ module "gotrue" {
     GOTRUE_DISABLE_SIGNUP         = "false" // must be enabled for new users to be created after login with IdP
     GOTRUE_JWT_DEFAULT_GROUP_NAME = "authenticated"
 
-    GOTRUE_JWT_SECRET      = local.JWT_SECRET
     GOTRUE_JWT_EXP         = 3600
     GOTRUE_JWT_AUD         = "authenticated"
     GOTRUE_JWT_ADMIN_ROLES = "supabase_admin,service_role"
@@ -153,14 +185,16 @@ module "gotrue" {
     #    GOTRUE_SMTP_PASS = var.GOTRUE_SMTP_PASS
 
     GOTRUE_EXTERNAL_KEYCLOAK_ENABLED      = "true"
-    GOTRUE_EXTERNAL_KEYCLOAK_CLIENT_ID    = var.namespace
-    GOTRUE_EXTERNAL_KEYCLOAK_SECRET       = "6b16e48c-8e33-4635-b5ce-10e06ddc90f4"
-    GOTRUE_EXTERNAL_KEYCLOAK_REDIRECT_URI = "https://${var.namespace}.rebelsoft.com/auth/v1/callback"
-    GOTRUE_EXTERNAL_KEYCLOAK_URL          = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft"
+    GOTRUE_EXTERNAL_KEYCLOAK_CLIENT_ID    = var.GOTRUE_EXTERNAL_KEYCLOAK_CLIENT_ID
+    GOTRUE_EXTERNAL_KEYCLOAK_SECRET       = var.GOTRUE_EXTERNAL_KEYCLOAK_SECRET
+    GOTRUE_EXTERNAL_KEYCLOAK_REDIRECT_URI = var.GOTRUE_EXTERNAL_KEYCLOAK_REDIRECT_URI
+    GOTRUE_EXTERNAL_KEYCLOAK_URL          = var.GOTRUE_EXTERNAL_KEYCLOAK_URL
 
     GOTRUE_LOG_LEVEL = "debug"
   }
 }
+
+/* meta */
 
 module "meta" {
   source    = "../../modules/supabase/meta"
@@ -168,33 +202,29 @@ module "meta" {
   namespace = k8s_core_v1_namespace.this.metadata.0.name
   replicas  = 1
 
-  env_from = [module.secrets.secret_ref]
-
-  env_map = {
-    PG_META_DB_HOST     = module.postgres.name
-    PG_META_DB_PORT     = module.postgres.ports.0.port
-    PG_META_DB_NAME     = local.POSTGRES_DB
-    PG_META_DB_USER     = "supabase_admin"
-    PG_META_DB_PASSWORD = local.POSTGRES_PASSWORD
+  env_from = [merge(module.secrets.secret_ref, { prefix = "PG_META_" }), module.secrets.secret_ref]
+  env_map  = {
+    PG_META_DB_HOST = module.postgres.name
+    PG_META_DB_PORT = module.postgres.ports.0.port
+    PG_META_DB_USER = "supabase_admin"
   }
 }
 
+/* realtime */
 module "realtime" {
   source    = "../../modules/supabase/realtime"
   name      = "realtime"
   namespace = k8s_core_v1_namespace.this.metadata.0.name
   replicas  = 1
 
-  env_map = {
-    DB_NAME     = "postgres"
-    DB_USER     = "postgres"
-    DB_PASSWORD = "postgres"
-    DB_HOST     = module.postgres.name
-    DB_PORT     = module.postgres.ports.0.port
+  env_from = [merge(module.secrets.secret_ref, { prefix = "PGRST_" }), module.secrets.secret_ref]
+  env_map  = {
+    DB_HOST = module.postgres.name
+    DB_PORT = module.postgres.ports.0.port
 
     DB_ENC_KEY             = "supabaserealtime"
     DB_AFTER_CONNECT_QUERY = "SET search_path TO _realtime"
-    API_JWT_SECRET         = local.JWT_SECRET
+    API_JWT_SECRET         = var.JWT_SECRET
     FLY_ALLOC_ID           = "fly123"
     FLY_APP_NAME           = "realtime"
     SECRET_KEY_BASE        = "UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq"
@@ -204,6 +234,8 @@ module "realtime" {
   }
 }
 
+/* storage */
+
 module "storage" {
   source    = "../../modules/supabase/storage"
   name      = "storage"
@@ -211,14 +243,11 @@ module "storage" {
   replicas  = 1
 
   /* https://github.com/supabase/storage-api/blob/master/.env.sample */
-  env_map = {
-    ANON_KEY    = local.ANON_KEY
-    SERVICE_KEY = local.SERVICE_ROLE_KEY
+  env_from = [merge(module.secrets.secret_ref, { prefix = "PGRST_" }), module.secrets.secret_ref]
+  env_map  = {
+    POSTGREST_URL = "http://${module.postgrest.name}:${module.postgrest.ports.0.port}"
 
-    PGRST_JWT_SECRET = local.JWT_SECRET
-    POSTGREST_URL    = "http://${module.postgrest.name}:${module.postgrest.ports.0.port}"
-
-    DATABASE_URL    = "postgres://supabase_storage_admin:${local.POSTGRES_PASSWORD}@${module.postgres.name}:${module.postgres.ports.0.port}/${local.POSTGRES_DB}"
+    DATABASE_URL    = "postgres://supabase_storage_admin:${var.POSTGRES_PASSWORD}@${module.postgres.name}:${module.postgres.ports.0.port}/${var.POSTGRES_DB}"
     FILE_SIZE_LIMIT = 52428800
 
     /* file storage */
@@ -226,21 +255,12 @@ module "storage" {
     FILE_STORAGE_BACKEND_PATH = "/tmp"
 
     /* s3 storage */
-    STORAGE_BACKEND            = "s3"
+    STORAGE_BACKEND            = var.STORAGE_BACKEND
     #    GLOBAL_S3_ENDPOINT         = "http://localstack.localstack-example:4566"
     #    GLOBAL_S3_ENDPOINT         = "http://s3-gateway.minio-example:9000"
     GLOBAL_S3_FORCE_PATH_STYLE = "true" //https://github.com/supabase/storage-api/issues/252
-    REGION                     = "us-east-1"
-    GLOBAL_S3_BUCKET           = "rebelsoft-supabase-example"
-    /* test with localstack */
-    #    AWS_ACCESS_KEY_ID          = "test"
-    #    AWS_SECRET_ACCESS_KEY      = "test"
-    # s3 gateway
-    #    AWS_ACCESS_KEY_ID          = "mingfang"
-    #    AWS_SECRET_ACCESS_KEY      = "mingfang12345"
-    #     legionx
-    AWS_ACCESS_KEY_ID          = var.AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY      = var.AWS_SECRET_ACCESS_KEY
+    REGION                     = var.REGION
+    GLOBAL_S3_BUCKET           = var.GLOBAL_S3_BUCKET
 
     /* image transformation */
     ENABLE_IMAGE_TRANSFORMATION = "true"
@@ -251,6 +271,8 @@ module "storage" {
     TENANT_ID = "stub"
   }
 }
+
+/* kong */
 
 module "kong_config" {
   source    = "../../modules/kubernetes/config-map"
@@ -284,6 +306,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "supabase" {
       "kubernetes.io/ingress.class"                   = "nginx"
       "nginx.ingress.kubernetes.io/server-alias"      = "${var.namespace}.*"
       "nginx.ingress.kubernetes.io/proxy-buffer-size" = "160k"
+      "nginx.ingress.kubernetes.io/proxy-body-size"   = "10240m"
 
       "nginx.ingress.kubernetes.io/enable-cors"        = "true"
       "nginx.ingress.kubernetes.io/cors-allow-headers" = "keep-alive,user-agent,x-requested-with,x-request-id,if-modified-since,cache-control,content-type,range,authorization,apikey,x-client-info,accept-profile,prefer,content-profile,range-unit,x-upsert"
@@ -309,6 +332,8 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "supabase" {
   }
 }
 
+/* studio */
+
 module "studio" {
   source    = "../../modules/supabase/studio"
   name      = "studio"
@@ -319,23 +344,22 @@ module "studio" {
     "bash",
     "-c",
     <<-EOF
-    grep -rl "http://localhost:8000" .next | xargs sed -i -e "s|http://localhost:8000|https://supabase-example.rebelsoft.com|"
+    # hack to make studio work beyond localhost
+    grep -rl "http://localhost:8000" .next | xargs sed -i -e "s|http://localhost:8000|${var.SUPABASE_PUBLIC_URL}|"
     ./docker-entrypoint.sh npm run start
     EOF
   ]
-  env_from = [module.secrets.secret_ref]
+  env_from = [merge(module.secrets.secret_ref, { prefix = "SUPABASE_" }), module.secrets.secret_ref]
   env_map  = {
     STUDIO_PG_META_URL = "http://${module.meta.name}:${module.meta.ports.0.port}"
 
-    DEFAULT_ORGANIZATION = local.STUDIO_DEFAULT_ORGANIZATION
-    DEFAULT_PROJECT      = local.STUDIO_DEFAULT_PROJECT
+    DEFAULT_ORGANIZATION = var.STUDIO_DEFAULT_ORGANIZATION
+    DEFAULT_PROJECT      = var.STUDIO_DEFAULT_PROJECT
 
     SUPABASE_URL        = "http://${module.kong.name}:${module.kong.ports.0.port}"
-    SUPABASE_PUBLIC_URL = local.SUPABASE_PUBLIC_URL
+    SUPABASE_PUBLIC_URL = var.SUPABASE_PUBLIC_URL
 
-    SUPABASE_REST_URL    = "${local.SUPABASE_PUBLIC_URL}/rest/v1/"
-    SUPABASE_ANON_KEY    = local.ANON_KEY
-    SUPABASE_SERVICE_KEY = local.SERVICE_ROLE_KEY
+    SUPABASE_REST_URL = "${var.SUPABASE_PUBLIC_URL}/rest/v1/"
   }
 }
 

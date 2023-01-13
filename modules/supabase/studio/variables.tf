@@ -19,12 +19,7 @@ variable "replicas" {
 
 variable "ports" {
   type    = list
-  default = [
-    {
-      name = "tcp"
-      port = 3000
-    },
-  ]
+  default = [{ name = "tcp", port = 3000 }]
 }
 
 variable "command" {
@@ -53,7 +48,12 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list
+  type    = list(object({
+    prefix = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 

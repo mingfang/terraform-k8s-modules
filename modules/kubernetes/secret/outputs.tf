@@ -11,5 +11,10 @@ output "checksum" {
 }
 
 output "secret_ref" {
-  value = { secret_ref = { name = var.name } }
+  value = {
+    prefix = null,
+    secret_ref = {
+      name = var.name
+    }
+  }
 }

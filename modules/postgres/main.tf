@@ -105,6 +105,7 @@ locals {
       },
     ]
 
+/*
     affinity = {
       pod_anti_affinity = {
         required_during_scheduling_ignored_during_execution = [
@@ -123,6 +124,7 @@ locals {
         ]
       }
     }
+*/
 
     node_selector        = var.node_selector
     service_account_name = var.service_account_name

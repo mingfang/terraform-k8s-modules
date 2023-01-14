@@ -1,8 +1,19 @@
-variable "name" {}
+variable "name" {
+  type    = string
+  default = "keycloak"
+}
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
+
+variable "image" {
+  type    = string
+  default = "jboss/keycloak:13.0.1"
+}
 
 variable "replicas" {
+  type    = number
   default = 1
 }
 
@@ -15,20 +26,52 @@ variable "ports" {
   ]
 }
 
-variable "image" {
-  default = "jboss/keycloak:13.0.1"
-}
 
 variable "env" {
+  type    = list(object({ name = string, value = string }))
+  default = []
+}
+
+variable "env_map" {
+  type    = map
+  default = {}
+}
+
+variable "env_file" {
+  type    = string
+  default = null
+}
+
+variable "env_from" {
+  type    = list
   default = []
 }
 
 variable "annotations" {
+  type    = map
   default = {}
+}
+
+variable "node_selector" {
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
 }
 
 variable "overrides" {
   default = {}
+}
+
+variable "post_start_command" {
+  type    = list(string)
+  default = null
 }
 
 variable "KEYCLOAK_USER" {}

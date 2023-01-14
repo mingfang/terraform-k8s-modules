@@ -1,4 +1,12 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
@@ -14,8 +22,7 @@ locals {
 
         env = concat([
           {
-            name = "POD_NAME"
-
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -58,9 +65,32 @@ locals {
             name  = "PROXY_ADDRESS_FORWARDING"
             value = var.PROXY_ADDRESS_FORWARDING
           },
-        ], var.env)
-      }
+        ], var.env, local.computed_env)
+
+        env_from = var.env_from
+
+        lifecycle = var.post_start_command  != null ? {
+          post_start = {
+            exec = {
+              command = var.post_start_command
+            }
+          }
+        } : null
+
+        liveness_probe = {
+          http_get = {
+            path = "/"
+            port = var.ports[0].port
+          }
+          initial_delay_seconds = 30
+          period_seconds        = 5
+        }
+
+        resources = var.resources
+      },
     ]
+
+    node_selector = var.node_selector
   }
 }
 

@@ -17,12 +17,18 @@ Provider Requirements:
 * `PROXY_ADDRESS_FORWARDING` (default `true`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
+* `env_file` (default `null`)
+* `env_from` (default `[]`)
+* `env_map` (default `{}`)
 * `image` (default `"jboss/keycloak:13.0.1"`)
-* `name` (required)
+* `name` (default `"keycloak"`)
 * `namespace` (required)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":8080}]`)
+* `post_start_command` (default `null`)
 * `replicas` (default `1`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Output Values
 * `deployment`

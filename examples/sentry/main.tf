@@ -57,9 +57,11 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  POSTGRES_DB       = "sentry"
-  POSTGRES_USER     = "sentry"
-  POSTGRES_PASSWORD = "sentry"
+  env_map = {
+    POSTGRES_DB       = "sentry"
+    POSTGRES_USER     = "sentry"
+    POSTGRES_PASSWORD = "sentry"
+  }
 }
 
 module "redis" {

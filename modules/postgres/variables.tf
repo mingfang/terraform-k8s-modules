@@ -1,43 +1,59 @@
-variable "name" {}
+variable "name" {
+  type    = string
+  default = "postgres"
+}
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
 
 variable "image" {
+  type    = string
   default = "postgres:12.1"
 }
 
 variable "replicas" {
+  type        = number
   default     = 1
-  description = "hardcoded to 1"
 }
 
 variable "ports" {
-  default = [
-    {
-      name = "tcp"
-      port = 5432
-    },
-  ]
+  type    = list
+  default = [{ name = "tcp", port = 5432 }]
 }
 
 variable "command" {
+  type    = list(string)
   default = null
 }
+
 variable "args" {
+  type    = list(string)
   default = null
 }
 
 variable "env" {
+  type    = list(object({ name = string, value = string }))
   default = []
 }
+
 variable "env_map" {
+  type    = map
   default = {}
 }
+
 variable "env_file" {
+  type    = string
   default = null
 }
 
+variable "env_from" {
+  type    = list
+  default = []
+}
+
 variable "annotations" {
+  type    = map
   default = {}
 }
 
@@ -55,6 +71,7 @@ variable "resources" {
 }
 
 variable "service_account_name" {
+  type    = string
   default = null
 }
 
@@ -64,21 +81,36 @@ variable "overrides" {
 
 variable "configmap" {
   default     = null
-  description = "keys must be *.sql files used for db initialization"
+  description = "keys must be *.conf files used for /etc/postgresql"
 }
 
-variable "storage" {}
-variable "storage_class" {}
+variable "configmap_mount_path" {
+  type = string
+  default = "/etc/postgresql"
+}
+
+variable "post_start_command" {
+  type    = list(string)
+  default = null
+}
+
+variable "storage" {
+  type    = string
+  default = null
+}
+
+variable "storage_class" {
+  type=string
+  default = null
+}
+
 variable "volume_claim_template_name" {
+  type    = string
   default = "pvc"
 }
 
-variable "POSTGRES_USER" {
-  default = null
-}
-variable "POSTGRES_PASSWORD" {
-  default = null
-}
-variable "POSTGRES_DB" {
-  default = null
+variable "mount_path" {
+  type        = string
+  default     = "/data"
+  description = "pvc mount path"
 }

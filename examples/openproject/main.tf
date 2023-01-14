@@ -12,9 +12,11 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  POSTGRES_DB       = "openproject"
-  POSTGRES_USER     = "openproject"
-  POSTGRES_PASSWORD = "openproject"
+  env_map = {
+    POSTGRES_DB       = "openproject"
+    POSTGRES_USER     = "openproject"
+    POSTGRES_PASSWORD = "openproject"
+  }
 }
 
 module "memcached" {

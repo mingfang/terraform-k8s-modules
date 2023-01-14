@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "superset"
-  POSTGRES_PASSWORD = "superset"
-  POSTGRES_DB       = "superset"
+  env_map = {
+    POSTGRES_USER     = "superset"
+    POSTGRES_PASSWORD = "superset"
+    POSTGRES_DB       = "superset"
+  }
 }
 
 module "redis" {
@@ -76,7 +78,6 @@ module "superset" {
     "config_checksum" = module.config.checksum
   }
 
-  image                 = "registry.rebelsoft.com/superset"
   env                   = module.env.kubernetes_env
   config_configmap      = module.config.config_map
   datasources_configmap = module.datasources.config_map
@@ -90,7 +91,6 @@ module "superset-beat" {
     "config_checksum" = module.config.checksum
   }
 
-  image            = "registry.rebelsoft.com/superset"
   env              = module.env.kubernetes_env
   config_configmap = module.config.config_map
   type             = "beat"
@@ -105,7 +105,6 @@ module "superset-worker" {
   }
   replicas = 2
 
-  image            = "registry.rebelsoft.com/superset"
   env              = module.env.kubernetes_env
   config_configmap = module.config.config_map
   type             = "worker"
@@ -120,6 +119,24 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "superset" {
       "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
       "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
       "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
+
+/*
+      "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
+        ssi on;
+        ssi_silent_errors on;
+        sub_filter '<body >' '<body><!--# include virtual="/menu/" -->';
+        sub_filter_once on;
+        proxy_set_header Accept-Encoding "";
+      EOF
+      "nginx.ingress.kubernetes.io/server-snippet" = <<-EOF
+        location ~ /menu {
+          resolver kube-dns.kube-system.svc.cluster.local valid=5s;
+          set $target http://intellij-0.intellij.intellij.svc.cluster.local:3000;
+          proxy_pass $target;
+          proxy_set_header Accept-Encoding "";
+        }
+      EOF
+*/
     }
     name      = module.superset.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

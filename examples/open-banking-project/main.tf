@@ -85,9 +85,11 @@ module "postgres" {
   replicas      = module.postgres-storage.replicas
   image         = "postgres:11.1-alpine"
 
-  POSTGRES_USER     = "openbankingproject"
-  POSTGRES_PASSWORD = "openbankingproject"
-  POSTGRES_DB       = "openbankingproject"
+  env_map = {
+    POSTGRES_USER     = "openbankingproject"
+    POSTGRES_PASSWORD = "openbankingproject"
+    POSTGRES_DB       = "openbankingproject"
+  }
 }
 
 module "open-banking-project-api" {

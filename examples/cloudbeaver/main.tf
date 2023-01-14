@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "cloudbeaver"
-  POSTGRES_PASSWORD = "cloudbeaver"
-  POSTGRES_DB       = "cloudbeaver"
+  env_map = {
+    POSTGRES_USER     = "cloudbeaver"
+    POSTGRES_PASSWORD = "cloudbeaver"
+    POSTGRES_DB       = "cloudbeaver"
+  }
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "workspace" {

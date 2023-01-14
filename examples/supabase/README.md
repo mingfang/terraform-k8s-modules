@@ -21,6 +21,7 @@ Provider Requirements:
 * `POSTGRES_USER` (required)
 * `REGION` (default `"us-east-1"`)
 * `SERVICE_ROLE_KEY` (required)
+* `STORAGE_BACKEND` (default `"s3"`)
 * `STUDIO_DEFAULT_ORGANIZATION` (default `"Default Organization"`)
 * `STUDIO_DEFAULT_PROJECT` (default `"Default Project"`)
 * `SUPABASE_PUBLIC_URL` (default `"https://supabase-example.rebelsoft.com"`)

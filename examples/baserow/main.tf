@@ -17,9 +17,11 @@ module "postgres" {
   storage_class = var.storage_class_name
   storage       = "1Gi"
 
-  POSTGRES_USER     = "baserow"
-  POSTGRES_PASSWORD = "baserow"
-  POSTGRES_DB       = "baserow"
+  env_map = {
+    POSTGRES_USER     = "baserow"
+    POSTGRES_PASSWORD = "baserow"
+    POSTGRES_DB       = "baserow"
+  }
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "media" {

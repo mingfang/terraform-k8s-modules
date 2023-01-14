@@ -20,9 +20,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "redash"
-  POSTGRES_PASSWORD = "redash"
-  POSTGRES_DB       = "redash"
+  env_map = {
+    POSTGRES_USER     = "redash"
+    POSTGRES_PASSWORD = "redash"
+    POSTGRES_DB       = "redash"
+  }
 }
 
 module "server" {

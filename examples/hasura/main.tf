@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "hasura"
-  POSTGRES_PASSWORD = "hasura"
-  POSTGRES_DB       = "hasura"
+  env_map = {
+    POSTGRES_USER     = "hasura"
+    POSTGRES_PASSWORD = "hasura"
+    POSTGRES_DB       = "hasura"
+  }
 }
 
 module "graphql-engine" {
@@ -30,14 +32,14 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "graphql-engine-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.graphql-engine.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.graphql-engine.name
+      host = var.namespace
       http {
         paths {
           backend {

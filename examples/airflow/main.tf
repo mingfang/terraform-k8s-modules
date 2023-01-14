@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "airflow"
-  POSTGRES_PASSWORD = "airflow"
-  POSTGRES_DB       = "airflow"
+  env_map = {
+    POSTGRES_USER     = "airflow"
+    POSTGRES_PASSWORD = "airflow"
+    POSTGRES_DB       = "airflow"
+  }
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "dag" {

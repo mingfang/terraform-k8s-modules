@@ -54,9 +54,11 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  POSTGRES_USER     = "postgres"
-  POSTGRES_PASSWORD = "postgres"
-  POSTGRES_DB       = "postgres"
+  env_map = {
+    POSTGRES_USER     = "postgres"
+    POSTGRES_PASSWORD = "postgres"
+    POSTGRES_DB       = "postgres"
+  }
 }
 
 module "temporal_config" {

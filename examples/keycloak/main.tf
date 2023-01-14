@@ -13,9 +13,11 @@ module "postgres" {
   replicas      = 1
   image         = "postgres:9.6.16"
 
-  POSTGRES_USER     = "keycloak"
-  POSTGRES_PASSWORD = "keycloak"
-  POSTGRES_DB       = "keycloak"
+  env_map = {
+    POSTGRES_USER     = "keycloak"
+    POSTGRES_PASSWORD = "keycloak"
+    POSTGRES_DB       = "keycloak"
+  }
 }
 
 module "keycloak" {
@@ -26,7 +28,7 @@ module "keycloak" {
   KEYCLOAK_USER     = "keycloak"
   KEYCLOAK_PASSWORD = "keycloak"
   DB_VENDOR         = "postgres"
-  DB_ADDR           = "${module.postgres.name}:5432"
+  DB_ADDR           = "${module.postgres.name}:${module.postgres.ports.0.port}"
   DB_USER           = "keycloak"
   DB_PASSWORD       = "keycloak"
   DB_DATABASE       = "keycloak"
@@ -37,14 +39,14 @@ resource "k8s_extensions_v1beta1_ingress" "keycloak" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.keycloak.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${var.name}.rebelsoft.com"
+      host = var.namespace
       http {
         paths {
           backend {

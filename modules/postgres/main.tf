@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -10,8 +10,9 @@ locals {
   parameters = {
     name      = var.name
     namespace = var.namespace
-    replicas  = 1
+    replicas  = var.replicas
     ports     = var.ports
+
     annotations = merge(
       var.annotations,
       var.configmap != null ? {
@@ -30,8 +31,7 @@ locals {
 
         env = concat([
           {
-            name = "POD_NAME"
-
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -39,8 +39,7 @@ locals {
             }
           },
           {
-            name = "POD_IP"
-
+            name       = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -48,52 +47,82 @@ locals {
             }
           },
           {
-            name  = "POSTGRES_USER"
-            value = var.POSTGRES_USER
-          },
-          {
-            name  = "POSTGRES_PASSWORD"
-            value = var.POSTGRES_PASSWORD
-          },
-          {
-            name  = "POSTGRES_DB"
-            value = var.POSTGRES_DB
-          },
-          {
             name  = "PGDATA"
-            value = "/data"
+            value = var.mount_path
           },
           {
             name  = "POSTGRES_PORT"
-            value = var.ports[0].port
+            value = var.ports.0.port
           },
         ], var.env, local.computed_env)
+
+        env_from = var.env_from
+
+        lifecycle = var.post_start_command  != null ? {
+          post_start = {
+            exec = {
+              command = var.post_start_command
+            }
+          }
+        } : null
+
+        liveness_probe = {
+          exec = {
+            command = [
+              "pg_isready"
+            ]
+            interval = 5
+            timeout  = 5
+            retries  = 10
+          }
+        }
 
         resources = var.resources
 
         volume_mounts = concat(
-          [
+          var.storage != null ? [
             {
               name       = var.volume_claim_template_name
-              mount_path = "/data"
+              mount_path = var.mount_path
             },
+          ] : [],
+          var.configmap != null ? [
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "${var.configmap_mount_path}/${k}"
+              sub_path   = k
+            }
+          ] : [],
+          [
             {
               name       = "shm"
               mount_path = "/dev/shm"
             },
           ],
-          var.configmap != null ? [
-            for k, v in var.configmap.data :
-            {
-              name       = "config"
-              mount_path = "/docker-entrypoint-initdb.d/${k}"
-              sub_path   = k
-            }
-          ] : [],
           [], //hack: without this, sub_path above stops working
         )
       },
     ]
+
+    affinity = {
+      pod_anti_affinity = {
+        required_during_scheduling_ignored_during_execution = [
+          {
+            label_selector = {
+              match_expressions = [
+                {
+                  key      = "name"
+                  operator = "In"
+                  values   = [var.name]
+                }
+              ]
+            }
+            topology_key = "kubernetes.io/hostname"
+          }
+        ]
+      }
+    }
 
     node_selector        = var.node_selector
     service_account_name = var.service_account_name
@@ -119,7 +148,7 @@ locals {
       ],
     )
 
-    volume_claim_templates = [
+    volume_claim_templates = var.storage != null ? [
       {
         name               = var.volume_claim_template_name
         storage_class_name = var.storage_class
@@ -131,7 +160,7 @@ locals {
           }
         }
       }
-    ]
+    ] : [],
   }
 }
 

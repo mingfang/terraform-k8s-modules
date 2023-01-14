@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "prefect"
-  POSTGRES_PASSWORD = "prefect"
-  POSTGRES_DB       = "prefect"
+  env_map = {
+    POSTGRES_USER     = "prefect"
+    POSTGRES_PASSWORD = "prefect"
+    POSTGRES_DB       = "prefect"
+  }
 }
 
 module "hasura" {

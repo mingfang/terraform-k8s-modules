@@ -13,9 +13,11 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  POSTGRES_DB       = "tooljet_production"
-  POSTGRES_USER     = "tooljet"
-  POSTGRES_PASSWORD = "tooljet"
+  env_map = {
+    POSTGRES_DB       = "tooljet_production"
+    POSTGRES_USER     = "tooljet"
+    POSTGRES_PASSWORD = "tooljet"
+  }
 }
 
 resource "random_password" "LOCKBOX_MASTER_KEY" {

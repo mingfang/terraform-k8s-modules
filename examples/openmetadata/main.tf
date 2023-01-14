@@ -12,9 +12,11 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  POSTGRES_USER     = "postgres"
-  POSTGRES_PASSWORD = "postgres"
-  POSTGRES_DB       = "postgres"
+  env_map = {
+    POSTGRES_USER     = "postgres"
+    POSTGRES_PASSWORD = "postgres"
+    POSTGRES_DB       = "postgres"
+  }
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "ingestion" {
@@ -24,7 +26,7 @@ resource "k8s_core_v1_persistent_volume_claim" "ingestion" {
   }
 
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -36,12 +38,15 @@ module "ingestion" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   env_map = {
-    "DB_HOST"     = module.postgres.name
-    "DB_PORT"     = module.postgres.ports[0].port
-    "DB_SCHEME"   = "postgresql+psycopg2"
-    "DB_USER"     = "postgres"
-    "DB_PASSWORD" = "postgres"
-    "AIRFLOW_DB"  = "postgres"
+    "DB_HOST"               = module.postgres.name
+    "DB_PORT"               = module.postgres.ports[0].port
+    "DB_SCHEME"             = "postgresql+psycopg2"
+    "DB_USER"               = "postgres"
+    "DB_PASSWORD"           = "postgres"
+    "AIRFLOW_DB"            = "postgres"
+    "AIRFLOW_AUTH_PROVIDER" = "-no-auth"
+    "AIRFLOW_USERNAME"      = "admin"
+    "AIRFLOW_PASSWORD"      = "admin"
   }
 
   pvc = k8s_core_v1_persistent_volume_claim.ingestion.metadata[0].name
@@ -52,6 +57,16 @@ module "elasticsearch" {
   name      = "elasticsearch"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
+
+  resources = {
+    requests = {
+      cpu    = "250m"
+      memory = "1Gi"
+    }
+    limits = {
+      memory = "2Gi"
+    }
+  }
 
   storage_class = "cephfs"
   storage       = "1Gi"
@@ -68,20 +83,25 @@ module "server" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   env_map = {
-    "DB_HOST"               = module.postgres.name
-    "DB_PORT"               = module.postgres.ports[0].port
-    "DB_DRIVER_CLASS"       = "org.postgresql.Driver"
-    "DB_SCHEME"             = "postgresql"
-    "DB_USE_SSL"            = "false"
-    "DB_USER"               = "postgres"
-    "DB_USER_PASSWORD"      = "postgres"
-    "OM_DATABASE"           = "postgres"
-    "AIRFLOW_HOST"          = "http://${module.ingestion.name}:${module.ingestion.ports[0].port}"
-    "SERVER_HOST_API_URL"   = "http://server:8585/api"
-    "AIRFLOW_AUTH_PROVIDER" = "-no-auth"
-    "ELASTICSEARCH_HOST"    = module.elasticsearch.name
-    "ELASTICSEARCH_PORT"    = module.elasticsearch.ports[0].port
-    "ELASTICSEARCH_SCHEME"  = "http"
+    "DB_HOST"                               = module.postgres.name
+    "DB_PORT"                               = module.postgres.ports[0].port
+    "DB_DRIVER_CLASS"                       = "org.postgresql.Driver"
+    "DB_SCHEME"                             = "postgresql"
+    "DB_USE_SSL"                            = "false"
+    "DB_USER"                               = "postgres"
+    "DB_USER_PASSWORD"                      = "postgres"
+    "OM_DATABASE"                           = "postgres"
+    "SERVER_HOST_API_URL"                   = "http://server:8585/api"
+    "AIRFLOW_HOST"                          = "http://${module.ingestion.name}:${module.ingestion.ports[0].port}"
+    "AIRFLOW_AUTH_PROVIDER"                 = "-no-auth"
+    "AIRFLOW_USERNAME"                      = "admin"
+    "AIRFLOW_PASSWORD"                      = "admin"
+    "ELASTICSEARCH_HOST"                    = module.elasticsearch.name
+    "ELASTICSEARCH_PORT"                    = module.elasticsearch.ports[0].port
+    "ELASTICSEARCH_SCHEME"                  = "http"
+    "ELASTICSEARCH_CONNECTION_TIMEOUT_SECS" = "5"
+    "ELASTICSEARCH_SOCKET_TIMEOUT_SECS"     = "60"
+    "ELASTICSEARCH_BATCH_SIZE"              = "10"
   }
 }
 

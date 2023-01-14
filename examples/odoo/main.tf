@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "odoo"
-  POSTGRES_PASSWORD = "odoo"
-  POSTGRES_DB       = "postgres"
+  env_map = {
+    POSTGRES_USER     = "odoo"
+    POSTGRES_PASSWORD = "odoo"
+    POSTGRES_DB       = "postgres"
+  }
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "data" {

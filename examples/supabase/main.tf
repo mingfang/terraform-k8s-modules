@@ -92,7 +92,7 @@ module "postgres_init" {
 
     for sql in {9,9}*.sql; do
         echo "$0: running $sql"
-        psql -v ON_ERROR_STOP=0 -f "$sql"
+        PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=0 -U supabase_admin -f "$sql"
     done
     EOF
   ]
@@ -115,6 +115,7 @@ module "postgrest" {
     PGRST_DB_USE_LEGACY_GUCS       = "false"
     PGRST_LOG_LEVEL                = "info"
     PGRST_OPENAPI_SERVER_PROXY_URI = "${var.SUPABASE_PUBLIC_URL}/rest/v1"
+    PGRST_DB_CHANNEL_ENABLED       = "true"
   }
 }
 
@@ -169,15 +170,14 @@ module "gotrue" {
 
     GOTRUE_DB_DRIVER       = "postgres"
     GOTRUE_DB_DATABASE_URL = "postgres://supabase_auth_admin:postgres@${module.postgres.name}:${module.postgres.ports.0.port}/postgres?sslmode=disable"
-
     /* these are need for keycloak integration to work */
-    GOTRUE_URI_ALLOW_LIST         = "**" // note: must be two `**` to enable any `redirect_to` url
-    GOTRUE_DISABLE_SIGNUP         = "false" // must be enabled for new users to be created after login with IdP
-    GOTRUE_JWT_DEFAULT_GROUP_NAME = "authenticated"
+    GOTRUE_URI_ALLOW_LIST = "**" // note: must be two `**` to enable any `redirect_to` url
+    GOTRUE_DISABLE_SIGNUP = "false" // must be enabled for new users to be created after login with IdP
 
-    GOTRUE_JWT_EXP         = 3600
-    GOTRUE_JWT_AUD         = "authenticated"
-    GOTRUE_JWT_ADMIN_ROLES = "supabase_admin,service_role"
+    GOTRUE_JWT_ADMIN_ROLES        = "service_role"
+    GOTRUE_JWT_AUD                = "authenticated"
+    GOTRUE_JWT_DEFAULT_GROUP_NAME = "authenticated"
+    GOTRUE_JWT_EXP                = 3600
 
     #    GOTRUE_SMTP_HOST = "smtp.gmail.com"
     #    GOTRUE_SMTP_PORT = 587
@@ -221,6 +221,7 @@ module "realtime" {
   env_map  = {
     DB_HOST = module.postgres.name
     DB_PORT = module.postgres.ports.0.port
+    DB_USER = "supabase_admin"
 
     DB_ENC_KEY             = "supabaserealtime"
     DB_AFTER_CONNECT_QUERY = "SET search_path TO _realtime"

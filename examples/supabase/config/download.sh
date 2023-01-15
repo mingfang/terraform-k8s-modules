@@ -14,9 +14,11 @@ done
 
 wget --backups=1 https://raw.githubusercontent.com/supabase/postgres/develop/migrations/db/migrate.sh -O migrate.sh
 svn export --force https://github.com/supabase/postgres/branches/develop/migrations/db/init-scripts .
+svn export --force https://github.com/supabase/postgres/branches/develop/migrations/db/migrations .
 
 # skip safeupdate; not installed
 rm *_enable-safeupdate-postgrest.sql
 
 # https://github.com/supabase/gotrue/tree/master/migrations
-#svn export --force https://github.com/supabase/gotrue/branches/master/migrations .
+svn export --force https://github.com/supabase/gotrue/branches/master/migrations .
+sed -i -e 's|{{ index .Options "Namespace" }}|auth|' *.sql

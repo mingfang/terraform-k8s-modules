@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "supabase/storage-api:v0.26.2"
+  default = "supabase/storage-api:v0.27.0"
 }
 
 variable "replicas" {

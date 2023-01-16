@@ -35,6 +35,7 @@ Provider Requirements:
 * `k8s_networking_k8s_io_v1beta1_ingress.swagger_ui` from `k8s`
 
 ## Child Modules
+* `aws_secrets` from [../../modules/kubernetes/secret](../../modules/kubernetes/secret)
 * `gotrue` from [../../modules/supabase/gotrue](../../modules/supabase/gotrue)
 * `image_pull_secret` from [../image-pull-secret](../image-pull-secret)
 * `kong` from [../../modules/kong](../../modules/kong)

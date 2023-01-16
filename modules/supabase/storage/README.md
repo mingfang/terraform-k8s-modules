@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"supabase/storage-api:v0.26.2"`)
+* `image` (default `"supabase/storage-api:v0.27.0"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"storage"`)
 * `namespace` (required)

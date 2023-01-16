@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"supabase/postgres-meta:v0.56.4"`)
+* `image` (default `"supabase/postgres-meta:v0.58.0"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"meta"`)
 * `namespace` (required)

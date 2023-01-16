@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "supabase/postgres-meta:v0.56.4"
+  default = "supabase/postgres-meta:v0.58.0"
 }
 
 variable "replicas" {

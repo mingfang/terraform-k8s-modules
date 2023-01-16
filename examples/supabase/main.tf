@@ -116,6 +116,7 @@ module "postgrest" {
     PGRST_LOG_LEVEL                = "info"
     PGRST_OPENAPI_SERVER_PROXY_URI = "${var.SUPABASE_PUBLIC_URL}/rest/v1"
     PGRST_DB_CHANNEL_ENABLED       = "true"
+    PGRST_DB_POOL                  = "10"
   }
 }
 
@@ -171,8 +172,8 @@ module "gotrue" {
     GOTRUE_DB_DRIVER       = "postgres"
     GOTRUE_DB_DATABASE_URL = "postgres://supabase_auth_admin:postgres@${module.postgres.name}:${module.postgres.ports.0.port}/postgres?sslmode=disable"
     /* these are need for keycloak integration to work */
-    GOTRUE_URI_ALLOW_LIST = "**" // note: must be two `**` to enable any `redirect_to` url
-    GOTRUE_DISABLE_SIGNUP = "false" // must be enabled for new users to be created after login with IdP
+    GOTRUE_URI_ALLOW_LIST  = "**" // note: must be two `**` to enable any `redirect_to` url
+    GOTRUE_DISABLE_SIGNUP  = "false" // must be enabled for new users to be created after login with IdP
 
     GOTRUE_JWT_ADMIN_ROLES        = "service_role"
     GOTRUE_JWT_AUD                = "authenticated"
@@ -237,6 +238,17 @@ module "realtime" {
 
 /* storage */
 
+module "aws_secrets" {
+  source    = "../../modules/kubernetes/secret"
+  name      = "${var.namespace}-aws-secrets"
+  namespace = k8s_core_v1_namespace.this.metadata.0.name
+
+  from-map = {
+    AWS_ACCESS_KEY_ID     = base64encode(var.AWS_ACCESS_KEY_ID)
+    AWS_SECRET_ACCESS_KEY = base64encode(var.AWS_SECRET_ACCESS_KEY)
+  }
+}
+
 module "storage" {
   source    = "../../modules/supabase/storage"
   name      = "storage"
@@ -244,32 +256,38 @@ module "storage" {
   replicas  = 1
 
   /* https://github.com/supabase/storage-api/blob/master/.env.sample */
-  env_from = [merge(module.secrets.secret_ref, { prefix = "PGRST_" }), module.secrets.secret_ref]
-  env_map  = {
-    POSTGREST_URL = "http://${module.postgrest.name}:${module.postgrest.ports.0.port}"
-
+  env_from = [
+    merge(module.secrets.secret_ref, { prefix = "PGRST_" }),
+    module.secrets.secret_ref,
+    module.aws_secrets.secret_ref,
+  ]
+  env_map = {
+    POSTGREST_URL   = "http://${module.postgrest.name}:${module.postgrest.ports.0.port}"
     DATABASE_URL    = "postgres://supabase_storage_admin:${var.POSTGRES_PASSWORD}@${module.postgres.name}:${module.postgres.ports.0.port}/${var.POSTGRES_DB}"
     FILE_SIZE_LIMIT = 52428800
 
     /* file storage */
-    #        STORAGE_BACKEND           = "file"
-    FILE_STORAGE_BACKEND_PATH = "/tmp"
+    # STORAGE_BACKEND           = "file"
+    # FILE_STORAGE_BACKEND_PATH = "/tmp"
 
     /* s3 storage */
-    STORAGE_BACKEND            = var.STORAGE_BACKEND
-    #    GLOBAL_S3_ENDPOINT         = "http://localstack.localstack-example:4566"
-    #    GLOBAL_S3_ENDPOINT         = "http://s3-gateway.minio-example:9000"
-    GLOBAL_S3_FORCE_PATH_STYLE = "true" //https://github.com/supabase/storage-api/issues/252
-    REGION                     = var.REGION
-    GLOBAL_S3_BUCKET           = var.GLOBAL_S3_BUCKET
+    STORAGE_BACKEND  = "s3"
+    GLOBAL_S3_BUCKET = var.GLOBAL_S3_BUCKET
+    TENANT_ID        = "stub" //this will become top level folder name in s3
+    REGION           = var.REGION
+
+    # local s3
+    # AWS_ACCESS_KEY_ID     = "test"
+    # AWS_SECRET_ACCESS_KEY = "test"
+    # GLOBAL_S3_FORCE_PATH_STYLE = "true"
+    # GLOBAL_S3_ENDPOINT         = "http://localstack.localstack-example:4566" //localstack
+    # GLOBAL_S3_ENDPOINT         = "http://s3-gateway.minio-example:9000" //minio
 
     /* image transformation */
     ENABLE_IMAGE_TRANSFORMATION = "true"
     IMGPROXY_URL                = "http://imgproxy:5001"
 
     LOG_LEVEL = "debug"
-    # this will become top level folder name in s3
-    TENANT_ID = "stub"
   }
 }
 

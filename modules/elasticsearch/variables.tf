@@ -22,6 +22,15 @@ variable "ports" {
 variable "env" {
   default = []
 }
+variable "env_map" {
+  default = {}
+}
+variable "env_file" {
+  default = null
+}
+variable "env_from" {
+  default = []
+}
 
 variable "annotations" {
   default = {}
@@ -34,7 +43,7 @@ variable "node_selector" {
 variable "resources" {
   default = {
     requests = {
-      cpu    = "1000m"
+      cpu    = "1"
       memory = "3Gi"
     }
     limits = {
@@ -52,12 +61,21 @@ variable "secret" {
   description = "secret containing ca.crt, tls.crt, and tls.key to enable TLS"
 }
 
-variable "storage" {}
+variable "storage" {
+  default = null
+}
 
-variable "storage_class" {}
+variable "storage_class" {
+  default = null
+}
 
 variable "volume_claim_template_name" {
   default = "pvc"
+}
+
+variable "mount_path" {
+  default = "/data"
+  description = "pvc mount path"
 }
 
 variable "ES_JAVA_OPTS" {

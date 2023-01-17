@@ -1,9 +1,27 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
+  seed_hosts = join(",",
+    [
+      for i in range(0, var.replicas) :
+      "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local"
+    ]
+  )
+}
+
+locals {
   parameters = {
     name        = var.name
     namespace   = var.namespace
     replicas    = var.replicas
     ports       = var.ports
+
     annotations = var.annotations
 
     enable_service_links        = false
@@ -64,7 +82,7 @@ locals {
           },
           {
             name  = "discovery.seed_hosts"
-            value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
+            value = local.seed_hosts
           },
           {
             name  = "cluster.initial_master_nodes"
@@ -85,7 +103,7 @@ locals {
           ], var.secret != null ? [
           {
             name  = "xpack.security.enabled"
-            value = "true"
+            value = "false"
           },
           {
             name  = "xpack.security.authc.realms.native.native1.order"
@@ -115,7 +133,7 @@ locals {
             name  = "xpack.security.transport.ssl.key"
             value = "/usr/share/elasticsearch/config/tls.key"
           },
-        ] : [], var.env)
+        ] : [], var.env, local.computed_env)
 
         liveness_probe = {
           tcp_socket = {
@@ -148,7 +166,7 @@ locals {
           [
             {
               name       = var.volume_claim_template_name
-              mount_path = "/data"
+              mount_path = var.mount_path
             },
           ],
           var.secret != null ? [

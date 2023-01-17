@@ -1,99 +1,105 @@
-variable "name" {}
+variable "name" {
+  type    = string
+  default = "oauth2-proxy"
+}
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
 
 variable "image" {
-  default = "quay.io/oauth2-proxy/oauth2-proxy:v6.1.1"
+  type    = string
+  default = "quay.io/oauth2-proxy/oauth2-proxy:v7.4.0"
 }
 
 variable "replicas" {
+  type    = number
   default = 1
 }
 
 variable ports {
-  default = [
-    {
-      name = "http"
-      port = 4180
-    },
-  ]
+  type    = list
+  default = [{ name = "http", port = 4180 }]
+}
+
+variable "command" {
+  type    = list(string)
+  default = []
+}
+
+variable "args" {
+  type    = list(string)
+  default = []
 }
 
 variable "env" {
+  type    = list(object({ name = string, value = string }))
+  default = []
+}
+
+variable "env_map" {
+  type    = map
+  default = {}
+}
+
+variable "env_file" {
+  type    = string
+  default = null
+}
+
+variable "env_from" {
+  type    = list
   default = []
 }
 
 variable "annotations" {
+  type    = map
   default = {}
+}
+
+variable "node_selector" {
+  default = {}
+}
+
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
+}
+
+variable "service_account_name" {
+  type    = string
+  default = null
 }
 
 variable "overrides" {
   default = {}
 }
 
-variable "OAUTH2_PROXY_REVERSE_PROXY" {
-  default     = true
-  description = "should always be true when using an ingress controller"
+variable "configmap" {
+  default = null
 }
 
-variable "OAUTH2_PROXY_HTTP_ADDRESS" {
-  default     = "0.0.0.0:4180"
-  description = "make sure same as port"
+variable "configmap_mount_path" {
+  type = string
+  default = "{{ configmap_mount_path }}"
 }
 
-variable "OAUTH2_PROXY_PROVIDER" {
-  description = "keycloak"
+variable "post_start_command" {
+  type    = list(string)
+  default = null
 }
 
-variable "OAUTH2_PROXY_SCOPE" {
-  default     = "email"
-  description = "must be set 'email' when provider is keycloak"
+variable "pvc" {
+  type    = string
+  default = null
 }
 
-variable "OAUTH2_PROXY_CLIENT_ID" {
-  default     = ""
-  description = "client you have created"
-}
-
-variable "OAUTH2_PROXY_CLIENT_SECRET" {
-  default     = ""
-  description = "your client's secret"
-}
-
-variable "OAUTH2_PROXY_LOGIN_URL" {
-  default     = ""
-  description = "http(s)://<keycloak host>/realms/<your realm>/protocol/openid-connect/auth"
-}
-
-variable "OAUTH2_PROXY_REDEEM_URL" {
-  default     = ""
-  description = "http(s)://<keycloak host>/realms/<your realm>/protocol/openid-connect/token"
-}
-variable "OAUTH2_PROXY_VALIDATE_URL" {
-  default     = ""
-  description = "http(s)://<keycloak host>/realms/<your realm>/protocol/openid-connect/userinfo"
-}
-
-variable "OAUTH2_PROXY_KEYCLOAK_GROUP" {
-  default     = ""
-  description = "The group management in keycloak is using a tree. If you create a group named admin in keycloak you should define the ‘keycloak-group’ value to /admin."
-}
-
-variable "OAUTH2_PROXY_COOKIE_SECRET" {}
-
-variable "OAUTH2_PROXY_COOKIE_DOMAINS" {
-  default = ""
-}
-
-variable "OAUTH2_PROXY_EMAIL_DOMAINS" {
-  default = "*"
-}
-
-variable "OAUTH2_PROXY_WHITELIST_DOMAINS" {
-  default = ""
-}
-
-variable "OAUTH2_PROXY_SET_XAUTHREQUEST" {
-  default     = true
-  description = "sends headers using this ingress annotation: \"nginx.ingress.kubernetes.io/auth-response-headers\" = \"X-Auth-Request-User, X-Auth-Request-Email\""
+variable "mount_path" {
+  type    = string
+  default = "/data"
+  description = "pvc mount path"
 }

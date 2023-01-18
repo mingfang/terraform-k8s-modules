@@ -1,18 +1,24 @@
 variable "name" {
+  type    = string
   default = "jsreport"
 }
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
 
 variable "image" {
-  default = "jsreport/jsreport:3.8.0-full"
+  type    = string
+  default = "jsreport/jsreport:3.10.0-full"
 }
 
 variable "replicas" {
+  type    = number
   default = 1
 }
 
 variable "ports" {
+  type    = list
   default = [
     {
       name = "tcp"
@@ -22,26 +28,42 @@ variable "ports" {
 }
 
 variable "command" {
+  type    = list(string)
   default = []
 }
+
 variable "args" {
+  type    = list(string)
   default = []
 }
 
 variable "env" {
+  type    = list(object({ name = string, value = string }))
   default = []
 }
+
 variable "env_map" {
+  type    = map
   default = {}
 }
+
 variable "env_file" {
+  type    = string
   default = null
 }
+
 variable "env_from" {
+  type    = list(object({
+    prefix = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 
 variable "annotations" {
+  type    = map
   default = {}
 }
 
@@ -59,9 +81,9 @@ variable "resources" {
 }
 
 variable "service_account_name" {
+  type    = string
   default = null
 }
-
 
 variable "overrides" {
   default = {}
@@ -71,11 +93,23 @@ variable "configmap" {
   default = null
 }
 
+variable "configmap_mount_path" {
+  type = string
+  default = "{{ configmap_mount_path }}"
+}
+
+variable "post_start_command" {
+  type    = list(string)
+  default = {{ command }}
+}
+
 variable "pvc" {
+  type    = string
   default = null
 }
 
 variable "mount_path" {
+  type    = string
   default = "/data"
   description = "pvc mount path"
 }

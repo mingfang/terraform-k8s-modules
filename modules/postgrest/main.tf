@@ -24,7 +24,7 @@ locals {
 
     containers = [
       {
-        name    = var.name
+        name    = "postgrest"
         image   = var.image
         command = var.command
         args    = var.args
@@ -47,12 +47,20 @@ locals {
             }
           },
           {
-            name = "PGRST_ADMIN_SERVER_PORT"
-            value = var.PGRST_ADMIN_SERVER_PORT
+            name  = "PGRST_ADMIN_SERVER_PORT"
+            value = var.ports.1.port
           },
         ], var.env, local.computed_env)
 
         env_from = var.env_from
+
+        lifecycle = var.post_start_command  != null ? {
+          post_start = {
+            exec = {
+              command = var.post_start_command
+            }
+          }
+        } : null
 
         liveness_probe = {
           initial_delay_seconds = 5
@@ -63,8 +71,8 @@ locals {
 
           http_get = {
             scheme = "HTTP"
-            port   = var.PGRST_ADMIN_SERVER_PORT
-            path   = "/ready"
+            port   = var.ports.1.port
+            path   = "/live"
           }
         }
 
@@ -77,7 +85,7 @@ locals {
 
           http_get = {
             scheme = "HTTP"
-            port   = var.PGRST_ADMIN_SERVER_PORT
+            port   = var.ports.1.port
             path   = "/ready"
           }
         }
@@ -92,12 +100,12 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "${var.configmap_mount_path}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )
@@ -110,8 +118,8 @@ locals {
         image = var.image
 
         command = [
-          "sh",
-          "-cx",
+          "bash",
+          "-c",
           "chown 1000 ${var.mount_path}"
         ]
 

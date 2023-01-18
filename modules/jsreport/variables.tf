@@ -95,12 +95,12 @@ variable "configmap" {
 
 variable "configmap_mount_path" {
   type = string
-  default = "{{ configmap_mount_path }}"
+  default = "/config"
 }
 
 variable "post_start_command" {
   type    = list(string)
-  default = {{ command }}
+  default = null
 }
 
 variable "pvc" {

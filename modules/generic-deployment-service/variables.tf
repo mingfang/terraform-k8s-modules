@@ -62,6 +62,7 @@ variable "annotations" {
 }
 
 variable "image_pull_secrets" {
+  type    = list(object({ name = string }))
   default = []
 }
 

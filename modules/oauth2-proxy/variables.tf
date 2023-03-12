@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "quay.io/oauth2-proxy/oauth2-proxy:v7.4.0"
+  default = "quay.io/oauth2-proxy/oauth2-proxy:v7.1.3"
 }
 
 variable "replicas" {
@@ -17,19 +17,19 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   type    = list
   default = [{ name = "http", port = 4180 }]
 }
 
 variable "command" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "args" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "env" {
@@ -48,13 +48,23 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list
+  type    = list(object({
+    prefix = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 
 variable "annotations" {
   type    = map
   default = {}
+}
+
+variable "image_pull_secrets" {
+  type    = list(object({ name = string, value = string }))
+  default = []
 }
 
 variable "node_selector" {
@@ -70,11 +80,6 @@ variable "resources" {
   }
 }
 
-variable "service_account_name" {
-  type    = string
-  default = null
-}
-
 variable "overrides" {
   default = {}
 }
@@ -85,7 +90,7 @@ variable "configmap" {
 
 variable "configmap_mount_path" {
   type = string
-  default = "{{ configmap_mount_path }}"
+  default = "/config"
 }
 
 variable "post_start_command" {
@@ -102,4 +107,9 @@ variable "mount_path" {
   type    = string
   default = "/data"
   description = "pvc mount path"
+}
+
+variable "service_account_name" {
+  type    = string
+  default = null
 }

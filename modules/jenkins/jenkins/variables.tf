@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "registry.rebelsoft.com/jenkins:latest"
+  default = "mingfang/jenkins:latest"
 }
 
 variable "env" {
@@ -38,7 +38,6 @@ variable "resources" {
       memory = "500Mi"
     }
     limits = {
-      cpu    = "2"
       memory = "1Gi"
     }
   }

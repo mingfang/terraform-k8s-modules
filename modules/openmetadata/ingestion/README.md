@@ -13,7 +13,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"openmetadata/ingestion:0.12.2-preview.0"`)
+* `image` (default `"openmetadata/ingestion:0.13.0"`)
 * `mount_path` (default `"/opt/airflow/dags"`): pvc mount path
 * `name` (default `"ingestion"`)
 * `namespace` (required)

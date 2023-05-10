@@ -5,7 +5,7 @@ variable "name" {
 variable "namespace" {}
 
 variable "image" {
-  default = "openmetadata/ingestion:0.12.2"
+  default = "openmetadata/ingestion:1.0.1"
 }
 
 variable "replicas" {

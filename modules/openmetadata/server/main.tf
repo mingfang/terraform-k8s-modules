@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -62,19 +62,33 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-            for k, v in var.configmap.data :
-            {
-              name       = "config"
-              mount_path = "/config/${var.name}/${k}"
-              sub_path   = k
-            }
+          for k, v in var.configmap.data :
+          {
+            name       = "config"
+            mount_path = "/config/${var.name}/${k}"
+            sub_path   = k
+          }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )
       },
     ]
 
-    init_containers = var.pvc != null ? [
+    init_containers = concat([
+      {
+        name = "migrate"
+        image = var.image
+        command = [
+          "bash",
+          "-cx",
+          <<-EOF
+          /openmetadata-*/bootstrap/bootstrap_storage.sh repair
+          /openmetadata-*/bootstrap/bootstrap_storage.sh migrate-all
+          EOF
+        ]
+        env = concat(var.env, local.computed_env)
+      },
+    ], var.pvc != null ? [
       {
         name  = "init"
         image = var.image
@@ -96,7 +110,8 @@ locals {
           },
         ]
       }
-    ] : []
+    ] : [],
+    )
 
     affinity = {
       pod_anti_affinity = {

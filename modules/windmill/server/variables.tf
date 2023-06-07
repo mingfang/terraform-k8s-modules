@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "ghcr.io/windmill-labs/windmill:main"
+  default = "ghcr.io/windmill-labs/windmill:latest"
 }
 
 variable "replicas" {

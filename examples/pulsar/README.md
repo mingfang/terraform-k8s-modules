@@ -17,16 +17,11 @@ Provider Requirements:
 
 ## Child Modules
 * `bookkeeper` from [../../modules/pulsar/bookkeeper](../../modules/pulsar/bookkeeper)
-* `bookkeeper-storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
-* `ingress` from [../../modules/kubernetes/ingress-nginx](../../modules/kubernetes/ingress-nginx)
-* `nfs-server` from [../../modules/nfs-server-empty-dir](../../modules/nfs-server-empty-dir)
 * `pulsar` from [../../modules/pulsar/broker](../../modules/pulsar/broker)
 * `pulsar-dashboard` from [../../modules/pulsar/dashboard](../../modules/pulsar/dashboard)
 * `pulsar-proxy` from [../../modules/pulsar/proxy](../../modules/pulsar/proxy)
 * `pulsar-sql-coordinator` from [../../modules/pulsar/sql](../../modules/pulsar/sql)
 * `pulsar-sql-worker` from [../../modules/pulsar/sql](../../modules/pulsar/sql)
-* `pulsar-storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
 * `pulsar-websocket` from [../../modules/pulsar/websocket](../../modules/pulsar/websocket)
 * `zookeeper` from [../../modules/zookeeper](../../modules/zookeeper)
-* `zookeeper-storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
 

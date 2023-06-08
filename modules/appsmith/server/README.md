@@ -11,7 +11,7 @@ Provider Requirements:
 * `APPSMITH_REDIS_URL` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"appsmith/appsmith-server:v1.6.20"`)
+* `image` (default `"appsmith/appsmith-server:v1.7.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

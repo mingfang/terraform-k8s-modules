@@ -11,21 +11,27 @@ module "redpanda" {
 
   storage_class = "cephfs"
   storage       = "1Gi"
-  replicas      = var.replicas
+  replicas      = 4
+
+  additional_args = join(" ", [
+    "--set redpanda.enable_transactions=true",
+    "--set redpanda.enable_idempotence=true",
+    "--set redpanda.auto_create_topics_enabled=true",
+  ])
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "proxy" {
+resource "k8s_networking_k8s_io_v1beta1_ingress" "redpanda" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-proxy.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-redpanda.*"
     }
     name      = module.redpanda.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${var.namespace}-proxy"
+      host = "${var.namespace}-redpanda"
       http {
         paths {
           path = "/"

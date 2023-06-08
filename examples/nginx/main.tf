@@ -8,68 +8,34 @@ module "nginx" {
   source    = "../../modules/nginx"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  default-conf = <<-EOF
-    # optional - override default.conf
-    server {
-      listen       80;
-      server_name  localhost;
-
-      #charset koi8-r;
-      #access_log  /var/log/nginx/host.access.log  main;
-
-      location / {
-          root   /usr/share/nginx/html;
-          index  index.html index.htm;
-      }
-
-      #error_page  404              /404.html;
-
-      # redirect server error pages to the static page /50x.html
-      #
-      error_page   500 502 503 504  /50x.html;
-      location = /50x.html {
-          root   /usr/share/nginx/html;
-      }
-
-      # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-      #
-      #location ~ \.php$ {
-      #    proxy_pass   http://127.0.0.1;
-      #}
-
-      # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-      #
-      #location ~ \.php$ {
-      #    root           html;
-      #    fastcgi_pass   127.0.0.1:9000;
-      #    fastcgi_index  index.php;
-      #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-      #    include        fastcgi_params;
-      #}
-
-      # deny access to .htaccess files, if Apache's document root
-      # concurs with nginx's one
-      #
-      #location ~ /\.ht {
-      #    deny  all;
-      #}
-    }
-    EOF
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "nginx" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*"
+      "kubernetes.io/ingress.class"                       = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"          = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
+        ssi on;
+        ssi_silent_errors on;
+        sub_filter '<body>' '<body><!--# include virtual="/_ssi/menu.menu.svc.cluster.local:3000" -->';
+        sub_filter_once on;
+        proxy_set_header Accept-Encoding "";
+      EOF
+      "nginx.ingress.kubernetes.io/server-snippet"        = <<-EOF
+        location ~ ^/_ssi/(?<target>.+) {
+          resolver kube-dns.kube-system.svc.cluster.local valid=5s;
+          proxy_pass http://$target?$args;
+          proxy_set_header Accept-Encoding "";
+        }
+      EOF
     }
     name      = module.nginx.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.nginx.name
+      host = var.namespace
       http {
         paths {
           backend {

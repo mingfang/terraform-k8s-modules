@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "openfaas/gateway:0.18.18"
+  default = "ghcr.io/openfaas/gateway:0.21.3"
 }
 
 variable "replicas" {

@@ -9,7 +9,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `domain_config` (default `null`): configmap with domain.json key
 * `env` (default `[]`)
-* `image` (default `"registry.rebelsoft.com/eve:latest"`)
+* `image` (default `"mingfang/eve:latest"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

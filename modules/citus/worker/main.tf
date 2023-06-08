@@ -80,7 +80,10 @@ locals {
                 "-cx",
                 <<-EOF
                 sleep 10
-                psql --host=${var.coordinator} --username=postgres --command="SELECT * from master_add_node('$${HOSTNAME}.${var.name}.${var.namespace}.svc.cluster.local', ${var.ports[0].port});"
+                psql \
+                  --host=${var.coordinator} \
+                  --username=postgres \
+                  --command="SELECT * from master_add_node('$${HOSTNAME}.${var.name}.${var.namespace}.svc.cluster.local', ${var.ports[0].port});"
                 EOF
               ]
             }

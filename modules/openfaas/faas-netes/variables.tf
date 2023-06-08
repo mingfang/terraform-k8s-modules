@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "openfaas/faas-netes:0.12.2"
+  default = "ghcr.io/openfaas/faas-netes:0.14.2"
 }
 
 variable "replicas" {

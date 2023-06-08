@@ -4,7 +4,12 @@ echo '{"new_tenant_id": "ca5fbf3053bc9ea10eb2f32949f78c91"}' | http http://pages
 ```
 ### or attach previous tenant
 ```shell
-echo '{"tenant_id":"ca5fbf3053bc9ea10eb2f32949f78c91"}' | http http://pageserver.neon-example:8080/v1/tenant/ca5fbf3053bc9ea10eb2f32949f78c91/attach
+echo '{"tenant_id":"ca5fbf3053bc9ea10eb2f32949f78c91", "config":""}' | http http://pageserver.neon-example:8080/v1/tenant/ca5fbf3053bc9ea10eb2f32949f78c91/attach
+```
+
+### detach previous tenant
+```shell
+echo '{"tenant_id":"ca5fbf3053bc9ea10eb2f32949f78c91"}' | http http://pageserver.neon-example:8080/v1/tenant/ca5fbf3053bc9ea10eb2f32949f78c91/detach
 ```
 ### delete timeline
 http DELETE http://pageserver.neon-example:8080/v1/tenant/ca5fbf3053bc9ea10eb2f32949f78c91/timeline/80ed3be9cbb1a738d90ff39e7e4ccaaa
@@ -14,4 +19,17 @@ http DELETE http://pageserver.neon-example:8080/v1/tenant/ca5fbf3053bc9ea10eb2f3
 echo '{"tenant_id":"ca5fbf3053bc9ea10eb2f32949f78c91", "new_timeline_id": "80ed3be9cbb1a738d90ff39e7e4ccaaa", "pg_version": 15}' | http http://pageserver.neon-example:8080/v1/tenant/ca5fbf3053bc9ea10eb2f32949f78c91/timeline/
 ```
 
-## get tenant
+## schema diff
+docker run supabase/pgadmin-schema-diff --schema public \
+  'postgres://postgres:postgres@postgres.neon-example:5432/diff-target' \
+  'postgres://postgres:postgres@postgres.neon-example:5432/postgres'
+
+docker run \
+migra --unsafe \
+  'postgresql://postgres:postgres@postgres.neon-example:5432/diff-target' \
+  'postgresql://postgres:postgres@postgres.neon-example:5432/postgres'
+
+docker run --rm -it \
+-e PGCOPYDB_SOURCE_PGURI='postgresql://postgres:postgres@postgres.neon-example:5432/postgres' \
+-e PGCOPYDB_TARGET_PGURI='postgresql://postgres:postgres@postgres.neon-example:5432/diff-target' \
+dimitri/pgcopydb:v0.10 pgcopydb \

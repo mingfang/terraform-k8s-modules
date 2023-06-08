@@ -10,6 +10,10 @@ resource "k8s_core_v1_namespace" "functions" {
   }
 }
 
+module "crd" {
+  source = "../../modules/openfaas/crd"
+}
+
 module "nats" {
   source    = "../../modules/openfaas/nats"
   name      = "nats"

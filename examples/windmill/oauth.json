@@ -1,5 +1,5 @@
 {
-  "Keycloak": {
+  "keycloak_windmill": {
     "id": "windmill",
     "secret": "1057fb5e-fdb7-4580-8eea-05dcdb39631e",
     "login_config": {

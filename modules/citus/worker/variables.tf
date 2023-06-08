@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "replicas" {
-  default = 3
+  default = 1
 }
 
 variable "ports" {
@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "citusdata/citus:9.4.0"
+  default = "citusdata/citus:11.1.4"
 }
 
 variable "env" {

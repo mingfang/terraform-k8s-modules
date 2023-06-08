@@ -9,7 +9,7 @@ Provider Requirements:
 * `args` (default `[]`)
 * `command` (default `[]`)
 * `configmap` (default `null`)
-* `configmap_mount_path` (default `"{{ configmap_mount_path }}"`)
+* `configmap_mount_path` (default `"/config"`)
 * `env` (default `[]`)
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
@@ -21,7 +21,7 @@ Provider Requirements:
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":5488}]`)
-* `post_start_command` (default `{}`)
+* `post_start_command` (default `null`)
 * `pvc` (default `null`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
@@ -35,12 +35,4 @@ Provider Requirements:
 
 ## Child Modules
 * `deployment-service` from [../../archetypes/deployment-service](../../archetypes/deployment-service)
-
-## Problems
-
-## Error: Missing key/value separator
-
-(at `jsreport/variables.tf` line 103)
-
-Expected an equals sign ("=") to mark the beginning of the attribute value.
 

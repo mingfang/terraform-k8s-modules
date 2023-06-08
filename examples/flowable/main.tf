@@ -17,15 +17,15 @@ module "flowable" {
     },
     {
       name  = "SPRING_DATASOURCE_URL"
-      value = "jdbc:postgresql://${module.cockroachdb.name}:${module.cockroachdb.ports[0].port}/defaultdb"
+      value = "jdbc:postgresql://${module.postgres.name}:${module.postgres.ports[0].port}/flowable"
     },
     {
       name  = "SPRING_DATASOURCE_USERNAME"
-      value = "root"
+      value = "flowable"
     },
     {
       name  = "SPRING_DATASOURCE_PASSWORD"
-      value = ""
+      value = "flowable"
     },
     {
       name  = "FLOWABLE_COMMON_APP_IDM-ADMIN_USER"
@@ -63,38 +63,19 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "flowable" {
   }
 }
 
-module "cockroachdb" {
-  source    = "../../modules/cockroachdb"
-  name      = "cockroachdb"
+module "postgres" {
+  source    = "../../modules/postgres"
+  name      = "postgres"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas      = 3
+  replicas      = 1
   storage       = "1Gi"
-  storage_class = null
-}
+  storage_class = "cephfs"
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "cockroachdb" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "cockroachdb-${var.namespace}.*"
-    }
-    name      = module.cockroachdb.name
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
-  }
-  spec {
-    rules {
-      host = "${module.cockroachdb.name}-${var.namespace}"
-      http {
-        paths {
-          backend {
-            service_name = module.cockroachdb.name
-            service_port = module.cockroachdb.ports[1].port
-          }
-          path = "/"
-        }
-      }
-    }
+  env_map = {
+    POSTGRES_USER     = "flowable"
+    POSTGRES_PASSWORD = "flowable"
+    POSTGRES_DB       = "flowable"
   }
 }
 

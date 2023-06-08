@@ -25,7 +25,7 @@ locals {
           "-cx",
           <<-EOF
           REDPANDA_NODEID="$(expr $${HOSTNAME//[^0-9]/})"
-          REDPANDA_ADVERTISE_ADDR="$${HOSTNAME}.${var.name}"
+          REDPANDA_ADVERTISE_ADDR="$${HOSTNAME}.${var.name}.${var.namespace}"
           # seed list only for node-id > 0
           if [ "$${REDPANDA_NODEID}" -gt 0 ]; then
             REDPANDA_SEEDS_ARG="--seeds ${var.name}-0.${var.name}:33145"
@@ -44,7 +44,8 @@ locals {
           --kafka-addr 0.0.0.0:9092 \
           --advertise-kafka-addr $${REDPANDA_ADVERTISE_ADDR}:9092 \
           --rpc-addr 0.0.0.0:33145 \
-          --advertise-rpc-addr $${REDPANDA_ADVERTISE_ADDR}:33145
+          --advertise-rpc-addr $${REDPANDA_ADVERTISE_ADDR}:33145 \
+          ${var.additional_args}
           EOF
         ]
         env = concat([

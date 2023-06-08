@@ -39,7 +39,7 @@ locals {
           -c "listen_pg_addr=\"$${HOSTNAME}.${var.name}.${var.namespace}.svc.cluster.local:${var.ports.1.port}\"" \
           -c "listen_http_addr='0.0.0.0:${var.ports.0.port}'" \
           -c "broker_endpoint='$${BROKER_ENDPOINT}'" \
-          -c "remote_storage={endpoint='$${S3_ENDPOINT}', \
+          -c "remote_storage={ \
                               bucket_name='$${BUCKET_NAME}', \
                               bucket_region='$${BUCKET_REGION}', \
                               prefix_in_bucket='/$${BUCKET_PREFIX}/'}"

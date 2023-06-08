@@ -13,7 +13,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"us-docker.pkg.dev/fairwinds-ops/oss/goldilocks:v4"`)
+* `image` (default `"us-docker.pkg.dev/fairwinds-ops/oss/goldilocks:v4.5.1"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"goldilocks-dashboard"`)
 * `namespace` (required)

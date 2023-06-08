@@ -5,7 +5,7 @@ variable "name" {
 variable "namespace" {}
 
 variable "image" {
-  default = "us-docker.pkg.dev/fairwinds-ops/oss/goldilocks:v4"
+  default = "us-docker.pkg.dev/fairwinds-ops/oss/goldilocks:v4.5.1"
 }
 
 variable "replicas" {

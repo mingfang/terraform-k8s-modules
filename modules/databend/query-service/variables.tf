@@ -100,5 +100,5 @@ variable "mount_path" {
   description = "pvc mount path"
 }
 
-variable "META_ADDRESS" {
+variable "META_ENDPOINTS" {
 }

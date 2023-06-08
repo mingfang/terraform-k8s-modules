@@ -10,7 +10,7 @@ Provider Requirements:
 * `clusterName` (default `"local"`)
 * `dbStorage_readAheadCacheMaxSizeMb` (default `32`)
 * `dbStorage_writeCacheMaxSizeMb` (default `32`)
-* `image` (default `"apachepulsar/pulsar-all:latest"`)
+* `image` (default `"apachepulsar/pulsar-all:2.10.0"`)
 * `name` (required)
 * `namespace` (default `null`)
 * `overrides` (default `{}`)

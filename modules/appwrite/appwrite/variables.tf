@@ -16,7 +16,11 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "appwrite/appwrite:0.10.4"
+  default = "appwrite/appwrite:0.13.4"
+}
+
+variable "command" {
+  default = null
 }
 
 variable "env" {
@@ -31,12 +35,15 @@ variable "overrides" {
   default = {}
 }
 
-variable "pvc_uploads" {
-  default = ""
+
+variable "pvcs" {
+  default = []
+  description = "array of PVCs, e.g. functions, builds, etc"
 }
 
-variable "pvc_functions" {
-  default = ""
+variable "sidecars" {
+  default = []
+  description = "sidecar containers, e.g. docker in docker"
 }
 
 variable "_APP_ENV" {
@@ -49,9 +56,7 @@ variable "_APP_REDIS_PORT" {
   default = "6379"
 }
 variable "_APP_DB_HOST" {}
-variable "_APP_DB_PORT" {
-  default = "6379"
-}
+variable "_APP_DB_PORT" {}
 variable "_APP_DB_SCHEMA" {}
 variable "_APP_DB_USER" {}
 variable "_APP_DB_PASS" {}
@@ -59,7 +64,9 @@ variable "_APP_USAGE_STATS" {
   default     = "disabled"
   description = "enabled or disabled"
 }
-variable "_APP_INFLUXDB_HOST" {}
+variable "_APP_INFLUXDB_HOST" {
+  default = null
+}
 variable "_APP_INFLUXDB_PORT" {
   default = 8086
 }

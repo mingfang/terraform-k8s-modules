@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "stackstorm/st2api:latest"
+  default = "stackstorm/st2api:3.6.0"
 }
 
 variable "env" {

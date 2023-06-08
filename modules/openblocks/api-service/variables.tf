@@ -24,12 +24,12 @@ variable "ports" {
 
 variable "command" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "args" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "env" {
@@ -80,13 +80,6 @@ variable "resources" {
   }
 }
 
-
-variable "service_account_name" {
-  type    = string
-  default = null
-}
-
-
 variable "overrides" {
   default = {}
 }
@@ -102,7 +95,7 @@ variable "configmap_mount_path" {
 
 variable "post_start_command" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "pvc" {
@@ -114,4 +107,9 @@ variable "mount_path" {
   type    = string
   default = "/data"
   description = "pvc mount path"
+}
+
+variable "service_account_name" {
+  type    = string
+  default = null
 }

@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "zilliz/attu:v2.0.5"
+  default = "zilliz/attu:v2.1.1"
 }
 
 variable "replicas" {

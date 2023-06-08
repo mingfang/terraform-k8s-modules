@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "openfaas/faas-idler:0.3.0"
+  default = "ghcr.io/openfaas/faas-idler-pro:0.4.4"
 }
 
 variable "replicas" {

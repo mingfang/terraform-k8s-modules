@@ -16,7 +16,7 @@ Provider Requirements:
 * `_APP_USAGE_STATS` (default `"disabled"`): enabled or disabled
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"appwrite/appwrite:0.10.4"`)
+* `image` (default `"appwrite/appwrite:0.13.4"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

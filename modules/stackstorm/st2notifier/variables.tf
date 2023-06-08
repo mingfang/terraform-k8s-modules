@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2notifier:latest"
+  default = "stackstorm/st2notifier:3.6.0"
 }
 
 variable "env" {

@@ -1,69 +1,35 @@
 {
-  "people": {
-    "item_title": "person",
-    "additional_lookup": {
-      "url": "regex(\"[\\w]+\")",
-      "field": "lastname"
-    },
-    "schema": {
-      "firstname": {
-        "type": "string",
-        "minlength": 1,
-        "maxlength": 10
-      },
-      "lastname": {
-        "type": "string",
-        "minlength": 1,
-        "maxlength": 15,
-        "required": true,
-        "unique": true
-      },
-      "role": {
-        "type": "list",
-        "allowed": [
-          "author",
-          "contributor",
-          "copy"
-        ]
-      },
-      "location": {
-        "type": "dict",
-        "schema": {
-          "address": {
-            "type": "string"
-          },
-          "city": {
-            "type": "string"
-          }
-        }
-      },
-      "born": {
-        "type": "datetime"
-      }
-    }
+  "process-templates": {
+    "schema": {}
   },
-  "works": {
-    "cache_control": "max-age=10,must-revalidate",
-    "cache_expires": 10,
-    "schema": {
-      "title": {
-        "type": "string",
-        "required": true
-      },
-      "description": {
-        "type": "string"
-      },
-      "owner": {
-        "type": "objectid",
-        "required": true,
-        "data_relation": {
-          "resource": "people",
-          "embeddable": true
-        }
-      }
-    }
+  "process-instances": {
+    "schema": {}
   },
   "any": {
+    "schema": {}
+  },
+  "polaris_deals": {
+    "resource_methods": ["GET"],
+    "schema": {}
+  },
+  "rh_deals": {
+    "schema": {}
+  },
+  "rh_asset_managers": {
+    "schema": {}
+  },
+  "rh_am_assignment_view": {
+    "resource_methods": ["GET"],
+    "schema": {}
+  },
+  "rh_view_portfolio_deals": {
+    "resource_methods": ["GET"],
+    "schema": {}
+  },
+  "json-schema": {
+    "schema": {}
+  },
+  "json-ui-schema": {
     "schema": {}
   }
 }

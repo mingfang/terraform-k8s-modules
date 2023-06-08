@@ -15,7 +15,7 @@ Provider Requirements:
 * `_APP_REDIS_PORT` (default `"6379"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"appwrite/appwrite:0.10.4"`)
+* `image` (default `"appwrite/appwrite:0.13.4"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

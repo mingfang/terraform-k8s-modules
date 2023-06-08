@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = 1
 
-  POSTGRES_USER     = "pgche"
-  POSTGRES_PASSWORD = "pgchepassword"
-  POSTGRES_DB       = "dbche"
+  env_map = {
+    POSTGRES_USER     = "pgche"
+    POSTGRES_PASSWORD = "pgchepassword"
+    POSTGRES_DB       = "dbche"
+  }
 }
 
 module "eclipse-che" {
@@ -44,7 +46,7 @@ module "eclipse-che" {
   Depends on keycloak
   */
   CHE_MULTIUSER                  = true
-  CHE_KEYCLOAK_AUTH__SERVER__URL = "https://keycloak.rebelsoft.com/auth"
+  CHE_KEYCLOAK_AUTH__SERVER__URL = "https://keycloak.rebelsoft.com/auth/realms/${var.namespace}"
   CHE_KEYCLOAK_REALM             = var.namespace
   CHE_KEYCLOAK_CLIENT__ID        = var.namespace
 
@@ -87,13 +89,13 @@ data "k8s_core_v1_secret" "wildcard" {
 module "devfile-registry" {
   source    = "../../modules/eclipse-che/devfile-registry"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  image     = "registry.rebelsoft.com/devfile-registry:latest"
+#  image     = "registry.rebelsoft.com/devfile-registry:latest"
 }
 
 module "plugin-registry" {
   source    = "../../modules/eclipse-che/plugin-registry"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  image     = "registry.rebelsoft.com/plugin-registry:latest"
+#  image     = "registry.rebelsoft.com/plugin-registry:latest"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "che" {

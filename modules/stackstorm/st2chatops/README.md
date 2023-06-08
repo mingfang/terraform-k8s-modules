@@ -12,7 +12,7 @@ Provider Requirements:
 * `ST2_STREAM_URL` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"stackstorm/st2chatops:latest"`)
+* `image` (default `"stackstorm/st2chatops:3.6.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

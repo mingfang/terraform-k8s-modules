@@ -69,7 +69,11 @@ locals {
         liveness_probe = {
           exec = {
             command = [
-              "pg_isready"
+              "pg_isready",
+              "-U",
+              "$(POSTGRES_USER)",
+              "-d",
+              "$(POSTGRES_DB)",
             ]
             interval = 5
             timeout  = 5

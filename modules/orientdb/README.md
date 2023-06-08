@@ -34,5 +34,5 @@ Provider Requirements:
 * `data.template_file.members` from `template`
 
 ## Child Modules
-* `statefulset-service` from `git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/statefulset-service`
+* `statefulset-service` from [../../archetypes/statefulset-service](../../archetypes/statefulset-service)
 

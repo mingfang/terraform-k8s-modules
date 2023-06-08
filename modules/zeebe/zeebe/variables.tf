@@ -28,7 +28,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "camunda/zeebe:1.3.3"
+  default = "camunda/zeebe:1.3.4"
 }
 
 variable "env" {

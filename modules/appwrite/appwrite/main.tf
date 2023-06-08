@@ -7,10 +7,11 @@ locals {
     ports                = var.ports
     enable_service_links = false
 
-    containers = [
+    containers = concat([
       {
-        name  = "appwrite"
-        image = var.image
+        name    = var.name
+        image   = var.image
+        command = var.command
 
         env = concat([
           { name = "_APP_ENV", value = var._APP_ENV },
@@ -27,73 +28,49 @@ locals {
           { name = "_APP_STORAGE_ANTIVIRUS", value = var._APP_STORAGE_ANTIVIRUS },
         ], var.env)
 
-        volume_mounts = concat(
-          var.pvc_uploads != null ? [
-            {
-              name       = "uploads"
-              mount_path = "/storage/uploads"
-            },
-          ] : [],
-          var.pvc_functions != null ? [
-            {
-              name       = "functions"
-              mount_path = "/storage/functions"
-            },
-          ] : [],
-        )
+        volume_mounts = [
+        for pvc in var.pvcs : {
+          name       = pvc.metadata[0].name
+          mount_path = "/storage/${pvc.metadata[0].name}"
+        }
+        ]
       }
-    ]
+    ], var.sidecars)
 
     init_containers = [
       {
-        name  = "chown"
-        image = var.image
+        name    = "chown"
+        image   = var.image
         command = [
           "sh",
           "-cx",
           <<-EOF
-          chown www-data:www-data /storage/uploads
-          chown www-data:www-data /storage/functions
+          chown www-data:www-data /storage/*
           EOF
         ]
         security_context = {
           run_asuser = "0"
         }
-        volume_mounts = concat(
-          var.pvc_uploads != null ? [
-            {
-              name       = "uploads"
-              mount_path = "/storage/uploads"
-            },
-          ] : [],
-          var.pvc_functions != null ? [
-            {
-              name       = "functions"
-              mount_path = "/storage/functions"
-            },
-          ] : [],
-        )
+
+        volume_mounts = [
+        for pvc in var.pvcs : {
+          name       = pvc.metadata[0].name
+          mount_path = "/storage/${pvc.metadata[0].name}"
+        }
+        ]
       },
     ]
 
-    volumes = concat(
-      var.pvc_uploads != null ? [
-        {
-          name = "uploads"
-          persistent_volume_claim = {
-            claim_name = var.pvc_uploads
-          }
-        },
-      ] : [],
-      var.pvc_functions != null ? [
-        {
-          name = "functions"
-          persistent_volume_claim = {
-            claim_name = var.pvc_functions
-          }
-        },
-      ] : [],
-    )
+    volumes = [
+    for pvc in var.pvcs :
+    {
+      name = pvc.metadata[0].name
+
+      persistent_volume_claim = {
+        claim_name = pvc.metadata[0].name
+      }
+    }
+    ]
   }
 }
 

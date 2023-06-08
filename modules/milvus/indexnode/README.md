@@ -13,7 +13,7 @@ Provider Requirements:
 * `PULSAR_ADDRESS` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"milvusdb/milvus:v2.0.2"`)
+* `image` (default `"milvusdb/milvus:v2.1.2"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

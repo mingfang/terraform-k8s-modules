@@ -11,12 +11,14 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
+* `k8s_core_v1_persistent_volume_claim.data` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.stackstorm-keys` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.stackstorm-packs` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.stackstorm-packs-configs` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.stackstorm-ssh` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.stackstorm-virtualenvs` from `k8s`
 * `k8s_networking_k8s_io_v1beta1_ingress.st2web` from `k8s`
+* `k8s_networking_k8s_io_v1beta1_ingress.this` from `k8s`
 * `k8s_rbac_authorization_k8s_io_v1_role_binding.admin` from `k8s`
 
 ## Child Modules
@@ -24,6 +26,7 @@ Provider Requirements:
 * `config-chatbot-aliases` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 * `config-rbac-assignments` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 * `init-job` from [../../modules/stackstorm/init-job](../../modules/stackstorm/init-job)
+* `intellij` from [../../modules/intellij](../../modules/intellij)
 * `mongodb` from [../../modules/mongodb](../../modules/mongodb)
 * `rabbitmq` from [../../modules/rabbitmq](../../modules/rabbitmq)
 * `redis` from [../../modules/redis](../../modules/redis)

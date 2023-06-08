@@ -8,7 +8,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `config_map` (required)
 * `env` (default `[]`)
-* `image` (default `"stackstorm/st2sensorcontainer:latest"`)
+* `image` (default `"stackstorm/st2sensorcontainer:3.6.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

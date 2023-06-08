@@ -1,9 +1,9 @@
 locals {
   cluster-name = "${var.name}-${var.namespace}"
-  servers = join(",",
+  servers      = join(",",
     [
-      for i in range(0, var.replicas) :
-      "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local"
+    for i in range(0, var.replicas) :
+    "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local"
     ]
   )
 
@@ -29,7 +29,7 @@ locals {
             value = "kubernetes-insecure"
           },
           {
-            name = "GOMAXPROCS"
+            name       = "GOMAXPROCS"
             value_from = {
               resource_field_ref = {
                 resource = "limits.cpu"
@@ -38,7 +38,7 @@ locals {
             }
           },
           {
-            name = "MEMORY_LIMIT_MIB"
+            name       = "MEMORY_LIMIT_MIB"
             value_from = {
               resource_field_ref = {
                 resource = "limits.memory"
@@ -82,7 +82,8 @@ locals {
           failure_threshold     = 2
         }
 
-        resources                        = var.resources
+        resources = var.resources
+
         termination_grace_period_seconds = 60
 
         volume_mounts = [
@@ -93,6 +94,25 @@ locals {
         ]
       },
     ]
+
+    affinity = {
+      pod_anti_affinity = {
+        required_during_scheduling_ignored_during_execution = [
+          {
+            label_selector = {
+              match_expressions = [
+                {
+                  key      = "name"
+                  operator = "In"
+                  values   = [var.name]
+                }
+              ]
+            }
+            topology_key = "kubernetes.io/hostname"
+          }
+        ]
+      }
+    }
 
     volume_claim_templates = [
       {

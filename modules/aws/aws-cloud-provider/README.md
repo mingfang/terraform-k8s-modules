@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"us.gcr.io/k8s-artifacts-prod/provider-aws/cloud-controller-manager:v1.22.0-alpha.0"`)
+* `image` (default `"registry.k8s.io/provider-aws/cloud-controller-manager:v1.23.0-alpha.0"`)
 * `name` (default `"aws-cloud-provider"`)
 * `namespace` (default `"kube-system"`)
 * `node_selector` (default `{}`)

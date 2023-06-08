@@ -6,8 +6,8 @@ Provider Requirements:
 
 ## Input Variables
 * `annotations` (default `{}`)
-* `args` (default `[]`)
-* `command` (default `[]`)
+* `args` (default `null`)
+* `command` (default `null`)
 * `configmap` (default `null`)
 * `configmap_mount_path` (default `"/config"`)
 * `env` (default `[]`)
@@ -22,7 +22,7 @@ Provider Requirements:
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":3000}]`)
-* `post_start_command` (default `[]`)
+* `post_start_command` (default `null`)
 * `pvc` (default `null`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)

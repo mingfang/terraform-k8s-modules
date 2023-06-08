@@ -9,7 +9,7 @@ Provider Requirements:
 * `env` (default `[]`)
 * `function_namespace` (default `null`): default to same namespace as gateway
 * `http_probe` (default `true`)
-* `image` (default `"openfaas/faas-netes:0.12.2"`)
+* `image` (default `"ghcr.io/openfaas/faas-netes:0.14.2"`)
 * `image_pull_policy` (default `"Always"`)
 * `liveness_probe_initial_delay_seconds` (default `2`)
 * `liveness_probe_period_seconds` (default `2`)

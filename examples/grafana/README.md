@@ -1,9 +1,12 @@
 
 # Module `grafana`
 
+Core Version Constraints:
+* `>= 0.13`
+
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
-* **pagerduty:** (any version)
+* **pagerduty ([pagerduty/pagerduty](https://registry.terraform.io/providers/pagerduty/pagerduty/latest))** (any version)
 
 ## Input Variables
 * `name` (default `"grafana"`)

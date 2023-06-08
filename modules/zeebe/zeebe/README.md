@@ -10,7 +10,7 @@ Provider Requirements:
 * `ZEEBE_LOG_LEVEL` (default `"info"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"camunda/zeebe:1.3.3"`)
+* `image` (default `"camunda/zeebe:1.3.4"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

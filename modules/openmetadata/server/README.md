@@ -13,7 +13,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"openmetadata/server:0.13.0"`)
+* `image` (default `"openmetadata/server:1.0.1"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"server"`)
 * `namespace` (required)

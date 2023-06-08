@@ -1,0 +1,10 @@
+{
+  "auths": {
+    "https://index.docker.io/v1/": {
+      "auth": "bWluZ2Zhbmc6MTg3ODZhYjMtMTMxYi00YTY1LThmNzMtZTBiYmM1MjU2YjVm"
+    },
+    "registry.build.kkr.com": {
+      "auth": "ZG9ja2VyOmtrcjEyMzQ1"
+    }
+  }
+}

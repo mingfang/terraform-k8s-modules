@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2timersengine:latest"
+  default = "stackstorm/st2timersengine:3.6.0"
 }
 
 variable "env" {

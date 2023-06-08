@@ -20,7 +20,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "cockroachdb/cockroach:v20.2.3"
+  default = "cockroachdb/cockroach:v22.2.0"
 }
 
 variable "env" {
@@ -40,6 +40,9 @@ variable "resources" {
     requests = {
       cpu    = "500m"
       memory = "1Gi"
+    }
+    limits = {
+      memory = "4Gi"
     }
   }
 }

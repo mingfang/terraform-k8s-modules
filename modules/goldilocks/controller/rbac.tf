@@ -15,6 +15,11 @@ module "rbac" {
       verbs      = ["get", "list", "watch"]
     },
     {
+      api_groups = ["batch"]
+      resources  = ["jobs", "cronjobs"]
+      verbs      = ["get", "list", "watch"]
+    },
+    {
       api_groups = ["autoscaling.k8s.io"]
       resources  = ["verticalpodautoscalers"]
       verbs      = ["get", "list", "create", "delete", "update"]

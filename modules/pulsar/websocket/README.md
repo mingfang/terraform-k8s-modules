@@ -9,7 +9,7 @@ Provider Requirements:
 * `PULSAR_MEM` (default `"-Xms16m -Xmx64m -XX:MaxDirectMemorySize=128m"`)
 * `clusterName` (default `"local"`)
 * `configurationStoreServers` (required)
-* `image` (default `"apachepulsar/pulsar-all:latest"`)
+* `image` (default `"apachepulsar/pulsar-all:2.10.0"`)
 * `name` (required)
 * `namespace` (default `null`)
 * `overrides` (default `{}`)

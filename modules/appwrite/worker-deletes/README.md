@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `_APP_DB_HOST` (required)
 * `_APP_DB_PASS` (required)
-* `_APP_DB_PORT` (default `"6379"`)
+* `_APP_DB_PORT` (required)
 * `_APP_DB_SCHEMA` (required)
 * `_APP_DB_USER` (required)
 * `_APP_ENV` (default `"production"`): development or production(default)
@@ -15,7 +15,7 @@ Provider Requirements:
 * `_APP_REDIS_PORT` (default `"6379"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"appwrite/appwrite:0.10.4"`)
+* `image` (default `"appwrite/appwrite:0.13.4"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

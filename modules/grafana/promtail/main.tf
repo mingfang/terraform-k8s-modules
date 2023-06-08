@@ -91,4 +91,3 @@ module "daemonset" {
   source     = "../../../archetypes/daemonset"
   parameters = merge(local.parameters, var.overrides)
 }
-

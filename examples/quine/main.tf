@@ -38,7 +38,7 @@ module "quine" {
   }
   replicas = 1
 
-  quine_config = module.config.name
+  configmap = module.config.config_map
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {

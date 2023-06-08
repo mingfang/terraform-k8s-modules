@@ -52,9 +52,11 @@ module "postgres" {
   storage       = "1Gi"
   storage_class = "cephfs"
 
-  POSTGRES_USER     = "frappe"
-  POSTGRES_PASSWORD = "frappe"
-  POSTGRES_DB       = "frappe"
+  env_map = {
+    POSTGRES_USER     = "frappe"
+    POSTGRES_PASSWORD = "frappe"
+    POSTGRES_DB       = "frappe"
+  }
 }
 */
 

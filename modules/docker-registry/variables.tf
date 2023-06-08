@@ -29,12 +29,16 @@ variable "annotations" {
 }
 
 variable "node_selector" {
-  default = {
-  }
+  default = {}
 }
 
 variable "resources" {
-  default = {}
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
 }
 
 variable "overrides" {

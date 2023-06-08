@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2sensorcontainer:latest"
+  default = "stackstorm/st2sensorcontainer:3.6.0"
 }
 
 variable "env" {

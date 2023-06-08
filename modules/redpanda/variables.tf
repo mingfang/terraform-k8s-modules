@@ -63,3 +63,7 @@ variable "volume_claim_template_name" {
 variable "overrides" {
   default = {}
 }
+
+variable "additional_args" {
+  default = ""
+}

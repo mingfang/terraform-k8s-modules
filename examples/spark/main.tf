@@ -1,65 +1,19 @@
-variable "name" {
-  default = "spark"
-}
-
-variable "namespace" {
-  default = "spark"
-}
-
-variable "ingress_ip" {
-  default = "192.168.2.146"
-}
-
-variable "ingress_node_port" {
-  default = "30080"
-}
-
 resource "k8s_core_v1_namespace" "this" {
   metadata {
-    labels = {
-      "istio-injection" = "disabled"
-    }
     name = var.namespace
   }
 }
 
-resource "k8s_core_v1_persistent_volume_claim" "this" {
+resource "k8s_core_v1_persistent_volume_claim" "data" {
   metadata {
     name      = var.name
-    namespace = var.namespace
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
 
   spec {
-    access_modes = ["ReadWriteMany"]
-
-    resources {
-      requests = { "storage" = "5Gi" }
-    }
-
-    storage_class_name = "alluxio"
-  }
-}
-
-
-locals {
-  overrides = {
-    annotations = {
-      "pvc" = k8s_core_v1_persistent_volume_claim.this.metadata[0].resource_version
-    }
-    volume_mounts = [
-      {
-        name       = "alluxio-fuse-mount"
-        mount_path = "/alluxio"
-      }
-    ]
-    volumes = [
-      {
-        name = "alluxio-fuse-mount"
-        persistent_volume_claim = {
-          claim_name = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
-        }
-      }
-    ]
+    access_modes       = ["ReadWriteOnce"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = "cephfs"
   }
 }
 
@@ -73,8 +27,9 @@ module "worker" {
   source     = "../../modules/spark/worker"
   name       = "${var.name}-worker"
   namespace  = k8s_core_v1_namespace.this.metadata[0].name
+  replicas = 2
+
   master_url = module.master.master_url
-  overrides  = local.overrides
 }
 
 module "ui-proxy" {
@@ -85,30 +40,27 @@ module "ui-proxy" {
   master_port = module.master.service.spec[0].ports[1].port
 }
 
-module "ingress-rules" {
-  source    = "../../modules/kubernetes/ingress-rules"
-  name      = var.name
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  annotations = {
-    "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*",
+resource "k8s_networking_k8s_io_v1beta1_ingress" "ui-proxy" {
+  metadata {
+    annotations = {
+      "kubernetes.io/ingress.class"                 = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"    = "${var.namespace}.*"
+    }
+    name      = module.ui-proxy.name
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
-  ingress_class = "nginx"
-  rules = [
-    {
-      host = var.name
-
-      http = {
-        paths = [
-          {
-            path = "/"
-
-            backend = {
-              service_name = module.ui-proxy.service.metadata[0].name
-              service_port = module.ui-proxy.service.spec[0].ports[0].port
-            }
-          },
-        ]
+  spec {
+    rules {
+      host = var.namespace
+      http {
+        paths {
+          backend {
+            service_name = module.ui-proxy.name
+            service_port = module.ui-proxy.ports[0].port
+          }
+          path = "/"
+        }
       }
-    },
-  ]
+    }
+  }
 }

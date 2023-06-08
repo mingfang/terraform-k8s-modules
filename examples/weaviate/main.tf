@@ -18,6 +18,9 @@ module "t2v-transformers" {
   name      = "t2v-transformers"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
+  image = "semitechnologies/transformers-inference:sentence-transformers-msmarco-distilbert-base-v2"
+#  image = "registry.rebelsoft.com/nlpaueb/legal-bert-base-uncased"
+#  image = "registry.rebelsoft.com/pile-of-law/legalbert-large-1.7m-2"
 }
 
 module "qna-transformers" {
@@ -25,12 +28,14 @@ module "qna-transformers" {
   name      = "qna-transformers"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
+#  image = "semitechnologies/qna-transformers:bert-large-uncased-whole-word-masking-finetuned-squad"
+  image = "registry.rebelsoft.com/atharvamundada99/bert-large-question-answering-finetuned-legal"
 }
 module "ner-transformers" {
   source    = "../../modules/weaviate/ner-transformers"
   name      = "ner-transformers"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
+  replicas  = 0
 }
 module "text-spellcheck" {
   source    = "../../modules/weaviate/text-spellcheck"
@@ -44,18 +49,21 @@ module "weaviate" {
   name      = "weaviate"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  replicas      = 1
+  replicas      = 4
   storage       = "1Gi"
   storage_class = "cephfs"
 
-  CONTEXTIONARY_URL          = "${module.contextionary.name}:${module.contextionary.ports[0].port}"
-  TRANSFORMERS_INFERENCE_API = "http://${module.t2v-transformers.name}:${module.t2v-transformers.ports[0].port}"
-  QNA_INFERENCE_API          = "http://${module.qna-transformers.name}:${module.qna-transformers.ports[0].port}"
-  NER_INFERENCE_API          = "http://${module.ner-transformers.name}:${module.ner-transformers.ports[0].port}"
-  SPELLCHECK_INFERENCE_API   = "http://${module.text-spellcheck.name}:${module.text-spellcheck.ports[0].port}"
-
+  env_map = {
+    CONTEXTIONARY_URL          = "${module.contextionary.name}:${module.contextionary.ports[0].port}"
+    TRANSFORMERS_INFERENCE_API = "http://${module.t2v-transformers.name}:${module.t2v-transformers.ports[0].port}"
+    QNA_INFERENCE_API          = "http://${module.qna-transformers.name}:${module.qna-transformers.ports[0].port}"
+#    NER_INFERENCE_API          = "http://${module.ner-transformers.name}:${module.ner-transformers.ports[0].port}"
+    SPELLCHECK_INFERENCE_API   = "http://${module.text-spellcheck.name}:${module.text-spellcheck.ports[0].port}"
+    QUERY_MAXIMUM_RESULTS = "100000"
+  }
   ENABLE_MODULES            = "text2vec-contextionary,text2vec-transformers,qna-transformers,ner-transformers,text-spellcheck"
   DEFAULT_VECTORIZER_MODULE = "text2vec-contextionary"
+  LOG_LEVEL = "debug"
 }
 
 

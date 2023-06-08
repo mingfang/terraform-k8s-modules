@@ -5,7 +5,7 @@ variable "name" {
 variable "namespace" {}
 
 variable "image" {
-  default = "localstack/localstack"
+  default = "localstack/localstack:1.3.1"
 }
 
 variable "replicas" {

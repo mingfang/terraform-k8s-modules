@@ -1,14 +1,14 @@
 
-# Module `template-deployment`
+# Module `deephaven/grpc-proxy`
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
+* `BACKEND_ADDR` (required)
 * `annotations` (default `{}`)
-* `configmap` (default `null`)
 * `env` (default `[]`)
-* `image` (required)
+* `image` (default `"ghcr.io/deephaven/grpc-proxy:latest"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)
@@ -24,5 +24,5 @@ Provider Requirements:
 * `service`
 
 ## Child Modules
-* `deployment-service` from [../../archetypes/deployment-service](../../archetypes/deployment-service)
+* `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)
 

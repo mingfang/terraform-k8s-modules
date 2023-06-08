@@ -1,20 +1,20 @@
 variable "name" {}
 
-variable "namespace" {
-  default = null
-}
+variable "namespace" {}
 
-variable "env" {
-  default = []
+variable "image" {
+  default = "registry.rebelsoft.com/spark"
 }
 
 variable "replicas" {
   default = 1
 }
 
-variable "image" {
-  default = "registry.rebelsoft.com/spark"
+variable "env" {
+  default = []
 }
+
+
 
 variable "overrides" {
   default = {}

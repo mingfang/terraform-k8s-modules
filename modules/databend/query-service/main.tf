@@ -49,8 +49,8 @@ locals {
             }
           },
           {
-            name = "META_ADDRESS"
-            value = var.META_ADDRESS
+            name = "META_ENDPOINTS"
+            value = var.META_ENDPOINTS
           },
           {
             name = "META_USERNAME"

@@ -1,15 +1,11 @@
-/**
- * [Docker Registry](https://docs.docker.com/registry/)
- *
- */
-
 locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = var.annotations
-    replicas             = 1
-    ports                = var.ports
+    name        = var.name
+    namespace   = var.namespace
+    replicas    = 1
+    ports       = var.ports
+    annotations = var.annotations
+
     enable_service_links = false
 
     containers = [
@@ -32,6 +28,7 @@ locals {
     volumes = var.pvc_name != null ? [
       {
         name = "data"
+
         persistent_volume_claim = {
           claim_name = var.pvc_name
         }

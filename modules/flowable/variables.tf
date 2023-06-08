@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "flowable/flowable-ui:6.6.0"
+  default = "flowable/flowable-ui:6.7.2"
 }
 
 variable "replicas" {

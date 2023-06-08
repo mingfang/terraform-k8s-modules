@@ -12,7 +12,7 @@ Provider Requirements:
 * `additional_containers` (default `[]`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"odoo"`)
+* `image` (default `"odoo:14.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

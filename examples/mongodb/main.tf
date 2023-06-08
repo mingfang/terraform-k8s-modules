@@ -52,6 +52,10 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "mongo-express" {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
       "nginx.ingress.kubernetes.io/server-alias" = "mongo-express-${var.namespace}.*"
+
+      "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
+      "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
+      "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
     }
     name      = module.mongo-express.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
@@ -72,34 +76,66 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "mongo-express" {
   }
 }
 
-/* RESTHeart */
+/* postgres */
 
-module "restheart" {
-  source    = "../../modules/restheart"
-  name      = "restheart"
+module "postgres" {
+  source    = "../../modules/postgres"
+  name      = "postgres"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
 
-  MONGO_URI = "mongodb://mongo:mongo@${module.mongodb.seed_list}"
+  storage_class = "cephfs"
+  storage       = "1Gi"
+
+  env_map = {
+    POSTGRES_USER     = "postgres"
+    POSTGRES_PASSWORD = "postgres"
+    POSTGRES_DB       = "postgres"
+  }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "restheart" {
+/* RESTHeart */
+
+
+
+/* Eve */
+
+
+
+
+/* Meilisearch */
+
+module "meilisearch" {
+  source    = "../../modules/meilisearch"
+  name      = "meilisearch"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+
+  storage_class = "cephfs"
+  storage       = "1Gi"
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "meilisearch" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "restheart-${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "meilisearch-${var.namespace}.*"
+
+      "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
+      "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
+      "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
     }
-    name      = module.restheart.name
+    name      = module.meilisearch.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "restheart-${var.namespace}"
+      host = "meilisearch-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.restheart.name
-            service_port = module.restheart.ports[0].port
+            service_name = module.meilisearch.name
+            service_port = module.meilisearch.ports[0].port
           }
           path = "/"
         }
@@ -108,46 +144,87 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "restheart" {
   }
 }
 
-/* Eve */
+/* Trino */
 
-module "domain" {
+module "trino-catalog" {
   source    = "../../modules/kubernetes/config-map"
-  name      = "eve-domain"
+  name      = "trino-catalog"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  from-file = "${path.module}/domain.json"
+  from-dir = "${path.module}/catalog"
 }
 
-module "eve" {
-  source    = "../../modules/eve"
-  name      = "eve"
+module "trino-config" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "trino-config"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  annotations = {
-    "domain-checksum" = module.domain.checksum
+
+  from-map = {
+    "config.properties" = <<-EOF
+      coordinator=true
+      node-scheduler.include-coordinator=false
+      http-server.http.port=8080
+      discovery.uri=http://localhost:8080
+    EOF
   }
-  replicas = 1
-
-  MONGO_URI     = "mongodb://mongo:mongo@mongodb-0.mongodb.mongodb-example:27017/eve?replicaSet=rs0&authSource=admin"
-  domain_config = module.domain.name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "eve" {
+module "trino" {
+  source    = "../../modules/trino"
+  name      = "trino"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 1
+
+  catalog_configmap = module.trino-catalog.config_map
+  config_configmap = module.trino-config.config_map
+}
+
+module "trino-worker-config" {
+  source    = "../../modules/kubernetes/config-map"
+  name      = "trino-worker-config"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  from-map = {
+    "config.properties" = <<-EOF
+      coordinator=false
+      node-scheduler.include-coordinator=true
+      http-server.http.port=8080
+      discovery.uri=http://trino-0.trino:8080
+    EOF
+  }
+}
+
+module "trino-worker" {
+  source    = "../../modules/trino"
+  name      = "trino-worker"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 2
+
+  catalog_configmap = module.trino-catalog.config_map
+  config_configmap = module.trino-worker-config.config_map
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "trino" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "eve-${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "trino-${var.namespace}.*"
+
+      "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
+      "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
+      "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
     }
-    name      = module.eve.name
+    name      = module.trino.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "eve-${var.namespace}"
+      host = "trino-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.eve.name
-            service_port = module.eve.ports[0].port
+            service_name = module.trino.name
+            service_port = module.trino.ports[0].port
           }
           path = "/"
         }

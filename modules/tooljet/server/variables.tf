@@ -7,7 +7,7 @@ variable "annotations" {
 }
 
 variable "image" {
-  default = "tooljet/tooljet-server-ce:v1.8.0"
+  default = "tooljet/tooljet-server-ce:v1.14.0"
 }
 
 variable "replicas" {

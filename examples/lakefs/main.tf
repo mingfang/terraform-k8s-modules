@@ -58,9 +58,11 @@ module "postgres" {
   storage_class = "cephfs"
   storage       = "1Gi"
 
-  POSTGRES_USER     = "lakefs"
-  POSTGRES_PASSWORD = "lakefs"
-  POSTGRES_DB       = "lakefs"
+  env_map = {
+    POSTGRES_USER     = "lakefs"
+    POSTGRES_PASSWORD = "lakefs"
+    POSTGRES_DB       = "lakefs"
+  }
 }
 
 module "lakefs" {
@@ -107,3 +109,10 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "lakefs" {
     }
   }
 }
+
+/*
+Access Key ID:
+AKIAJYK4TXCWDGTMOL3Q
+Secret Access Key:
+7H9MUwEvvSlKejUEg/G4g8bCLa/hz2Gg7hCPvQaw
+*/

@@ -13,6 +13,8 @@ locals {
         image = var.image
         env = concat([
           { name = "SELF_HOSTED", value = var.SELF_HOSTED },
+          { name = "COUCH_DB_USERNAME", value = "foo" },
+          { name = "COUCH_DB_PASSWORD", value = "bar" },
           { name = "COUCH_DB_URL", value = var.COUCH_DB_URL },
           { name = "WORKER_URL", value = var.WORKER_URL },
           { name = "MINIO_URL", value = var.MINIO_URL },

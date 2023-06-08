@@ -10,7 +10,7 @@ Provider Requirements:
 * `AGENT_INJECT_VAULT_IMAGE` (default `"hashicorp/vault:1.10.2"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"hashicorp/vault-k8s:0.16.0"`)
+* `image` (default `"hashicorp/vault-k8s:1.1.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

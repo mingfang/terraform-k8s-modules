@@ -6,13 +6,14 @@ Provider Requirements:
 
 ## Input Variables
 * `annotations` (default `{}`)
+* `configmap` (default `null`): configmap with quine.conf key
 * `env` (default `[]`)
-* `image` (default `"thatdot/quine"`)
+* `image` (default `"thatdot/quine:1.2.0"`)
 * `name` (required)
 * `namespace` (required)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":8080}]`)
-* `quine_config` (default `null`): configmap with quine.conf key
 * `replicas` (default `1`)
 * `resources` (default `{"limits":{"memory":"8Gi"},"requests":{"cpu":"250m","memory":"4Gi"}}`)
 

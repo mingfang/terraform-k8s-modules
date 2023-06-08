@@ -1,28 +1,44 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   parameters = {
-    name                 = var.name
-    namespace            = var.namespace
-    annotations          = var.annotations
-    replicas             = var.replicas
-    ports                = var.ports
-    enable_service_links = false
+    name        = var.name
+    namespace   = var.namespace
+    replicas    = var.replicas
+    ports       = var.ports
+    annotations = var.annotations
+
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = [
       {
-        name  = "weaviate"
-        image = var.image
-        args = [
-          "--host",
-          "0.0.0.0",
-          "--port",
-          var.ports[0].port,
-          "--scheme",
-          "http",
+        name    = "weaviate"
+        image   = var.image
+        command = [
+          "sh",
+          "-c",
+          <<-EOF
+          ulimit -n 65535
+          exec /bin/weaviate \
+            --host 0.0.0.0 \
+            --port ${var.ports[0].port} \
+            --scheme http \
+            --read-timeout=600s \
+            --write-timeout=600s
+          EOF
         ]
 
         env = concat([
           {
-            name = "POD_NAME"
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -30,40 +46,12 @@ locals {
             }
           },
           {
-            name = "POD_IP"
-            value_from = {
-              field_ref = {
-                field_path = "status.podIP"
-              }
-            }
+            name  = "CLUSTER_HOSTNAME"
+            value = "$(POD_NAME)"
           },
           {
-            name  = "CONTEXTIONARY_URL"
-            value = var.CONTEXTIONARY_URL
-          },
-          {
-            name  = "TRANSFORMERS_INFERENCE_API"
-            value = var.TRANSFORMERS_INFERENCE_API
-          },
-          {
-            name  = "QNA_INFERENCE_API"
-            value = var.QNA_INFERENCE_API
-          },
-          {
-            name  = "NER_INFERENCE_API"
-            value = var.NER_INFERENCE_API
-          },
-          {
-            name  = "SPELLCHECK_INFERENCE_API"
-            value = var.SPELLCHECK_INFERENCE_API
-          },
-          {
-            name  = "QUERY_DEFAULTS_LIMIT"
-            value = var.QUERY_DEFAULTS_LIMIT
-          },
-          {
-            name  = "AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED"
-            value = var.AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED
+            name  = "ENABLE_MODULES"
+            value = var.ENABLE_MODULES
           },
           {
             name  = "PERSISTENCE_DATA_PATH"
@@ -74,14 +62,31 @@ locals {
             value = var.DEFAULT_VECTORIZER_MODULE
           },
           {
-            name  = "ENABLE_MODULES"
-            value = var.ENABLE_MODULES
+            name  = "QUERY_DEFAULTS_LIMIT"
+            value = var.QUERY_DEFAULTS_LIMIT
           },
           {
-            name  = "CLUSTER_HOSTNAME"
-            value = "$(POD_NAME)"
+            name  = "AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED"
+            value = var.AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED
           },
-        ], var.env)
+          {
+            name  = "CLUSTER_GOSSIP_BIND_PORT"
+            value = "7000"
+          },
+          {
+            name  = "CLUSTER_DATA_BIND_PORT"
+            value = "7001"
+          },
+          {
+            name  = "CLUSTER_JOIN"
+            value = "${var.name}-srv.${var.namespace}.svc.cluster.local"
+            #            value = "${var.name}-0.${var.name}.${var.namespace}.svc.cluster.local"
+          },
+          {
+            name  = "LOG_LEVEL"
+            value = var.LOG_LEVEL
+          }
+        ], var.env, local.computed_env)
 
         liveness_probe = {
           http_get = {
@@ -106,7 +111,7 @@ locals {
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
-            mount_path = "/data"
+            mount_path = var.PERSISTENCE_DATA_PATH
           },
         ]
       },

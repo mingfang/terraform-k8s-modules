@@ -13,7 +13,7 @@ Provider Requirements:
 * `config_map_chatbot_aliases` (required)
 * `config_map_rbac_assignments` (required)
 * `env` (default `[]`)
-* `image` (default `"stackstorm/st2api:latest"`)
+* `image` (default `"stackstorm/st2api:3.6.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

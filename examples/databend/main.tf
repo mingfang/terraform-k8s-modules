@@ -15,7 +15,7 @@ module "query-service" {
   name      = "query-service"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  META_ADDRESS = "${module.meta-service.name}:9191"
+  META_ENDPOINTS = "${module.meta-service.name}:9191"
 
   env_map = {
     STORAGE_TYPE="s3"

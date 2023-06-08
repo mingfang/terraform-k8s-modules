@@ -2,6 +2,14 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable "image" {
+  default = "semitechnologies/weaviate:1.15.3"
+}
+
+variable "replicas" {
+  default = 1
+}
+
 variable "ports" {
   default = [
     {
@@ -11,19 +19,21 @@ variable "ports" {
   ]
 }
 
-variable "replicas" {
-  default = 1
-}
-
-variable "image" {
-  default = "semitechnologies/weaviate:1.12.2"
-}
-
 variable "env" {
   default = []
 }
+variable "env_map" {
+  default = {}
+}
+variable "env_file" {
+  default = null
+}
 
 variable "annotations" {
+  default = {}
+}
+
+variable "node_selector" {
   default = {}
 }
 
@@ -48,23 +58,8 @@ variable "volume_claim_template_name" {
   default = "pvc"
 }
 
-variable "CONTEXTIONARY_URL" {
-  default = null
-}
-variable "TRANSFORMERS_INFERENCE_API" {
-  default = null
-}
-variable "QNA_INFERENCE_API" {
-  default = null
-}
-variable "NER_INFERENCE_API" {
-  default = null
-}
-variable "SPELLCHECK_INFERENCE_API" {
-  default = null
-}
 variable "QUERY_DEFAULTS_LIMIT" {
-  default = 25
+  default = 100
 }
 variable "AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED" {
   default = true
@@ -72,9 +67,13 @@ variable "AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED" {
 variable "PERSISTENCE_DATA_PATH" {
   default = "/data"
 }
+variable "ENABLE_MODULES" {
+  default = ""
+}
 variable "DEFAULT_VECTORIZER_MODULE" {
   default = ""
 }
-variable "ENABLE_MODULES" {
-  default = ""
+
+variable "LOG_LEVEL" {
+  default = "info"
 }

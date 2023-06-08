@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "milvusdb/milvus:v2.0.2"
+  default = "milvusdb/milvus:v2.1.2"
 }
 
 variable "replicas" {

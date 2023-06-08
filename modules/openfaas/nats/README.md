@@ -8,7 +8,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `cluster_id` (required)
 * `env` (default `[]`)
-* `image` (default `"nats-streaming:0.17.0"`)
+* `image` (default `"nats-streaming:0.22.0"`)
 * `metrics_image` (default `"synadia/prometheus-nats-exporter:0.6.2"`)
 * `name` (required)
 * `namespace` (required)

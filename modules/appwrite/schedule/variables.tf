@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "appwrite/appwrite:0.10.4"
+  default = "appwrite/appwrite:0.13.4"
 }
 
 variable "env" {

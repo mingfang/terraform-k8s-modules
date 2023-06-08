@@ -18,6 +18,7 @@ Provider Requirements:
 
 ## Child Modules
 * `alertmanager` from [../../modules/openfaas/alertmanager](../../modules/openfaas/alertmanager)
+* `crd` from [../../modules/openfaas/crd](../../modules/openfaas/crd)
 * `faas-idler` from [../../modules/openfaas/faas-idler](../../modules/openfaas/faas-idler)
 * `faas-netes` from [../../modules/openfaas/faas-netes](../../modules/openfaas/faas-netes)
 * `gateway` from [../../modules/openfaas/gateway](../../modules/openfaas/gateway)

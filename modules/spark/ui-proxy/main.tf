@@ -1,20 +1,12 @@
-/**
- * Documentation
- *
- * terraform-docs --sort-inputs-by-required --with-aggregate-type-defaults md
- *
- */
-
 locals {
   parameters = {
     name      = var.name
     namespace = var.namespace
-    ports = [
-      {
-        name = "http"
-        port = 80
-      },
-    ]
+    replicas    = var.replicas
+    ports       = var.ports
+    annotations =  var.annotations
+    enable_service_links = false
+
     containers = [
       {
         name  = "proxy"
@@ -22,6 +14,7 @@ locals {
         args = [
           "${var.master_host}:${var.master_port}"
         ]
+        env = var.env
       },
     ]
   }
@@ -29,6 +22,6 @@ locals {
 
 
 module "deployment-service" {
-  source     = "git::https://github.com/mingfang/terraform-k8s-modules.git//archetypes/deployment-service"
+  source     = "../../../archetypes/deployment-service"
   parameters = merge(local.parameters, var.overrides)
 }

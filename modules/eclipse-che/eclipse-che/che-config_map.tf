@@ -1,7 +1,6 @@
 /*
 All possible settings are here
-For multi-user = false https://github.com/eclipse/che/blob/master/assembly/assembly-wsmaster-war/src/main/webapp/WEB-INF/classes/che/che.properties
-For multi-user = true https://github.com/eclipse/che/blob/master/assembly/assembly-wsmaster-war/src/main/webapp/WEB-INF/classes/che/multiuser.properties
+For multi-user = true https://github.com/eclipse-che/che-server/blob/main/assembly/assembly-wsmaster-war/src/main/webapp/WEB-INF/classes/che/multiuser.properties
 - Uppercase all names
 - Convert . to _
 - Convert - to __ //double underscore
@@ -15,14 +14,20 @@ locals {
 
 resource "k8s_core_v1_config_map" "che" {
   data = {
+    "CHE_AUTH_NATIVEUSER"                                        = "true"
+    "CHE_HOST"                                                   = var.CHE_HOST
+    "CHE_PORT"                                                   = "8080"
     "CHE_API"                                                    = "${local.http_url}/api"
+    "CHE_WEBSOCKET_ENDPOINT"                                     = "${local.ws_url}/api/websocket"
+    "CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL"              = "${local.http_url}/agent-binaries/linux_amd64/bootstrapper/bootstrapper"
+    "CHE_DEBUG_SERVER"                                           = "true"
+    "CHE_INFRASTRUCTURE_ACTIVE"                                  = "kubernetes"
+    "CHE_INFRA_KUBERNETES_INGRESS_DOMAIN"                        = var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN
+    "CHE_INFRA_KUBERNETES_MACHINE__START__TIMEOUT__MIN"          = "5"
+    "CHE_INFRA_KUBERNETES_MASTER__URL"                           = ""
     "CHE_CORS_ALLOWED__ORIGINS"                                  = "*"
     "CHE_CORS_ALLOW__CREDENTIALS"                                = "false"
     "CHE_CORS_ENABLED"                                           = "true"
-    "CHE_DEBUG_SERVER"                                           = "true"
-    "CHE_HOST"                                                   = var.CHE_HOST
-    "CHE_INFRASTRUCTURE_ACTIVE"                                  = "kubernetes"
-    "CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL"              = "${local.http_url}/agent-binaries/linux_amd64/bootstrapper/bootstrapper"
     "CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME"                   = var.CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME
     "CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON"             = <<-EOF
       {
@@ -32,10 +37,7 @@ resource "k8s_core_v1_config_map" "che" {
         "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"
       }
       EOF
-    "CHE_INFRA_KUBERNETES_INGRESS_DOMAIN"                        = var.CHE_INFRA_KUBERNETES_INGRESS_DOMAIN
     "CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM"               = var.CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM
-    "CHE_INFRA_KUBERNETES_MACHINE__START__TIMEOUT__MIN"          = "5"
-    "CHE_INFRA_KUBERNETES_MASTER__URL"                           = ""
     "CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT"                     = var.CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT
     "CHE_INFRA_KUBERNETES_NAMESPACE_ANNOTATIONS__JSON"           = var.CHE_INFRA_KUBERNETES_NAMESPACE_ANNOTATIONS__JSON
     "CHE_INFRA_KUBERNETES_NAMESPACE_LABELS__JSON"                = var.CHE_INFRA_KUBERNETES_NAMESPACE_LABELS__JSON
@@ -72,30 +74,30 @@ resource "k8s_core_v1_config_map" "che" {
     "CHE_MULTIUSER"                                              = var.CHE_MULTIUSER
     "CHE_OAUTH_GITHUB_CLIENTID"                                  = var.CHE_OAUTH_GITHUB_CLIENTID
     "CHE_OAUTH_GITHUB_CLIENTSECRET"                              = var.CHE_OAUTH_GITHUB_CLIENTSECRET
-    "CHE_PORT"                                                   = "8080"
-    "CHE_SYSTEM_ADMIN__NAME"                                     = var.CHE_SYSTEM_ADMIN__NAME
-    "CHE_TRACING_ENABLED"                                        = var.JAEGER_ENDPOINT != null
-    "CHE_WEBSOCKET_ENDPOINT"                                     = "${local.ws_url}/api/websocket"
-    "CHE_WEBSOCKET_ENDPOINT__MINOR"                              = "${local.ws_url}/api/websocket-minor"
-    "CHE_WORKSPACE_AUTO_START"                                   = "false"
-    "CHE_WORKSPACE_DEVFILE__REGISTRY__URL"                       = var.CHE_WORKSPACE_DEVFILE__REGISTRY__URL
-    "CHE_WORKSPACE_HTTPS__PROXY"                                 = ""
-    "CHE_WORKSPACE_HTTP__PROXY"                                  = ""
-    "CHE_WORKSPACE_JAVA__OPTIONS"                                = "-Xmx2000m"
-    "CHE_WORKSPACE_MAVEN__OPTIONS"                               = "-Xmx20000m"
-    "CHE_WORKSPACE_NO__PROXY"                                    = ""
-    "CHE_WORKSPACE_PLUGIN__REGISTRY__URL"                        = var.CHE_WORKSPACE_PLUGIN__REGISTRY__URL
-    "CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB"           = var.CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB
-    "CHE_WSAGENT_CORS_ALLOWED__ORIGINS"                          = "NULL"
-    "CHE_WSAGENT_CORS_ALLOW__CREDENTIALS"                        = "true"
-    "CHE_WSAGENT_CORS_ENABLED"                                   = "true"
-    "JAEGER_ENDPOINT"                                            = var.JAEGER_ENDPOINT
-    "JAEGER_REPORTER_MAX_QUEUE_SIZE"                             = "10000"
-    "JAEGER_SAMPLER_MANAGER_HOST_PORT"                           = "jaeger:5778"
-    "JAEGER_SAMPLER_PARAM"                                       = "1"
-    "JAEGER_SAMPLER_TYPE"                                        = "const"
-    "JAEGER_SERVICE_NAME"                                        = "che-server"
-    "JAVA_OPTS"                                                  = var.JAVA_OPTS
+
+    "CHE_SYSTEM_ADMIN__NAME"                           = var.CHE_SYSTEM_ADMIN__NAME
+    "CHE_TRACING_ENABLED"                              = var.JAEGER_ENDPOINT != null
+    "CHE_WEBSOCKET_ENDPOINT__MINOR"                    = "${local.ws_url}/api/websocket-minor"
+    "CHE_WORKSPACE_AUTO_START"                         = "false"
+    "CHE_WORKSPACE_DEVFILE__REGISTRY__URL"             = var.CHE_WORKSPACE_DEVFILE__REGISTRY__URL
+    "CHE_WORKSPACE_HTTPS__PROXY"                       = ""
+    "CHE_WORKSPACE_HTTP__PROXY"                        = ""
+    "CHE_WORKSPACE_JAVA__OPTIONS"                      = "-Xmx2000m"
+    "CHE_WORKSPACE_MAVEN__OPTIONS"                     = "-Xmx20000m"
+    "CHE_WORKSPACE_NO__PROXY"                          = ""
+    "CHE_WORKSPACE_PLUGIN__REGISTRY__URL"              = var.CHE_WORKSPACE_PLUGIN__REGISTRY__URL
+    "CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB" = var.CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB
+    "CHE_WSAGENT_CORS_ALLOWED__ORIGINS"                = "NULL"
+    "CHE_WSAGENT_CORS_ALLOW__CREDENTIALS"              = "true"
+    "CHE_WSAGENT_CORS_ENABLED"                         = "true"
+    "JAEGER_ENDPOINT"                                  = var.JAEGER_ENDPOINT
+    "JAEGER_REPORTER_MAX_QUEUE_SIZE"                   = "10000"
+    "JAEGER_SAMPLER_MANAGER_HOST_PORT"                 = "jaeger:5778"
+    "JAEGER_SAMPLER_PARAM"                             = "1"
+    "JAEGER_SAMPLER_TYPE"                              = "const"
+    "JAEGER_SERVICE_NAME"                              = "che-server"
+    "JAVA_OPTS"                                        = var.JAVA_OPTS
+    "CHE_WORKSPACE_POD_TOLERATIONS__JSON"              = ""
   }
   metadata {
     labels = {

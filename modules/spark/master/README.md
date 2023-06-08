@@ -8,7 +8,7 @@ Provider Requirements:
 * `env` (default `[]`)
 * `image` (default `"registry.rebelsoft.com/spark"`)
 * `name` (required)
-* `namespace` (default `null`)
+* `namespace` (required)
 * `overrides` (default `{}`)
 * `replicas` (default `1`)
 * `spark_master_port` (default `7077`)

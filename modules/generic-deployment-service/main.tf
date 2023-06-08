@@ -80,29 +80,6 @@ locals {
       },
     ]
 
-    init_containers = var.pvc != null ? [
-      {
-        name  = "init"
-        image = var.image
-
-        command = [
-          "bash",
-          "-c",
-          "chown 1000 ${var.mount_path}"
-        ]
-
-        security_context = {
-          run_asuser = "0"
-        }
-
-        volume_mounts = [
-          {
-            name       = "data"
-            mount_path = var.mount_path
-          },
-        ]
-      }
-    ] : []
 
     affinity = {
       pod_anti_affinity = {

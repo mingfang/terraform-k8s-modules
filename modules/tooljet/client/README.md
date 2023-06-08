@@ -8,7 +8,7 @@ Provider Requirements:
 * `SERVER_HOST` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"tooljet/tooljet-client-ce:v1.8.0"`)
+* `image` (default `"tooljet/tooljet-client-ce:v1.14.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

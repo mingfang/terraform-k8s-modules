@@ -7,7 +7,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "us.gcr.io/k8s-artifacts-prod/provider-aws/cloud-controller-manager:v1.22.0-alpha.0"
+  default = "registry.k8s.io/provider-aws/cloud-controller-manager:v1.23.0-alpha.0"
 }
 
 variable "env" {

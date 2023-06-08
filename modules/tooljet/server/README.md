@@ -17,7 +17,7 @@ Provider Requirements:
 * `TOOLJET_HOST` (required): the public URL of ToolJet client
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"tooljet/tooljet-server-ce:v1.8.0"`)
+* `image` (default `"tooljet/tooljet-server-ce:v1.14.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    k8s = {
-      source  = "mingfang/k8s"
-    }
-  }
-}
-
 resource "k8s_core_v1_namespace" "this" {
   metadata {
     name = var.namespace
@@ -34,6 +26,14 @@ module "casc_configs" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   from-dir = "${path.module}/casc_configs"
+  from-map = {
+    "jobs.yaml" = <<-EOF
+    jobs:
+    %{ for f in fileset("${path.module}/casc_configs", "*.groovy") ~}
+    - file: /var/jenkins_home/casc_configs/${f}
+    %{ endfor ~}
+    EOF
+  }
 }
 
 module "jenkins" {

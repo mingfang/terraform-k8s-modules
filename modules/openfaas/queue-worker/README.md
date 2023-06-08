@@ -17,7 +17,7 @@ Provider Requirements:
 * `faas_nats_queue_group` (default `"faas"`)
 * `function_namespace` (default `null`): default to same namespace as gateway
 * `gateway_invoke` (default `true`)
-* `image` (default `"openfaas/queue-worker:0.11.2"`)
+* `image` (default `"ghcr.io/openfaas/queue-worker:0.12.2"`)
 * `max_inflight` (default `1`)
 * `name` (required)
 * `namespace` (required)

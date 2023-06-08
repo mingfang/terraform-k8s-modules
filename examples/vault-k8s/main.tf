@@ -33,7 +33,7 @@ module "nginx" {
       <body>
       {{- with secret "secret/data/vault-agent/helloworld" }}
         {{- range $k, $v := .Data }}
-            {{ $k }}: {{ $v }}
+            <div>{{ $k }}: {{ $v }}</div>
         {{- end }}
       {{- end }}
       </body>

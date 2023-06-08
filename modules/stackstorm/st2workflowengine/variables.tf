@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2workflowengine:latest"
+  default = "stackstorm/st2workflowengine:3.6.0"
 }
 
 variable "env" {

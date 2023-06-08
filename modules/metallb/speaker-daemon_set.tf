@@ -49,7 +49,7 @@ resource "k8s_apps_v1_daemon_set" "speaker" {
               }
             }
           }
-          image             = "metallb/speaker:v0.8.1"
+          image             = "quay.io/metallb/speaker:v0.9"
           image_pull_policy = "IfNotPresent"
           name              = "speaker"
 

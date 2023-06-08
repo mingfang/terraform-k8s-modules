@@ -9,7 +9,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `config_map` (required)
 * `env` (default `[]`)
-* `image` (default `"stackstorm/st2actionrunner:latest"`)
+* `image` (default `"stackstorm/st2actionrunner:3.6.0"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

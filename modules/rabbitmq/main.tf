@@ -1,7 +1,15 @@
 locals {
+  input_env = merge(
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_map,
+  )
+  computed_env = [for k, v in local.input_env : { name = k, value = v }]
+}
+
+locals {
   suffix = "${var.name}.${var.namespace}.svc.cluster.local"
   config_map = {
-    "enabled_plugins" = "[rabbitmq_management,rabbitmq_prometheus,rabbitmq_stomp,rabbitmq_web_stomp]."
+    "enabled_plugins" = "[rabbitmq_management,rabbitmq_prometheus,rabbitmq_stomp,rabbitmq_web_stomp,rabbitmq_stream]."
     "rabbitmq.conf"   = <<-EOF
       loopback_users.guest = false
       listeners.tcp.default = ${var.ports[0].port}

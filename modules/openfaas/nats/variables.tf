@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "nats-streaming:0.17.0"
+  default = "nats-streaming:0.22.0"
 }
 
 variable "replicas" {

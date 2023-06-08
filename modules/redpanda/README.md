@@ -5,6 +5,7 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
+* `additional_args` (default `""`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
 * `image` (default `"docker.vectorized.io/vectorized/redpanda:v21.11.14"`)

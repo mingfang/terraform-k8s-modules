@@ -8,13 +8,13 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `casc_config_map_name` (required)
 * `env` (default `[]`)
-* `image` (default `"registry.rebelsoft.com/jenkins:latest"`)
+* `image` (default `"mingfang/jenkins:latest"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":8080},{"name":"slave","port":50000}]`)
 * `pvc_name` (required)
-* `resources` (default `{"limits":{"cpu":"2","memory":"1Gi"},"requests":{"cpu":"500m","memory":"500Mi"}}`)
+* `resources` (default `{"limits":{"memory":"1Gi"},"requests":{"cpu":"500m","memory":"500Mi"}}`)
 * `timezone` (default `"America/New_York"`)
 
 ## Output Values

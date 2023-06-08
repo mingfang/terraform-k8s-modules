@@ -8,12 +8,12 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `coordinator` (required): coordinator hostname
 * `env` (default `[]`)
-* `image` (default `"citusdata/citus:9.4.0"`)
+* `image` (default `"citusdata/citus:11.1.4"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":5432}]`)
-* `replicas` (default `3`)
+* `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"500m","memory":"1Gi"}}`)
 * `secret` (required): secret containing the password
 * `storage` (required)

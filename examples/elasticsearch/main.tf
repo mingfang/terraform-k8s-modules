@@ -8,10 +8,11 @@ module "elasticsearch" {
   source    = "../../modules/elasticsearch"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 3
+  replicas  = 2
+  image     = "docker.elastic.co/elasticsearch/elasticsearch:7.17.8"
 
-  storage       = "1Gi"
-  storage_class = var.storage_class_name
+  #  storage       = "1Gi"
+  #  storage_class = var.storage_class_name
 
   secret = module.cert_secret.secret
 }

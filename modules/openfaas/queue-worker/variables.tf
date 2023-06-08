@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "openfaas/queue-worker:0.11.2"
+  default = "ghcr.io/openfaas/queue-worker:0.12.2"
 }
 
 variable "replicas" {

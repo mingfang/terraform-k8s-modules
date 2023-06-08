@@ -10,6 +10,11 @@ module "rbac" {
       verbs      = ["get", "list", "watch", "create", "delete", "update", "patch"]
     },
     {
+      api_groups = ["openfaas.com"]
+      resources  = ["profiles"]
+      verbs      = ["get", "list", "watch"]
+    },
+    {
       api_groups = [""]
       resources  = ["events"]
       verbs      = ["get", "list", "watch", "create", "delete", "update", "patch"]

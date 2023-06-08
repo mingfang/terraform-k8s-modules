@@ -38,6 +38,7 @@ module "storage-class" {
   name        = "s3fs"
   namespace   = k8s_core_v1_namespace.this.metadata[0].name
   secret_name = module.secret.name
+  bucket = "rebelsoft-s3fs"
 }
 
 locals {

@@ -1,21 +1,38 @@
-from datetime import timedelta
-import math
+# https://github.com/apache/superset/blob/master/docker/pythonpath_dev/superset_config.py
+
+import logging
 import os
+from datetime import timedelta
+from typing import Optional
+import math
+
 from cachelib.redis import RedisCache
 from celery.schedules import crontab
 from flask_appbuilder.security.manager import AUTH_REMOTE_USER, AUTH_OAUTH
 
-
-def env(key, default=None):
-    return os.getenv(key, default)
+logger = logging.getLogger()
 
 
-DATABASE_DIALECT = env("DATABASE_DIALECT")
-DATABASE_USER = env("DATABASE_USER")
-DATABASE_PASSWORD = env("DATABASE_PASSWORD")
-DATABASE_HOST = env("DATABASE_HOST")
-DATABASE_PORT = env("DATABASE_PORT")
-DATABASE_DB = env("DATABASE_DB")
+def get_env_variable(var_name: str, default: Optional[str] = None) -> str:
+    """Get the environment variable or raise exception."""
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        if default is not None:
+            return default
+        else:
+            error_msg = "The environment variable {} was missing, abort...".format(
+                var_name
+            )
+            raise EnvironmentError(error_msg)
+
+
+DATABASE_DIALECT = get_env_variable("DATABASE_DIALECT")
+DATABASE_USER = get_env_variable("DATABASE_USER")
+DATABASE_PASSWORD = get_env_variable("DATABASE_PASSWORD")
+DATABASE_HOST = get_env_variable("DATABASE_HOST")
+DATABASE_PORT = get_env_variable("DATABASE_PORT")
+DATABASE_DB = get_env_variable("DATABASE_DB")
 
 # The SQLAlchemy connection string.
 SQLALCHEMY_DATABASE_URI = "%s://%s:%s@%s:%s/%s" % (
@@ -27,27 +44,66 @@ SQLALCHEMY_DATABASE_URI = "%s://%s:%s@%s:%s/%s" % (
     DATABASE_DB,
 )
 
-REDIS_HOST = env("REDIS_HOST")
-REDIS_PORT = env("REDIS_PORT", "6379")
-REDIS_CELERY_DB = env("REDIS_CELERY_DB", "0")
-REDIS_RESULTS_DB = env("REDIS_RESULTS_DB", "1")
-REDIS_CACHE_DB = env("REDIS_CACHE_DB", "2")
+REDIS_HOST = get_env_variable("REDIS_HOST")
+REDIS_PORT = get_env_variable("REDIS_PORT")
+REDIS_CELERY_DB = get_env_variable("REDIS_CELERY_DB", "0")
+REDIS_RESULTS_DB = get_env_variable("REDIS_RESULTS_DB", "1")
+REDIS_CACHE_DB = get_env_variable("REDIS_CACHE_DB", "2")
+
+CACHE_CONFIG = {
+    "CACHE_TYPE": "redis",
+    "CACHE_DEFAULT_TIMEOUT": 300,
+    "CACHE_KEY_PREFIX": "superset_",
+    "CACHE_REDIS_HOST": REDIS_HOST,
+    "CACHE_REDIS_PORT": REDIS_PORT,
+    "CACHE_REDIS_DB": REDIS_RESULTS_DB,
+}
+DATA_CACHE_CONFIG = CACHE_CONFIG
+
+
+class CeleryConfig(object):
+    broker_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}"
+    imports = ("superset.sql_lab",)
+    result_backend = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}"
+    worker_prefetch_multiplier = 1
+    task_acks_late = False
+    beat_schedule = {
+        "reports.scheduler": {
+            "task": "reports.scheduler",
+            "schedule": crontab(minute="*", hour="*"),
+        },
+        "reports.prune_log": {
+            "task": "reports.prune_log",
+            "schedule": crontab(minute=10, hour=0),
+        },
+    }
+
+
+CELERY_CONFIG = CeleryConfig
+
+# https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md
 
 FEATURE_FLAGS = {
     "ALERT_REPORTS": True,
     "ENABLE_TEMPLATE_PROCESSING": True,
-    "DASHBOARD_CROSS_FILTERS": True,
+    # "DASHBOARD_CROSS_FILTERS": True,
+    "EMBEDDED_SUPERSET": True,
+    "ENABLE_JAVASCRIPT_CONTROLS": True,
+    "TAGGING_SYSTEM": True,
+    "OMNIBAR": True,
+    "DASHBOARD_NATIVE_FILTERS": False,
 }
+
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
-CSRF_ENABLED = True
-ENABLE_PROXY_FIX = True
-SQLLAB_CTAS_NO_LIMIT = True
 WEBDRIVER_BASEURL = "http://superset:8088/"
 # The base URL for the email report hyperlinks.
 WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
 
-SECRET_KEY = env("SECRET_KEY")
-MAPBOX_API_KEY = env('MAPBOX_API_KEY', '')
+SQLLAB_CTAS_NO_LIMIT = True
+CSRF_ENABLED = True
+ENABLE_PROXY_FIX = True
+
+SECRET_KEY = get_env_variable("SECRET_KEY")
 
 # Caches
 
@@ -73,52 +129,19 @@ EXPLORE_FORM_DATA_CACHE_CONFIG = {
 RESULTS_BACKEND = RedisCache(host=REDIS_HOST, port=REDIS_PORT, key_prefix='superset_results')
 
 
-#  Celery
-
-
-class CeleryConfig(object):
-    BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_DB}'
-    CELERY_IMPORTS = ('superset.sql_lab', "superset.tasks")
-    CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_RESULTS_DB}'
-    CELERYD_LOG_LEVEL = 'info'
-    CELERYD_PREFETCH_MULTIPLIER = 1
-    CELERY_ACKS_LATE = False
-    CELERYBEAT_SCHEDULE = {
-        'reports.scheduler': {
-            'task': 'reports.scheduler',
-            'schedule': crontab(minute='*', hour='*'),
-        },
-        'reports.prune_log': {
-            'task': 'reports.prune_log',
-            'schedule': crontab(minute=10, hour=0),
-        },
-        'cache-warmup-hourly': {
-            'task': 'cache-warmup',
-            'schedule': crontab(minute='*/30', hour='*'),
-            'kwargs': {
-                'strategy_name': 'top_n_dashboards',
-                'top_n': 10,
-                'since': '7 days ago',
-            },
-        },
-    }
-
-
-CELERY_CONFIG = CeleryConfig
 
 # auto user registration
 
 AUTH_USER_REGISTRATION = True
 AUTH_USER_REGISTRATION_ROLE = 'Alpha'
-PUBLIC_ROLE_LIKE = 'Gamma'
-
+# PUBLIC_ROLE_LIKE = 'Gamma'
 
 # Custom remote user auth
 
 AUTH_TYPE = AUTH_REMOTE_USER
 from CustomSecurityManager import CustomSecurityManager
-CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 
+CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 
 # Keycloak SSO
 #
@@ -143,3 +166,32 @@ CUSTOM_SECURITY_MANAGER = CustomSecurityManager
 #
 # from KeycloakSecurityManager import KeycloakSecurityManager
 # CUSTOM_SECURITY_MANAGER = KeycloakSecurityManager
+
+#APP_NAME = "MyApp"
+#APP_ICON = "https://justcreative.com/wp-content/uploads/2019/07/black-white-logos.jpg"
+
+# from flask import Blueprint
+# simple_page = Blueprint('simple_page', __name__,
+#                         template_folder='templates')
+# @simple_page.route('/', defaults={'page': 'index'})
+# @simple_page.route('/<page>')
+# def show(page):
+#     return "Ok"
+#
+# BLUEPRINTS = [simple_page]
+
+#update 3/23
+
+#
+# Optionally import superset_config_docker.py (which will have been included on
+# the PYTHONPATH) in order to allow for local settings to be overridden
+#
+try:
+    import superset_config_docker
+    from superset_config_docker import *  # noqa
+
+    logger.info(
+        f"Loaded your Docker configuration at " f"[{superset_config_docker.__file__}]"
+    )
+except ImportError:
+    logger.info("Using default Docker config...")

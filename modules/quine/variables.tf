@@ -3,14 +3,14 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "thatdot/quine"
+  default = "thatdot/quine:1.2.0"
 }
 
 variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "http"
@@ -24,6 +24,10 @@ variable "env" {
 }
 
 variable "annotations" {
+  default = {}
+}
+
+variable "node_selector" {
   default = {}
 }
 
@@ -43,7 +47,7 @@ variable "overrides" {
   default = {}
 }
 
-variable "quine_config" {
+variable "configmap" {
   default     = null
   description = "configmap with quine.conf key"
 }

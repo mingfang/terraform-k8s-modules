@@ -8,6 +8,13 @@ module "localstack" {
   source    = "../../modules/localstack"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  env_map = {
+    AWS_ACCESS_KEY_ID     = "test"
+    AWS_SECRET_ACCESS_KEY = "test"
+    AWS_DEFAULT_REGION    = "us-east-1"
+    AWS_ENDPOINT_URL      = "http://localhost:4566"
+  }
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {

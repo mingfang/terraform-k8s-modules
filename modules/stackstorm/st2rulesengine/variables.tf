@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2rulesengine:latest"
+  default = "stackstorm/st2rulesengine:3.6.0"
 }
 
 variable "env" {

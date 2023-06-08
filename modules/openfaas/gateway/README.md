@@ -15,7 +15,7 @@ Provider Requirements:
 * `faas_nats_port` (default `""`)
 * `function_namespace` (default `null`): default to same namespace as gateway
 * `functions_provider_url` (required)
-* `image` (default `"openfaas/gateway:0.18.18"`)
+* `image` (default `"ghcr.io/openfaas/gateway:0.21.3"`)
 * `max_idle_conns` (default `1024`)
 * `max_idle_conns_per_host` (default `1024`)
 * `name` (required)

@@ -14,11 +14,12 @@ Provider Requirements:
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":5000}]`)
 * `pvc_name` (default `null`)
-* `resources` (default `{}`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Output Values
 * `deployment`
 * `name`
+* `ports`
 * `service`
 
 ## Child Modules

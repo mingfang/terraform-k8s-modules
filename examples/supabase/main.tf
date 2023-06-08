@@ -324,13 +324,13 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "supabase" {
     annotations = {
       "kubernetes.io/ingress.class"                   = "nginx"
       "nginx.ingress.kubernetes.io/server-alias"      = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
       "nginx.ingress.kubernetes.io/proxy-buffer-size" = "160k"
       "nginx.ingress.kubernetes.io/proxy-body-size"   = "10240m"
 
       "nginx.ingress.kubernetes.io/enable-cors"        = "true"
       "nginx.ingress.kubernetes.io/cors-allow-headers" = "keep-alive,user-agent,x-requested-with,x-request-id,if-modified-since,cache-control,content-type,range,authorization,apikey,x-client-info,accept-profile,prefer,content-profile,range-unit,x-upsert"
       "nginx.ingress.kubernetes.io/cors-allow-origin"  = "https://*.rebelsoft.com"
-
     }
     name      = module.kong.name
     namespace = k8s_core_v1_namespace.this.metadata.0.name

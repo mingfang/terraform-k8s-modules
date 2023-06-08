@@ -2,9 +2,15 @@ locals {
   parameters = {
     name                 = var.name
     namespace            = var.namespace
-    annotations          = var.annotations
     replicas             = var.replicas
     ports                = var.ports
+    annotations = merge(
+      var.annotations,
+      var.configmap != null ? {
+        config_checksum = md5(join("", keys(var.configmap.data), values(var.configmap.data)))
+      } : {},
+    )
+
     enable_service_links = false
 
     containers = [
@@ -26,26 +32,28 @@ locals {
           period_seconds        = 5
         }
 
-        volume_mounts = var.quine_config != null ? [
-          {
-            name       = "quine-config"
-            mount_path = "/quine.conf"
-            sub_path   = "quine.conf"
-          }
+        volume_mounts = var.configmap != null ? [
+        for k, v in var.configmap.data :
+        {
+          name       = "config"
+          mount_path = "/${k}"
+          sub_path   = k
+        }
         ] : []
       },
     ]
 
-    volumes = var.quine_config != null ? [
+    node_selector = var.node_selector
+
+    volumes = var.configmap != null ? [
       {
-        name = "quine-config"
+        name = "config"
+
         config_map = {
-          name = var.quine_config
+          name = var.configmap.metadata[0].name
         }
       }
     ] : []
-
-
   }
 }
 

@@ -5,19 +5,27 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `PGADMIN_DEFAULT_EMAIL` (required)
-* `PGADMIN_DEFAULT_PASSWORD` (required)
 * `annotations` (default `{}`)
+* `args` (default `[]`)
+* `command` (default `[]`)
+* `configmap` (default `null`)
+* `configmap_mount_path` (default `"/config"`)
 * `env` (default `[]`)
-* `image` (default `"dpage/pgadmin4:6.17"`)
-* `name` (required)
+* `env_file` (default `null`)
+* `env_from` (default `[]`)
+* `env_map` (default `{}`)
+* `image` (default `"dpage/pgadmin4:6.19"`)
+* `mount_path` (default `"/var/lib/pgadmin"`): pvc mount path
+* `name` (default `"pgadmin"`)
 * `namespace` (required)
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":80}]`)
-* `pvc_name` (default `null`)
+* `post_start_command` (default `null`)
+* `pvc` (default `null`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
+* `service_account_name` (default `null`)
 
 ## Output Values
 * `deployment`

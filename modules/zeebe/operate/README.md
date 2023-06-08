@@ -8,7 +8,7 @@ Provider Requirements:
 * `CAMUNDA_OPERATE_ELASTICSEARCH_URL` (required)
 * `CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL` (required)
 * `CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS` (required)
-* `image` (default `"camunda/operate:1.3.1"`)
+* `image` (default `"camunda/operate:1.3.3"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

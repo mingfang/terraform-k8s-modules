@@ -32,7 +32,7 @@ resource "k8s_apps_v1_deployment" "controller" {
             "--port=7472",
             "--config=config",
           ]
-          image             = "metallb/controller:v0.8.1"
+          image             = "quay.io/metallb/controller:v0.9"
           image_pull_policy = "IfNotPresent"
           name              = "controller"
 

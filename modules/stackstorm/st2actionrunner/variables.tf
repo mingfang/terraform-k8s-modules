@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2actionrunner:latest"
+  default = "stackstorm/st2actionrunner:3.6.0"
 }
 
 variable "env" {

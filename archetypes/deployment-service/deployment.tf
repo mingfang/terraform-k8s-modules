@@ -141,6 +141,20 @@ resource "k8s_apps_v1_deployment" "this" {
                             match_labels = lookup(label_selector.value, "match_labels", null)
                           }
                         }
+                        dynamic "namespace_selector" {
+                          for_each = lookup(pod_affinity_term.value, "namespace_selector", null) == null ? [] : [pod_affinity_term.value.namespace_selector]
+                          content {
+                            dynamic "match_expressions" {
+                              for_each = lookup(namespace_selector.value, "match_expressions", [])
+                              content {
+                                key      = match_expressions.value.key
+                                operator = match_expressions.value.operator
+                                values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                              }
+                            }
+                            match_labels = lookup(namespace_selector.value, "match_labels", null)
+                          }
+                        }
                         namespaces   = contains(keys(pod_affinity_term.value), "namespaces") ? tolist(pod_affinity_term.value.namespaces) : null
                         topology_key = pod_affinity_term.value.topology_key
                       }
@@ -163,6 +177,20 @@ resource "k8s_apps_v1_deployment" "this" {
                           }
                         }
                         match_labels = lookup(label_selector.value, "match_labels", null)
+                      }
+                    }
+                    dynamic "namespace_selector" {
+                      for_each = lookup(required_during_scheduling_ignored_during_execution.value, "namespace_selector", null) == null ? [] : [required_during_scheduling_ignored_during_execution.value.namespace_selector]
+                      content {
+                        dynamic "match_expressions" {
+                          for_each = lookup(namespace_selector.value, "match_expressions", [])
+                          content {
+                            key      = match_expressions.value.key
+                            operator = match_expressions.value.operator
+                            values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                          }
+                        }
+                        match_labels = lookup(namespace_selector.value, "match_labels", null)
                       }
                     }
                     namespaces   = contains(keys(required_during_scheduling_ignored_during_execution.value), "namespaces") ? tolist(required_during_scheduling_ignored_during_execution.value.namespaces) : null
@@ -194,6 +222,20 @@ resource "k8s_apps_v1_deployment" "this" {
                             match_labels = lookup(label_selector.value, "match_labels", null)
                           }
                         }
+                        dynamic "namespace_selector" {
+                          for_each = lookup(pod_affinity_term.value, "namespace_selector", null) == null ? [] : [pod_affinity_term.value.namespace_selector]
+                          content {
+                            dynamic "match_expressions" {
+                              for_each = lookup(namespace_selector.value, "match_expressions", [])
+                              content {
+                                key      = match_expressions.value.key
+                                operator = match_expressions.value.operator
+                                values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                              }
+                            }
+                            match_labels = lookup(namespace_selector.value, "match_labels", null)
+                          }
+                        }
                         namespaces   = contains(keys(pod_affinity_term.value), "namespaces") ? tolist(pod_affinity_term.value.namespaces) : null
                         topology_key = pod_affinity_term.value.topology_key
                       }
@@ -216,6 +258,20 @@ resource "k8s_apps_v1_deployment" "this" {
                           }
                         }
                         match_labels = lookup(label_selector.value, "match_labels", null)
+                      }
+                    }
+                    dynamic "namespace_selector" {
+                      for_each = lookup(required_during_scheduling_ignored_during_execution.value, "namespace_selector", null) == null ? [] : [required_during_scheduling_ignored_during_execution.value.namespace_selector]
+                      content {
+                        dynamic "match_expressions" {
+                          for_each = lookup(namespace_selector.value, "match_expressions", [])
+                          content {
+                            key      = match_expressions.value.key
+                            operator = match_expressions.value.operator
+                            values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                          }
+                        }
+                        match_labels = lookup(namespace_selector.value, "match_labels", null)
                       }
                     }
                     namespaces   = contains(keys(required_during_scheduling_ignored_during_execution.value), "namespaces") ? tolist(required_during_scheduling_ignored_during_execution.value.namespaces) : null
@@ -407,6 +463,7 @@ resource "k8s_apps_v1_deployment" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
@@ -457,6 +514,7 @@ resource "k8s_apps_v1_deployment" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
@@ -484,6 +542,13 @@ resource "k8s_apps_v1_deployment" "this" {
                 run_asgroup               = lookup(security_context.value, "run_asgroup", null)
                 run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
                 run_asuser                = lookup(security_context.value, "run_asuser", null)
+                dynamic "seccomp_profile" {
+                  for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
+                  content {
+                    localhost_profile = lookup(seccomp_profile.value, "localhost_profile", null)
+                    type              = seccomp_profile.value.type
+                  }
+                }
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {
@@ -493,6 +558,54 @@ resource "k8s_apps_v1_deployment" "this" {
                     user  = lookup(selinux_options.value, "user", null)
                   }
                 }
+                dynamic "windows_options" {
+                  for_each = lookup(security_context.value, "windows_options", null) == null ? [] : [security_context.value.windows_options]
+                  content {
+                    gmsa_credential_spec      = lookup(windows_options.value, "gmsa_credential_spec", null)
+                    gmsa_credential_spec_name = lookup(windows_options.value, "gmsa_credential_spec_name", null)
+                    run_asuser_name           = lookup(windows_options.value, "run_asuser_name", null)
+                  }
+                }
+              }
+            }
+            dynamic "startup_probe" {
+              for_each = lookup(containers.value, "startup_probe", null) == null ? [] : [containers.value.startup_probe]
+              content {
+                dynamic "exec" {
+                  for_each = lookup(startup_probe.value, "exec", null) == null ? [] : [startup_probe.value.exec]
+                  content {
+                    command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                  }
+                }
+                failure_threshold = lookup(startup_probe.value, "failure_threshold", null)
+                dynamic "http_get" {
+                  for_each = lookup(startup_probe.value, "http_get", null) == null ? [] : [startup_probe.value.http_get]
+                  content {
+                    host = lookup(http_get.value, "host", null)
+                    dynamic "http_headers" {
+                      for_each = lookup(http_get.value, "http_headers", [])
+                      content {
+                        name  = http_headers.value.name
+                        value = http_headers.value.value
+                      }
+                    }
+                    path   = lookup(http_get.value, "path", null)
+                    port   = http_get.value.port
+                    scheme = lookup(http_get.value, "scheme", null)
+                  }
+                }
+                initial_delay_seconds = lookup(startup_probe.value, "initial_delay_seconds", null)
+                period_seconds        = lookup(startup_probe.value, "period_seconds", null)
+                success_threshold     = lookup(startup_probe.value, "success_threshold", null)
+                dynamic "tcp_socket" {
+                  for_each = lookup(startup_probe.value, "tcp_socket", null) == null ? [] : [startup_probe.value.tcp_socket]
+                  content {
+                    host = lookup(tcp_socket.value, "host", null)
+                    port = tcp_socket.value.port
+                  }
+                }
+                termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
+                timeout_seconds                  = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
             stdin                      = lookup(containers.value, "stdin", null)
@@ -538,6 +651,358 @@ resource "k8s_apps_v1_deployment" "this" {
         }
         dns_policy           = lookup(local.k8s_apps_v1_deployment_parameters, "dns_policy", null)
         enable_service_links = lookup(local.k8s_apps_v1_deployment_parameters, "enable_service_links", null)
+
+        dynamic "ephemeral_containers" {
+          for_each = lookup(local.k8s_apps_v1_deployment_parameters, "ephemeral_containers", [])
+          content {
+            args    = contains(keys(ephemeral_containers.value), "args") ? tolist(ephemeral_containers.value.args) : null
+            command = contains(keys(ephemeral_containers.value), "command") ? tolist(ephemeral_containers.value.command) : null
+            dynamic "env" {
+              for_each = lookup(ephemeral_containers.value, "env", [])
+              content {
+                name  = env.value.name
+                value = lookup(env.value, "value", null)
+                dynamic "value_from" {
+                  for_each = lookup(env.value, "value_from", null) == null ? [] : [env.value.value_from]
+                  content {
+                    dynamic "config_map_keyref" {
+                      for_each = lookup(value_from.value, "config_map_keyref", null) == null ? [] : [value_from.value.config_map_keyref]
+                      content {
+                        key      = config_map_keyref.value.key
+                        name     = lookup(config_map_keyref.value, "name", null)
+                        optional = lookup(config_map_keyref.value, "optional", null)
+                      }
+                    }
+                    dynamic "field_ref" {
+                      for_each = lookup(value_from.value, "field_ref", null) == null ? [] : [value_from.value.field_ref]
+                      content {
+                        api_version = lookup(field_ref.value, "api_version", null)
+                        field_path  = field_ref.value.field_path
+                      }
+                    }
+                    dynamic "resource_field_ref" {
+                      for_each = lookup(value_from.value, "resource_field_ref", null) == null ? [] : [value_from.value.resource_field_ref]
+                      content {
+                        container_name = lookup(resource_field_ref.value, "container_name", null)
+                        divisor        = lookup(resource_field_ref.value, "divisor", null)
+                        resource       = resource_field_ref.value.resource
+                      }
+                    }
+                    dynamic "secret_key_ref" {
+                      for_each = lookup(value_from.value, "secret_key_ref", null) == null ? [] : [value_from.value.secret_key_ref]
+                      content {
+                        key      = secret_key_ref.value.key
+                        name     = lookup(secret_key_ref.value, "name", null)
+                        optional = lookup(secret_key_ref.value, "optional", null)
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            dynamic "env_from" {
+              for_each = lookup(ephemeral_containers.value, "env_from", [])
+              content {
+                dynamic "config_map_ref" {
+                  for_each = lookup(env_from.value, "config_map_ref", null) == null ? [] : [env_from.value.config_map_ref]
+                  content {
+                    name     = lookup(config_map_ref.value, "name", null)
+                    optional = lookup(config_map_ref.value, "optional", null)
+                  }
+                }
+                prefix = lookup(env_from.value, "prefix", null)
+                dynamic "secret_ref" {
+                  for_each = lookup(env_from.value, "secret_ref", null) == null ? [] : [env_from.value.secret_ref]
+                  content {
+                    name     = lookup(secret_ref.value, "name", null)
+                    optional = lookup(secret_ref.value, "optional", null)
+                  }
+                }
+              }
+            }
+            image             = lookup(ephemeral_containers.value, "image", null)
+            image_pull_policy = lookup(ephemeral_containers.value, "image_pull_policy", null)
+            dynamic "lifecycle" {
+              for_each = lookup(ephemeral_containers.value, "lifecycle", null) == null ? [] : [ephemeral_containers.value.lifecycle]
+              content {
+                dynamic "post_start" {
+                  for_each = lookup(lifecycle.value, "post_start", null) == null ? [] : [lifecycle.value.post_start]
+                  content {
+                    dynamic "exec" {
+                      for_each = lookup(post_start.value, "exec", null) == null ? [] : [post_start.value.exec]
+                      content {
+                        command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                      }
+                    }
+                    dynamic "http_get" {
+                      for_each = lookup(post_start.value, "http_get", null) == null ? [] : [post_start.value.http_get]
+                      content {
+                        host = lookup(http_get.value, "host", null)
+                        dynamic "http_headers" {
+                          for_each = lookup(http_get.value, "http_headers", [])
+                          content {
+                            name  = http_headers.value.name
+                            value = http_headers.value.value
+                          }
+                        }
+                        path   = lookup(http_get.value, "path", null)
+                        port   = http_get.value.port
+                        scheme = lookup(http_get.value, "scheme", null)
+                      }
+                    }
+                    dynamic "tcp_socket" {
+                      for_each = lookup(post_start.value, "tcp_socket", null) == null ? [] : [post_start.value.tcp_socket]
+                      content {
+                        host = lookup(tcp_socket.value, "host", null)
+                        port = tcp_socket.value.port
+                      }
+                    }
+                  }
+                }
+                dynamic "pre_stop" {
+                  for_each = lookup(lifecycle.value, "pre_stop", null) == null ? [] : [lifecycle.value.pre_stop]
+                  content {
+                    dynamic "exec" {
+                      for_each = lookup(pre_stop.value, "exec", null) == null ? [] : [pre_stop.value.exec]
+                      content {
+                        command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                      }
+                    }
+                    dynamic "http_get" {
+                      for_each = lookup(pre_stop.value, "http_get", null) == null ? [] : [pre_stop.value.http_get]
+                      content {
+                        host = lookup(http_get.value, "host", null)
+                        dynamic "http_headers" {
+                          for_each = lookup(http_get.value, "http_headers", [])
+                          content {
+                            name  = http_headers.value.name
+                            value = http_headers.value.value
+                          }
+                        }
+                        path   = lookup(http_get.value, "path", null)
+                        port   = http_get.value.port
+                        scheme = lookup(http_get.value, "scheme", null)
+                      }
+                    }
+                    dynamic "tcp_socket" {
+                      for_each = lookup(pre_stop.value, "tcp_socket", null) == null ? [] : [pre_stop.value.tcp_socket]
+                      content {
+                        host = lookup(tcp_socket.value, "host", null)
+                        port = tcp_socket.value.port
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            dynamic "liveness_probe" {
+              for_each = lookup(ephemeral_containers.value, "liveness_probe", null) == null ? [] : [ephemeral_containers.value.liveness_probe]
+              content {
+                dynamic "exec" {
+                  for_each = lookup(liveness_probe.value, "exec", null) == null ? [] : [liveness_probe.value.exec]
+                  content {
+                    command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                  }
+                }
+                failure_threshold = lookup(liveness_probe.value, "failure_threshold", null)
+                dynamic "http_get" {
+                  for_each = lookup(liveness_probe.value, "http_get", null) == null ? [] : [liveness_probe.value.http_get]
+                  content {
+                    host = lookup(http_get.value, "host", null)
+                    dynamic "http_headers" {
+                      for_each = lookup(http_get.value, "http_headers", [])
+                      content {
+                        name  = http_headers.value.name
+                        value = http_headers.value.value
+                      }
+                    }
+                    path   = lookup(http_get.value, "path", null)
+                    port   = http_get.value.port
+                    scheme = lookup(http_get.value, "scheme", null)
+                  }
+                }
+                initial_delay_seconds = lookup(liveness_probe.value, "initial_delay_seconds", null)
+                period_seconds        = lookup(liveness_probe.value, "period_seconds", null)
+                success_threshold     = lookup(liveness_probe.value, "success_threshold", null)
+                dynamic "tcp_socket" {
+                  for_each = lookup(liveness_probe.value, "tcp_socket", null) == null ? [] : [liveness_probe.value.tcp_socket]
+                  content {
+                    host = lookup(tcp_socket.value, "host", null)
+                    port = tcp_socket.value.port
+                  }
+                }
+                termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
+                timeout_seconds                  = lookup(liveness_probe.value, "timeout_seconds", null)
+              }
+            }
+            name = ephemeral_containers.value.name
+            dynamic "ports" {
+              for_each = lookup(ephemeral_containers.value, "ports", [])
+              content {
+                container_port = ports.value.container_port
+                host_ip        = lookup(ports.value, "host_ip", null)
+                host_port      = lookup(ports.value, "host_port", null)
+                name           = lookup(ports.value, "name", null)
+                protocol       = lookup(ports.value, "protocol", null)
+              }
+            }
+            dynamic "readiness_probe" {
+              for_each = lookup(ephemeral_containers.value, "readiness_probe", null) == null ? [] : [ephemeral_containers.value.readiness_probe]
+              content {
+                dynamic "exec" {
+                  for_each = lookup(readiness_probe.value, "exec", null) == null ? [] : [readiness_probe.value.exec]
+                  content {
+                    command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                  }
+                }
+                failure_threshold = lookup(readiness_probe.value, "failure_threshold", null)
+                dynamic "http_get" {
+                  for_each = lookup(readiness_probe.value, "http_get", null) == null ? [] : [readiness_probe.value.http_get]
+                  content {
+                    host = lookup(http_get.value, "host", null)
+                    dynamic "http_headers" {
+                      for_each = lookup(http_get.value, "http_headers", [])
+                      content {
+                        name  = http_headers.value.name
+                        value = http_headers.value.value
+                      }
+                    }
+                    path   = lookup(http_get.value, "path", null)
+                    port   = http_get.value.port
+                    scheme = lookup(http_get.value, "scheme", null)
+                  }
+                }
+                initial_delay_seconds = lookup(readiness_probe.value, "initial_delay_seconds", null)
+                period_seconds        = lookup(readiness_probe.value, "period_seconds", null)
+                success_threshold     = lookup(readiness_probe.value, "success_threshold", null)
+                dynamic "tcp_socket" {
+                  for_each = lookup(readiness_probe.value, "tcp_socket", null) == null ? [] : [readiness_probe.value.tcp_socket]
+                  content {
+                    host = lookup(tcp_socket.value, "host", null)
+                    port = tcp_socket.value.port
+                  }
+                }
+                termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
+                timeout_seconds                  = lookup(readiness_probe.value, "timeout_seconds", null)
+              }
+            }
+            dynamic "resources" {
+              for_each = lookup(ephemeral_containers.value, "resources", null) == null ? [] : [ephemeral_containers.value.resources]
+              content {
+                limits   = lookup(resources.value, "limits", null)
+                requests = lookup(resources.value, "requests", null)
+              }
+            }
+            dynamic "security_context" {
+              for_each = lookup(ephemeral_containers.value, "security_context", null) == null ? [] : [ephemeral_containers.value.security_context]
+              content {
+                allow_privilege_escalation = lookup(security_context.value, "allow_privilege_escalation", null)
+                dynamic "capabilities" {
+                  for_each = lookup(security_context.value, "capabilities", null) == null ? [] : [security_context.value.capabilities]
+                  content {
+                    add  = contains(keys(capabilities.value), "add") ? tolist(capabilities.value.add) : null
+                    drop = contains(keys(capabilities.value), "drop") ? tolist(capabilities.value.drop) : null
+                  }
+                }
+                privileged                = lookup(security_context.value, "privileged", null)
+                proc_mount                = lookup(security_context.value, "proc_mount", null)
+                read_only_root_filesystem = lookup(security_context.value, "read_only_root_filesystem", null)
+                run_asgroup               = lookup(security_context.value, "run_asgroup", null)
+                run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
+                run_asuser                = lookup(security_context.value, "run_asuser", null)
+                dynamic "seccomp_profile" {
+                  for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
+                  content {
+                    localhost_profile = lookup(seccomp_profile.value, "localhost_profile", null)
+                    type              = seccomp_profile.value.type
+                  }
+                }
+                dynamic "selinux_options" {
+                  for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
+                  content {
+                    level = lookup(selinux_options.value, "level", null)
+                    role  = lookup(selinux_options.value, "role", null)
+                    type  = lookup(selinux_options.value, "type", null)
+                    user  = lookup(selinux_options.value, "user", null)
+                  }
+                }
+                dynamic "windows_options" {
+                  for_each = lookup(security_context.value, "windows_options", null) == null ? [] : [security_context.value.windows_options]
+                  content {
+                    gmsa_credential_spec      = lookup(windows_options.value, "gmsa_credential_spec", null)
+                    gmsa_credential_spec_name = lookup(windows_options.value, "gmsa_credential_spec_name", null)
+                    run_asuser_name           = lookup(windows_options.value, "run_asuser_name", null)
+                  }
+                }
+              }
+            }
+            dynamic "startup_probe" {
+              for_each = lookup(ephemeral_containers.value, "startup_probe", null) == null ? [] : [ephemeral_containers.value.startup_probe]
+              content {
+                dynamic "exec" {
+                  for_each = lookup(startup_probe.value, "exec", null) == null ? [] : [startup_probe.value.exec]
+                  content {
+                    command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                  }
+                }
+                failure_threshold = lookup(startup_probe.value, "failure_threshold", null)
+                dynamic "http_get" {
+                  for_each = lookup(startup_probe.value, "http_get", null) == null ? [] : [startup_probe.value.http_get]
+                  content {
+                    host = lookup(http_get.value, "host", null)
+                    dynamic "http_headers" {
+                      for_each = lookup(http_get.value, "http_headers", [])
+                      content {
+                        name  = http_headers.value.name
+                        value = http_headers.value.value
+                      }
+                    }
+                    path   = lookup(http_get.value, "path", null)
+                    port   = http_get.value.port
+                    scheme = lookup(http_get.value, "scheme", null)
+                  }
+                }
+                initial_delay_seconds = lookup(startup_probe.value, "initial_delay_seconds", null)
+                period_seconds        = lookup(startup_probe.value, "period_seconds", null)
+                success_threshold     = lookup(startup_probe.value, "success_threshold", null)
+                dynamic "tcp_socket" {
+                  for_each = lookup(startup_probe.value, "tcp_socket", null) == null ? [] : [startup_probe.value.tcp_socket]
+                  content {
+                    host = lookup(tcp_socket.value, "host", null)
+                    port = tcp_socket.value.port
+                  }
+                }
+                termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
+                timeout_seconds                  = lookup(startup_probe.value, "timeout_seconds", null)
+              }
+            }
+            stdin                      = lookup(ephemeral_containers.value, "stdin", null)
+            stdin_once                 = lookup(ephemeral_containers.value, "stdin_once", null)
+            target_container_name      = lookup(ephemeral_containers.value, "target_container_name", null)
+            termination_message_path   = lookup(ephemeral_containers.value, "termination_message_path", null)
+            termination_message_policy = lookup(ephemeral_containers.value, "termination_message_policy", null)
+            tty                        = lookup(ephemeral_containers.value, "tty", null)
+            dynamic "volume_devices" {
+              for_each = lookup(ephemeral_containers.value, "volume_devices", [])
+              content {
+                device_path = volume_devices.value.device_path
+                name        = volume_devices.value.name
+              }
+            }
+            dynamic "volume_mounts" {
+              for_each = lookup(ephemeral_containers.value, "volume_mounts", [])
+              content {
+                mount_path        = volume_mounts.value.mount_path
+                mount_propagation = lookup(volume_mounts.value, "mount_propagation", null)
+                name              = volume_mounts.value.name
+                read_only         = lookup(volume_mounts.value, "read_only", null)
+                sub_path          = lookup(volume_mounts.value, "sub_path", null)
+                sub_path_expr     = lookup(volume_mounts.value, "sub_path_expr", null)
+              }
+            }
+            working_dir = lookup(ephemeral_containers.value, "working_dir", null)
+          }
+        }
 
         dynamic "host_aliases" {
           for_each = lookup(local.k8s_apps_v1_deployment_parameters, "host_aliases", [])
@@ -737,6 +1202,7 @@ resource "k8s_apps_v1_deployment" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
@@ -787,6 +1253,7 @@ resource "k8s_apps_v1_deployment" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
@@ -814,6 +1281,13 @@ resource "k8s_apps_v1_deployment" "this" {
                 run_asgroup               = lookup(security_context.value, "run_asgroup", null)
                 run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
                 run_asuser                = lookup(security_context.value, "run_asuser", null)
+                dynamic "seccomp_profile" {
+                  for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
+                  content {
+                    localhost_profile = lookup(seccomp_profile.value, "localhost_profile", null)
+                    type              = seccomp_profile.value.type
+                  }
+                }
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {
@@ -823,6 +1297,54 @@ resource "k8s_apps_v1_deployment" "this" {
                     user  = lookup(selinux_options.value, "user", null)
                   }
                 }
+                dynamic "windows_options" {
+                  for_each = lookup(security_context.value, "windows_options", null) == null ? [] : [security_context.value.windows_options]
+                  content {
+                    gmsa_credential_spec      = lookup(windows_options.value, "gmsa_credential_spec", null)
+                    gmsa_credential_spec_name = lookup(windows_options.value, "gmsa_credential_spec_name", null)
+                    run_asuser_name           = lookup(windows_options.value, "run_asuser_name", null)
+                  }
+                }
+              }
+            }
+            dynamic "startup_probe" {
+              for_each = lookup(init_containers.value, "startup_probe", null) == null ? [] : [init_containers.value.startup_probe]
+              content {
+                dynamic "exec" {
+                  for_each = lookup(startup_probe.value, "exec", null) == null ? [] : [startup_probe.value.exec]
+                  content {
+                    command = contains(keys(exec.value), "command") ? tolist(exec.value.command) : null
+                  }
+                }
+                failure_threshold = lookup(startup_probe.value, "failure_threshold", null)
+                dynamic "http_get" {
+                  for_each = lookup(startup_probe.value, "http_get", null) == null ? [] : [startup_probe.value.http_get]
+                  content {
+                    host = lookup(http_get.value, "host", null)
+                    dynamic "http_headers" {
+                      for_each = lookup(http_get.value, "http_headers", [])
+                      content {
+                        name  = http_headers.value.name
+                        value = http_headers.value.value
+                      }
+                    }
+                    path   = lookup(http_get.value, "path", null)
+                    port   = http_get.value.port
+                    scheme = lookup(http_get.value, "scheme", null)
+                  }
+                }
+                initial_delay_seconds = lookup(startup_probe.value, "initial_delay_seconds", null)
+                period_seconds        = lookup(startup_probe.value, "period_seconds", null)
+                success_threshold     = lookup(startup_probe.value, "success_threshold", null)
+                dynamic "tcp_socket" {
+                  for_each = lookup(startup_probe.value, "tcp_socket", null) == null ? [] : [startup_probe.value.tcp_socket]
+                  content {
+                    host = lookup(tcp_socket.value, "host", null)
+                    port = tcp_socket.value.port
+                  }
+                }
+                termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
+                timeout_seconds                  = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
             stdin                      = lookup(init_containers.value, "stdin", null)
@@ -853,6 +1375,8 @@ resource "k8s_apps_v1_deployment" "this" {
         }
         node_name           = lookup(local.k8s_apps_v1_deployment_parameters, "node_name", null)
         node_selector       = lookup(local.k8s_apps_v1_deployment_parameters, "node_selector", null)
+        overhead            = lookup(local.k8s_apps_v1_deployment_parameters, "overhead", null)
+        preemption_policy   = lookup(local.k8s_apps_v1_deployment_parameters, "preemption_policy", null)
         priority            = lookup(local.k8s_apps_v1_deployment_parameters, "priority", null)
         priority_class_name = lookup(local.k8s_apps_v1_deployment_parameters, "priority_class_name", null)
 
@@ -870,9 +1394,17 @@ resource "k8s_apps_v1_deployment" "this" {
           for_each = lookup(local.k8s_apps_v1_deployment_parameters, "security_context", null) == null ? [] : [local.k8s_apps_v1_deployment_parameters.security_context]
           content {
             fsgroup        = lookup(security_context.value, "fsgroup", null)
+            fsgroup_change_policy = lookup(security_context.value, "fsgroup_change_policy", null)
             run_asgroup    = lookup(security_context.value, "run_asgroup", null)
             run_asnon_root = lookup(security_context.value, "run_asnon_root", null)
             run_asuser     = lookup(security_context.value, "run_asuser", null)
+            dynamic "seccomp_profile" {
+              for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
+              content {
+                localhost_profile = lookup(seccomp_profile.value, "localhost_profile", null)
+                type              = seccomp_profile.value.type
+              }
+            }
             dynamic "selinux_options" {
               for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
               content {
@@ -890,10 +1422,19 @@ resource "k8s_apps_v1_deployment" "this" {
                 value = sysctls.value.value
               }
             }
+            dynamic "windows_options" {
+              for_each = lookup(security_context.value, "windows_options", null) == null ? [] : [security_context.value.windows_options]
+              content {
+                gmsa_credential_spec      = lookup(windows_options.value, "gmsa_credential_spec", null)
+                gmsa_credential_spec_name = lookup(windows_options.value, "gmsa_credential_spec_name", null)
+                run_asuser_name           = lookup(windows_options.value, "run_asuser_name", null)
+              }
+            }
           }
         }
         service_account                  = lookup(local.k8s_apps_v1_deployment_parameters, "service_account", null)
         service_account_name             = lookup(local.k8s_apps_v1_deployment_parameters, "service_account_name", null)
+        set_hostname_asfqdn              = lookup(local.k8s_apps_v1_deployment_parameters, "set_hostname_asfqdn", null)
         share_process_namespace          = lookup(local.k8s_apps_v1_deployment_parameters, "share_process_namespace", null)
         subdomain                        = lookup(local.k8s_apps_v1_deployment_parameters, "subdomain", null)
         termination_grace_period_seconds = lookup(local.k8s_apps_v1_deployment_parameters, "termination_grace_period_seconds", null)
@@ -906,6 +1447,29 @@ resource "k8s_apps_v1_deployment" "this" {
             operator           = lookup(tolerations.value, "operator", null)
             toleration_seconds = lookup(tolerations.value, "toleration_seconds", null)
             value              = lookup(tolerations.value, "value", null)
+          }
+        }
+
+        dynamic "topology_spread_constraints" {
+          for_each = lookup(local.k8s_apps_v1_deployment_parameters, "topology_spread_constraints", [])
+          content {
+            dynamic "label_selector" {
+              for_each = lookup(topology_spread_constraints.value, "label_selector", null) == null ? [] : [topology_spread_constraints.value.label_selector]
+              content {
+                dynamic "match_expressions" {
+                  for_each = lookup(label_selector.value, "match_expressions", [])
+                  content {
+                    key      = match_expressions.value.key
+                    operator = match_expressions.value.operator
+                    values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                  }
+                }
+                match_labels = lookup(label_selector.value, "match_labels", null)
+              }
+            }
+            max_skew           = topology_spread_constraints.value.max_skew
+            topology_key       = topology_spread_constraints.value.topology_key
+            when_unsatisfiable = topology_spread_constraints.value.when_unsatisfiable
           }
         }
 
@@ -1034,6 +1598,62 @@ resource "k8s_apps_v1_deployment" "this" {
               content {
                 medium     = lookup(empty_dir.value, "medium", null)
                 size_limit = lookup(empty_dir.value, "size_limit", null)
+              }
+            }
+            dynamic "ephemeral" {
+              for_each = lookup(volumes.value, "ephemeral", null) == null ? [] : [volumes.value.ephemeral]
+              content {
+                dynamic "volume_claim_template" {
+                  for_each = lookup(ephemeral.value, "volume_claim_template", null) == null ? [] : [ephemeral.value.volume_claim_template]
+                  content {
+
+                    metadata {
+                      annotations = lookup(volume_claim_template.value, "annotations", null)
+                      labels      = lookup(volume_claim_template.value, "labels", null)
+                      name        = lookup(volume_claim_template.value, "name", null)
+                      namespace   = lookup(volume_claim_template.value, "namespace", null)
+                    }
+
+                    spec {
+                      access_modes = contains(keys(volume_claim_template.value), "access_modes") ? tolist(volume_claim_template.value.access_modes) : null
+
+                      dynamic "data_source" {
+                        for_each = lookup(volume_claim_template.value, "data_source", null) == null ? [] : [volume_claim_template.value.data_source]
+                        content {
+                          api_group = lookup(data_source.value, "api_group", null)
+                          kind      = data_source.value.kind
+                          name      = data_source.value.name
+                        }
+                      }
+
+                      dynamic "resources" {
+                        for_each = lookup(volume_claim_template.value, "resources", null) == null ? [] : [volume_claim_template.value.resources]
+                        content {
+                          limits   = lookup(resources.value, "limits", null)
+                          requests = lookup(resources.value, "requests", null)
+                        }
+                      }
+
+                      dynamic "selector" {
+                        for_each = lookup(volume_claim_template.value, "selector", null) == null ? [] : [volume_claim_template.value.selector]
+                        content {
+                          dynamic "match_expressions" {
+                            for_each = lookup(selector.value, "match_expressions", [])
+                            content {
+                              key      = match_expressions.value.key
+                              operator = match_expressions.value.operator
+                              values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                            }
+                          }
+                          match_labels = lookup(selector.value, "match_labels", null)
+                        }
+                      }
+                      storage_class_name = lookup(volume_claim_template.value, "storage_class_name", null)
+                      volume_mode        = lookup(volume_claim_template.value, "volume_mode", null)
+                      volume_name        = lookup(volume_claim_template.value, "volume_name", null)
+                    }
+                  }
+                }
               }
             }
             dynamic "fc" {

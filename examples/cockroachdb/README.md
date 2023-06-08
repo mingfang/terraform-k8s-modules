@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `name` (default `"cockroachdb"`)
 * `namespace` (default `"cockroachdb-example"`)
-* `replicas` (default `3`)
+* `replicas` (default `4`)
 * `storage` (default `"1Gi"`)
 * `storage_class` (default `null`)
 

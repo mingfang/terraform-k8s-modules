@@ -1,16 +1,24 @@
-variable "name" {}
+variable "name" {
+  type    = string
+  default = "pgadmin"
+}
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
 
 variable "image" {
-  default = "dpage/pgadmin4:6.17"
+  type    = string
+  default = "dpage/pgadmin4:7.3"
 }
 
 variable "replicas" {
+  type    = number
   default = 1
 }
 
 variable ports {
+  type    = list
   default = [
     {
       name = "http"
@@ -19,11 +27,43 @@ variable ports {
   ]
 }
 
+variable "command" {
+  type    = list(string)
+  default = []
+}
+
+variable "args" {
+  type    = list(string)
+  default = []
+}
+
 variable "env" {
+  type    = list(object({ name = string, value = string }))
+  default = []
+}
+
+variable "env_map" {
+  type    = map
+  default = {}
+}
+
+variable "env_file" {
+  type    = string
+  default = null
+}
+
+variable "env_from" {
+  type    = list(object({
+    prefix = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 
 variable "annotations" {
+  type    = map
   default = {}
 }
 
@@ -40,14 +80,36 @@ variable "resources" {
   }
 }
 
+variable "service_account_name" {
+  type    = string
+  default = null
+}
+
 variable "overrides" {
   default = {}
 }
 
-variable "pvc_name" {
+variable "configmap" {
   default = null
 }
 
-variable "PGADMIN_DEFAULT_EMAIL" {}
+variable "configmap_mount_path" {
+  type = string
+  default = "/config"
+}
 
-variable "PGADMIN_DEFAULT_PASSWORD" {}
+variable "post_start_command" {
+  type    = list(string)
+  default = null
+}
+
+variable "pvc" {
+  type    = string
+  default = null
+}
+
+variable "mount_path" {
+  type    = string
+  default = "/var/lib/pgadmin"
+  description = "pvc mount path"
+}

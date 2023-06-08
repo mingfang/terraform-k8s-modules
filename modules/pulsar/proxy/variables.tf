@@ -22,7 +22,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "apachepulsar/pulsar-all:latest"
+  default = "apachepulsar/pulsar-all:2.10.0"
 }
 
 variable "overrides" {

@@ -9,7 +9,7 @@ Provider Requirements:
 * `HASURA_GRAPHQL_ENABLE_CONSOLE` (default `"false"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"hasura/graphql-engine:v1.3.0"`)
+* `image` (default `"hasura/graphql-engine:v2.8.1"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

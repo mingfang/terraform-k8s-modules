@@ -8,7 +8,7 @@ Provider Requirements:
 * `annotations` (default `{}`)
 * `env` (default `[]`)
 * `gateway_url` (required)
-* `image` (default `"openfaas/faas-idler:0.3.0"`)
+* `image` (default `"ghcr.io/openfaas/faas-idler-pro:0.4.4"`)
 * `inactivity_duration` (default `"30m"`)
 * `name` (required)
 * `namespace` (required)

@@ -70,7 +70,7 @@ resource "k8s_apps_v1_deployment" "this" {
             required_during_scheduling_ignored_during_execution {
               label_selector {
                 match_expressions {
-                  key      = "app"
+                  key      = "name"
                   operator = "In"
                   values   = [var.name]
                 }

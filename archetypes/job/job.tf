@@ -12,6 +12,7 @@ resource "k8s_batch_v1_job" "this" {
   spec {
     active_deadline_seconds = lookup(local.k8s_batch_v1_job_parameters, "active_deadline_seconds", null)
     backoff_limit           = lookup(local.k8s_batch_v1_job_parameters, "backoff_limit", null)
+    completion_mode         = lookup(local.k8s_batch_v1_job_parameters, "completion_mode", null)
     completions             = lookup(local.k8s_batch_v1_job_parameters, "completions", null)
     manual_selector         = lookup(local.k8s_batch_v1_job_parameters, "manual_selector", null)
     parallelism             = lookup(local.k8s_batch_v1_job_parameters, "parallelism", null)
@@ -30,6 +31,7 @@ resource "k8s_batch_v1_job" "this" {
         match_labels = lookup(selector.value, "match_labels", null)
       }
     }
+    suspend = lookup(local.k8s_batch_v1_job_parameters, "suspend", null)
 
     template {
 
@@ -127,6 +129,20 @@ resource "k8s_batch_v1_job" "this" {
                             match_labels = lookup(label_selector.value, "match_labels", null)
                           }
                         }
+                        dynamic "namespace_selector" {
+                          for_each = lookup(pod_affinity_term.value, "namespace_selector", null) == null ? [] : [pod_affinity_term.value.namespace_selector]
+                          content {
+                            dynamic "match_expressions" {
+                              for_each = lookup(namespace_selector.value, "match_expressions", [])
+                              content {
+                                key      = match_expressions.value.key
+                                operator = match_expressions.value.operator
+                                values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                              }
+                            }
+                            match_labels = lookup(namespace_selector.value, "match_labels", null)
+                          }
+                        }
                         namespaces   = contains(keys(pod_affinity_term.value), "namespaces") ? tolist(pod_affinity_term.value.namespaces) : null
                         topology_key = pod_affinity_term.value.topology_key
                       }
@@ -149,6 +165,20 @@ resource "k8s_batch_v1_job" "this" {
                           }
                         }
                         match_labels = lookup(label_selector.value, "match_labels", null)
+                      }
+                    }
+                    dynamic "namespace_selector" {
+                      for_each = lookup(required_during_scheduling_ignored_during_execution.value, "namespace_selector", null) == null ? [] : [required_during_scheduling_ignored_during_execution.value.namespace_selector]
+                      content {
+                        dynamic "match_expressions" {
+                          for_each = lookup(namespace_selector.value, "match_expressions", [])
+                          content {
+                            key      = match_expressions.value.key
+                            operator = match_expressions.value.operator
+                            values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                          }
+                        }
+                        match_labels = lookup(namespace_selector.value, "match_labels", null)
                       }
                     }
                     namespaces   = contains(keys(required_during_scheduling_ignored_during_execution.value), "namespaces") ? tolist(required_during_scheduling_ignored_during_execution.value.namespaces) : null
@@ -180,6 +210,20 @@ resource "k8s_batch_v1_job" "this" {
                             match_labels = lookup(label_selector.value, "match_labels", null)
                           }
                         }
+                        dynamic "namespace_selector" {
+                          for_each = lookup(pod_affinity_term.value, "namespace_selector", null) == null ? [] : [pod_affinity_term.value.namespace_selector]
+                          content {
+                            dynamic "match_expressions" {
+                              for_each = lookup(namespace_selector.value, "match_expressions", [])
+                              content {
+                                key      = match_expressions.value.key
+                                operator = match_expressions.value.operator
+                                values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                              }
+                            }
+                            match_labels = lookup(namespace_selector.value, "match_labels", null)
+                          }
+                        }
                         namespaces   = contains(keys(pod_affinity_term.value), "namespaces") ? tolist(pod_affinity_term.value.namespaces) : null
                         topology_key = pod_affinity_term.value.topology_key
                       }
@@ -202,6 +246,20 @@ resource "k8s_batch_v1_job" "this" {
                           }
                         }
                         match_labels = lookup(label_selector.value, "match_labels", null)
+                      }
+                    }
+                    dynamic "namespace_selector" {
+                      for_each = lookup(required_during_scheduling_ignored_during_execution.value, "namespace_selector", null) == null ? [] : [required_during_scheduling_ignored_during_execution.value.namespace_selector]
+                      content {
+                        dynamic "match_expressions" {
+                          for_each = lookup(namespace_selector.value, "match_expressions", [])
+                          content {
+                            key      = match_expressions.value.key
+                            operator = match_expressions.value.operator
+                            values   = contains(keys(match_expressions.value), "values") ? tolist(match_expressions.value.values) : null
+                          }
+                        }
+                        match_labels = lookup(namespace_selector.value, "match_labels", null)
                       }
                     }
                     namespaces   = contains(keys(required_during_scheduling_ignored_during_execution.value), "namespaces") ? tolist(required_during_scheduling_ignored_during_execution.value.namespaces) : null
@@ -393,6 +451,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
@@ -443,6 +502,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
@@ -470,7 +530,6 @@ resource "k8s_batch_v1_job" "this" {
                 run_asgroup               = lookup(security_context.value, "run_asgroup", null)
                 run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
                 run_asuser                = lookup(security_context.value, "run_asuser", null)
-                /*
                 dynamic "seccomp_profile" {
                   for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
                   content {
@@ -478,7 +537,6 @@ resource "k8s_batch_v1_job" "this" {
                     type              = seccomp_profile.value.type
                   }
                 }
-                */
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {
@@ -534,6 +592,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
@@ -760,6 +819,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
@@ -810,6 +870,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
@@ -837,7 +898,6 @@ resource "k8s_batch_v1_job" "this" {
                 run_asgroup               = lookup(security_context.value, "run_asgroup", null)
                 run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
                 run_asuser                = lookup(security_context.value, "run_asuser", null)
-                /*
                 dynamic "seccomp_profile" {
                   for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
                   content {
@@ -845,7 +905,6 @@ resource "k8s_batch_v1_job" "this" {
                     type              = seccomp_profile.value.type
                   }
                 }
-                */
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {
@@ -901,6 +960,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
@@ -1130,6 +1190,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
@@ -1180,6 +1241,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
@@ -1207,7 +1269,6 @@ resource "k8s_batch_v1_job" "this" {
                 run_asgroup               = lookup(security_context.value, "run_asgroup", null)
                 run_asnon_root            = lookup(security_context.value, "run_asnon_root", null)
                 run_asuser                = lookup(security_context.value, "run_asuser", null)
-                /*
                 dynamic "seccomp_profile" {
                   for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
                   content {
@@ -1215,7 +1276,6 @@ resource "k8s_batch_v1_job" "this" {
                     type              = seccomp_profile.value.type
                   }
                 }
-*/
                 dynamic "selinux_options" {
                   for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
                   content {
@@ -1271,6 +1331,7 @@ resource "k8s_batch_v1_job" "this" {
                     port = tcp_socket.value.port
                   }
                 }
+                termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
                 timeout_seconds = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
@@ -1325,7 +1386,6 @@ resource "k8s_batch_v1_job" "this" {
             run_asgroup           = lookup(security_context.value, "run_asgroup", null)
             run_asnon_root        = lookup(security_context.value, "run_asnon_root", null)
             run_asuser            = lookup(security_context.value, "run_asuser", null)
-            /*
             dynamic "seccomp_profile" {
               for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
               content {
@@ -1333,7 +1393,6 @@ resource "k8s_batch_v1_job" "this" {
                 type              = seccomp_profile.value.type
               }
             }
-*/
             dynamic "selinux_options" {
               for_each = lookup(security_context.value, "selinux_options", null) == null ? [] : [security_context.value.selinux_options]
               content {
@@ -1363,9 +1422,7 @@ resource "k8s_batch_v1_job" "this" {
         }
         service_account      = lookup(local.k8s_batch_v1_job_parameters, "service_account", null)
         service_account_name = lookup(local.k8s_batch_v1_job_parameters, "service_account_name", null)
-        /*
         set_hostname_asfqdn              = lookup(local.k8s_batch_v1_job_parameters, "set_hostname_asfqdn", null)
-*/
         share_process_namespace          = lookup(local.k8s_batch_v1_job_parameters, "share_process_namespace", null)
         subdomain                        = lookup(local.k8s_batch_v1_job_parameters, "subdomain", null)
         termination_grace_period_seconds = lookup(local.k8s_batch_v1_job_parameters, "termination_grace_period_seconds", null)
@@ -1531,11 +1588,9 @@ resource "k8s_batch_v1_job" "this" {
                 size_limit = lookup(empty_dir.value, "size_limit", null)
               }
             }
-            /*
             dynamic "ephemeral" {
               for_each = lookup(volumes.value, "ephemeral", null) == null ? [] : [volumes.value.ephemeral]
               content {
-                read_only = lookup(ephemeral.value, "read_only", null)
                 dynamic "volume_claim_template" {
                   for_each = lookup(ephemeral.value, "volume_claim_template", null) == null ? [] : [ephemeral.value.volume_claim_template]
                   content {
@@ -1589,7 +1644,6 @@ resource "k8s_batch_v1_job" "this" {
                 }
               }
             }
-*/
             dynamic "fc" {
               for_each = lookup(volumes.value, "fc", null) == null ? [] : [volumes.value.fc]
               content {

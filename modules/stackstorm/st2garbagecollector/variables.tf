@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2garbagecollector:latest"
+  default = "stackstorm/st2garbagecollector:3.6.0"
 }
 
 variable "env" {

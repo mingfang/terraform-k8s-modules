@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2scheduler:latest"
+  default = "stackstorm/st2scheduler:3.6.0"
 }
 
 variable "env" {

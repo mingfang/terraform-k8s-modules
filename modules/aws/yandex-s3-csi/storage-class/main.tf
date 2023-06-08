@@ -4,8 +4,9 @@ resource "k8s_storage_k8s_io_v1_storage_class" "this" {
   }
 
   _provisioner = "ru.yandex.s3.csi"
-  parameters = {
+  parameters   = {
     mounter                                                  = "geesefs"
+    bucket                                                   = var.bucket
     # you can set mount options here, for example limit memory cache size (recommended)
     options                                                  = "--memory-limit 1000 --dir-mode 0777 --file-mode 0666"
     # to use an existing bucket, specify it here:

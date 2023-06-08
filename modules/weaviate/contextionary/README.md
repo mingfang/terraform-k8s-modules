@@ -12,7 +12,7 @@ Provider Requirements:
 * `OCCURRENCE_WEIGHT_LINEAR_FACTOR` (default `0.75`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"semitechnologies/contextionary:en0.16.0-v1.1.0"`)
+* `image` (default `"semitechnologies/contextionary:en0.16.0-v1.0.2"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

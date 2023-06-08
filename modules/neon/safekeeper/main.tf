@@ -38,7 +38,7 @@ locals {
           --listen-pg="$${HOSTNAME}.${var.name}.${var.namespace}.svc.cluster.local:${var.ports.1.port}" \
           --listen-http='0.0.0.0:${var.ports.0.port}' \
           --broker-endpoint=$${BROKER_ENDPOINT} \
-          --remote-storage="{endpoint='$${S3_ENDPOINT}', \
+          --remote-storage="{ \
                               bucket_name='$${BUCKET_NAME}', \
                               bucket_region='$${BUCKET_REGION}', \
                               prefix_in_bucket='/$${BUCKET_PREFIX}/'}"

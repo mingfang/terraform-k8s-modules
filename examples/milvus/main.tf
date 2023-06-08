@@ -61,7 +61,7 @@ module "querynode" {
   source    = "../../modules/milvus/querynode"
   name      = "querynode"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
+  replicas  = 2
 
   ETCD_ENDPOINTS   = "${module.etcd.name}:${module.etcd.ports[0].port}"
   MINIO_ADDRESS    = "${module.minio.name}:${module.minio.ports[0].port}"
@@ -86,7 +86,7 @@ module "indexnode" {
   source    = "../../modules/milvus/indexnode"
   name      = "indexnode"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
+  replicas  = 2
 
   ETCD_ENDPOINTS      = "${module.etcd.name}:${module.etcd.ports[0].port}"
   MINIO_ADDRESS       = "${module.minio.name}:${module.minio.ports[0].port}"
@@ -112,7 +112,7 @@ module "datanode" {
   source    = "../../modules/milvus/datanode"
   name      = "datanode"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
+  replicas  = 2
 
   ETCD_ENDPOINTS   = "${module.etcd.name}:${module.etcd.ports[0].port}"
   MINIO_ADDRESS    = "${module.minio.name}:${module.minio.ports[0].port}"

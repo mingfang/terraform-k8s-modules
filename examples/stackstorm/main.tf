@@ -126,7 +126,7 @@ resource "k8s_core_v1_persistent_volume_claim" "stackstorm-packs-configs" {
   }
 
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -138,7 +138,7 @@ resource "k8s_core_v1_persistent_volume_claim" "stackstorm-packs" {
   }
 
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -150,7 +150,7 @@ resource "k8s_core_v1_persistent_volume_claim" "stackstorm-virtualenvs" {
   }
 
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -162,7 +162,7 @@ resource "k8s_core_v1_persistent_volume_claim" "stackstorm-ssh" {
   }
 
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -174,7 +174,7 @@ resource "k8s_core_v1_persistent_volume_claim" "stackstorm-keys" {
   }
 
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }

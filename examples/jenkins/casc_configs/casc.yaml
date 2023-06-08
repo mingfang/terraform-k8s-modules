@@ -17,7 +17,7 @@ jenkins:
         maxRequestsPerHost: 64
         maxRequestsPerHostStr: "64"
         name: "kubernetes"
-        namespace: "jenkins"
+        namespace: "jenkins-example"
         readTimeout: 20
         templates:
           - annotations:
@@ -117,7 +117,7 @@ jenkins:
     all:
       name: "all"
   projectNamingStrategy: "standard"
-  quietPeriod: 5
+  quietPeriod: 0
   remotingSecurity:
     enabled: false
   scmCheckoutRetryCount: 2
@@ -156,10 +156,10 @@ unclassified:
   keycloakSecurityRealm:
     keycloakJson: |-
       {
-        "realm": "kkr",
-        "auth-server-url": "https://login.build.kkr.com/auth/",
+        "realm": "rebelsoft",
+        "auth-server-url": "https://keycloak.rebelsoft.com/auth/",
         "ssl-required": "external",
-        "resource": "jenkins-prod",
+        "resource": "jenkins-example",
         "public-client": true,
         "confidential-port": 0,
         "disable-trust-manager": true
@@ -168,7 +168,12 @@ unclassified:
     keycloakValidate: false
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
-    url: "https://jenkins.app.kkr.com/"
+    url: "https://jenkins/"
+  sidebarGlobalLink:
+    links:
+    - displayName: "Job DSL API"
+      iconFileName: "static/efbf17e4/images/16x16/help.png"
+      urlName: "/plugin/job-dsl/api-viewer/index.html"
 tool:
   git:
     installations:

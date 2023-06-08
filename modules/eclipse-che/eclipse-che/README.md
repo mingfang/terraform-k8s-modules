@@ -43,7 +43,7 @@ Provider Requirements:
 * `JAVA_OPTS` (default `"-XX:MaxRAMPercentage=85.0 "`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"quay.io/eclipse/che-server:7.15.2"`)
+* `image` (default `"quay.io/eclipse/che-server:7.50.0"`)
 * `ingress_class` (required)
 * `name` (required)
 * `namespace` (required)
@@ -59,7 +59,7 @@ Provider Requirements:
 ## Managed Resources
 * `k8s_core_v1_config_map.che` from `k8s`
 * `k8s_core_v1_service_account.che` from `k8s`
-* `k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding.default_che_clusterrole_binding` from `k8s`
+* `k8s_rbac_authorization_k8s_io_v1_cluster_role_binding.default_che_clusterrole_binding` from `k8s`
 
 ## Child Modules
 * `deployment-service` from [../../../archetypes/deployment-service](../../../archetypes/deployment-service)

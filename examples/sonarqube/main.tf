@@ -12,9 +12,11 @@ module "postgres" {
   storage       = "1Gi"
   replicas      = var.replicas
 
-  POSTGRES_USER     = "sonarqube"
-  POSTGRES_PASSWORD = "sonarqube"
-  POSTGRES_DB       = "sonarqube"
+  env_map = {
+    POSTGRES_USER     = "sonarqube"
+    POSTGRES_PASSWORD = "sonarqube"
+    POSTGRES_DB       = "sonarqube"
+  }
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "sonarqube_data" {
@@ -83,7 +85,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.name}.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.sonarqube.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name

@@ -7,12 +7,11 @@ Provider Requirements:
 ## Input Variables
 * `name` (default `"redpanda"`)
 * `namespace` (default `"redpanda-example"`)
-* `replicas` (default `3`)
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
 * `k8s_networking_k8s_io_v1beta1_ingress.kowl` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.proxy` from `k8s`
+* `k8s_networking_k8s_io_v1beta1_ingress.redpanda` from `k8s`
 
 ## Child Modules
 * `kowl` from [../../modules/kowl](../../modules/kowl)

@@ -6,11 +6,16 @@ package library.kubernetes.admission.mutating
 # Note: All patch rules should start with `isValidRequest` and `isCreateOrUpdate`
 ############################################################
 
+makeEnvPatch(op, key, value, pathPrefix) = patchCode {
+	patchCode = {
+		"op": op,
+		"path": concat("/", [pathPrefix, "spec/containers/0", replace(key, "/", "~1")]),
+		"value": value,
+	}
+}
 patch[patchCode] {
 	isValidRequest
 	isCreateOrUpdate
-	input.request.kind.kind == "Namespace"
-    startswith(input.request.name, "legionx-")
-	not hasAnnotation(input.request.object, "scheduler.alpha.kubernetes.io/node-selector")
-    patchCode = makeAnnotationPatch("add", "scheduler.alpha.kubernetes.io/node-selector", "host=ripper2", "")
+	input.request.kind.kind == "Pod"
+	patchCode = makeEnvPatch("add", "envFrom", [{"configMapRef": {"name": "podpreset"}}], "")
 }

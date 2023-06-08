@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"flowable/flowable-ui:6.6.0"`)
+* `image` (default `"flowable/flowable-ui:6.7.2"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

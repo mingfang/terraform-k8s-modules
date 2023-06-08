@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "registry.rebelsoft.com/st2actionrunner:latest"
+  default = "registry.rebelsoft.com/st2actionrunner:3.6.0"
 }
 
 variable "annotations" {

@@ -8,7 +8,7 @@ Provider Requirements:
 * `EXTRA_OPTS` (default `""`)
 * `PULSAR_MEM` (default `"-Xms64m -Xmx128m -XX:MaxDirectMemorySize=128m"`)
 * `discovery_uri` (default `""`)
-* `image` (default `"apachepulsar/pulsar-all:latest"`)
+* `image` (default `"apachepulsar/pulsar-all:2.10.0"`)
 * `name` (required)
 * `namespace` (default `null`)
 * `overrides` (default `{}`)

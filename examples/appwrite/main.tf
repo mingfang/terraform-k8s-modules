@@ -5,7 +5,7 @@ resource "k8s_core_v1_namespace" "this" {
 }
 
 locals {
-  _APP_ENV         = "development"
+  _APP_ENV         = "production"
   _APP_USAGE_STATS = "enabled"
   _APP_DB_SCHEMA   = "appwrite"
   _APP_DB_USER     = "appwrite"
@@ -27,7 +27,7 @@ module "mariadb" {
   storage       = "1Gi"
 
   image = "appwrite/mariadb:1.2.0"
-  args = [
+  args  = [
     "--innodb-flush-method=fsync",
   ]
 
@@ -38,19 +38,18 @@ module "mariadb" {
 }
 
 # volumes
-resource "k8s_core_v1_persistent_volume_claim" "uploads" {
+resource "k8s_core_v1_persistent_volume_claim" "docker" {
   metadata {
-    name      = "uploads"
+    name      = "docker"
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
 
   spec {
-    access_modes = ["ReadWriteMany"]
+    access_modes       = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
 }
-
 resource "k8s_core_v1_persistent_volume_claim" "functions" {
   metadata {
     name      = "functions"
@@ -58,7 +57,19 @@ resource "k8s_core_v1_persistent_volume_claim" "functions" {
   }
 
   spec {
-    access_modes = ["ReadWriteMany"]
+    access_modes       = ["ReadWriteMany"]
+    resources { requests = { "storage" = "1Gi" } }
+    storage_class_name = "cephfs"
+  }
+}
+resource "k8s_core_v1_persistent_volume_claim" "uploads" {
+  metadata {
+    name      = "uploads"
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
+  }
+
+  spec {
+    access_modes       = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -69,8 +80,59 @@ module "appwrite" {
   name      = "appwrite"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  pvc_uploads   = k8s_core_v1_persistent_volume_claim.uploads.metadata[0].name
-  pvc_functions = k8s_core_v1_persistent_volume_claim.functions.metadata[0].name
+  pvcs = [
+    k8s_core_v1_persistent_volume_claim.functions,
+    k8s_core_v1_persistent_volume_claim.uploads,
+  ]
+
+  _APP_ENV           = local._APP_ENV
+  _APP_USAGE_STATS   = local._APP_USAGE_STATS
+
+  _APP_REDIS_HOST    = module.redis.name
+  _APP_REDIS_PORT    = module.redis.ports[0].port
+
+  _APP_DB_HOST       = module.mariadb.name
+  _APP_DB_PORT       = module.mariadb.ports[0].port
+  _APP_DB_SCHEMA     = local._APP_DB_SCHEMA
+  _APP_DB_USER       = local._APP_DB_USER
+  _APP_DB_PASS       = local._APP_DB_PASS
+
+  _APP_INFLUXDB_HOST = module.influxdb.name
+  _APP_INFLUXDB_PORT = module.influxdb.ports[0].port
+}
+
+module "executor" {
+  source    = "../../modules/appwrite/appwrite"
+  name      = "executor"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  command = ["executor"]
+
+  pvcs = [
+    k8s_core_v1_persistent_volume_claim.docker,
+    k8s_core_v1_persistent_volume_claim.functions,
+    k8s_core_v1_persistent_volume_claim.uploads,
+  ]
+
+  sidecars = [
+    {
+      name  = "dind"
+      image = "docker:20.10.9-dind"
+      args  = ["--insecure-registry=0.0.0.0/0"]
+      env   = [{ name = "DOCKER_TLS_CERTDIR", value = "" }]
+
+      security_context = { privileged = true }
+      volume_mounts    = [{ name = "docker", mount_path = "/storage/docker" },]
+    }
+  ]
+
+  env = [
+    {
+      name  = "DOCKER_HOST"
+      value = "tcp://localhost:2375"
+    }
+  ]
+
 
   _APP_ENV           = local._APP_ENV
   _APP_USAGE_STATS   = local._APP_USAGE_STATS
@@ -101,18 +163,6 @@ module "realtime" {
   _APP_DB_PASS     = local._APP_DB_PASS
 }
 
-module "worker-usage" {
-  source    = "../../modules/appwrite/worker-usage"
-  name      = "worker-usage"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  _APP_ENV         = local._APP_ENV
-  _APP_REDIS_HOST  = module.redis.name
-  _APP_REDIS_PORT  = module.redis.ports[0].port
-  _APP_STATSD_HOST = module.telegraf.name
-  _APP_STATSD_PORT = module.telegraf.ports[0].port
-}
-
 module "worker-audits" {
   source    = "../../modules/appwrite/worker-audits"
   name      = "worker-audits"
@@ -138,21 +188,6 @@ module "worker-webhook" {
   _APP_REDIS_PORT = module.redis.ports[0].port
 }
 
-module "worker-tasks" {
-  source    = "../../modules/appwrite/worker-tasks"
-  name      = "worker-tasks"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  _APP_ENV        = local._APP_ENV
-  _APP_REDIS_HOST = module.redis.name
-  _APP_REDIS_PORT = module.redis.ports[0].port
-  _APP_DB_HOST    = module.mariadb.name
-  _APP_DB_PORT    = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA  = local._APP_DB_SCHEMA
-  _APP_DB_USER    = local._APP_DB_USER
-  _APP_DB_PASS    = local._APP_DB_PASS
-}
-
 module "worker-deletes" {
   source    = "../../modules/appwrite/worker-deletes"
   name      = "worker-deletes"
@@ -169,6 +204,39 @@ module "worker-deletes" {
   _APP_DB_USER    = local._APP_DB_USER
   _APP_DB_PASS    = local._APP_DB_PASS
 }
+
+module "worker-database" {
+  source    = "../../modules/appwrite/worker-database"
+  name      = "worker-database"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  _APP_ENV        = local._APP_ENV
+  _APP_REDIS_HOST = module.redis.name
+  _APP_REDIS_PORT = module.redis.ports[0].port
+  _APP_DB_HOST    = module.mariadb.name
+  _APP_DB_PORT    = module.mariadb.ports[0].port
+  _APP_DB_SCHEMA  = local._APP_DB_SCHEMA
+  _APP_DB_USER    = local._APP_DB_USER
+  _APP_DB_PASS    = local._APP_DB_PASS
+}
+
+module "worker-builds" {
+  source    = "../../modules/appwrite/appwrite"
+  name      = "worker-builds"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  command = ["worker-builds"]
+
+  _APP_ENV        = local._APP_ENV
+  _APP_REDIS_HOST = module.redis.name
+  _APP_REDIS_PORT = module.redis.ports[0].port
+  _APP_DB_HOST    = module.mariadb.name
+  _APP_DB_PORT    = module.mariadb.ports[0].port
+  _APP_DB_SCHEMA  = local._APP_DB_SCHEMA
+  _APP_DB_USER    = local._APP_DB_USER
+  _APP_DB_PASS    = local._APP_DB_PASS
+}
+#  appwrite-worker-certificates:
 
 module "worker-functions" {
   source    = "../../modules/appwrite/worker-functions"
@@ -188,6 +256,35 @@ module "worker-functions" {
   _APP_DB_PASS     = local._APP_DB_PASS
 }
 
+#  appwrite-executor:
+#  appwrite-executor:
+module "maintenance" {
+  source    = "../../modules/appwrite/maintenance"
+  name      = "maintenance"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  _APP_ENV        = local._APP_ENV
+  _APP_REDIS_HOST = module.redis.name
+  _APP_REDIS_PORT = module.redis.ports[0].port
+}
+
+module "worker-usage" {
+  source    = "../../modules/appwrite/worker-usage"
+  name      = "worker-usage"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  _APP_ENV         = local._APP_ENV
+  _APP_REDIS_HOST  = module.redis.name
+  _APP_REDIS_PORT  = module.redis.ports[0].port
+  _APP_DB_HOST     = module.mariadb.name
+  _APP_DB_PORT     = module.mariadb.ports[0].port
+  _APP_DB_SCHEMA   = local._APP_DB_SCHEMA
+  _APP_DB_USER     = local._APP_DB_USER
+  _APP_DB_PASS     = local._APP_DB_PASS
+  _APP_STATSD_HOST = module.telegraf.name
+  _APP_STATSD_PORT = module.telegraf.ports[0].port
+}
+
 module "schedule" {
   source    = "../../modules/appwrite/schedule"
   name      = "schedule"
@@ -198,15 +295,6 @@ module "schedule" {
   _APP_REDIS_PORT = module.redis.ports[0].port
 }
 
-module "maintenance" {
-  source    = "../../modules/appwrite/maintenance"
-  name      = "maintenance"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  _APP_ENV        = local._APP_ENV
-  _APP_REDIS_HOST = module.redis.name
-  _APP_REDIS_PORT = module.redis.ports[0].port
-}
 
 module "influxdb" {
   source    = "../../modules/appwrite/influxdb"

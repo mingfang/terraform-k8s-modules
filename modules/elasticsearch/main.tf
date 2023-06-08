@@ -17,12 +17,17 @@ locals {
 
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
-    replicas    = var.replicas
-    ports       = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
 
-    annotations = var.annotations
+    annotations = merge(
+      var.annotations,
+      var.configmap != null ? {
+        config_checksum = md5(join("", keys(var.configmap.data), values(var.configmap.data)))
+      } : {},
+    )
 
     enable_service_links        = false
     pod_management_policy       = "Parallel"
@@ -34,11 +39,11 @@ locals {
         image = var.image
 
         command = [
-          "sh",
-          "-cx",
+          "bash",
+          "-c",
           <<-EOF
-          sysctl -w vm.max_map_count=262144
-          ulimit -l unlimited
+          mkdir -p ${var.mount_path}
+          chown elasticsearch ${var.mount_path}
           su elasticsearch
           /usr/local/bin/docker-entrypoint.sh eswrapper
           EOF
@@ -46,8 +51,7 @@ locals {
 
         env = concat([
           {
-            name = "POD_NAME"
-
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -55,7 +59,7 @@ locals {
             }
           },
           {
-            name = "REQUESTS_MEMORY"
+            name       = "REQUESTS_MEMORY"
             value_from = {
               resource_field_ref = {
                 resource = "requests.memory"
@@ -64,7 +68,7 @@ locals {
             }
           },
           {
-            name = "LIMITS_MEMORY"
+            name       = "LIMITS_MEMORY"
             value_from = {
               resource_field_ref = {
                 resource = "limits.memory"
@@ -100,7 +104,7 @@ locals {
             name  = "path.data"
             value = "/data/$(POD_NAME)"
           },
-          ], var.secret != null ? [
+        ], var.secret != null ? [
           {
             name  = "xpack.security.enabled"
             value = "false"
@@ -163,12 +167,20 @@ locals {
         }
 
         volume_mounts = concat(
-          [
+          var.storage != null ? [
             {
               name       = var.volume_claim_template_name
               mount_path = var.mount_path
             },
-          ],
+          ] : [],
+          var.configmap != null ? [
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "${var.configmap_mount_path}/${k}"
+              sub_path   = k
+            }
+          ] : [],
           var.secret != null ? [
             for k, v in var.secret.data :
             {
@@ -177,6 +189,7 @@ locals {
               sub_path   = k
             }
           ] : [],
+          [], //hack: without this, sub_path above stops working
         )
       },
     ]
@@ -187,39 +200,85 @@ locals {
         image = var.image
 
         command = [
-          "sh",
+          "bash",
           "-cx",
           <<-EOF
-          chown elasticsearch /data
+          sysctl -w vm.max_map_count=262144
+          ulimit -l unlimited
+          mkdir -p ${var.mount_path}/$POD_NAME
+          chown -R elasticsearch ${var.mount_path}
           EOF
         ]
+        env = concat([
+          {
+            name       = "POD_NAME"
+            value_from = {
+              field_ref = {
+                field_path = "metadata.name"
+              }
+            }
+          },
+        ])
 
         security_context = {
           run_asuser = "0"
         }
 
-        volume_mounts = [
+        volume_mounts = var.storage != null ? [
           {
             name       = var.volume_claim_template_name
-            mount_path = "/data"
+            mount_path = var.mount_path
           },
-        ]
+        ] : []
       },
     ]
 
-    node_selector = var.node_selector
-
-    volumes = var.secret != null ? [
-      {
-        name = "secret"
-
-        secret = {
-          secret_name = var.secret.metadata[0].name
-        }
+    affinity = {
+      pod_anti_affinity = {
+        required_during_scheduling_ignored_during_execution = [
+          {
+            label_selector = {
+              match_expressions = [
+                {
+                  key      = "name"
+                  operator = "In"
+                  values   = [var.name]
+                }
+              ]
+            }
+            topology_key = "kubernetes.io/hostname"
+          }
+        ]
       }
-    ] : []
+    }
 
-    volume_claim_templates = [
+    image_pull_secrets   = var.image_pull_secrets
+    node_selector        = var.node_selector
+    service_account_name = var.service_account_name
+
+    volumes = concat(
+      var.configmap != null ? [
+        {
+          name = "config"
+
+          config_map = {
+            name = var.configmap.metadata[0].name
+          }
+        }
+      ] : [],
+      var.secret != null ? [
+        {
+          name = "secret"
+
+          secret = {
+            secret_name = var.secret.metadata[0].name
+          }
+        }
+      ] : [],
+      [], //hack: without this, sub_path above stops working
+    )
+
+    volume_claim_templates = var.storage != null ? [
       {
         name               = var.volume_claim_template_name
         storage_class_name = var.storage_class
@@ -231,7 +290,7 @@ locals {
           }
         }
       }
-    ]
+    ] : []
   }
 }
 

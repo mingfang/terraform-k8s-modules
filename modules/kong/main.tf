@@ -24,14 +24,14 @@ locals {
 
     containers = [
       {
-        name    = var.name
+        name    = "kong"
         image   = var.image
         command = var.command
         args    = var.args
 
         env = concat([
           {
-            name = "POD_NAME"
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -39,7 +39,7 @@ locals {
             }
           },
           {
-            name = "POD_IP"
+            name       = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -49,6 +49,14 @@ locals {
         ], var.env, local.computed_env)
 
         env_from = var.env_from
+
+        lifecycle = var.post_start_command  != null ? {
+          post_start = {
+            exec = {
+              command = var.post_start_command
+            }
+          }
+        } : null
 
         resources = var.resources
 
@@ -60,12 +68,12 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "${var.configmap_mount_path}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )
@@ -78,8 +86,8 @@ locals {
         image = var.image
 
         command = [
-          "sh",
-          "-cx",
+          "bash",
+          "-c",
           "chown 1000 ${var.mount_path}"
         ]
 

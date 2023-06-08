@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.34.4"
+  default = "cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.35.0"
 }
 
 variable "registrar_image" {
@@ -92,7 +92,7 @@ variable "configmap_mount_path" {
 
 variable "post_start_command" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "pvc" {

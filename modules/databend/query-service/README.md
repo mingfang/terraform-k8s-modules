@@ -5,7 +5,7 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `META_ADDRESS` (required)
+* `META_ENDPOINTS` (required)
 * `annotations` (default `{}`)
 * `args` (default `[]`)
 * `command` (default `["/databend-query"]`)

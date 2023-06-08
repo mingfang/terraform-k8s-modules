@@ -91,6 +91,7 @@ module "windmill-worker" {
     BASE_INTERNAL_URL = "http://${module.windmill-server.name}:${module.windmill-server.ports.0.port}"
     RUST_LOG          = "info"
     NUM_WORKERS       = "1"
+    TIMEOUT           = "99999"
     DISABLE_SERVER    = "true"
     KEEP_JOB_DIR      = "false"
     METRICS_ADDR      = "false"

@@ -13,7 +13,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"localstack/localstack"`)
+* `image` (default `"localstack/localstack:1.3.1"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"localstack"`)
 * `namespace` (required)
@@ -26,6 +26,7 @@ Provider Requirements:
 * `service_account_name` (default `null`)
 
 ## Output Values
+* `ENDPOINT_URL`
 * `deployment`
 * `name`
 * `ports`

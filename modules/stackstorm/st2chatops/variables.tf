@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "stackstorm/st2chatops:latest"
+  default = "stackstorm/st2chatops:3.6.0"
 }
 
 variable "env" {

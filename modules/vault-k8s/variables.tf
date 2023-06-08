@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "hashicorp/vault-k8s:0.16.0"
+  default = "hashicorp/vault-k8s:1.1.0"
 }
 
 variable "env" {

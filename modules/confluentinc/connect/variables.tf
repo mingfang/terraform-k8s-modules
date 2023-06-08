@@ -2,6 +2,10 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable image {
+  default = "confluentinc/cp-kafka-connect:6.2.4"
+}
+
 variable "replicas" {
   default = 1
 }
@@ -19,10 +23,6 @@ variable ports {
   ]
 }
 
-variable image {
-  default = "confluentinc/cp-kafka-connect:6.0.0"
-}
-
 variable "env" {
   default = []
 }
@@ -35,8 +35,27 @@ variable "node_selector" {
   default = {}
 }
 
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "64Mi"
+    }
+  }
+}
+
 variable "overrides" {
   default = {}
+}
+
+variable "configmap" {
+  default = null
+  description = "keys are mounted to /etc/kafka"
+}
+
+variable "pvc" {
+  default = null
+  description = "install plugins into this volume"
 }
 
 variable CONNECT_BOOTSTRAP_SERVERS {}
@@ -62,5 +81,10 @@ variable "CONNECT_STATUS_STORAGE_REPLICATION_FACTOR" {
 }
 
 variable "CONNECT_PLUGIN_PATH" {
-  default = "/home/appuser/plugins"
+  default = "/usr/share/confluent-hub-components"
+}
+
+variable "plugins" {
+  default = []
+  description = "install list of confluent-hub plugins"
 }

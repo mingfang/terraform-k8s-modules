@@ -9,7 +9,7 @@ Provider Requirements:
 * `MILVUS_URL` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"zilliz/attu:v2.0.5"`)
+* `image` (default `"zilliz/attu:v2.1.1"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

@@ -6,7 +6,8 @@ resource "k8s_core_v1_namespace" "this" {
 
 locals {
   #  S3_ENDPOINT = "http://localstack.localstack-example:4566"
-  S3_ENDPOINT = "http://s3-gateway.minio-example:9000"
+#  S3_ENDPOINT = "http://s3-gateway.minio-example:9000"
+  S3_ENDPOINT = ""
   BUCKET_NAME = "rebelsoft-neon-example"
 }
 
@@ -73,7 +74,7 @@ module "compute" {
   name      = "postgres"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-  image = "registry.rebelsoft.com/compute-node-v15:latest"
+#  image = "registry.rebelsoft.com/compute-node-v15:latest"
 
   env_map = {
     PGPASSWORD        = "cloud_admin"
@@ -90,6 +91,24 @@ module "compute" {
     -C "postgresql://cloud_admin@localhost:5432/postgres"  \
     -b /usr/local/bin/postgres \
     -S /config/spec.json
+    EOF
+  ]
+
+  post_start_command = [
+    "bash",
+    "-c",
+    <<-EOF
+    until pg_isready; do
+      echo 'Waiting to start...'
+      sleep 5
+    done
+
+    cd /config
+    shopt -s nullglob
+    for sql in {0,9}*.sql; do
+        echo "$0: running $sql"
+        psql -U cloud_admin -d postgres -v ON_ERROR_STOP=0 -f "$sql"
+    done
     EOF
   ]
 }

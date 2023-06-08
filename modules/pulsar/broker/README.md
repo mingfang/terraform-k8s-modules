@@ -11,7 +11,7 @@ Provider Requirements:
 * `clusterName` (default `"local"`)
 * `configurationStoreServers` (required)
 * `functionsWorkerEnabled` (default `true`)
-* `image` (default `"apachepulsar/pulsar-all:latest"`)
+* `image` (default `"apachepulsar/pulsar-all:2.10.0"`)
 * `managedLedgerDefaultAckQuorum` (default `1`)
 * `managedLedgerDefaultEnsembleSize` (default `1`)
 * `managedLedgerDefaultWriteQuorum` (default `1`)

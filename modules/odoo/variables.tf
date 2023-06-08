@@ -7,7 +7,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "odoo"
+  default = "odoo:14.0"
 }
 
 variable "ports" {

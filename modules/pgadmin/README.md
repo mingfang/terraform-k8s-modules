@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"dpage/pgadmin4:6.19"`)
+* `image` (default `"dpage/pgadmin4:7.3"`)
 * `mount_path` (default `"/var/lib/pgadmin"`): pvc mount path
 * `name` (default `"pgadmin"`)
 * `namespace` (required)

@@ -86,7 +86,7 @@ locals {
         image = var.image
 
         command = [
-          "bash",
+          "sh",
           "-c",
           "chown pgadmin ${var.mount_path}"
         ]

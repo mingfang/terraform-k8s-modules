@@ -161,6 +161,7 @@ locals {
           capabilities = {
             add = [
               "IPC_LOCK",
+              "SYS_RESOURCE",
             ]
           }
           privileged = true

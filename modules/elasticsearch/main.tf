@@ -221,6 +221,7 @@ locals {
         ])
 
         security_context = {
+          privileged = true
           run_asuser = "0"
         }
 

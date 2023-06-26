@@ -42,6 +42,8 @@ locals {
           "bash",
           "-c",
           <<-EOF
+          sysctl -w vm.max_map_count=262144
+          ulimit -l unlimited
           mkdir -p ${var.mount_path}
           chown elasticsearch ${var.mount_path}
           su elasticsearch

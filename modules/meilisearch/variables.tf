@@ -25,6 +25,16 @@ variable "env" {
   default = []
 }
 
+variable "env_from" {
+  type    = list(object({
+    prefix = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
+  default = []
+}
+
 variable "annotations" {
   default = {}
 }

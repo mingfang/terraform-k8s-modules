@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "jsreport/jsreport:3.10.0-full"
+  default = "jsreport/jsreport:4.1.0-full"
 }
 
 variable "replicas" {

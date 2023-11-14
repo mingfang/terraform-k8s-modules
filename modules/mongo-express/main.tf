@@ -25,6 +25,14 @@ locals {
             name  = "ME_CONFIG_MONGODB_URL"
             value = var.ME_CONFIG_MONGODB_URL
           },
+          {
+            name  = "ME_CONFIG_SITE_SESSIONSECRET"
+            value = "sessionsecret"
+          },
+          {
+            name  = "ME_CONFIG_SITE_COOKIESECRET"
+            value = "cookiesecret"
+          },
         ], var.env)
 
         resources = var.resources

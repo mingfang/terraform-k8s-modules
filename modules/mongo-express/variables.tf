@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "mongo-express"
+  default = "mongo-express:1.0.0-20"
 }
 
 variable "replicas" {

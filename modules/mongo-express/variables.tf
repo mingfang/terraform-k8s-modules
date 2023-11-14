@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "mongo-express:1.0.0-20"
+  default = "registry.rebelsoft.com/mongo-express:latest"
 }
 
 variable "replicas" {

@@ -31,7 +31,7 @@ locals {
 
         liveness_probe = {
           http_get = {
-            path = "/"
+            path = "/status"
             port = var.ports[0].port
           }
           initial_delay_seconds = 30

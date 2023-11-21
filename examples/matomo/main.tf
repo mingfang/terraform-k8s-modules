@@ -13,9 +13,9 @@ module "mysql" {
   storage       = "1Gi"
   replicas      = 1
 
+  MYSQL_ROOT_PASSWORD = "mysql"
   MYSQL_USER          = "matomo"
   MYSQL_PASSWORD      = "matomo"
-  MYSQL_ROOT_PASSWORD = "mysql"
   MYSQL_DATABASE      = "matomo"
 }
 
@@ -40,12 +40,14 @@ module "matomo" {
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
-  MATOMO_DATABASE_HOST     = module.mysql.name
-  MATOMO_DATABASE_DBNAME   = "matomo"
-  MATOMO_DATABASE_USERNAME = "matomo"
-  MATOMO_DATABASE_PASSWORD = "matomo"
+  env_map = {
+    MATOMO_DATABASE_HOST     = module.mysql.name
+    MATOMO_DATABASE_DBNAME   = "matomo"
+    MATOMO_DATABASE_USERNAME = "matomo"
+    MATOMO_DATABASE_PASSWORD = "matomo"
+  }
 
-  pvc_name = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
+  pvc = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {

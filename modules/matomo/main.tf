@@ -21,6 +21,7 @@ locals {
     )
 
     enable_service_links = false
+    share_process_namespace = true
 
     containers = concat([
       {
@@ -75,9 +76,28 @@ locals {
               sub_path   = k
             }
           ] : [],
-          [for v in var.extra_volumes: v.volume]
+          [for v in var.extra_volumes : v.volume]
         )
       },
+      {
+        name    = "jobs"
+        image   = var.image
+        command = [
+          "bash",
+          "-c",
+          <<-EOF
+          #requires share_process_namespace=true
+          su www-data -s /bin/bash
+          while /bin/true; do
+            echo "sleeping..."
+            sleep 60
+            PID=$(pgrep apache2 | head -1)
+            cd /proc/$PID/root/var/www/html
+            ./console scheduled-tasks:run
+          done
+          EOF
+        ]
+      }
     ], var.sidecars)
 
     init_containers = var.pvc != null ? [
@@ -123,7 +143,7 @@ locals {
       }
     }
 
-    image_pull_secrets = var.image_pull_secrets
+    image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
     service_account_name = var.service_account_name
 
@@ -146,7 +166,7 @@ locals {
           }
         }
       ] : [],
-      [for v in var.extra_volumes: v.volume]
+      [for v in var.extra_volumes : v.volume]
     )
   }
 }

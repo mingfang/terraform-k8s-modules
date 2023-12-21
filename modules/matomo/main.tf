@@ -87,14 +87,13 @@ locals {
           "-c",
           <<-EOF
           #requires share_process_namespace=true
-          su www-data -s /bin/bash
           while /bin/true; do
             echo "sleeping..."
             sleep 60
             PID=$(pgrep apache2 | head -1)
             cd /proc/$PID/root/var/www/html
-            ./console tagmanager:regenerate-released-containers
-            ./console scheduled-tasks:run
+            su www-data -s /bin/bash -c "./console scheduled-tasks:run"
+            su www-data -s /bin/bash -c "./console tagmanager:regenerate-released-containers"
           done
           EOF
         ]

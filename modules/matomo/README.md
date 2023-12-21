@@ -5,19 +5,31 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `MATOMO_DATABASE_DBNAME` (default `null`)
-* `MATOMO_DATABASE_HOST` (required)
-* `MATOMO_DATABASE_PASSWORD` (required)
-* `MATOMO_DATABASE_USERNAME` (required)
 * `annotations` (default `{}`)
+* `args` (default `[]`)
+* `command` (default `[]`)
+* `configmap` (default `null`)
+* `configmap_mount_path` (default `"/config"`)
 * `env` (default `[]`)
-* `image` (default `"matomo:3.14.1"`)
-* `name` (required)
+* `env_file` (default `null`)
+* `env_from` (default `[]`)
+* `env_map` (default `{}`)
+* `extra_volumes` (default `[]`)
+* `image` (default `"matomo:4.15.1"`)
+* `image_pull_secrets` (default `[]`)
+* `name` (default `"matomo"`)
 * `namespace` (required)
+* `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"http","port":80}]`)
-* `pvc_name` (required)
+* `post_start_command` (default `null`)
+* `pvc` (default `null`)
+* `pvc_mount_path` (default `"/var/www/html/config"`): pvc mount path
+* `pvc_user` (default `"www-data:www-data"`)
 * `replicas` (default `1`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
+* `service_account_name` (default `null`)
+* `sidecars` (default `[]`)
 
 ## Output Values
 * `deployment`

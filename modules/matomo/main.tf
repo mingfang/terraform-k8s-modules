@@ -93,6 +93,7 @@ locals {
             sleep 60
             PID=$(pgrep apache2 | head -1)
             cd /proc/$PID/root/var/www/html
+            ./console tagmanager:regenerate-released-containers
             ./console scheduled-tasks:run
           done
           EOF

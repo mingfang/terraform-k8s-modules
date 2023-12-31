@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "citusdata/citus:11.1.4"
+  default = "citusdata/citus:12.1"
 }
 
 variable "env" {

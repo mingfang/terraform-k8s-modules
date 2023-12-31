@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"citusdata/citus:11.1.4"`)
+* `image` (default `"citusdata/citus:12.1"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

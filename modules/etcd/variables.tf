@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable "image" {
-  default = "quay.io/coreos/etcd:v3.5.0"
+  default = "quay.io/coreos/etcd:v3.5.11"
 }
 
 variable "replicas" {

@@ -13,7 +13,7 @@ module "redpanda" {
   storage       = "1Gi"
   replicas      = 4
 
-  additional_args = join(" ", [
+  args = join(" ", [
     "--set redpanda.enable_transactions=true",
     "--set redpanda.enable_idempotence=true",
     "--set redpanda.auto_create_topics_enabled=true",
@@ -24,14 +24,14 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "redpanda" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-redpanda.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.redpanda.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${var.namespace}-redpanda"
+      host = var.namespace
       http {
         paths {
           path = "/"
@@ -72,14 +72,14 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "kowl" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-kowl.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "kowl-${var.namespace}.*"
     }
     name      = module.kowl.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${var.namespace}-kowl"
+      host = "kowl-${var.namespace}"
       http {
         paths {
           path = "/"

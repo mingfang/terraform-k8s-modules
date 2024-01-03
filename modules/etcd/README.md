@@ -10,7 +10,7 @@ Provider Requirements:
 * `ETCD_QUOTA_BACKEND_BYTES` (default `"4294967296"`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"quay.io/coreos/etcd:v3.5.0"`)
+* `image` (default `"quay.io/coreos/etcd:v3.5.11"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
+    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -22,17 +22,16 @@ locals {
 
     enable_service_links = false
 
-    containers = [
+    containers = concat([
       {
-        name    = var.name
+        name    = "ingestion"
         image   = var.image
         command = var.command
         args    = var.args
 
         env = concat([
           {
-            name = "POD_NAME"
-
+            name       = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -40,75 +39,79 @@ locals {
             }
           },
           {
-            name = "POD_IP"
-
+            name       = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
               }
             }
           },
-          {
-            name  = "AIRFLOW__OPENMETADATA_AIRFLOW_APIS__DAG_GENERATED_CONFIGS"
-            value = var.mount_path
-
-          },
-          {
-            name  = "AIRFLOW__API__AUTH_BACKENDS"
-            value = "airflow.api.auth.backend.basic_auth"
-          },
-          {
-            name  = "AIRFLOW__CORE__EXECUTOR"
-            value = "LocalExecutor"
-          },
         ], var.env, local.computed_env)
 
         env_from = var.env_from
 
+        lifecycle = var.post_start_command  != null ? {
+          post_start = {
+            exec = {
+              command = var.post_start_command
+            }
+          }
+        } : null
+
         resources = var.resources
 
         volume_mounts = concat(
-          var.pvc != null ? [
+          [
+            for pvc in var.pvcs :
             {
-              name       = "data"
-              mount_path = var.mount_path
-            },
-          ] : [],
+              name       = pvc.name
+              mount_path = pvc.mount_path
+            }
+          ],
+          [
+            for volume in var.volumes : {
+            name       = volume.name
+            mount_path = volume.mount_path
+          }
+          ],
           var.configmap != null ? [
             for k, v in var.configmap.data :
             {
               name       = "config"
-              mount_path = "/config/${var.name}/${k}"
+              mount_path = "${var.configmap_mount_path}/${k}"
               sub_path   = k
             }
           ] : [],
-          [], //hack: without this, sub_path above stops working
         )
       },
-    ]
+    ], var.sidecars)
 
-    init_containers = var.pvc != null ? [
+    init_containers = length(var.pvcs) > 0 ? [
       {
         name  = "init"
         image = var.image
 
-        command = [
-          "sh",
-          "-cx",
-          "chown airflow ${var.mount_path}"
-        ]
+        command = concat(
+          [
+            "bash",
+            "-c",
+            join(" &&", [for pvc in var.pvcs : "chown ${var.pvc_user} ${pvc.mount_path}"])
+          ],
+
+        )
 
         security_context = {
           run_asuser = "0"
         }
 
         volume_mounts = [
+          for pvc in var.pvcs :
           {
-            name       = "data"
-            mount_path = var.mount_path
-          },
+            name       = pvc.name
+            mount_path = pvc.mount_path
+          }
         ]
-      }
+      },
     ] : []
 
     affinity = {
@@ -130,23 +133,24 @@ locals {
       }
     }
 
+    image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
     service_account_name = var.service_account_name
 
     volumes = concat(
-      var.pvc != null ? [
+      [
+        for pvc in var.pvcs :
         {
-          name = "data"
-
+          name                    = pvc.name
           persistent_volume_claim = {
-            claim_name = var.pvc
+            claim_name = pvc.name
           }
         }
-      ] : [],
+      ],
+      [for volume in var.volumes : volume],
       var.configmap != null ? [
         {
-          name = "config"
-
+          name       = "config"
           config_map = {
             name = var.configmap.metadata[0].name
           }

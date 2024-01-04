@@ -1,52 +1,70 @@
 variable "name" {
+  type    = string
   default = "server"
 }
 
-variable "namespace" {}
+variable "namespace" {
+  type = string
+}
 
 variable "image" {
-  default = "openmetadata/server:1.0.1"
+  type    = string
+  default = "openmetadata/server:1.2.3"
 }
 
 variable "replicas" {
+  type    = number
   default = 1
 }
 
 variable "ports" {
-  default = [
-    {
-      name = "port1"
-      port = 8585
-    },
-    {
-      name = "port2"
-      port = 8586
-    },
-  ]
+  type    = list
+  default = [{ name = "tcp", port = 8585 }, { name = "tcp2", port = 8586 }]
 }
 
 variable "command" {
-  default = null
+  type    = list(string)
+  default = ["bash", "-cx", "./bootstrap/bootstrap_storage.sh migrate-all && /openmetadata-start.sh"]
 }
+
 variable "args" {
+  type    = list(string)
   default = []
 }
 
 variable "env" {
+  type    = list(object({ name = string, value = string }))
   default = []
 }
+
 variable "env_map" {
+  type    = map
   default = {}
 }
+
 variable "env_file" {
+  type    = string
   default = null
 }
+
 variable "env_from" {
+  type    = list(object({
+    prefix = string,
+    secret_ref = object({
+      name = string,
+    })
+  }))
   default = []
 }
 
 variable "annotations" {
+  type    = map
   default = {}
+}
+
+variable "image_pull_secrets" {
+  type    = list(object({ name = string, value = string }))
+  default = []
 }
 
 variable "node_selector" {
@@ -62,9 +80,12 @@ variable "resources" {
   }
 }
 
+
 variable "service_account_name" {
+  type    = string
   default = null
 }
+
 
 variable "overrides" {
   default = {}
@@ -74,12 +95,39 @@ variable "configmap" {
   default = null
 }
 
-variable "pvc" {
+variable "configmap_mount_path" {
+  type = string
+  default = "/config"
+}
+
+variable "post_start_command" {
+  type    = list(string)
   default = null
 }
 
-variable "mount_path" {
-  default     = "/data"
-  description = "pvc mount path"
+variable "pvcs" {
+  type = list(object({
+    name = string
+    mount_path = string
+  }))
+  default = []
 }
 
+variable "pvc_user" {
+  type    = string
+  default = "1000"
+}
+
+
+variable "sidecars" {
+  default = []
+}
+
+variable "volumes" {
+  type = list(object({
+      name = string
+      empty_dir = object({})
+      mount_path = string
+  }))
+  default = []
+}

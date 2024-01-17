@@ -9,7 +9,7 @@ variable "replicas" {
 }
 
 variable "image" {
-  default = "k8s.gcr.io/autoscaling/cluster-autoscaler:v1.25.0"
+  default = "registry.k8s.io/autoscaling/cluster-autoscaler:v1.28.2"
 }
 
 variable "env" {

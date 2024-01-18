@@ -22,6 +22,7 @@ locals {
           "--namespace=$(NAMESPACE)",
           "--cordon-node-before-terminating=${var.cordon-node-before-terminating}",
           "--ignore-daemonsets-utilization=${var.ignore-daemonsets-utilization}",
+          "--scale-down-unneeded-time=${var.scale-down-unneeded-time}",
         ]
 
         env = concat([

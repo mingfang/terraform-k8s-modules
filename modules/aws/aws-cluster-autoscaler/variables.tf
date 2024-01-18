@@ -51,3 +51,7 @@ variable "cordon-node-before-terminating" {
 variable "ignore-daemonsets-utilization" {
   default = true
 }
+
+variable "scale-down-unneeded-time" {
+  default = "1m0s"
+}

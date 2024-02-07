@@ -29,6 +29,13 @@ locals {
         env_from = var.env_from
 
         volume_mounts = concat(
+          [
+            for pvc in var.pvcs :
+            {
+              name       = pvc.name
+              mount_path = pvc.mount_path
+            }
+          ],
           var.volume_mounts,
           var.configmap != null ? [
             for k, v in var.configmap.data :
@@ -54,6 +61,15 @@ locals {
     backoff_limit  = var.backoff_limit
     restart_policy = var.restart_policy
     volumes        = concat(
+      [
+        for pvc in var.pvcs :
+        {
+          name                    = pvc.name
+          persistent_volume_claim = {
+            claim_name = pvc.name
+          }
+        }
+      ],
       var.volumes,
       var.configmap != null ? [
         {

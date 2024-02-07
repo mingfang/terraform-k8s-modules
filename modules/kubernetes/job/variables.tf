@@ -63,6 +63,14 @@ variable "volume_mounts" {
   default = []
 }
 
+variable "pvcs" {
+  type = list(object({
+    name = string
+    mount_path = string
+  }))
+  default = []
+}
+
 variable "overrides" {
   default = {}
 }

@@ -17,6 +17,7 @@ Provider Requirements:
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)
+* `pvcs` (default `[]`)
 * `restart_policy` (default `"OnFailure"`)
 * `secret` (default `null`)
 * `volume_mounts` (default `[]`)

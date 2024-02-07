@@ -4,49 +4,74 @@ resource "k8s_core_v1_namespace" "this" {
   }
 }
 
-
-module "core" {
-  source    = "../../modules/neo4j/core"
-  name      = "${var.name}-core"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = var.replicas
-
-  storage       = "1Gi"
-  storage_class = var.storage_class_name
-
-  NEO4J_ACCEPT_LICENSE_AGREEMENT = "yes"
-  //  image = "neo4j:3.5.22"
-}
-
-/*
-module "read-replica" {
-  source = "../../modules/neo4j/read-replica"
-  name = "${var.name}-read-replica"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+locals {
   replicas = 3
-
-  NEO4J_ACCEPT_LICENSE_AGREEMENT = "yes"
-  NEO4J_causal__clustering_initial__discovery__members = module.core.discovery_members
+  servers  = join(",",
+    [
+      for i in range(0, local.replicas) :
+      "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:5000"
+    ]
+  )
 }
-*/
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "core" {
+module "neo4j" {
+  source    = "../../modules/neo4j"
+  name      = var.name
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  image    = "neo4j:5.16.0-enterprise"
+  replicas = local.replicas
+
+  env_map = {
+    NEO4J_AUTH                            = "none"
+    NEO4J_server_default__listen__address = "0.0.0.0"
+
+    /* enterprise only */
+
+    NEO4J_ACCEPT_LICENSE_AGREEMENT                = "eval"
+    NEO4J_initial_dbms_default__primaries__count  = local.replicas
+    NEO4J_dbms_cluster_discovery_endpoints        = local.servers
+    NEO4J_server_default__advertised__address     = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local"
+    NEO4J_server_discovery_advertised__address    = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local:5000"
+    NEO4J_server_cluster_advertised__address      = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local:6000"
+    NEO4J_server_cluster_raft_advertised__address = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local:7000"
+  }
+}
+
+
+/* When connecting, the hostname must end in :443, otherwise it will default to port 7474 */
+
+module "neo4j-proxy" {
+  source    = "../../modules/neo4j/proxy"
+  name      = "neo4j-proxy"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+
+  env_map = {
+    SERVICE_NAME = "neo4j"
+    NAMESPACE    = var.namespace
+    DOMAIN       = "cluster.local"
+    PORT         = 8080
+  }
+}
+
+resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "neo4j-core.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
     }
-    name      = module.core.name
+    name      = var.namespace
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = module.core.name
+      host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.core.name
-            service_port = 7474
+            service_name = module.neo4j-proxy.name
+            service_port = module.neo4j-proxy.ports[0].port
           }
           path = "/"
         }
@@ -54,55 +79,3 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "core" {
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "bolt" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "neo4j-bolt.*"
-    }
-    name      = "${module.core.name}-bolt"
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
-  }
-  spec {
-    rules {
-      host = "${module.core.name}-bolt"
-      http {
-        paths {
-          backend {
-            service_name = module.core.name
-            service_port = 7687
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}
-
-/*
-resource "k8s_networking_k8s_io_v1beta1_ingress" "read-replica" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "neo4j-read-replica.*"
-    }
-    name      = module.read-replica.name
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
-  }
-  spec {
-    rules {
-      host = module.read-replica.name
-      http {
-        paths {
-          backend {
-            service_name = module.read-replica.name
-            service_port = 7474
-          }
-          path = "/"
-        }
-      }
-    }
-  }
-}
-*/
-

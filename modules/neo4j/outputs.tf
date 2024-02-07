@@ -13,7 +13,3 @@ output "service" {
 output "statefulset" {
   value = module.statefulset-service.statefulset
 }
-
-output "discovery_members" {
-  value = local.discovery-members
-}

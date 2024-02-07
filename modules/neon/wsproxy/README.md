@@ -22,7 +22,7 @@ Provider Requirements:
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":80}]`)
-* `post_start_command` (default `[]`)
+* `post_start_command` (default `null`)
 * `pvc` (default `null`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)

@@ -102,7 +102,7 @@ variable "configmap_mount_path" {
 
 variable "post_start_command" {
   type    = list(string)
-  default = []
+  default = null
 }
 
 variable "pvc" {

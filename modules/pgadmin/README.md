@@ -14,18 +14,21 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"dpage/pgadmin4:7.3"`)
-* `mount_path` (default `"/var/lib/pgadmin"`): pvc mount path
+* `image` (default `"dpage/pgadmin4:8.4"`)
+* `image_pull_secrets` (default `[]`)
 * `name` (default `"pgadmin"`)
 * `namespace` (required)
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
-* `ports` (default `[{"name":"http","port":80}]`)
+* `ports` (default `[{"name":"tcp","port":80}]`)
 * `post_start_command` (default `null`)
-* `pvc` (default `null`)
+* `pvc_user` (default `"1000"`)
+* `pvcs` (default `[]`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 * `service_account_name` (default `null`)
+* `sidecars` (default `[]`)
+* `volumes` (default `[]`)
 
 ## Output Values
 * `deployment`

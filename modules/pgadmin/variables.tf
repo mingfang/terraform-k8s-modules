@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "dpage/pgadmin4:7.3"
+  default = "dpage/pgadmin4:8.4"
 }
 
 variable "replicas" {
@@ -17,14 +17,9 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   type    = list
-  default = [
-    {
-      name = "http"
-      port = 80
-    },
-  ]
+  default = [{ name = "tcp", port = 80 }]
 }
 
 variable "command" {
@@ -67,6 +62,11 @@ variable "annotations" {
   default = {}
 }
 
+variable "image_pull_secrets" {
+  type    = list(object({ name = string, value = string }))
+  default = []
+}
+
 variable "node_selector" {
   default = {}
 }
@@ -103,13 +103,28 @@ variable "post_start_command" {
   default = null
 }
 
-variable "pvc" {
-  type    = string
-  default = null
+variable "pvcs" {
+  type = list(object({
+    name = string
+    mount_path = string
+  }))
+  default = []
 }
 
-variable "mount_path" {
+variable "pvc_user" {
   type    = string
-  default = "/var/lib/pgadmin"
-  description = "pvc mount path"
+  default = "1000"
+}
+
+variable "volumes" {
+  type = list(object({
+      name = string
+      empty_dir = object({})
+      mount_path = string
+  }))
+  default = []
+}
+
+variable "sidecars" {
+default = []
 }

@@ -22,7 +22,7 @@ locals {
 
     enable_service_links = false
 
-    containers = [
+    containers = concat([
       {
         name    = "pgadmin"
         image   = var.image
@@ -61,12 +61,19 @@ locals {
         resources = var.resources
 
         volume_mounts = concat(
-          var.pvc != null ? [
+          [
+            for pvc in var.pvcs :
             {
-              name       = "data"
-              mount_path = var.mount_path
-            },
-          ] : [],
+              name       = pvc.name
+              mount_path = pvc.mount_path
+            }
+          ],
+          [
+            for volume in var.volumes : {
+            name       = volume.name
+            mount_path = volume.mount_path
+          }
+          ],
           var.configmap != null ? [
             for k, v in var.configmap.data :
             {
@@ -75,33 +82,35 @@ locals {
               sub_path   = k
             }
           ] : [],
-          [], //hack: without this, sub_path above stops working
         )
       },
-    ]
+    ], var.sidecars)
 
-    init_containers = var.pvc != null ? [
+    init_containers = length(var.pvcs) > 0 && length(var.pvc_user) > 0 ? [
       {
         name  = "init"
         image = var.image
 
-        command = [
-          "sh",
-          "-c",
-          "chown pgadmin ${var.mount_path}"
-        ]
+        command = concat(
+          [
+            "sh",
+            "-cx",
+            join(" &&", [for pvc in var.pvcs : "chown ${var.pvc_user} ${pvc.mount_path}"])
+          ],
+        )
 
         security_context = {
           run_asuser = "0"
         }
 
         volume_mounts = [
+          for pvc in var.pvcs :
           {
-            name       = "data"
-            mount_path = "/var/lib/pgadmin"
-          },
+            name       = pvc.name
+            mount_path = pvc.mount_path
+          }
         ]
-      }
+      },
     ] : []
 
     affinity = {
@@ -123,23 +132,24 @@ locals {
       }
     }
 
+    image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
     service_account_name = var.service_account_name
 
     volumes = concat(
-      var.pvc != null ? [
+      [
+        for pvc in var.pvcs :
         {
-          name = "data"
-
+          name                    = pvc.name
           persistent_volume_claim = {
-            claim_name = var.pvc
+            claim_name = pvc.name
           }
         }
-      ] : [],
+      ],
+      [for volume in var.volumes : volume],
       var.configmap != null ? [
         {
-          name = "config"
-
+          name       = "config"
           config_map = {
             name = var.configmap.metadata[0].name
           }

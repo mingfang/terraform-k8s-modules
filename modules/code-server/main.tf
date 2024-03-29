@@ -36,12 +36,20 @@ locals {
 
         resources = var.resources
 
-        volume_mounts = var.pvc != null ? [
-          {
-            name       = "data"
-            mount_path = "/home/coder"
-          },
-        ] : []
+        volume_mounts = concat(
+            var.pvc != null ? [
+            {
+              name       = "data"
+              mount_path = "/home/coder"
+            },
+          ] : [],
+          [
+            for i, pvc in var.extra_pvcs : {
+              name = "extra-pvc-${i}"
+              mount_path = "/mnt/${pvc}"
+            }
+          ]
+        )
       }
     ], var.additional_containers)
 
@@ -73,14 +81,24 @@ locals {
 
     node_selector = var.node_selector
 
-    volumes = var.pvc != null ? [
-      {
-        name = "data"
-        persistent_volume_claim = {
-          claim_name = var.pvc
+    volumes = concat(
+      var.pvc != null ? [
+        {
+          name = "data"
+          persistent_volume_claim = {
+            claim_name = var.pvc
+          }
+        },
+      ] : [],
+      [
+        for i, pvc in var.extra_pvcs: {
+          name = "extra-pvc-${i}"
+          persistent_volume_claim = {
+            claim_name = pvc
+          }
         }
-      },
-    ] : []
+      ]
+    )
   }
 }
 

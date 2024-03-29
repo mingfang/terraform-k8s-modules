@@ -51,3 +51,7 @@ variable "additional_containers" {
 variable "pvc" {
   default = null
 }
+
+variable "extra_pvcs" {
+  default = []
+}

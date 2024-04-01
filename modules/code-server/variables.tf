@@ -48,7 +48,7 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list(object({
+  type = list(object({
     prefix = string,
     secret_ref = object({
       name = string,
@@ -96,7 +96,7 @@ variable "configmap" {
 }
 
 variable "configmap_mount_path" {
-  type = string
+  type    = string
   default = "/config"
 }
 
@@ -107,7 +107,7 @@ variable "post_start_command" {
 
 variable "pvcs" {
   type = list(object({
-    name = string
+    name       = string
     mount_path = string
   }))
   default = []
@@ -120,8 +120,8 @@ variable "pvc_user" {
 
 variable "volumes" {
   type = list(object({
-    name = string
-    empty_dir = object({})
+    name       = string
+    empty_dir  = object({})
     mount_path = string
   }))
   default = []
@@ -137,18 +137,18 @@ variable "storage" {
 }
 
 variable "storage_class" {
-  type=string
+  type    = string
   default = null
 }
 
 variable "volume_claim_template_name" {
-  type=string
+  type    = string
   default = "pvc"
 }
 
 variable "mount_path" {
-  type    = string
-  default = "/data"
+  type        = string
+  default     = "/data"
   description = "pvc mount path"
 }
 

@@ -37,7 +37,6 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
 }
 
 // code-server
-
 module "code-server" {
   source    = "../../modules/code-server"
   name      = "code-server"
@@ -47,14 +46,14 @@ module "code-server" {
     {
       name  = "DOCKER_HOST"
       value = "tcp://localhost:2375"
-    }
+    },
   ]
   args = ["--auth=none"]
 
-  additional_containers = [
+  sidecars = [
     {
       name  = "dind"
-      image = "docker:20.10.9-dind"
+      image = "docker:23.0.1-dind"
       args  = ["--insecure-registry=0.0.0.0/0"]
       env = [
         {
@@ -83,7 +82,13 @@ module "code-server" {
     }
   ]
 
-  pvc = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
+  pvcs = [
+    {
+      name       = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
+      mount_path = "/home/coder"
+    },
+  ]
+  pvc_user = "coder"
 }
 
 resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {

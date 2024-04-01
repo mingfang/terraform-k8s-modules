@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.35.0"
+  default = "cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.38.3"
 }
 
 variable "registrar_image" {

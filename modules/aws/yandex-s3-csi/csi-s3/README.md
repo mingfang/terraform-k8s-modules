@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.35.0"`)
+* `image` (default `"cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.38.3"`)
 * `image_pull_secrets` (default `[]`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"csi-s3"`)
@@ -29,6 +29,9 @@ Provider Requirements:
 ## Output Values
 * `daemonset`
 * `name`
+
+## Managed Resources
+* `k8s_storage_k8s_io_v1_csi_driver.this` from `k8s`
 
 ## Child Modules
 * `daemonset` from [../../../../archetypes/daemonset](../../../../archetypes/daemonset)

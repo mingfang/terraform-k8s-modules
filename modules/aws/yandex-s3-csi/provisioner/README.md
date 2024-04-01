@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `annotations` (default `{}`)
 * `command` (default `[]`)
-* `csi_image` (default `"cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.35.0"`)
+* `csi_image` (default `"cr.yandex/crp9ftr22d26age3hulg/csi-s3:0.38.3"`)
 * `env` (default `[]`)
 * `env_file` (default `null`)
 * `env_from` (default `[]`)

@@ -31,6 +31,15 @@ variable "annotations" {
   default = {}
 }
 
+variable "resources" {
+  default = {
+    requests = {
+      cpu    = "100m"
+      memory = "128Mi"
+    }
+  }
+}
+
 variable "overrides" {
   default = {}
 }

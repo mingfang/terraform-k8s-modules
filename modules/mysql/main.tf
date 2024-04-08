@@ -48,6 +48,9 @@ locals {
         ]
       },
     ]
+
+    resources = var.resources
+
     volume_claim_templates = [
       {
         name               = var.volume_claim_template_name

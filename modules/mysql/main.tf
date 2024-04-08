@@ -40,6 +40,8 @@ locals {
           },
         ], var.env)
 
+        resources = var.resources
+
         volume_mounts = [
           {
             name       = var.volume_claim_template_name
@@ -48,8 +50,6 @@ locals {
         ]
       },
     ]
-
-    resources = var.resources
 
     volume_claim_templates = [
       {

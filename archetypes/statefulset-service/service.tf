@@ -49,7 +49,6 @@ resource "k8s_core_v1_service" "this" {
         }
       }
     }
-    topology_keys = contains(keys(local.k8s_core_v1_service_parameters), "topology_keys") ? tolist(local.k8s_core_v1_service_parameters.topology_keys) : null
     type = lookup(local.k8s_core_v1_service_parameters, "type", null)
   }
 

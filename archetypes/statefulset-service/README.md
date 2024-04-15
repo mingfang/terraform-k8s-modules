@@ -17,4 +17,5 @@ Provider Requirements:
 ## Managed Resources
 * `k8s_apps_v1_stateful_set.this` from `k8s`
 * `k8s_core_v1_service.this` from `k8s`
+* `k8s_core_v1_service.this-srv` from `k8s`
 

@@ -167,6 +167,7 @@ locals {
       }
     ]
 
+    host_network         = true
     priority_class_name  = "system-cluster-critical"
     resources            = var.resources
     service_account_name = module.rbac.name

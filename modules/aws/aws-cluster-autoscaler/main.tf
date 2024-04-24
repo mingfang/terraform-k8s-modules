@@ -52,6 +52,7 @@ locals {
       var.node_selector
     )
 
+    host_network         = true
     priority_class_name  = "system-cluster-critical"
     service_account_name = module.rbac.name
 

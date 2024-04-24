@@ -33,19 +33,14 @@ module "rbac" {
     {
       api_groups = [""]
       resources = [
-        "namespaces", "pods", "services", "replicationcontrollers", "persistentvolumeclaims", "persistentvolumes"
+        "namespaces",
+        "pods",
+        "services",
+        "replicationcontrollers",
+        "persistentvolumeclaims",
+        "persistentvolumes",
       ]
       verbs = ["watch", "list", "get"]
-    },
-    {
-      api_groups = ["batch"]
-      resources  = ["jobs", "cronjobs"]
-      verbs      = ["get", "list", "watch"]
-    },
-    {
-      api_groups = ["batch", "extensions"]
-      resources  = ["jobs"]
-      verbs      = ["get", "list", "watch", "patch"]
     },
     {
       api_groups = ["extensions"]
@@ -68,9 +63,9 @@ module "rbac" {
       verbs      = ["watch", "list", "get"]
     },
     {
-      api_groups = [""]
-      resources  = ["configmaps"]
-      verbs      = ["list", "watch"]
+      api_groups = ["batch", "extensions"]
+      resources  = ["jobs"]
+      verbs      = ["get", "list", "watch", "patch"]
     },
     {
       api_groups = ["coordination.k8s.io"]
@@ -82,7 +77,17 @@ module "rbac" {
       resourceNames = ["cluster-autoscaler"]
       resources     = ["leases"]
       verbs         = ["get", "update"]
-    }
+    },
+    {
+      api_groups = [""]
+      resources  = ["configmaps"]
+      verbs      = ["list", "watch"]
+    },
+    {
+      api_groups = ["batch"]
+      resources  = ["jobs", "cronjobs"]
+      verbs      = ["get", "list", "watch"]
+    },
   ]
 
   role_rules = [

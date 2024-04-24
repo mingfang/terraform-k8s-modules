@@ -28,6 +28,11 @@ module "rbac" {
       api_groups = ["apps"]
       resources  = ["daemonsets"]
       verbs      = ["get"]
+    },
+    {
+      api_groups = [""]
+      resources  = ["events"]
+      verbs      = ["create", "patch"]
     }
   ]
   role_rules = [

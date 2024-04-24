@@ -7,7 +7,7 @@ variable "namespace" {
 }
 
 variable "image" {
-  default = "public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.14.0"
+  default = "public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.21.0"
 }
 
 variable "env" {

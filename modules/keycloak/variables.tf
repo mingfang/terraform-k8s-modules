@@ -9,7 +9,7 @@ variable "namespace" {
 
 variable "image" {
   type    = string
-  default = "jboss/keycloak:13.0.1"
+  default = "quay.io/keycloak/keycloak:13.0.1"
 }
 
 variable "replicas" {

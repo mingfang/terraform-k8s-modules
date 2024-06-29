@@ -7,6 +7,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       "app"                        = "cert-manager"
       "app.kubernetes.io/instance" = "cert-manager"
       "app.kubernetes.io/name"     = "cert-manager"
+      "app.kubernetes.io/version"  = "v1.5.1"
     }
     name = "certificaterequests.cert-manager.io"
   }
@@ -47,6 +48,20 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
 
       additional_printer_columns {
         json_path = <<-EOF
+          .status.conditions[?(@.type=="Approved")].status
+          EOF
+        name      = "Approved"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
+          .status.conditions[?(@.type=="Denied")].status
+          EOF
+        name      = "Denied"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
           .status.conditions[?(@.type=="Ready")].status
           EOF
         name      = "Ready"
@@ -55,7 +70,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       additional_printer_columns {
         json_path = ".spec.issuerRef.name"
         name      = "Issuer"
-        priority  = 1
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = ".spec.username"
+        name      = "Requestor"
         type      = "string"
       }
       additional_printer_columns {
@@ -101,6 +120,24 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types.",
                     "type": "string"
                   },
+                  "extra": {
+                    "additionalProperties": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "description": "Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "object"
+                  },
+                  "groups": {
+                    "description": "Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "x-kubernetes-list-type": "atomic"
+                  },
                   "isCA": {
                     "description": "IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.",
                     "type": "boolean"
@@ -125,6 +162,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                       "name"
                     ],
                     "type": "object"
+                  },
+                  "uid": {
+                    "description": "UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "string"
                   },
                   "usages": {
                     "description": "Usages is the set of x509 usages that are requested for the certificate. Defaults to `digital signature` and `key encipherment` if not specified.",
@@ -158,6 +199,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "username": {
+                    "description": "Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -207,7 +252,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).",
                           "type": "string"
                         }
                       },
@@ -244,6 +289,20 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
 
       additional_printer_columns {
         json_path = <<-EOF
+          .status.conditions[?(@.type=="Approved")].status
+          EOF
+        name      = "Approved"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
+          .status.conditions[?(@.type=="Denied")].status
+          EOF
+        name      = "Denied"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
           .status.conditions[?(@.type=="Ready")].status
           EOF
         name      = "Ready"
@@ -252,7 +311,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       additional_printer_columns {
         json_path = ".spec.issuerRef.name"
         name      = "Issuer"
-        priority  = 1
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = ".spec.username"
+        name      = "Requestor"
         type      = "string"
       }
       additional_printer_columns {
@@ -298,6 +361,24 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types.",
                     "type": "string"
                   },
+                  "extra": {
+                    "additionalProperties": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "description": "Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "object"
+                  },
+                  "groups": {
+                    "description": "Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "x-kubernetes-list-type": "atomic"
+                  },
                   "isCA": {
                     "description": "IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.",
                     "type": "boolean"
@@ -322,6 +403,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                       "name"
                     ],
                     "type": "object"
+                  },
+                  "uid": {
+                    "description": "UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "string"
                   },
                   "usages": {
                     "description": "Usages is the set of x509 usages that are requested for the certificate. Defaults to `digital signature` and `key encipherment` if not specified.",
@@ -355,6 +440,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "username": {
+                    "description": "Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -404,7 +493,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).",
                           "type": "string"
                         }
                       },
@@ -441,6 +530,20 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
 
       additional_printer_columns {
         json_path = <<-EOF
+          .status.conditions[?(@.type=="Approved")].status
+          EOF
+        name      = "Approved"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
+          .status.conditions[?(@.type=="Denied")].status
+          EOF
+        name      = "Denied"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
           .status.conditions[?(@.type=="Ready")].status
           EOF
         name      = "Ready"
@@ -449,7 +552,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       additional_printer_columns {
         json_path = ".spec.issuerRef.name"
         name      = "Issuer"
-        priority  = 1
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = ".spec.username"
+        name      = "Requestor"
         type      = "string"
       }
       additional_printer_columns {
@@ -490,6 +597,24 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types.",
                     "type": "string"
                   },
+                  "extra": {
+                    "additionalProperties": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "description": "Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "object"
+                  },
+                  "groups": {
+                    "description": "Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "x-kubernetes-list-type": "atomic"
+                  },
                   "isCA": {
                     "description": "IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.",
                     "type": "boolean"
@@ -518,6 +643,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                   "request": {
                     "description": "The PEM-encoded x509 certificate signing request to be submitted to the CA for signing.",
                     "format": "byte",
+                    "type": "string"
+                  },
+                  "uid": {
+                    "description": "UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
                     "type": "string"
                   },
                   "usages": {
@@ -552,6 +681,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "username": {
+                    "description": "Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -601,7 +734,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).",
                           "type": "string"
                         }
                       },
@@ -641,6 +774,20 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
 
       additional_printer_columns {
         json_path = <<-EOF
+          .status.conditions[?(@.type=="Approved")].status
+          EOF
+        name      = "Approved"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
+          .status.conditions[?(@.type=="Denied")].status
+          EOF
+        name      = "Denied"
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = <<-EOF
           .status.conditions[?(@.type=="Ready")].status
           EOF
         name      = "Ready"
@@ -649,7 +796,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
       additional_printer_columns {
         json_path = ".spec.issuerRef.name"
         name      = "Issuer"
-        priority  = 1
+        type      = "string"
+      }
+      additional_printer_columns {
+        json_path = ".spec.username"
+        name      = "Requestor"
         type      = "string"
       }
       additional_printer_columns {
@@ -690,6 +841,24 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                     "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types.",
                     "type": "string"
                   },
+                  "extra": {
+                    "additionalProperties": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "description": "Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "object"
+                  },
+                  "groups": {
+                    "description": "Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "x-kubernetes-list-type": "atomic"
+                  },
                   "isCA": {
                     "description": "IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.",
                     "type": "boolean"
@@ -718,6 +887,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                   "request": {
                     "description": "The PEM-encoded x509 certificate signing request to be submitted to the CA for signing.",
                     "format": "byte",
+                    "type": "string"
+                  },
+                  "uid": {
+                    "description": "UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
                     "type": "string"
                   },
                   "usages": {
@@ -752,6 +925,10 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "username": {
+                    "description": "Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -801,7 +978,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificatere
                           "type": "string"
                         },
                         "type": {
-                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`).",
+                          "description": "Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).",
                           "type": "string"
                         }
                       },

@@ -7,6 +7,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
       "app"                        = "cert-manager"
       "app.kubernetes.io/instance" = "cert-manager"
       "app.kubernetes.io/name"     = "cert-manager"
+      "app.kubernetes.io/version"  = "v1.5.1"
     }
     name = "certificates.cert-manager.io"
   }
@@ -109,7 +110,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "array"
                   },
                   "duration": {
-                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
                   },
                   "emailSANs": {
@@ -261,12 +262,37 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "object"
                   },
                   "renewBefore": {
-                    "description": "The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
+                  },
+                  "revisionHistoryLimit": {
+                    "description": "revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.",
+                    "format": "int32",
+                    "type": "integer"
                   },
                   "secretName": {
                     "description": "SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.",
                     "type": "string"
+                  },
+                  "secretTemplate": {
+                    "description": "SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292",
+                    "properties": {
+                      "annotations": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Annotations is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      },
+                      "labels": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Labels is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
                   },
                   "subject": {
                     "description": "Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).",
@@ -383,6 +409,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "message": {
                           "description": "Message is a human readable description of the details of the last transition, complementing reason.",
                           "type": "string"
+                        },
+                        "observedGeneration": {
+                          "description": "If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.",
+                          "format": "int64",
+                          "type": "integer"
                         },
                         "reason": {
                           "description": "Reason is a brief machine readable explanation for the condition's last transition.",
@@ -520,7 +551,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "array"
                   },
                   "duration": {
-                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
                   },
                   "emailSANs": {
@@ -665,12 +696,37 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "object"
                   },
                   "renewBefore": {
-                    "description": "The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
+                  },
+                  "revisionHistoryLimit": {
+                    "description": "revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.",
+                    "format": "int32",
+                    "type": "integer"
                   },
                   "secretName": {
                     "description": "SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.",
                     "type": "string"
+                  },
+                  "secretTemplate": {
+                    "description": "SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292",
+                    "properties": {
+                      "annotations": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Annotations is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      },
+                      "labels": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Labels is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
                   },
                   "subject": {
                     "description": "Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).",
@@ -794,6 +850,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "message": {
                           "description": "Message is a human readable description of the details of the last transition, complementing reason.",
                           "type": "string"
+                        },
+                        "observedGeneration": {
+                          "description": "If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.",
+                          "format": "int64",
+                          "type": "integer"
                         },
                         "reason": {
                           "description": "Reason is a brief machine readable explanation for the condition's last transition.",
@@ -931,7 +992,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "array"
                   },
                   "duration": {
-                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
                   },
                   "emailSANs": {
@@ -1076,12 +1137,37 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "object"
                   },
                   "renewBefore": {
-                    "description": "The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
+                  },
+                  "revisionHistoryLimit": {
+                    "description": "revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.",
+                    "format": "int32",
+                    "type": "integer"
                   },
                   "secretName": {
                     "description": "SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.",
                     "type": "string"
+                  },
+                  "secretTemplate": {
+                    "description": "SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292",
+                    "properties": {
+                      "annotations": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Annotations is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      },
+                      "labels": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Labels is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
                   },
                   "subject": {
                     "description": "Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).",
@@ -1205,6 +1291,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "message": {
                           "description": "Message is a human readable description of the details of the last transition, complementing reason.",
                           "type": "string"
+                        },
+                        "observedGeneration": {
+                          "description": "If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.",
+                          "format": "int64",
+                          "type": "integer"
                         },
                         "reason": {
                           "description": "Reason is a brief machine readable explanation for the condition's last transition.",
@@ -1345,7 +1436,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "type": "array"
                   },
                   "duration": {
-                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
                   },
                   "emailAddresses": {
@@ -1463,10 +1554,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                     "description": "Options to control private keys used for the Certificate.",
                     "properties": {
                       "algorithm": {
-                        "description": "Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `RSA` or `ECDSA` If `algorithm` is specified and `size` is not provided, key size of 256 will be used for `ECDSA` key algorithm and key size of 2048 will be used for `RSA` key algorithm.",
+                        "description": "Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `RSA`,`Ed25519` or `ECDSA` If `algorithm` is specified and `size` is not provided, key size of 256 will be used for `ECDSA` key algorithm and key size of 2048 will be used for `RSA` key algorithm. key size is ignored when using the `Ed25519` key algorithm.",
                         "enum": [
                           "RSA",
-                          "ECDSA"
+                          "ECDSA",
+                          "Ed25519"
                         ],
                         "type": "string"
                       },
@@ -1483,19 +1575,44 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "type": "string"
                       },
                       "size": {
-                        "description": "Size is the key bit size of the corresponding private key for this certificate. If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `algorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.",
+                        "description": "Size is the key bit size of the corresponding private key for this certificate. If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `algorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. If `algorithm` is set to `Ed25519`, Size is ignored. No other values are allowed.",
                         "type": "integer"
                       }
                     },
                     "type": "object"
                   },
                   "renewBefore": {
-                    "description": "The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.",
+                    "description": "How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration",
                     "type": "string"
+                  },
+                  "revisionHistoryLimit": {
+                    "description": "revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.",
+                    "format": "int32",
+                    "type": "integer"
                   },
                   "secretName": {
                     "description": "SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.",
                     "type": "string"
+                  },
+                  "secretTemplate": {
+                    "description": "SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292",
+                    "properties": {
+                      "annotations": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Annotations is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      },
+                      "labels": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "Labels is a key value map to be copied to the target Kubernetes Secret.",
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
                   },
                   "subject": {
                     "description": "Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).",
@@ -1619,6 +1736,11 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "certificates_
                         "message": {
                           "description": "Message is a human readable description of the details of the last transition, complementing reason.",
                           "type": "string"
+                        },
+                        "observedGeneration": {
+                          "description": "If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.",
+                          "format": "int64",
+                          "type": "integer"
                         },
                         "reason": {
                           "description": "Reason is a brief machine readable explanation for the condition's last transition.",

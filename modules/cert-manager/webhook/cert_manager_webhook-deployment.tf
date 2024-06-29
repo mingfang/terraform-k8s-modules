@@ -5,6 +5,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
       "app.kubernetes.io/component" = "webhook"
       "app.kubernetes.io/instance"  = "cert-manager"
       "app.kubernetes.io/name"      = "webhook"
+      "app.kubernetes.io/version"   = "v1.5.1"
     }
     name      = "cert-manager-webhook"
     namespace = var.namespace
@@ -25,6 +26,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
           "app.kubernetes.io/component" = "webhook"
           "app.kubernetes.io/instance"  = "cert-manager"
           "app.kubernetes.io/name"      = "webhook"
+          "app.kubernetes.io/version"   = "v1.5.1"
         }
       }
       spec {
@@ -35,7 +37,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
             "--secure-port=10250",
             "--dynamic-serving-ca-secret-namespace=$(POD_NAMESPACE)",
             "--dynamic-serving-ca-secret-name=cert-manager-webhook-ca",
-            "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.$(POD_NAMESPACE),cert-manager-webhook.$(POD_NAMESPACE).svc",
+            "--dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc",
           ]
 
           env {
@@ -46,7 +48,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-webhook:v1.2.0"
+          image             = "quay.io/jetstack/cert-manager-webhook:v1.5.1"
           image_pull_policy = "IfNotPresent"
           liveness_probe {
             failure_threshold = 3
@@ -65,6 +67,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
           ports {
             container_port = 10250
             name           = "https"
+            protocol       = "TCP"
           }
           readiness_probe {
             failure_threshold = 3
@@ -80,6 +83,9 @@ resource "k8s_apps_v1_deployment" "cert_manager_webhook" {
           }
           resources {
           }
+        }
+        security_context {
+          run_asnon_root = true
         }
         service_account_name = "cert-manager-webhook"
       }

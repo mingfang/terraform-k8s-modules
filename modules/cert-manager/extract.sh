@@ -4,12 +4,12 @@ function tfextract() {
     go run /go/src/github.com/mingfang/terraform-provider-k8s/cmd/extractor/*go $@
 }
 
-export DIR=modules/cert-manager
+export DIR=.
 mkdir -p ${DIR}/tmp
 mkdir -p ${DIR}/crd
 
 rm ${DIR}/tmp/*
-tfextract -dir ${DIR}/tmp -url https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+tfextract -dir ${DIR}/tmp -url https://github.com/jetstack/cert-manager/releases/download/v1.5.1/cert-manager.yaml
 
 # namespace
 rm ${DIR}/tmp/*namespace.tf

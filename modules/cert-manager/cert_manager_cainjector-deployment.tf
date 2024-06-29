@@ -5,6 +5,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_cainjector" {
       "app.kubernetes.io/component" = "cainjector"
       "app.kubernetes.io/instance"  = "cert-manager"
       "app.kubernetes.io/name"      = "cainjector"
+      "app.kubernetes.io/version"   = "v1.5.1"
     }
     name      = "cert-manager-cainjector"
     namespace = var.namespace
@@ -25,6 +26,7 @@ resource "k8s_apps_v1_deployment" "cert_manager_cainjector" {
           "app.kubernetes.io/component" = "cainjector"
           "app.kubernetes.io/instance"  = "cert-manager"
           "app.kubernetes.io/name"      = "cainjector"
+          "app.kubernetes.io/version"   = "v1.5.1"
         }
       }
       spec {
@@ -43,11 +45,14 @@ resource "k8s_apps_v1_deployment" "cert_manager_cainjector" {
               }
             }
           }
-          image             = "quay.io/jetstack/cert-manager-cainjector:v1.2.0"
+          image             = "quay.io/jetstack/cert-manager-cainjector:v1.5.1"
           image_pull_policy = "IfNotPresent"
           name              = "cert-manager"
           resources {
           }
+        }
+        security_context {
+          run_asnon_root = true
         }
         service_account_name = "cert-manager-cainjector"
       }

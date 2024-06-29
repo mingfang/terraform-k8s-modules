@@ -8,6 +8,7 @@ resource "k8s_admissionregistration_k8s_io_v1_validating_webhook_configuration" 
       "app.kubernetes.io/component" = "webhook"
       "app.kubernetes.io/instance"  = "cert-manager"
       "app.kubernetes.io/name"      = "webhook"
+      "app.kubernetes.io/version"   = "v1.5.1"
     }
     name = "cert-manager-webhook"
   }
@@ -25,6 +26,7 @@ resource "k8s_admissionregistration_k8s_io_v1_validating_webhook_configuration" 
       }
     }
     failure_policy = "Fail"
+    match_policy   = "Equivalent"
     name           = "webhook.cert-manager.io"
     namespace_selector {
 
@@ -50,7 +52,7 @@ resource "k8s_admissionregistration_k8s_io_v1_validating_webhook_configuration" 
         "acme.cert-manager.io",
       ]
       api_versions = [
-        "*",
+        "v1",
       ]
       operations = [
         "CREATE",

@@ -7,6 +7,7 @@ resource "k8s_apiextensions_k8s_io_v1_custom_resource_definition" "orders_acme_c
       "app"                        = "cert-manager"
       "app.kubernetes.io/instance" = "cert-manager"
       "app.kubernetes.io/name"     = "cert-manager"
+      "app.kubernetes.io/version"  = "v1.5.1"
     }
     name = "orders.acme.cert-manager.io"
   }

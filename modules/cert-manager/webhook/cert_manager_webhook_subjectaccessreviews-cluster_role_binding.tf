@@ -1,4 +1,4 @@
-resource "k8s_rbac_authorization_k8s_io_v1_role_binding" "cert_manager_webhook_dynamic_serving" {
+resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "cert_manager_webhook_subjectaccessreviews" {
   metadata {
     labels = {
       "app"                         = "webhook"
@@ -7,13 +7,12 @@ resource "k8s_rbac_authorization_k8s_io_v1_role_binding" "cert_manager_webhook_d
       "app.kubernetes.io/name"      = "webhook"
       "app.kubernetes.io/version"   = "v1.5.1"
     }
-    name      = "cert-manager-webhook:dynamic-serving"
-    namespace = var.namespace
+    name = "cert-manager-webhook:subjectaccessreviews"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = "cert-manager-webhook:dynamic-serving"
+    kind      = "ClusterRole"
+    name      = "cert-manager-webhook:subjectaccessreviews"
   }
 
   subjects {

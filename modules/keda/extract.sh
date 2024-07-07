@@ -11,7 +11,7 @@ tfextract -dir . -url https://github.com/kedacore/keda/releases/download/v2.14.0
 sed -i -z 's|status = {\n *}|status = { "" = "" }|' *-custom_resource_definition.tf
 
 # namespace
-sed -i 's|namespace = "keda"|namespace = var.namespace|' keda-namespace.tf
+sed -i 's|name = "keda"|name = var.namespace|' keda-namespace.tf
 sed -i 's|namespace = "keda"|namespace = k8s_core_v1_namespace.keda.metadata.0.name|' *.tf
 
 terraform fmt .

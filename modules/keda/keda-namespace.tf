@@ -5,6 +5,6 @@ resource "k8s_core_v1_namespace" "keda" {
       "app.kubernetes.io/part-of" = "keda-operator"
       "app.kubernetes.io/version" = "2.14.0"
     }
-    name = "keda"
+    name = var.namespace
   }
 }

@@ -1,0 +1,22 @@
+resource "k8s_rbac_authorization_k8s_io_v1_role_binding" "keda_auth_reader" {
+  metadata {
+    labels = {
+      "app.kubernetes.io/name"    = "keda-auth-reader"
+      "app.kubernetes.io/part-of" = "keda-operator"
+      "app.kubernetes.io/version" = "2.14.0"
+    }
+    name      = "keda-auth-reader"
+    namespace = "kube-system"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = "extension-apiserver-authentication-reader"
+  }
+
+  subjects {
+    kind      = "ServiceAccount"
+    name      = "keda-operator"
+    namespace = k8s_core_v1_namespace.keda.metadata.0.name
+  }
+}

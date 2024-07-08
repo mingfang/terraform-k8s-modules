@@ -19,7 +19,6 @@ module "deployment-service" {
   configmap            = var.configmap
   configmap_mount_path = var.configmap_mount_path
   post_start_command   = var.post_start_command
-  pvc                  = var.pvc
-  mount_path           = var.mount_path
+  pvcs                 = var.pvcs
   service_account_name = var.service_account_name
 }

@@ -98,15 +98,17 @@ variable "post_start_command" {
   default = null
 }
 
-variable "pvc" {
-  type    = string
-  default = null
+variable "pvcs" {
+  type = list(object({
+    name       = string
+    mount_path = string
+  }))
+  default = []
 }
 
-variable "mount_path" {
+variable "pvc_user" {
   type    = string
-  default = "/data"
-  description = "pvc mount path"
+  default = "1000"
 }
 
 variable "service_account_name" {

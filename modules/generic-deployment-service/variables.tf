@@ -18,7 +18,6 @@ variable "replicas" {
 variable "ports" {
   type    = list
   default = []
-  description = "[{ name = \"tcp\", port = 3000 }]"
 }
 
 variable "command" {
@@ -32,7 +31,6 @@ variable "args" {
 }
 
 variable "env" {
-  type    = list(object({ name = string, value = string }))
   default = []
 }
 
@@ -48,7 +46,7 @@ variable "env_file" {
 
 variable "env_from" {
   type = list(object({
-    prefix     = string,
+    prefix = string,
     secret_ref = object({
       name = string,
     })
@@ -62,7 +60,10 @@ variable "annotations" {
 }
 
 variable "image_pull_secrets" {
-  type    = list(object({ name = string }))
+  type = list(object({
+    name  = string,
+    value = string
+  }))
   default = []
 }
 
@@ -78,6 +79,7 @@ variable "resources" {
     }
   }
 }
+
 
 variable "service_account_name" {
   type    = string
@@ -103,13 +105,31 @@ variable "post_start_command" {
   default = null
 }
 
-variable "pvc" {
+variable "pvcs" {
+  type = list(object({
+    name       = string
+    mount_path = string
+  }))
+  default = []
+}
+
+variable "pvc_user" {
   type    = string
+  default = "1000"
+}
+
+variable "volumes" {
+  default = []
+}
+
+variable "sidecars" {
+  default = []
+}
+
+variable "strategy" {
   default = null
 }
 
-variable "mount_path" {
-  type        = string
-  default     = "/data"
-  description = "pvc mount path"
+variable "tolerations" {
+  default = []
 }

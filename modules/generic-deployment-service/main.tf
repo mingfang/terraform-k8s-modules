@@ -7,10 +7,6 @@ locals {
 }
 
 locals {
-  use_RBAC = length(var.cluster_role_rules) + length(var.role_rules) + length(var.cluster_role_refs) > 0
-}
-
-locals {
   parameters = {
     name      = var.name
     namespace = var.namespace
@@ -164,16 +160,6 @@ locals {
       ] : [],
     )
   }
-}
-
-module "rbac" {
-  count     = local.use_RBAC ? 1 : 0
-  source    = "../../modules/kubernetes/rbac"
-  name      = var.name
-  namespace = var.namespace
-
-  cluster_role_rules = var.cluster_role_rules
-  role_rules         = var.role_rules
 }
 
 resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "cluster_role_refs" {

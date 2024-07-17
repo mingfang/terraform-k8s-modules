@@ -150,3 +150,15 @@ variable "cluster_role_refs" {
   }))
   default = []
 }
+
+variable "min_replicas" {
+  default = 1
+}
+
+variable "max_replicas" {
+  default = 1
+}
+
+variable "target_cpu_utilization_percentage" {
+  default = 50
+}

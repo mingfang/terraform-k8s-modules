@@ -50,11 +50,10 @@ variable "annotations" {
 }
 
 variable "image_pull_secrets" {
-  type = object({
-    name = string,
-  })
-  description = "name of image pull secret"
-  default     = null
+  type = list(object({
+    name  = string,
+  }))
+  default = []
 }
 
 variable "node_selector" {

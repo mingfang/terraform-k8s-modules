@@ -1,6 +1,5 @@
 variable "name" {
-  type    = string
-  default = "{{name}}"
+  type = string
 }
 
 variable "namespace" {
@@ -8,37 +7,25 @@ variable "namespace" {
 }
 
 variable "image" {
-  type    = string
-  default = "{{image}}"
-}
-
-variable "replicas" {
-  type    = number
-  default = 1
-}
-
-variable "ports" {
-  type    = list
-  default = {{ ports  }}
+  type = string
 }
 
 variable "command" {
   type    = list(string)
-  default = {{ command }}
+  default = []
 }
 
 variable "args" {
   type    = list(string)
-  default = {{ args }}
+  default = []
 }
 
 variable "env" {
-  type    = list(object({ name = string, value = string }))
   default = []
 }
 
 variable "env_map" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -48,7 +35,7 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list(object({
+  type = list(object({
     prefix = string,
     secret_ref = object({
       name = string,
@@ -58,12 +45,15 @@ variable "env_from" {
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
 variable "image_pull_secrets" {
-  type    = list(object({ name = string, value = string }))
+  type = list(object({
+    name  = string,
+    value = string
+  }))
   default = []
 }
 
@@ -80,6 +70,12 @@ variable "resources" {
   }
 }
 
+variable "service_account_name" {
+  type    = string
+  default = null
+}
+
+
 variable "overrides" {
   default = {}
 }
@@ -89,29 +85,57 @@ variable "configmap" {
 }
 
 variable "configmap_mount_path" {
-  type = string
-  default = "{{ configmap_mount_path }}"
+  type    = string
+  default = "/config"
 }
 
 variable "post_start_command" {
   type    = list(string)
-  default = {{ post_start_command }}
-}
-
-variable "pvc" {
-  type    = string
   default = null
 }
 
-variable "mount_path" {
-  type    = string
-  default = "/data"
-  description = "pvc mount path"
+variable "pvcs" {
+  type = list(object({
+    name       = string
+    mount_path = string
+  }))
+  default = []
 }
 
-{% if not use_rbac -%}
-variable "service_account_name" {
+variable "pvc_user" {
   type    = string
+  default = "1000"
+}
+
+variable "volumes" {
+  default = []
+}
+
+variable "sidecars" {
+  default = []
+}
+
+variable "tolerations" {
+  default = []
+}
+
+variable "cluster_role_rules" {
+  default = []
+}
+
+variable "role_rules" {
+  default = []
+}
+
+variable "cluster_role_refs" {
+  type = list(object({
+    api_group = string
+    kind      = string
+    name      = string
+  }))
+  default = []
+}
+
+variable "host_network" {
   default = null
 }
-{%- endif %}

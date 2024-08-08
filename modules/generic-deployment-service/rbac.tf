@@ -16,7 +16,6 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "cluster_role_r
   for_each = { for ref in var.cluster_role_refs : ref.name => ref }
   metadata {
     name      = "${var.namespace}:${var.name}:${each.value.name}"
-    namespace = var.namespace
   }
   subjects {
     kind      = "ServiceAccount"

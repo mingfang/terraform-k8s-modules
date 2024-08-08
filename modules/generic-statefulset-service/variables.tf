@@ -124,10 +124,6 @@ variable "sidecars" {
   default = []
 }
 
-variable "strategy" {
-  default = null
-}
-
 variable "tolerations" {
   default = []
 }
@@ -149,14 +145,27 @@ variable "cluster_role_refs" {
   default = []
 }
 
-variable "min_replicas" {
-  default = 1
+variable "security_context" {
+  default = null
 }
 
-variable "max_replicas" {
-  default = 1
+variable "storage" {
+  type    = string
+  default = null
 }
 
-variable "target_cpu_utilization_percentage" {
-  default = 50
+variable "storage_class" {
+  type    = string
+  default = null
+}
+
+variable "volume_claim_template_name" {
+  type    = string
+  default = "pvc"
+}
+
+variable "mount_path" {
+  type        = string
+  default     = "/data"
+  description = "pvc mount path"
 }

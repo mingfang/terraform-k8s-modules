@@ -20,7 +20,9 @@ locals {
       } : {},
     )
 
-    enable_service_links = false
+    enable_service_links        = false
+    pod_management_policy       = "Parallel"
+    publish_not_ready_addresses = true
 
     containers = concat([
       {
@@ -59,8 +61,15 @@ locals {
         } : null
 
         resources = var.resources
+        security_context = var.security_context
 
         volume_mounts = concat(
+          var.storage != null ? [
+            {
+              name       = var.volume_claim_template_name
+              mount_path = var.mount_path
+            },
+          ] : [],
           [
             for pvc in var.pvcs :
             {
@@ -87,32 +96,59 @@ locals {
       },
     ], var.sidecars)
 
-    init_containers = length(var.pvcs) > 0 && length(var.pvc_user) > 0 ? [
-      {
-        name  = "init"
-        image = var.image
+    init_containers = concat(
+      var.storage != null ? [
+        {
+          name  = "init1"
+          image = var.image
 
-        command = concat(
-          [
+          command = [
             "sh",
             "-cx",
-            join(" &&", [for pvc in var.pvcs : "chown ${var.pvc_user} ${pvc.mount_path} || true"])
-          ],
-        )
+            <<-EOF
+            chown ${var.pvc_user} ${var.mount_path} || true
+            EOF
+          ]
 
-        security_context = {
-          run_asuser = "0"
-        }
-
-        volume_mounts = [
-          for pvc in var.pvcs :
-          {
-            name       = pvc.name
-            mount_path = pvc.mount_path
+          security_context = {
+            run_asuser = "0"
           }
-        ]
-      },
-    ] : []
+
+          volume_mounts = [
+            {
+              name       = var.volume_claim_template_name
+              mount_path = var.mount_path
+            },
+          ]
+        },
+      ] : [],
+      length(var.pvcs) > 0 && length(var.pvc_user) > 0 ? [
+        {
+          name  = "init2"
+          image = var.image
+
+          command = concat(
+            [
+              "sh",
+              "-cx",
+              join(" &&", [for pvc in var.pvcs : "chown ${var.pvc_user} ${pvc.mount_path} || true"])
+            ],
+          )
+
+          security_context = {
+            run_asuser = "0"
+          }
+
+          volume_mounts = [
+            for pvc in var.pvcs :
+            {
+              name       = pvc.name
+              mount_path = pvc.mount_path
+            }
+          ]
+        },
+      ] : []
+    )
 
     affinity = {
       pod_anti_affinity = {
@@ -136,8 +172,8 @@ locals {
     image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
     service_account_name = local.use_RBAC ? module.rbac.0.service_account_name : var.service_account_name
-    strategy             = var.strategy
-    tolerations          = var.tolerations
+
+    tolerations = var.tolerations
 
     volumes = concat(
       [
@@ -159,10 +195,24 @@ locals {
         }
       ] : [],
     )
+
+    volume_claim_templates = var.storage != null ? [
+      {
+        name               = var.volume_claim_template_name
+        storage_class_name = var.storage_class
+        access_modes       = ["ReadWriteOnce"]
+
+        resources = {
+          requests = {
+            storage = var.storage
+          }
+        }
+      }
+    ] : []
   }
 }
 
-module "deployment-service" {
-  source     = "../../archetypes/deployment-service"
+module "statefulset-service" {
+  source     = "../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides)
 }

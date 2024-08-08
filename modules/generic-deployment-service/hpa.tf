@@ -2,8 +2,8 @@ resource "k8s_autoscaling_v1_horizontal_pod_autoscaler" "this" {
   count = var.max_replicas == var.min_replicas ? 0 : 1
 
   metadata {
-    name        = var.name
-    namespace   = var.namespace
+    name      = var.name
+    namespace = var.namespace
   }
 
   spec {

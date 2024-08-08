@@ -54,7 +54,8 @@ locals {
           }
         } : null
 
-        resources = var.resources
+        resources        = var.resources
+        security_context = var.security_context
 
         volume_mounts = concat(
           [
@@ -132,11 +133,13 @@ locals {
     )
 
     enable_service_links = false
+    host_ipc             = var.host_ipc
+    host_network         = var.host_network
+    host_pid             = var.host_pid
     image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
     service_account_name = local.use_RBAC ? module.rbac.0.service_account_name : var.service_account_name
     tolerations          = var.tolerations
-    host_network         = var.host_network
   }
 }
 

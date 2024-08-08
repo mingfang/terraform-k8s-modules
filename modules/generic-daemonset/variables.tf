@@ -51,7 +51,7 @@ variable "annotations" {
 
 variable "image_pull_secrets" {
   type = list(object({
-    name  = string,
+    name = string,
   }))
   default = []
 }
@@ -135,6 +135,20 @@ variable "cluster_role_refs" {
   default = []
 }
 
+variable "host_ipc" {
+  default = null
+}
+
 variable "host_network" {
   default = null
 }
+
+variable "host_pid" {
+  default = null
+}
+
+variable "security_context" {
+  default = null
+}
+
+

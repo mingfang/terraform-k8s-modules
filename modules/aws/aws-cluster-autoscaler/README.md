@@ -10,7 +10,7 @@ Provider Requirements:
 * `cordon-node-before-terminating` (default `true`)
 * `env` (default `[]`)
 * `ignore-daemonsets-utilization` (default `true`)
-* `image` (default `"registry.k8s.io/autoscaling/cluster-autoscaler:v1.28.2"`)
+* `image` (default `"registry.k8s.io/autoscaling/cluster-autoscaler:v1.30.1"`)
 * `name` (default `"aws-cluster-autoscaler"`)
 * `namespace` (required)
 * `node_selector` (default `{}`)

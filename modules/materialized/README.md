@@ -6,17 +6,29 @@ Provider Requirements:
 
 ## Input Variables
 * `annotations` (default `{}`)
+* `args` (default `[]`)
+* `command` (default `[]`)
 * `configmap` (default `null`)
+* `configmap_mount_path` (default `"/config"`)
 * `env` (default `[]`)
-* `image` (default `"materialize/materialized:v0.26.0"`)
-* `name` (required)
+* `env_file` (default `null`)
+* `env_from` (default `[]`)
+* `env_map` (default `{}`)
+* `image` (default `"materialize/materialized:v0.93.1"`)
+* `image_pull_secrets` (default `[]`)
+* `name` (default `"materialized"`)
 * `namespace` (required)
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":6875}]`)
-* `pvc` (default `null`)
+* `post_start_command` (default `null`)
+* `pvc_user` (default `"1000"`)
+* `pvcs` (default `[]`)
 * `replicas` (default `1`)
 * `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
+* `service_account_name` (default `null`)
+* `sidecars` (default `[]`)
+* `volumes` (default `[]`)
 
 ## Output Values
 * `deployment`

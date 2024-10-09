@@ -11,5 +11,5 @@ Provider Requirements:
 * `value` (required)
 
 ## Managed Resources
-* `k8s_scheduling_k8s_io_v1beta1_priority_class.priority-class` from `k8s`
+* `k8s_scheduling_k8s_io_v1_priority_class.priority-class` from `k8s`
 

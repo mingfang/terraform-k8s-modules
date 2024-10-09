@@ -22,7 +22,7 @@ Provider Requirements:
 * `SENTRY_DSN` (default `null`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"budibase/worker:v1.0.98"`)
+* `image` (default `"budibase/worker:2.29.22"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

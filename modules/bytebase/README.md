@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"bytebase/bytebase:2.13.1"`)
+* `image` (default `"bytebase/bytebase:2.14.0"`)
 * `image_pull_secrets` (default `[]`)
 * `name` (default `"bytebase"`)
 * `namespace` (required)

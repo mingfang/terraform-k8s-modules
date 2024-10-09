@@ -9,18 +9,17 @@ Provider Requirements:
 * `minio_secret_key` (default `"bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"`)
 * `name` (default `"budibase"`)
 * `namespace` (default `"budibase-example"`)
-* `storage_class_name` (default `"cephfs"`)
+* `storage_class_name` (default `"cephfs-csi"`)
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_extensions_v1beta1_ingress.proxy` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.proxy` from `k8s`
 
 ## Child Modules
-* `budibase-apps` from [../../modules/budibase/budibase-apps](../../modules/budibase/budibase-apps)
-* `budibase-worker` from [../../modules/budibase/budibase-worker](../../modules/budibase/budibase-worker)
-* `couchdb` from [../../modules/couchdb](../../modules/couchdb)
-* `minio` from [../../modules/minio](../../modules/minio)
-* `nginx` from [../../modules/nginx](../../modules/nginx)
+* `budibase-apps` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `budibase-proxy` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `budibase-worker` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `couchdb` from [../../modules/generic-statefulset-service](../../modules/generic-statefulset-service)
+* `minio` from [../../modules/generic-statefulset-service](../../modules/generic-statefulset-service)
 * `redis` from [../../modules/redis](../../modules/redis)
-* `secret` from [../../modules/kubernetes/secret](../../modules/kubernetes/secret)
 

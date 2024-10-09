@@ -15,7 +15,7 @@ Provider Requirements:
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
 * `extra_volumes` (default `[]`)
-* `image` (default `"matomo:4.15.1"`)
+* `image` (default `"matomo:5.0.0"`)
 * `image_pull_secrets` (default `[]`)
 * `name` (default `"matomo"`)
 * `namespace` (required)

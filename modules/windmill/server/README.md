@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"ghcr.io/windmill-labs/windmill:main"`)
+* `image` (default `"ghcr.io/windmill-labs/windmill:latest"`)
 * `image_pull_secrets` (default `[]`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"windmill-server"`)

@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"countly/api:latest"`)
+* `image` (default `"countly/api:23.06.16"`)
 * `image_pull_secrets` (default `[]`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"countly-api"`)

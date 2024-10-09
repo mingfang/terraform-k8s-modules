@@ -10,7 +10,7 @@ Provider Requirements:
 * `ME_CONFIG_MONGODB_URL` (required): mongodb://root:example@mongo:27017/
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"mongo-express"`)
+* `image` (default `"registry.rebelsoft.com/mongo-express:latest"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

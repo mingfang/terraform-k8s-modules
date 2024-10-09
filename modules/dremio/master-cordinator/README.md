@@ -9,7 +9,7 @@ Provider Requirements:
 * `config_map` (required)
 * `env` (default `[]`)
 * `extra_args` (default `""`)
-* `image` (default `"dremio/dremio-oss:21.2.0"`)
+* `image` (default `"dremio/dremio-oss:24.3.2"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `null`)

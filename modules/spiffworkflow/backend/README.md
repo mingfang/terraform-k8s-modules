@@ -22,7 +22,7 @@ Provider Requirements:
 * `node_selector` (default `{}`)
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":8000}]`)
-* `post_start_command` (default `[]`)
+* `post_start_command` (default `null`)
 * `pvc` (default `null`)
 * `pvc_mount_path` (default `"/data"`): pvc mount path
 * `replicas` (default `1`)

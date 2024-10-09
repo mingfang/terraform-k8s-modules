@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"openmetadata/ingestion:1.2.3"`)
+* `image` (default `"openmetadata/ingestion:1.3.3"`)
 * `image_pull_secrets` (default `[]`)
 * `name` (default `"ingestion"`)
 * `namespace` (required)

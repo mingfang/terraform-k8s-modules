@@ -6,8 +6,8 @@ Provider Requirements:
 
 ## Input Variables
 * `annotations` (default `{}`)
-* `args` (default `null`)
-* `command` (default `null`)
+* `args` (default `[]`)
+* `command` (default `[]`)
 * `configmap` (default `null`): keys must be *.conf files used for /etc/postgresql
 * `configmap_mount_path` (default `"/etc/postgresql"`)
 * `env` (default `[]`)
@@ -15,6 +15,7 @@ Provider Requirements:
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
 * `image` (default `"postgres:12.1"`)
+* `image_pull_secrets` (default `[]`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"postgres"`)
 * `namespace` (required)
@@ -22,12 +23,16 @@ Provider Requirements:
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":5432}]`)
 * `post_start_command` (default `null`)
+* `pvc_user` (default `"1000"`)
+* `pvcs` (default `[]`)
 * `replicas` (default `1`)
-* `resources` (default `{"requests":{"cpu":"100m","memory":"128Mi"}}`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 * `service_account_name` (default `null`)
+* `sidecars` (default `[]`)
 * `storage` (default `null`)
 * `storage_class` (default `null`)
 * `volume_claim_template_name` (default `"pvc"`)
+* `volumes` (default `[]`)
 
 ## Output Values
 * `name`

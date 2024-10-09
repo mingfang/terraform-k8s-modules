@@ -5,19 +5,7 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `annotations` (default `{}`)
-* `args` (default `{}`)
-* `command` (default `{}`)
-* `env` (default `[]`)
-* `env_file` (default `null`)
-* `env_from` (default `[]`)
-* `env_map` (default `{}`)
-* `image` (default `"{{image}}"`)
-* `image_pull_secrets` (default `[]`)
-* `name` (default `"{{name}}"`)
-* `namespace` (required)
-* `node_selector` (default `{}`)
-* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
+* `name` (required)
 
 ## Output Values
 * `deployment`
@@ -30,15 +18,21 @@ Provider Requirements:
 
 ## Problems
 
-## Error: Invalid expression
+## Error: Invalid character
 
-(at `template-daemonset/main.tf` line 105)
+(at `template-daemonset/main.tf` line 25)
 
-Expected the start of an expression, but found an invalid expression token.
+Single quotes are not valid. Use double quotes (") to enclose strings.
 
 ## Error: Missing key/value separator
 
-(at `template-daemonset/variables.tf` line 17)
+(at `template-daemonset/main.tf` line 25)
 
-Expected an equals sign ("=") to mark the beginning of the attribute value.
+Expected an equals sign ("=") to mark the beginning of the attribute value. If you intended to given an attribute name containing periods or spaces, write the name in quotes to create a string literal.
+
+## Error: Argument or block definition required
+
+(at `template-daemonset/variables.tf` line 3)
+
+An argument or block definition is required here.
 

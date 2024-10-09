@@ -10,13 +10,13 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.this` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 
 ## Child Modules
-* `compactor-node` from [../../modules/risingwave](../../modules/risingwave)
-* `compute-node` from [../../modules/risingwave](../../modules/risingwave)
-* `etcd` from [../../modules/etcd](../../modules/etcd)
-* `frontend` from [../../modules/risingwave](../../modules/risingwave)
-* `meta-node` from [../../modules/risingwave](../../modules/risingwave)
+* `compactor-node` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `compute-node` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `frontend` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `meta-node` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
 * `minio` from [../../modules/minio](../../modules/minio)
+* `postgres` from [../../modules/postgres](../../modules/postgres)
 

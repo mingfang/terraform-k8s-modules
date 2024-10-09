@@ -9,7 +9,7 @@ Provider Requirements:
 * `config_configmap` (default `null`)
 * `datasources_configmap` (default `null`)
 * `env` (default `[]`)
-* `image` (default `"apache/superset:2.0.1"`)
+* `image` (default `"apache/superset:4.0.2"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

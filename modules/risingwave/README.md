@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"risingwavelabs/risingwave:v1.5.4"`)
+* `image` (default `"risingwavelabs/risingwave:v1.8.2"`)
 * `image_pull_secrets` (default `[]`)
 * `name` (default `"risingwave"`)
 * `namespace` (required)

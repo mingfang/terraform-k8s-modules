@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"postgrest/postgrest:v10.1.1.20221215"`)
+* `image` (default `"postgrest/postgrest:v12.2.3"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"postgrest"`)
 * `namespace` (required)

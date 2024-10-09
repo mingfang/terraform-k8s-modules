@@ -15,7 +15,7 @@ Provider Requirements:
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
 * `image` (default `"aimstack/aim:3.17.4"`)
-* `image_pull_secrets` (default `[]`)
+* `image_pull_secrets` (default `null`): name of image pull secret
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"aim-server"`)
 * `namespace` (required)

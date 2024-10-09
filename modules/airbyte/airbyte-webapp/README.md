@@ -12,7 +12,7 @@ Provider Requirements:
 * `env` (default `[]`)
 * `env_file` (default `null`)
 * `env_map` (default `{}`)
-* `image` (default `"airbyte/webapp:0.39.17-alpha"`)
+* `image` (default `"airbyte/webapp:0.63.15"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

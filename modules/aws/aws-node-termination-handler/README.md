@@ -33,7 +33,7 @@ Provider Requirements:
 * `WEBHOOK_URL` (default `""`): Posts event data to URL upon instance interruption action
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.14.0"`)
+* `image` (default `"public.ecr.aws/aws-ec2/aws-node-termination-handler:v1.21.0"`)
 * `name` (default `"aws-node-termination-handler"`)
 * `namespace` (default `"kube-system"`)
 * `overrides` (default `{}`)

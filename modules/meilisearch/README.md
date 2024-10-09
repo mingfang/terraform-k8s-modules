@@ -7,6 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `annotations` (default `{}`)
 * `env` (default `[]`)
+* `env_from` (default `[]`)
 * `image` (default `"getmeili/meilisearch:v0.27.1"`)
 * `name` (default `"meilisearch"`)
 * `namespace` (required)

@@ -21,6 +21,7 @@ Provider Requirements:
 * `overrides` (default `{}`)
 * `ports` (default `[{"name":"tcp","port":3306}]`)
 * `replicas` (default `1`)
+* `resources` (default `{"requests":{"cpu":"100m","memory":"128Mi"}}`)
 * `storage` (required)
 * `storage_class` (required)
 * `volume_claim_template_name` (default `"pvc"`)

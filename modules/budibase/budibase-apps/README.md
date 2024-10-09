@@ -21,7 +21,7 @@ Provider Requirements:
 * `WORKER_URL` (required)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"budibase/apps:v1.0.98"`)
+* `image` (default `"budibase/apps:2.29.22"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

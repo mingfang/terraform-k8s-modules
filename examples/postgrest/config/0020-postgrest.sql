@@ -1,14 +1,24 @@
 -- Set up PostgREST
-create role anon nologin noinherit;
 create user authenticator noinherit;
+
+create role anon nologin noinherit;
 grant anon to authenticator;
 
-grant usage on schema public to postgres, anon;
-alter default privileges in schema public grant all on tables to postgres, anon;
-alter default privileges in schema public grant all on functions to postgres, anon;
-alter default privileges in schema public grant all on sequences to postgres, anon;
+create user authenticated nologin noinherit;
+grant authenticated to authenticator;
 
-grant usage on schema extensions to postgres, anon;
+grant usage on schema public to postgres, authenticated;
+grant usage on schema extensions to postgres, authenticated;
+
+grant all on all tables in schema public to postgres, authenticated;
+alter default privileges in schema public grant all on tables to postgres, authenticated;
+
+grant all on all functions in schema public to postgres, authenticated;
+alter default privileges in schema public grant all on functions to postgres, authenticated;
+
+grant all on all sequences in schema public to postgres, authenticated;
+alter default privileges in schema public grant all on sequences to postgres, authenticated;
+
 
 -- https://postgrest.org/en/latest/schema_cache.html#finer-grained-event-trigger
 -- watch create and alter

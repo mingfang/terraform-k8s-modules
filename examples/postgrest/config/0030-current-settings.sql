@@ -1,5 +1,5 @@
-DROP FUNCTION IF EXISTS current_setting(text);
+DROP FUNCTION IF EXISTS public.current_setting(text);
 
-create or replace function current_setting(name text) returns json as $$
-select nullif(current_setting(name, true), '')::json;
+create or replace function public.current_setting(name text) returns text as $$
+select nullif(current_setting(name, true), '')::text;
 $$ language sql stable;

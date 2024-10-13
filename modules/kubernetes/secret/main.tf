@@ -13,6 +13,7 @@ resource "k8s_core_v1_secret" "this" {
   metadata {
     name      = var.name
     namespace = var.namespace
+    annotations = var.annotations
   }
 
   type = var.type

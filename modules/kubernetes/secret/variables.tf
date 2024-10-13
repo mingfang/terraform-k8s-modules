@@ -2,6 +2,10 @@ variable "name" {}
 
 variable "namespace" {}
 
+variable "annotations" {
+  default = {}
+}
+
 variable type {
   default     = "Opaque"
   description = "Opaque or kubernetes.io/dockerconfigjson"

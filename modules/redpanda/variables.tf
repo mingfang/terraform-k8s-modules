@@ -3,7 +3,7 @@ variable "name" {}
 variable "namespace" {}
 
 variable image {
-  default = "docker.vectorized.io/vectorized/redpanda:v23.3.1"
+  default = "docker.vectorized.io/vectorized/redpanda:v24.2.9"
 }
 
 variable "replicas" {

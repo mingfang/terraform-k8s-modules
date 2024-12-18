@@ -6,7 +6,6 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "this" {
     annotations = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_binding_parameters, "annotations", null)
     labels      = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_binding_parameters, "labels", null)
     name        = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_binding_parameters, "name", null)
-    namespace   = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_binding_parameters, "namespace", null)
   }
 
   dynamic "role_ref" {

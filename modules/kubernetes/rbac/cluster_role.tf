@@ -26,7 +26,6 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "this" {
     annotations = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_parameters, "annotations", null)
     labels      = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_parameters, "labels", null)
     name        = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_parameters, "name", null)
-    namespace   = lookup(local.k8s_rbac_authorization_k8s_io_v1_cluster_role_parameters, "namespace", null)
   }
 
   dynamic "rules" {

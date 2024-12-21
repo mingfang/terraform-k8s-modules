@@ -41,6 +41,14 @@ locals {
             }
           },
           {
+            name = "POD_NAMESPACE"
+            value_from = {
+              field_ref = {
+                field_path = "metadata.namespace"
+              }
+            }
+          },
+          {
             name = "POD_IP"
             value_from = {
               field_ref = {

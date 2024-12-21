@@ -151,4 +151,11 @@ variable "security_context" {
   default = null
 }
 
+variable "dns_config" {
+  default = null
+}
+variable "dns_policy" {
+  default = null
+}
+
 

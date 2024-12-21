@@ -132,6 +132,8 @@ locals {
       ] : [],
     )
 
+    dns_config           = var.dns_config
+    dns_policy           = var.dns_policy
     enable_service_links = false
     host_ipc             = var.host_ipc
     host_network         = var.host_network

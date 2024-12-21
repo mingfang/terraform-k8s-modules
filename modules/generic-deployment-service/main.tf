@@ -87,7 +87,7 @@ locals {
       },
     ], var.sidecars)
 
-    init_containers = length(var.pvcs) > 0 && length(var.pvc_user) > 0 ? [
+    init_containers = concat(length(var.pvcs) > 0 && length(var.pvc_user) > 0 ? [
       {
         name  = "init"
         image = var.image
@@ -112,7 +112,7 @@ locals {
           }
         ]
       },
-    ] : []
+    ] : [], var.init_containers)
 
     affinity = {
       pod_anti_affinity = {

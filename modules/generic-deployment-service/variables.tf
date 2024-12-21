@@ -120,6 +120,10 @@ variable "volumes" {
   default = []
 }
 
+variable "init_containers" {
+  default = []
+}
+
 variable "sidecars" {
   default = []
 }

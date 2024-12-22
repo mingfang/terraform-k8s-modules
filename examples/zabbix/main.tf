@@ -1,9 +1,14 @@
 /*
+For reference of similar setup
+
 Part 1
 https://blog.zabbix.com/monitoring-kubernetes-with-zabbix/25055/
 
 Part 2
 https://blog.zabbix.com/kubernetes-monitoring-with-zabbix-part-2-understanding-the-discovered-resources/25476/
+
+Part 3, optional for applications
+https://blog.zabbix.com/kubernetes-monitoring-with-zabbix-part-3-extracting-prometheus-metrics-with-zabbix-preprocessing/25639/
 
 Required Macros:
 
@@ -245,12 +250,51 @@ module "zabbix-agent" {
   }
 
   /* enables kube-dns with host network */
-  host_network = "true"
   dns_policy   = "None"
   dns_config = {
     nameservers = ["172.27.0.2"]
     searches    = ["${var.namespace}.svc.cluster.local", "svc.cluster.local", "cluster.local"]
   }
+  host_network = "true"
+  host_pid = true
+
+  tolerations = [
+    {
+      effect = "NoSchedule"
+      key    = "CriticalAddonsOnly"
+    },
+    {
+      effect = "NoSchedule"
+      key    = "node.kubernetes.io/master"
+    }
+  ]
+
+  volumes = [
+    {
+      name = "proc"
+      host_path = {
+        path = "/proc"
+      }
+      mount_path = "/hostfs/proc"
+      read_only = true
+    },
+    {
+      name = "sys"
+      host_path = {
+        path = "/sys"
+      }
+      mount_path = "/hostfs/sys"
+      read_only = true
+    },
+    {
+      name = "root"
+      host_path = {
+        path = "/"
+      }
+      mount_path = "/hostfs/root"
+      read_only = true
+    }
+  ]
 }
 
 /*

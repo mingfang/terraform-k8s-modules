@@ -1890,16 +1890,6 @@ resource "k8s_batch_v1_cron_job" "this" {
                               }
                             }
 
-                            dynamic "data_source_ref" {
-                              for_each = lookup(volume_claim_template.value, "data_source_ref", null) == null ? [] : [volume_claim_template.value.data_source_ref]
-                              content {
-                                api_group = lookup(data_source_ref.value, "api_group", null)
-                                kind      = data_source_ref.value.kind
-                                name      = data_source_ref.value.name
-                                namespace = lookup(data_source_ref.value, "namespace", null)
-                              }
-                            }
-
                             dynamic "resources" {
                               for_each = lookup(volume_claim_template.value, "resources", null) == null ? [] : [volume_claim_template.value.resources]
                               content {

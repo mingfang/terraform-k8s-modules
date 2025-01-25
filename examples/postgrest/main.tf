@@ -1,7 +1,7 @@
-resource "k8s_core_v1_namespace" "this" {
-  metadata {
-    name = var.namespace
-  }
+module "namespace" {
+  source = "../namespace"
+  name = var.namespace
+  is_create = var.is_create_namespace
 }
 
 /* Postgres https://www.postgresql.org */
@@ -11,16 +11,15 @@ module "postgres" {
   name      = "postgres"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-  image     = "postgres:15.1"
-
-  storage_class = "cephfs-csi"
-  storage       = "1Gi"
+  image     = "postgres:16"
 
   env_map = {
     POSTGRES_USER     = "postgres"
     POSTGRES_PASSWORD = "postgres"
     POSTGRES_DB       = "postgres"
   }
+
+  storage = "1Gi"
 }
 
 module "postgres_init_config" {
@@ -35,7 +34,7 @@ module "postgres_init" {
   source    = "../../modules/kubernetes/job"
   name      = "postgres-init"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  image     = "postgres:15.1"
+  image     = "postgres:16"
 
   env_map = {
     PGHOST            = module.postgres.name
@@ -78,15 +77,16 @@ module "postgrest" {
   ]
 
   env_map = {
-    PGRST_DB_URI             = "postgres://authenticator:postgres@${module.postgres.name}.${var.namespace}.svc.cluster.local:${module.postgres.ports.0.port}/postgres?sslmode=disable"
-    PGRST_DB_SCHEMAS         = "public"
-    PGRST_DB_ANON_ROLE       = "anon"
-    PGRST_DB_CHANNEL_ENABLED = "true"
-    PGRST_DB_PLAN_ENABLED    = "true"
-    PGRST_DB_POOL            = "10"
-    PGRST_DB_USE_LEGACY_GUCS = "false"
-    PGRST_LOG_LEVEL          = "info"
-    PGRST_ADMIN_SERVER_PORT  = "3001"
+    PGRST_DB_URI                = "postgres://authenticator:postgres@${module.postgres.name}.${var.namespace}.svc.cluster.local:${module.postgres.ports.0.port}/postgres?sslmode=disable"
+    PGRST_DB_SCHEMAS            = "public"
+    PGRST_DB_ANON_ROLE          = "anon"
+    PGRST_DB_CHANNEL_ENABLED    = "true"
+    PGRST_DB_PLAN_ENABLED       = "true"
+    PGRST_DB_POOL               = "10"
+    PGRST_DB_USE_LEGACY_GUCS    = "false"
+    PGRST_LOG_LEVEL             = "info"
+    PGRST_ADMIN_SERVER_PORT     = "3001"
+    PGRST_DB_AGGREGATES_ENABLED = "true"
 
     PGRST_OPENAPI_SERVER_PROXY_URI = "https://${var.namespace}.rebelsoft.com"
     PGRST_OPENAPI_SECURITY_ACTIVE  = "true"
@@ -129,11 +129,6 @@ resource "k8s_networking_k8s_io_v1_ingress" "postgrest" {
       "nginx.ingress.kubernetes.io/cors-allow-headers" = "keep-alive,user-agent,x-requested-with,x-request-id,if-modified-since,cache-control,content-type,range,authorization,apikey,x-client-info,accept-profile,prefer,content-profile,range-unit,x-upsert"
       "nginx.ingress.kubernetes.io/cors-allow-origin"  = "https://*.rebelsoft.com"
 
-      "nginx.ingress.kubernetes.io/auth-url"              = "https://oauth.rebelsoft.com/oauth2/auth"
-      "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
-      "nginx.ingress.kubernetes.io/auth-response-headers" = "x-auth-request-user, x-auth-request-groups, x-auth-request-email, x-auth-request-preferred-username, x-auth-request-access-token, authorization, x-forwarded-groups, x-forwarded-user, remote_user"
-      "nginx.ingress.kubernetes.io/auth-cache-key"        = "$cookie__oauth2_proxy"
-
       "nginx.ingress.kubernetes.io/server-snippet" = <<-EOF
         # https://docs.postgrest.org/en/v12/explanations/nginx.html
         # support /endpoint/:id url style
@@ -167,38 +162,6 @@ resource "k8s_networking_k8s_io_v1_ingress" "postgrest" {
               name = module.postgrest.name
               port {
                 number = module.postgrest.ports.0.port
-              }
-            }
-          }
-          path      = "/"
-          path_type = "ImplementationSpecific"
-        }
-      }
-    }
-  }
-}
-
-
-resource "k8s_networking_k8s_io_v1_ingress" "postgrest_admin" {
-  metadata {
-    annotations = {
-      "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-admin.*"
-      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
-    }
-    name      = "${var.namespace}-admin"
-    namespace = k8s_core_v1_namespace.this.metadata.0.name
-  }
-  spec {
-    rules {
-      host = "${var.namespace}-admin"
-      http {
-        paths {
-          backend {
-            service {
-              name = module.postgrest.name
-              port {
-                number = module.postgrest.ports.1.port
               }
             }
           }

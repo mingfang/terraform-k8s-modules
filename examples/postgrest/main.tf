@@ -69,7 +69,7 @@ module "postgres_init" {
 module "postgrest" {
   source    = "../../modules/generic-deployment-service"
   name      = "postgrest"
-  namespace = k8s_core_v1_namespace.this.metadata.0.name
+  namespace = module.namespace.name
   image     = "postgrest/postgrest:v12.2.3"
   ports = [
     { name = "tcp", port = 3000 },
@@ -104,7 +104,7 @@ module "postgrest" {
 module "swagger-ui" {
   source    = "../../modules/generic-deployment-service"
   name      = "swagger-ui"
-  namespace = k8s_core_v1_namespace.this.metadata.0.name
+  namespace = module.namespace.name
   image     = "swaggerapi/swagger-ui"
   ports     = [{ name = "tcp", port = 8080 }]
 
@@ -150,7 +150,7 @@ resource "k8s_networking_k8s_io_v1_ingress" "postgrest" {
         EOF
     }
     name      = var.namespace
-    namespace = k8s_core_v1_namespace.this.metadata.0.name
+    namespace = module.namespace.name
   }
   spec {
     rules {

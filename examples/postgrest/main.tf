@@ -9,7 +9,7 @@ module "namespace" {
 module "postgres" {
   source    = "../../modules/postgres"
   name      = "postgres"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
   replicas  = 1
   image     = "postgres:16"
 
@@ -25,7 +25,7 @@ module "postgres" {
 module "postgres_init_config" {
   source    = "../../modules/kubernetes/config-map"
   name      = "postgres-init"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
 
   from-dir = "${path.module}/config"
 }
@@ -33,7 +33,7 @@ module "postgres_init_config" {
 module "postgres_init" {
   source    = "../../modules/kubernetes/job"
   name      = "postgres-init"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
   image     = "postgres:16"
 
   env_map = {

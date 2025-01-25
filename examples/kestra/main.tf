@@ -11,9 +11,6 @@ module "postgres" {
   replicas  = 1
   image     = "registry.rebelsoft.com/postgres:16"
 
-  storage_class = "cephfs"
-  storage       = "1Gi"
-
   args = [
     "-c", "work_mem=256MB",
     "-c", "maintenance_work_mem=256MB",
@@ -25,20 +22,22 @@ module "postgres" {
     POSTGRES_PASSWORD = "postgres"
     POSTGRES_DB       = "postgres"
   }
+
+    storage       = "1Gi"
 }
 
-resource "k8s_core_v1_persistent_volume_claim" "data" {
+resource "k8s_core_v1_persistent_volume_claim" "storage" {
   metadata {
-    name      = "data"
+    name      = "storage"
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
-    storage_class_name = "cephfs"
   }
 }
+
 resource "k8s_core_v1_persistent_volume_claim" "kestra-wd" {
   metadata {
     name      = "kestra-wd"
@@ -46,26 +45,86 @@ resource "k8s_core_v1_persistent_volume_claim" "kestra-wd" {
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
-    storage_class_name = "cephfs"
   }
 }
 
+locals {
+  image                = "kestra/kestra:latest-full"
+  KESTRA_CONFIGURATION = <<-EOF
+    datasources:
+      postgres:
+        url: jdbc:postgresql://${module.postgres.name}:5432/postgres
+        driverClassName: org.postgresql.Driver
+        username: postgres
+        password: postgres
+    kestra:
+      server:
+        basic-auth:
+          enabled: false
+          username: "admin@kestra.io" # it must be a valid email address
+          password: kestra
+      repository:
+        type: postgres
+      storage:
+        type: local
+        local:
+          base-path: "/app/storage"
+      queue:
+        type: postgres
+      tasks:
+        tmp-dir:
+          path: /tmp/kestra-wd/tmp
+      url: http://localhost:8080/
+  EOF
+}
+
 module "kestra" {
-  source    = "../../modules/kestra"
+  source    = "../../modules/generic-deployment-service"
   name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
+  image = local.image
+  ports = [{ name = "tcp", port = 8080 }]
+  args  = ["server", "standalone", "--worker-thread=0"]
+  env_map = {
+    KESTRA_CONFIGURATION = local.KESTRA_CONFIGURATION
+  }
+
+  pvcs = [
+    {
+      name       = k8s_core_v1_persistent_volume_claim.storage.metadata[0].name
+      mount_path = "/app/storage"
+    },
+    {
+      name       = k8s_core_v1_persistent_volume_claim.kestra-wd.metadata[0].name
+      mount_path = "/tmp/kestra-wd"
+    },
+  ]
+}
+
+module "kestra-worker" {
+  source       = "../../modules/generic-deployment-service"
+  name         = "kestra-worker"
+  namespace    = k8s_core_v1_namespace.this.metadata[0].name
+  max_replicas = 3
+
+  image = local.image
+  args  = ["server", "worker"]
+  env_map = {
+    DOCKER_HOST          = "unix:///dind/docker.sock"
+    KESTRA_CONFIGURATION = local.KESTRA_CONFIGURATION
+  }
 
   sidecars = [
     {
       name  = "dind"
       image = "docker:dind-rootless"
       args  = ["--group=1000", "--log-level=fatal"]
-      env   = [
+      env = [
         {
-          name       = "POD_NAME"
+          name = "POD_NAME"
           value_from = {
             field_ref = {
               field_path = "metadata.name"
@@ -102,7 +161,7 @@ module "kestra" {
 
   pvcs = [
     {
-      name       = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
+      name       = k8s_core_v1_persistent_volume_claim.storage.metadata[0].name
       mount_path = "/app/storage"
     },
     {
@@ -113,7 +172,7 @@ module "kestra" {
 
   volumes = [
     {
-      name      = "docker-sock"
+      name = "docker-sock"
       empty_dir = {
         medium    = "Memory"
         sizeLimit = "1G"
@@ -122,38 +181,21 @@ module "kestra" {
     },
   ]
 
-  env_map = {
-    DOCKER_HOST          = "unix:///dind/docker.sock"
-    KESTRA_CONFIGURATION = <<-EOF
-        datasources:
-          postgres:
-            url: jdbc:postgresql://${module.postgres.name}:5432/postgres
-            driverClassName: org.postgresql.Driver
-            username: postgres
-            password: postgres
-        kestra:
-          server:
-            basic-auth:
-              enabled: false
-              username: "admin@kestra.io" # it must be a valid email address
-              password: kestra
-          repository:
-            type: postgres
-          storage:
-            type: local
-            local:
-              base-path: "/app/storage"
-          queue:
-            type: postgres
-          tasks:
-            tmp-dir:
-              path: /tmp/kestra-wd/tmp
-          url: http://localhost:8080/
-    EOF
-  }
+  cluster_role_rules = [
+    {
+      api_groups = [""]
+      resources  = ["namespaces", "pods"]
+      verbs      = ["get", "list", "watch", "create", "delete"]
+    },
+    {
+      api_groups = [""]
+      resources  = ["pods/log"]
+      verbs      = ["get"]
+    }
+  ]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -169,10 +211,15 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
       http {
         paths {
           backend {
-            service_name = module.kestra.name
-            service_port = module.kestra.ports[0].port
+            service {
+              name = module.kestra.name
+              port {
+                number = module.kestra.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

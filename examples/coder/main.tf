@@ -71,6 +71,10 @@ module "coder" {
     CODER_OIDC_IGNORE_EMAIL_VERIFIED = "true"
     CODER_OIDC_GROUP_AUTO_CREATE     = "true"
     CODER_DISABLE_PASSWORD_AUTH      = "true"
+    CODER_OIDC_SCOPES                = "openid,profile,email,offline_access"
+    CODER_OIDC_AUTH_URL_PARAMS       = <<-EOF
+      {"access_type":"offline"}
+      EOF
   }
 
   cluster_role_refs = [

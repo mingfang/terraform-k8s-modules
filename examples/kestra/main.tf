@@ -1,13 +1,13 @@
-resource "k8s_core_v1_namespace" "this" {
-  metadata {
-    name = var.namespace
-  }
+module "namespace" {
+  source = "../namespace"
+  name = var.namespace
+  is_create = var.is_create_namespace
 }
 
 module "postgres" {
   source    = "../../modules/postgres"
   name      = "postgres"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
   replicas  = 1
   image     = "registry.rebelsoft.com/postgres:16"
 
@@ -29,7 +29,7 @@ module "postgres" {
 resource "k8s_core_v1_persistent_volume_claim" "storage" {
   metadata {
     name      = "storage"
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    namespace = module.namespace.name
   }
 
   spec {
@@ -41,7 +41,7 @@ resource "k8s_core_v1_persistent_volume_claim" "storage" {
 resource "k8s_core_v1_persistent_volume_claim" "kestra-wd" {
   metadata {
     name      = "kestra-wd"
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    namespace = module.namespace.name
   }
 
   spec {
@@ -83,7 +83,7 @@ locals {
 module "kestra" {
   source    = "../../modules/generic-deployment-service"
   name      = var.name
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
 
   image = local.image
   ports = [{ name = "tcp", port = 8080 }]
@@ -107,7 +107,7 @@ module "kestra" {
 module "kestra-worker" {
   source       = "../../modules/generic-deployment-service"
   name         = "kestra-worker"
-  namespace    = k8s_core_v1_namespace.this.metadata[0].name
+  namespace    = module.namespace.name
   max_replicas = 3
 
   image = local.image
@@ -203,7 +203,7 @@ resource "k8s_networking_k8s_io_v1_ingress" "this" {
       "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
     }
     name      = var.namespace
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    namespace = module.namespace.name
   }
   spec {
     rules {

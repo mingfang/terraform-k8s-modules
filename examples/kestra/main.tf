@@ -1,6 +1,6 @@
 module "namespace" {
-  source = "../namespace"
-  name = var.namespace
+  source    = "../namespace"
+  name      = var.namespace
   is_create = var.is_create_namespace
 }
 
@@ -8,8 +8,7 @@ module "postgres" {
   source    = "../../modules/postgres"
   name      = "postgres"
   namespace = module.namespace.name
-  replicas  = 1
-  image     = "registry.rebelsoft.com/postgres:16"
+  image     = "postgres:16"
 
   args = [
     "-c", "work_mem=256MB",
@@ -18,12 +17,12 @@ module "postgres" {
     "-c", "wal_level=logical",
   ]
   env_map = {
+    POSTGRES_DB       = "postgres"
     POSTGRES_USER     = "postgres"
     POSTGRES_PASSWORD = "postgres"
-    POSTGRES_DB       = "postgres"
   }
 
-    storage       = "1Gi"
+  storage = "1Gi"
 }
 
 resource "k8s_core_v1_persistent_volume_claim" "storage" {
@@ -84,8 +83,8 @@ module "kestra" {
   source    = "../../modules/generic-deployment-service"
   name      = var.name
   namespace = module.namespace.name
+  image     = local.image
 
-  image = local.image
   ports = [{ name = "tcp", port = 8080 }]
   args  = ["server", "standalone", "--worker-thread=0"]
   env_map = {

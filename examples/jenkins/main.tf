@@ -15,7 +15,7 @@ resource "k8s_core_v1_persistent_volume_claim" "this" {
     storage_class_name = var.storage_class_name
 
     resources {
-      requests = { "storage" = "1Gi" }
+      requests = { "storage" = "10Gi" }
     }
   }
 }
@@ -26,14 +26,6 @@ module "casc_configs" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   from-dir = "${path.module}/casc_configs"
-  from-map = {
-    "jobs.yaml" = <<-EOF
-    jobs:
-    %{ for f in fileset("${path.module}/casc_configs", "*.groovy") ~}
-    - file: /var/jenkins_home/casc_configs/${f}
-    %{ endfor ~}
-    EOF
-  }
 }
 
 module "jenkins" {
@@ -55,25 +47,30 @@ module "jenkins" {
   pvc_name             = k8s_core_v1_persistent_volume_claim.this.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias" = "jenkins-example.*"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.jenkins.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
     rules {
-      host = "${module.jenkins.name}-${var.namespace}"
+      host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.jenkins.name
-            service_port = module.jenkins.service.spec[0].ports[0].port
+            service {
+              name = module.jenkins.name
+              port {
+                number = module.jenkins.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -2,9 +2,6 @@ credentials:
   system:
     domainCredentials:
 jenkins:
-  agentProtocols:
-    - "JNLP4-connect"
-    - "Ping"
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
@@ -40,15 +37,6 @@ jenkins:
               - hostPathVolume:
                   hostPath: "/var/run/docker.sock"
                   mountPath: "/var/run/docker.sock"
-              - hostPathVolume:
-                  hostPath: "jenkins_nodejs_npm_cache"
-                  mountPath: "/root/.npm"
-              - hostPathVolume:
-                  hostPath: "sonar_cache"
-                  mountPath: "/root/.sonar/cache"
-              - hostPathVolume:
-                  hostPath: "bazel_cache"
-                  mountPath: "/root/.cache/bazel"
             workspaceVolume:
               persistentVolumeClaimWorkspaceVolume:
                 claimName: "jenkins"
@@ -83,13 +71,6 @@ jenkins:
             label: "jenkins-dind"
             name: "jenkins-dind"
             showRawYaml: false
-            volumes:
-              - hostPathVolume:
-                  hostPath: "jenkins_nodejs_npm_cache"
-                  mountPath: "/root/.npm"
-              - hostPathVolume:
-                  hostPath: "sonar_cache"
-                  mountPath: "/root/.sonar/cache"
             workspaceVolume:
               persistentVolumeClaimWorkspaceVolume:
                 claimName: "jenkins"
@@ -121,7 +102,20 @@ jenkins:
   remotingSecurity:
     enabled: false
   scmCheckoutRetryCount: 2
-  securityRealm: "keycloak"
+  securityRealm:
+    keycloak:
+      keycloakJson: |-
+        {
+          "realm": "rebelsoft",
+          "auth-server-url": "https://keycloak.rebelsoft.com/auth/",
+          "ssl-required": "external",
+          "resource": "jenkins-example",
+          "public-client": true,
+          "confidential-port": 0,
+          "disable-trust-manager": true
+        }
+      keycloakRespectAccessTokenTimeout: true
+      keycloakValidate: false
   slaveAgentPort: 50000
   systemMessage: |+
     Jenkins configured automatically by Jenkins Configuration as Code plugin
@@ -153,27 +147,14 @@ security:
   sSHD:
     port: -1
 unclassified:
-  keycloakSecurityRealm:
-    keycloakJson: |-
-      {
-        "realm": "rebelsoft",
-        "auth-server-url": "https://keycloak.rebelsoft.com/auth/",
-        "ssl-required": "external",
-        "resource": "jenkins-example",
-        "public-client": true,
-        "confidential-port": 0,
-        "disable-trust-manager": true
-      }
-    keycloakRespectAccessTokenTimeout: true
-    keycloakValidate: false
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
     url: "https://jenkins/"
   sidebarGlobalLink:
     links:
-    - displayName: "Job DSL API"
-      iconFileName: "static/efbf17e4/images/16x16/help.png"
-      urlName: "/plugin/job-dsl/api-viewer/index.html"
+      - displayName: "Job DSL API"
+        iconFileName: "static/efbf17e4/images/16x16/help.png"
+        urlName: "/plugin/job-dsl/api-viewer/index.html"
 tool:
   git:
     installations:

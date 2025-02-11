@@ -7,5 +7,5 @@ variable "namespace" {
 }
 
 variable "storage_class_name" {
-  default = "cephfs"
+  default = "cephfs-csi"
 }

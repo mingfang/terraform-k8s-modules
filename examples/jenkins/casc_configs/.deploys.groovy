@@ -4,15 +4,13 @@ def envEntries = environments.get()
 def jobs = new GroovyShell().parse(new File('/var/jenkins_home/casc_configs/.jobs.groovy'))
 def jobEntries = jobs.get()
 
-def folders = jobEntries.collect {it.folder}.unique(false)
-
-folders.each { f ->
-    folder(f)
-    envEntries.eachWithIndex { envEntry, i ->
-        def env = envEntry.value
-        folder("${f}/${env.name.toUpperCase()}")
-        job("${f}/${env.name.toUpperCase()}/DEPLOY") {
-            description("DO NOT EDIT: This project was auto generated.  Any changes will be lost.")
+jobEntries.each { jobEntry ->
+    folder(jobEntry.folder)
+    jobEntry.targetEnvs.eachWithIndex { targetEnv, i ->
+        def env = envEntries[targetEnv]
+        folder("${jobEntry.folder}/${env.name.toUpperCase()}")
+        job("${jobEntry.folder}/${env.name.toUpperCase()}/DEPLOY ${env.name.toUpperCase()}") {
+            description("DO NOT EDIT: This project was auto generated.  All changes will be lost.")
             parameters {
                 booleanParam('upgrade', false)
                 booleanParam('recover_state', false)
@@ -29,7 +27,7 @@ folders.each { f ->
                         relativeTargetDirectory("${env.name}")
                         localBranch()
                         pathRestriction {
-                            includedRegions("${env.name}/${f}/.+")
+                            includedRegions("${env.name}/${jobEntry.folder}/.+")
                             excludedRegions("")
                         }
                     }
@@ -56,7 +54,7 @@ folders.each { f ->
                     file("KUBECONFIG", "${env.name}-kubeconfig")
                 }
                 environmentVariables {
-                    groovy("def changes = 'Changes:'; currentBuild.getChangeSet().getItems().findAll{ it.getAffectedPaths().any{ it.startsWith('${env.name}/${f}') }}.each{ changes <<= '\\n- ' + it.msg +' [' + it.author.displayName + ']' }; return ['CHANGES': changes]")
+                    groovy("def changes = 'Changes:'; currentBuild.getChangeSet().getItems().findAll{ it.getAffectedPaths().any{ it.startsWith('${env.name}/${jobEntry.folder}') }}.each{ changes <<= '\\n- ' + it.msg +' [' + it.author.displayName + ']' }; return ['CHANGES': changes]")
                 }
                 ansiColorBuildWrapper {
                     colorMapName('xterm')
@@ -64,12 +62,12 @@ folders.each { f ->
             }
             steps {
                 // deploy
-                shell("cd ${env.name}/${env.name}/${f}; kubectl version")
-                shell("cd ${env.name}/${env.name}/${f}; terraform init -input=false -upgrade=\${upgrade}")
-                shell("cd ${env.name}/${env.name}/${f}; [ -z \"\${taint}\" ] && echo 'No Taints' || terraform taint \${taint}")
-                shell("cd ${env.name}/${env.name}/${f}; terraform plan -out=tfplan -input=false")
-                shell("cd ${env.name}/${env.name}/${f}; if \${recover_state}; then terraform show -json tfplan > plan.json && cat plan.json | jq -r '.resource_changes[] | select(.change.actions[0]==\"create\" and .provider_name==\"registry.terraform.io/mingfang/k8s\") | .address, (.change.after.metadata[0].namespace + \".\" + .type + \".\" + .change.after.metadata[0].name)' | xargs -n 2 -r bash -c 'terraform import \$0 \$1'; fi")
-                shell("cd ${env.name}/${env.name}/${f}; terraform apply -input=false tfplan")
+                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; kubectl version")
+                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform init -input=false -upgrade=\${upgrade}")
+                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; [ -z \"\${taint}\" ] && echo 'No Taints' || terraform taint \${taint}")
+                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform plan -out=tfplan -input=false")
+                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; if \${recover_state}; then terraform show -json tfplan > plan.json && cat plan.json | jq -r '.resource_changes[] | select(.change.actions[0]==\"create\" and .provider_name==\"registry.terraform.io/mingfang/k8s\") | .address, (.change.after.metadata[0].namespace + \".\" + .type + \".\" + .change.after.metadata[0].name)' | xargs -n 2 -r bash -c 'terraform import \$0 \$1'; fi")
+                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform apply -input=false tfplan")
 
                 // create secrets
                 systemGroovyCommand("""
@@ -82,7 +80,7 @@ folders.each { f ->
 
                 def processFolder(folder) {
                     folderName = folder.getFullName()
-                    matcher = folderName =~ /^${f}\\/${env.name.toUpperCase()}\\/SECRETS/
+                    matcher = folderName =~ /^${jobEntry.folder}\\/${env.name.toUpperCase()}\\/SECRETS/
                     if(!matcher.matches()) return
 
                     property = folder.getProperties().get(FolderCredentialsProperty.class)
@@ -91,7 +89,7 @@ folders.each { f ->
                     kubeconfig = build.environment.get("KUBECONFIG")
                     env = ['KUBECONFIG=' + kubeconfig]
 
-                    namespace = '${f}'
+                    namespace = '${jobEntry.folder}'
                     println('folder=' + folderName + ', namespace=' + namespace)
 
                     args = []

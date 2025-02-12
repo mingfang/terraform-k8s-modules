@@ -86,7 +86,6 @@ jenkins:
     - "jenkins.security.ResourceDomainRecommendation"
     - "jenkins.security.s2m.MasterKillSwitchWarning"
   labelAtoms:
-    - name: "jenkins-dind"
     - name: "jenkins-slave"
     - name: "master"
   labelString: "master"
@@ -126,7 +125,11 @@ jenkins:
         url: "https://updates.jenkins.io/update-center.json"
   views:
     - buildMonitor:
-        includeRegex: ".*"
+        config:
+            displayBadgesFrom: "getLastBuild"
+            maxColumns: 20
+            order: "byFullName"
+        includeRegex: ".+"
         name: "Overview"
         recurse: true
         title: "Overview"

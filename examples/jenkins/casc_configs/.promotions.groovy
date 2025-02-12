@@ -4,15 +4,13 @@ def envEntries = environments.get()
 def jobs = new GroovyShell().parse(new File('/var/jenkins_home/casc_configs/.jobs.groovy'))
 def jobEntries = jobs.get()
 
-def folders = jobEntries.collect {it.folder}.unique(false)
-
-folders.each { f ->
-    folder(f)
-    envEntries.eachWithIndex { envEntry, i ->
-        def env = envEntry.value
-        folder("${f}/${env.name.toUpperCase()}")
-        job("${f}/${env.name.toUpperCase()}/PROMOTE") {
-            description("DO NOT EDIT: This project was auto generated.  Any changes will be lost.")
+jobEntries.each { jobEntry ->
+    folder(jobEntry.folder)
+    jobEntry.targetEnvs.eachWithIndex { targetEnv, i ->
+        def env = envEntries[targetEnv]
+        folder("${jobEntry.folder}/${env.name.toUpperCase()}")
+        job("${jobEntry.folder}/${env.name.toUpperCase()}/PROMOTE ${env.name.toUpperCase()}") {
+            description("DO NOT EDIT: This project was auto generated.  All changes will be lost.")
             parameters {
                 stringParam('folder')
                 stringParam('registry')
@@ -61,7 +59,7 @@ folders.each { f ->
                     pushMerge(false)
                     forcePush(false)
                 }
-                downstream("DEPLOY", "SUCCESS")
+                downstream("DEPLOY ${env.name.toUpperCase()}", "SUCCESS")
             }
         }
     }

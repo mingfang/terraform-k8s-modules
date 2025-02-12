@@ -27,7 +27,7 @@ jobEntries.each { jobEntry ->
     folder(jobEntry.folder)
 
     job("${jobEntry.folder}/${jobEntry.name}") {
-        description("DO NOT EDIT: This project was auto generated.  All manual changes will be lost.")
+        description("DO NOT EDIT: This project was auto generated.  All changes will be lost.")
         multiscm {
             jobEntry.scms.eachWithIndex { scm, i ->
                 git {
@@ -206,7 +206,7 @@ jobEntries.each { jobEntry ->
                             restrict('master')
                             actions {
                                 downstreamParameterized {
-                                    trigger("${env.name.toUpperCase()}/PROMOTE") {
+                                    trigger("${env.name.toUpperCase()}/PROMOTE ${env.name.toUpperCase()}") {
                                         block {
                                             buildStepFailure('FAILURE')
                                             failure('FAILURE')

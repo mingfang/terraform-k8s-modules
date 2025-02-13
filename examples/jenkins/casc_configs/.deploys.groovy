@@ -65,8 +65,24 @@ jobEntries.each { jobEntry ->
                 shell("cd ${env.name}/${env.name}/${jobEntry.folder}; kubectl version")
                 shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform init -input=false -upgrade=\${upgrade}")
                 shell("cd ${env.name}/${env.name}/${jobEntry.folder}; [ -z \"\${taint}\" ] && echo 'No Taints' || terraform taint \${taint}")
-                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform plan -out=tfplan -input=false")
-                shell("cd ${env.name}/${env.name}/${jobEntry.folder}; if \${recover_state}; then terraform show -json tfplan > plan.json && cat plan.json | jq -r '.resource_changes[] | select(.change.actions[0]==\"create\" and .provider_name==\"registry.terraform.io/mingfang/k8s\") | .address, (.change.after.metadata[0].namespace + \".\" + .type + \".\" + .change.after.metadata[0].name)' | xargs -n 2 -r bash -c 'terraform import \$0 \$1'; fi")
+
+                // plan
+                shell("""
+                cd ${env.name}/${env.name}/${jobEntry.folder}; 
+                terraform plan -out=tfplan -input=false;
+                terraform show -json tfplan > plan.json;
+                tf-summarize plan.json > plan-summary.txt;
+                """.stripIndent())
+
+                // recover state
+                shell("""
+                cd ${env.name}/${env.name}/${jobEntry.folder}; 
+                if \${recover_state}; then 
+                    terraform show -json tfplan > plan.json && cat plan.json | jq -r '.resource_changes[] | select(.change.actions[0]==\"create\" and .provider_name==\"registry.terraform.io/mingfang/k8s\") | .address, (.change.after.metadata[0].namespace + \".\" + .type + \".\" + .change.after.metadata[0].name)' | xargs -n 2 -r bash -c 'terraform import \$0 \$1'; 
+                fi
+                """.stripIndent())
+
+                // apply
                 shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform apply -input=false tfplan")
 
                 // create secrets
@@ -111,6 +127,12 @@ jobEntries.each { jobEntry ->
                 """.stripIndent())
             }
             properties {
+            }
+            publishers {
+                archiveArtifacts {
+                    pattern('**/plan.json')
+                    pattern('**/plan-summary.txt')
+                }
             }
         }
     }

@@ -39,6 +39,14 @@ locals {
             }
           },
           {
+            name = "POD_NAMESPACE"
+            value_from = {
+              field_ref = {
+                field_path = "metadata.namespace"
+              }
+            }
+          },
+          {
             name = "POD_IP"
             value_from = {
               field_ref = {
@@ -61,20 +69,8 @@ locals {
         resources = var.resources
 
         volume_mounts = concat(
-          [
-            for pvc in var.pvcs :
-            {
-              name       = pvc.name
-              mount_path = pvc.mount_path
-            }
-          ],
-          [
-            for volume in var.volumes :
-            {
-              name       = volume.name
-              mount_path = volume.mount_path
-            }
-          ],
+          var.pvcs,
+          var.volumes,
           var.configmap != null ? [
             for k, v in var.configmap.data :
             {
@@ -104,13 +100,18 @@ locals {
           run_asuser = "0"
         }
 
-        volume_mounts = [
-          for pvc in var.pvcs :
-          {
-            name       = pvc.name
-            mount_path = pvc.mount_path
-          }
-        ]
+        volume_mounts = concat(
+          var.pvcs,
+          var.volumes,
+          var.configmap != null ? [
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "${var.configmap_mount_path}/${k}"
+              sub_path   = k
+            }
+          ] : [],
+        )
       },
     ] : [], var.init_containers)
 

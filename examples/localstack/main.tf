@@ -1,13 +1,15 @@
-resource "k8s_core_v1_namespace" "this" {
-  metadata {
-    name = var.namespace
-  }
+module "namespace" {
+  source    = "../namespace"
+  name      = var.namespace
+  is_create = var.is_create_namespace
 }
 
 module "localstack" {
-  source    = "../../modules/localstack"
+  source    = "../../modules/generic-deployment-service"
   name      = var.name
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
+  image     = "localstack/localstack:latest"
+  ports     = [{ name = "tcp", port = 4566 }]
 
   env_map = {
     AWS_ACCESS_KEY_ID     = "test"
@@ -17,7 +19,7 @@ module "localstack" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -25,7 +27,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
       "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
     }
     name      = var.namespace
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    namespace = module.namespace.name
   }
   spec {
     rules {
@@ -33,10 +35,15 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
       http {
         paths {
           backend {
-            service_name = module.localstack.name
-            service_port = module.localstack.ports[0].port
+            service {
+              name = module.localstack.name
+              port {
+                number = module.localstack.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

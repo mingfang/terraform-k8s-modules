@@ -16,7 +16,57 @@ module "localstack" {
     AWS_SECRET_ACCESS_KEY = "test"
     AWS_DEFAULT_REGION    = "us-east-1"
     AWS_ENDPOINT_URL      = "http://localhost:4566"
+    DOCKER_HOST          = "unix:///dind/docker.sock"
   }
+
+  sidecars = [
+    {
+      name  = "dind"
+      image = "docker:dind-rootless"
+      args  = ["--group=1000", "--log-level=fatal"]
+      env = [
+        {
+          name = "POD_NAME"
+          value_from = {
+            field_ref = {
+              field_path = "metadata.name"
+            }
+          }
+        },
+        {
+          name  = "DOCKER_TLS_CERTDIR"
+          value = ""
+        },
+        {
+          name  = "DOCKER_HOST"
+          value = "unix:///dind/docker.sock"
+        }
+      ]
+      security_context = {
+        privileged  = true
+        run_asuser  = 1000
+        run_asgroup = 1000
+      }
+
+      volume_mounts = [
+        {
+          name       = "docker-sock"
+          mount_path = "/dind"
+        },
+      ]
+    }
+  ]
+  volumes = [
+    {
+      name = "docker-sock"
+      empty_dir = {
+        medium    = "Memory"
+        sizeLimit = "1G"
+      }
+      mount_path = "/dind"
+    },
+  ]
+
 }
 
 resource "k8s_networking_k8s_io_v1_ingress" "this" {

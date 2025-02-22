@@ -19,7 +19,7 @@ job('SYSTEM/CASC Reload') {
         '''.stripIndent())
     }
     publishers {
-        downstream("Approve Scripts", "SUCCESS")
+        downstream("Approve Scripts", "FAILURE")
     }
 }
 
@@ -37,5 +37,10 @@ job('SYSTEM/Approve Scripts') {
             scriptApproval.approveScript(it.hash)
         }
         '''.stripIndent())
+    }
+    publishers {
+        retryBuild {
+            fixedDelay(1)
+        }
     }
 }

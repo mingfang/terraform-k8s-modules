@@ -1,6 +1,3 @@
-credentials:
-  system:
-    domainCredentials:
 jenkins:
   authorizationStrategy:
     loggedInUsersCanDoAnything:
@@ -24,38 +21,13 @@ jenkins:
               - alwaysPullImage: true
                 args: "^${computer.jnlpmac} ^${computer.name}"
                 command: "jenkins-slave"
-                image: "registry.rebelsoft.com/jenkins-slave:latest"
-                name: "jnlp"
-                resourceRequestCpu: "100m"
-                resourceRequestMemory: "256Mi"
-            id: "f23db2cb-408f-4cb8-af6b-0a3c1399f887"
-            label: "jenkins-slave"
-            name: "jenkins-slave"
-            nodeUsageMode: NORMAL
-            showRawYaml: false
-            volumes:
-              - hostPathVolume:
-                  hostPath: "/var/run/docker.sock"
-                  mountPath: "/var/run/docker.sock"
-            workspaceVolume:
-              persistentVolumeClaimWorkspaceVolume:
-                claimName: "jenkins"
-                readOnly: false
-            yamlMergeStrategy: "override"
-          - annotations:
-              - key: "sidecar.istio.io/inject"
-                value: "false"
-            containers:
-              - alwaysPullImage: true
-                args: "^${computer.jnlpmac} ^${computer.name}"
-                command: "jenkins-slave"
                 envVars:
                   - envVar:
                       key: "DOCKER_HOST"
                       value: "tcp://localhost:2375"
-                image: "registry.rebelsoft.com/jenkins-slave:latest"
+                image: "mingfang/jenkins-slave:latest"
                 name: "jnlp"
-                resourceRequestCpu: "100m"
+                resourceRequestCpu: "1000m"
                 resourceRequestMemory: "256Mi"
               - alwaysPullImage: true
                 args: "--insecure-registry=0.0.0.0/0"
@@ -67,9 +39,10 @@ jenkins:
                 privileged: true
                 resourceRequestCpu: "100m"
                 resourceRequestMemory: "256Mi"
-            id: "7581f112-9a94-4986-b18b-f775494c66ea"
-            label: "jenkins-dind"
-            name: "jenkins-dind"
+            id: "f23db2cb-408f-4cb8-af6b-0a3c1399f887"
+            label: "jenkins-slave"
+            name: "jenkins-slave"
+            nodeUsageMode: "NORMAL"
             showRawYaml: false
             workspaceVolume:
               persistentVolumeClaimWorkspaceVolume:
@@ -83,8 +56,10 @@ jenkins:
   disabledAdministrativeMonitors:
     - "OldData"
     - "jenkins.diagnostics.RootUrlNotSetMonitor"
+    - "jenkins.model.BuiltInNodeMigration"
     - "jenkins.security.ResourceDomainRecommendation"
     - "jenkins.security.s2m.MasterKillSwitchWarning"
+    - "jenkins.diagnostics.ControllerExecutorsAgents"
   labelAtoms:
     - name: "jenkins-slave"
     - name: "master"
@@ -92,14 +67,25 @@ jenkins:
   markupFormatter: "plainText"
   mode: EXCLUSIVE
   myViewsTabBar: "standard"
-  numExecutors: 4
+  nodeMonitors:
+    - "architecture"
+    - "clock"
+    - diskSpace:
+        freeSpaceThreshold: "1GB"
+        freeSpaceWarningThreshold: "2GB"
+    - "swapSpace"
+    - tmpSpace:
+        freeSpaceThreshold: "1GB"
+        freeSpaceWarningThreshold: "2GB"
+    - "responseTime"
+  numExecutors: 10
   primaryView:
     all:
       name: "all"
   projectNamingStrategy: "standard"
   quietPeriod: 0
   remotingSecurity:
-    enabled: false
+    enabled: true
   scmCheckoutRetryCount: 2
   securityRealm:
     keycloak:
@@ -126,9 +112,9 @@ jenkins:
   views:
     - buildMonitor:
         config:
-            displayBadgesFrom: "getLastBuild"
-            maxColumns: 20
-            order: "byFullName"
+          displayBadgesFrom: "getLastBuild"
+          maxColumns: 20
+          order: "byFullName"
         includeRegex: ".+"
         name: "Overview"
         recurse: true
@@ -136,15 +122,29 @@ jenkins:
     - all:
         name: "all"
   viewsTabBar: "standard"
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+appearance:
+  prism:
+    theme: PRISM
 security:
   apiToken:
     creationOfLegacyTokenEnabled: false
     tokenGenerationOnCreationEnabled: false
     usageStatisticsEnabled: true
+  cps:
+    hideSandbox: false
   envInject:
     enableLoadingFromMaster: false
     enablePermissions: false
     hideInjectedVars: false
+  gitHooks:
+    allowedOnAgents: false
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "noHostKeyVerificationStrategy"
   globalJobDslSecurityConfiguration:
     useScriptSecurity: false
   sSHD:
@@ -152,7 +152,7 @@ security:
 unclassified:
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
-    url: "https://jenkins/"
+    url: "https://jenkins-example.rebelsoft.com/"
   sidebarGlobalLink:
     links:
       - displayName: "Job DSL API"

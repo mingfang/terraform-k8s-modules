@@ -162,7 +162,6 @@ jobEntries.each { jobEntry ->
                     }
                 }
             }
-            chucknorris()
         }
 
         properties {

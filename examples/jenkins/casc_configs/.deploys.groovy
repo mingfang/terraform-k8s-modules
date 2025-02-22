@@ -27,7 +27,7 @@ jobEntries.each { jobEntry ->
                         relativeTargetDirectory("${env.name}")
                         localBranch()
                         pathRestriction {
-                            includedRegions("${env.name}/${jobEntry.folder}/.+")
+                            includedRegions("${env.name}/${jobEntry.folder}/.+\n${env.name}/modules/.+")
                             excludedRegions("")
                         }
                     }
@@ -44,6 +44,7 @@ jobEntries.each { jobEntry ->
                 }
             }
             triggers {
+                scm('* * * * *')
             }
             concurrentBuild(false)
             logRotator(-1, 10)
@@ -68,7 +69,7 @@ jobEntries.each { jobEntry ->
 
                 // plan
                 shell("""
-                cd ${env.name}/${env.name}/${jobEntry.folder}; 
+                cd ${env.name}/${env.name}/${jobEntry.folder};
                 terraform plan -out=tfplan -input=false;
                 terraform show -json tfplan > plan.json;
                 tf-summarize plan.json > plan-summary.txt;
@@ -76,55 +77,14 @@ jobEntries.each { jobEntry ->
 
                 // recover state
                 shell("""
-                cd ${env.name}/${env.name}/${jobEntry.folder}; 
-                if \${recover_state}; then 
-                    terraform show -json tfplan > plan.json && cat plan.json | jq -r '.resource_changes[] | select(.change.actions[0]==\"create\" and .provider_name==\"registry.terraform.io/mingfang/k8s\") | .address, (.change.after.metadata[0].namespace + \".\" + .type + \".\" + .change.after.metadata[0].name)' | xargs -n 2 -r bash -c 'terraform import \$0 \$1'; 
+                cd ${env.name}/${env.name}/${jobEntry.folder};
+                if \${recover_state}; then
+                    terraform show -json tfplan > plan.json && cat plan.json | jq -r '.resource_changes[] | select(.change.actions[0]==\"create\" and .provider_name==\"registry.terraform.io/mingfang/k8s\") | .address, (.change.after.metadata[0].namespace + \".\" + .type + \".\" + .change.after.metadata[0].name)' | xargs -n 2 -r bash -c 'terraform import \$0 \$1';
                 fi
                 """.stripIndent())
 
                 // apply
                 shell("cd ${env.name}/${env.name}/${jobEntry.folder}; terraform apply -input=false tfplan")
-
-                // create secrets
-                systemGroovyCommand("""
-                import jenkins.model.Jenkins
-                import com.cloudbees.plugins.credentials.Credentials
-                import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
-                import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl
-                import com.cloudbees.hudson.plugins.folder.properties.FolderCredentialsProvider.FolderCredentialsProperty;
-                import com.cloudbees.hudson.plugins.folder.Folder
-
-                def processFolder(folder) {
-                    folderName = folder.getFullName()
-                    matcher = folderName =~ /^${jobEntry.folder}\\/${env.name.toUpperCase()}\\/SECRETS/
-                    if(!matcher.matches()) return
-
-                    property = folder.getProperties().get(FolderCredentialsProperty.class)
-                    if(!property) return
-
-                    kubeconfig = build.environment.get("KUBECONFIG")
-                    env = ['KUBECONFIG=' + kubeconfig]
-
-                    namespace = '${jobEntry.folder}'
-                    println('folder=' + folderName + ', namespace=' + namespace)
-
-                    args = []
-                    list = property.getCredentials()
-                    for (each in list) {
-                        if(each instanceof StringCredentialsImpl){
-                        StringCredentialsImpl c = (StringCredentialsImpl)each
-                        args.add('--from-literal=' + c.getId() + '=' + c.getSecret().getPlainText())
-                        }
-                    }
-
-                    println((['kubectl', '-n', namespace, 'delete', 'secret', namespace + '-secrets']).execute(env, null).text)
-                    println((['kubectl', '-n', namespace, 'create', 'secret', 'generic', namespace + '-secrets'] + args).execute(env, null).text)
-                    println(['kubectl', 'get', 'secrets', '-n', namespace].execute(env, null).text)
-                }
-
-                Jenkins.instance.getAllItems(Folder.class).each{ f -> processFolder(f) }
-                return
-                """.stripIndent())
             }
             properties {
             }
@@ -133,6 +93,7 @@ jobEntries.each { jobEntry ->
                     pattern('**/plan.json')
                     pattern('**/plan-summary.txt')
                 }
+                downstream("SECRETS/DEPLOY SECRETS", "SUCCESS")
             }
         }
     }

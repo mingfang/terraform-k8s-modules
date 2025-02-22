@@ -11,6 +11,7 @@ def get(registryEntries) {
             ],
             registry  : registryEntries.registry,
             promote   : true,
-            targetEnvs: ['dev','prod']
+            targetEnvs: ['dev','prod'],
+            inheritSecrets: ['demo', 'xstate-mermaid']
     ]
 }

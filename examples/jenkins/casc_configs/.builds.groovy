@@ -108,6 +108,7 @@ jobEntries.each { jobEntry ->
         }
         logRotator(-1, 100)
         quietPeriod(0)
+        label('jenkins-slave')
 
         steps {
             shell('echo "$(echo ${BUILD_DISPLAY_NAME}|tr "/" "_")" > version.txt')

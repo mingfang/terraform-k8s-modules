@@ -11,5 +11,5 @@ variable "is_create_namespace" {
 }
 
 variable "HUGGING_FACE_HUB_TOKEN" {
-  
+
 }

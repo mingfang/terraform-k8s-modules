@@ -4,6 +4,18 @@ module "namespace" {
   is_create = var.is_create_namespace
 }
 
+locals {
+  qwen_7b_vl = [
+    "--model", "Qwen/Qwen2.5-VL-7B-Instruct",
+  ]
+  qwen_32b = [
+    "--model", "Qwen/Qwen2.5-32B-Instruct", "--max_model_len", "15872",
+  ]
+  qwen_32b_coder = [
+    "--model", "Qwen/Qwen2.5-Coder-32B-Instruct", "--max_model_len", "15872",
+  ]
+}
+
 module "vllm" {
   source    = "../../modules/generic-deployment-service"
   name      = "vllm"
@@ -12,9 +24,8 @@ module "vllm" {
   ports     = [{ name = "http", port = 8000 }]
   replicas  = 1
 
-  args = [
-    "--model", "Qwen/Qwen2.5-VL-7B-Instruct",
-  ]
+  args = local.qwen_32b_coder
+
   env_map = {
     HUGGING_FACE_HUB_TOKEN = var.HUGGING_FACE_HUB_TOKEN
   }

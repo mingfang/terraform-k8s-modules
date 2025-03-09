@@ -64,6 +64,9 @@ module "kong" {
 
     # Change
     KONG_ADMIN_GUI_API_URL = "https://admin-${var.namespace}.rebelsoft.com"
+
+    # tracing
+    KONG_TRACING_INSTRUMENTATIONS = "all"
   }
 
   # When KONG_DATABASE="postgres"

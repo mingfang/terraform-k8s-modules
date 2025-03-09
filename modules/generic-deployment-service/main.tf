@@ -4,6 +4,19 @@ locals {
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
+
+  ports = concat(
+    [for k, v in var.ports_map : { name = k, port = v }],
+    var.ports,
+  )
+}
+
+module "config_files" {
+  count      = var.config_files != null ? 1 : 0
+  source     = "../kubernetes/config-map"
+  name       = "${var.name}-config-files"
+  namespace  = var.namespace
+  from-files = var.config_files
 }
 
 locals {
@@ -11,7 +24,7 @@ locals {
     name      = var.name
     namespace = var.namespace
     replicas  = var.replicas
-    ports     = var.ports
+    ports     = local.ports
 
     annotations = merge(
       var.annotations,
@@ -54,19 +67,32 @@ locals {
               }
             }
           },
+          {
+            name = "LIMITS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "limits.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+          {
+            name = "REQUESTS_MEMORY"
+            value_from = {
+              resource_field_ref = {
+                resource = "requests.memory"
+                divisor  = "1Mi"
+              }
+            }
+          },
+
         ], var.env, local.computed_env)
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command != null ? {
-          post_start = {
-            exec = {
-              command = var.post_start_command
-            }
-          }
-        } : null
-
-        resources = var.resources
+        lifecycle        = var._lifecycle
+        resources        = var.resources
+        security_context = var.security_context
 
         volume_mounts = concat(
           var.pvcs,
@@ -76,6 +102,14 @@ locals {
             {
               name       = "config"
               mount_path = "${var.configmap_mount_path}/${k}"
+              sub_path   = k
+            }
+          ] : [],
+          var.config_files != null ? [
+            for k, v in module.config_files[0].config_map.data :
+            {
+              name       = "config-files"
+              mount_path = "${var.config_files_mount_path}/${k}"
               sub_path   = k
             }
           ] : [],
@@ -156,6 +190,14 @@ locals {
           name = "config"
           config_map = {
             name = var.configmap.metadata[0].name
+          }
+        }
+      ] : [],
+      var.config_files != null ? [
+        {
+          name = "config-files"
+          config_map = {
+            name = module.config_files[0].config_map.metadata[0].name
           }
         }
       ] : [],

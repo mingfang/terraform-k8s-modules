@@ -20,6 +20,11 @@ variable "ports" {
   default = []
 }
 
+variable "ports_map" {
+  type    = map(any)
+  default = {}
+}
+
 variable "command" {
   type    = list(string)
   default = []
@@ -61,7 +66,7 @@ variable "annotations" {
 
 variable "image_pull_secrets" {
   type = list(object({
-    name  = string,
+    name = string,
   }))
   default = []
 }
@@ -98,8 +103,17 @@ variable "configmap_mount_path" {
   default = "/config"
 }
 
-variable "post_start_command" {
+variable "config_files" {
   type    = list(string)
+  default = null
+}
+
+variable "config_files_mount_path" {
+  type    = string
+  default = "/config"
+}
+
+variable "_lifecycle" {
   default = null
 }
 
@@ -151,6 +165,10 @@ variable "cluster_role_refs" {
     name      = string
   }))
   default = []
+}
+
+variable "security_context" {
+  default = null
 }
 
 variable "min_replicas" {

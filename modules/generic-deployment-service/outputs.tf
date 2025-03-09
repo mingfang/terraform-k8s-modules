@@ -3,7 +3,7 @@ output "name" {
 }
 
 output "ports" {
-  value = var.ports
+  value = local.ports
 }
 
 output "service" {

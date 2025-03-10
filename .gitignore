@@ -1,0 +1,10 @@
+.idea
+.DS_STORE
+.terraform
+terraform.tfstate*
+*.auto.tfvars
+crash.log
+kubeconfig
+tmp
+.terraform.lock.hcl
+.copier-answers.yml

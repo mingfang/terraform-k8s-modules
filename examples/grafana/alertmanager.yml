@@ -1,0 +1,57 @@
+  global:
+
+# The root route on which each incoming alert enters.
+route:
+  # The labels by which incoming alerts are grouped together. For example,
+  # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+  # be batched into a single group.
+  #
+  # To aggregate by all possible labels use '...' as the sole label name.
+  # This effectively disables aggregation entirely, passing through all
+  # alerts as-is. This is unlikely to be what you want, unless you have
+  # a very low alert volume or your upstream notification system performs
+  # its own grouping. Example: group_by: [...]
+  group_by: ['job']
+
+  # When a new group of alerts is created by an incoming alert, wait at
+  # least 'group_wait' to send the initial notification.
+  # This way ensures that you get multiple alerts for the same group that start
+  # firing shortly after another are batched together on the first
+  # notification.
+  group_wait: 10s
+
+  # When the first notification was sent, wait 'group_interval' to send a batch
+  # of new alerts that started firing for that group.
+  group_interval: 10s
+
+  # If an alert has successfully been sent, wait 'repeat_interval' to
+  # resend them.
+  repeat_interval: 3h
+
+  # A default receiver
+  receiver: pagerduty
+
+receivers:
+- name: 'pagerduty'
+  pagerduty_configs:
+  # trick to dynamically set service_key using alert annotation
+  - client: "Loki"
+
+    # link to grafana
+    client_url: "https://grafana-example.rebelsoft.com/explore?orgId={{ .CommonAnnotations.orgId }}&left=%5B%22{{ .CommonAnnotations.timestamp }}-1h%22,%22{{ .CommonAnnotations.timestamp }}%22,%22Loki%22,%7B%22exemplar%22:true,%22expr%22:%22{{ .CommonAnnotations.expr }}%22%7D%5D"
+
+    # use regexp to set log line as label
+    description: "{{ .CommonLabels.log }}"
+
+    # allow each service to dynamically set key
+    service_key: "{{ .CommonAnnotations.service_key }}"
+
+    # don't update resolve status; only resolve using pagerduty
+    send_resolved: false
+
+    # clear unused details
+    details:
+      firing: ""
+      num_firing: ""
+      num_resolved: ""
+

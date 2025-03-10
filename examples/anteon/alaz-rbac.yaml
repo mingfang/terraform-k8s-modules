@@ -1,0 +1,15 @@
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - pods
+  - services
+  - endpoints
+  - replicasets
+  - deployments
+  - daemonsets
+  - statefulsets
+  verbs:
+  - "get"
+  - "list"
+  - "watch"

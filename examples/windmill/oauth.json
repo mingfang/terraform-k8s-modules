@@ -1,0 +1,12 @@
+{
+  "keycloak_windmill": {
+    "id": "windmill",
+    "secret": "1057fb5e-fdb7-4580-8eea-05dcdb39631e",
+    "login_config": {
+      "auth_url": "https://keycloak.rebelsoft.com/auth/realms/windmill/protocol/openid-connect/auth",
+      "token_url": "https://keycloak.rebelsoft.com/auth/realms/windmill/protocol/openid-connect/token",
+      "userinfo_url": "https://keycloak.rebelsoft.com/auth/realms/windmill/protocol/openid-connect/userinfo",
+      "scopes": ["openid", "offline_access"]
+    }
+  }
+}

@@ -1,0 +1,3 @@
+storm.zookeeper.servers: [${storm_zookeeper_servers}]
+nimbus.seeds: [${nimbus_seeds}]
+supervisor.slots.ports: [${supervisor_slots_ports}]

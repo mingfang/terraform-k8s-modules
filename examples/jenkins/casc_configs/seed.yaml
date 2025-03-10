@@ -1,0 +1,7 @@
+jobs:
+- file: /var/jenkins_home/casc_configs/.system.groovy
+- file: /var/jenkins_home/casc_configs/.builds.groovy
+- file: /var/jenkins_home/casc_configs/.promotions.groovy
+- file: /var/jenkins_home/casc_configs/.secrets.groovy
+- file: /var/jenkins_home/casc_configs/.deploys.groovy
+# - file: /var/jenkins_home/casc_configs/.folders.groovy

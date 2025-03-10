@@ -1,0 +1,9 @@
+[remote: engine_2]
+SG_ENGINE_ADMIN_USER=splitgraph
+SG_ENGINE_ADMIN_PWD=splitgraph
+SG_ENGINE_POSTGRES_DB_NAME=splitgraph
+SG_ENGINE_HOST=localhost
+SG_ENGINE_PORT=5432
+SG_ENGINE_USER=splitgraph
+SG_ENGINE_PWD=splitgraph
+SG_ENGINE_DB_NAME=splitgraph

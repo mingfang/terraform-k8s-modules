@@ -1,0 +1,48 @@
+server_name: "SERVERNAME"
+pid_file: /tmp/homeserver.pid
+
+listeners:
+  - port: 8448
+    tls: false
+    type: http
+    x_forwarded: true
+    bind_addresses: ['::']
+    resources:
+      - names: [client, federation]
+        compress: false
+database:
+  name: psycopg2
+  args:
+    host: postgres
+    database: postgres
+    user: postgres
+    password: postgres
+
+log_config: /config/log.config
+media_store_path: /tmp/media_store
+signing_key_path: "/tmp/SERVERNAME.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+
+macaroon_secret_key: secret
+registration_shared_secret: secret
+enable_metrics: True
+report_stats: True
+
+oidc_providers:
+  - idp_id: keycloak
+    idp_name: "KeyCloak"
+    issuer: "${issuer}"
+    client_id: "${client_id}"
+    client_secret: "${client_secret}"
+    scopes: ["openid", "profile"]
+    user_mapping_provider:
+      config:
+        localpart_template: "{{ user.preferred_username }}"
+        display_name_template: "{{ user.name }}"
+    backchannel_logout_enabled: true # Optional
+
+jwt_config:
+  enabled: true
+  secret: secret
+  algorithm: HS256

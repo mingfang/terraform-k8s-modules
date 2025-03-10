@@ -1,0 +1,23 @@
+version: v1beta1
+kind: Spicepod
+name: spice-example
+
+datasets:
+- from: s3://spiceai-demo-datasets/taxi_trips/2024/
+  name: taxi_trips
+  description: Demo taxi trips in s3
+  params:
+    file_format: parquet
+  acceleration:
+    enabled: true
+    # Uncomment to refresh the acceleration on a schedule
+    # refresh_check_interval: 1h
+    # refresh_mode: full
+
+views:
+- name: rankings
+  sql: |
+    SELECT avg(total_amount), avg(tip_amount), count(1), passenger_count
+    FROM taxi_trips
+    GROUP BY passenger_count
+    ORDER BY passenger_count ASC

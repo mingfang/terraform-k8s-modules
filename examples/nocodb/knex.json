@@ -1,0 +1,41 @@
+{
+  "client": "pg",
+  "connection": {
+    "host": "${module.postgres.name}",
+    "port": "5432",
+    "user": "postgres",
+    "password": "postgres",
+    "database": "postgres",
+    "ssl": {
+      "ca": "",
+      "key": "",
+      "cert": ""
+    }
+  },
+  "meta": {
+    "tn": "nc_evolutions",
+    "dbAlias": "db",
+    "api": {
+      "type": "rest",
+      "prefix": "",
+      "graphqlDepthLimit": 10
+    },
+    "inflection": {
+      "tn": [
+        "camelize"
+      ],
+      "cn": [
+        "camelize"
+      ]
+    }
+  },
+  "ui": {
+    "setup": -1,
+    "ssl": {
+      "key": "Client Key",
+      "cert": "Client Cert",
+      "ca": "Server CA"
+    },
+    "sslUse": "Preferred"
+  }
+}

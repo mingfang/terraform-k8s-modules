@@ -1,0 +1,9 @@
+groups:
+  admin:
+    users: [mingfang@mac.com]
+
+permissions:
+  admin:
+    groups: [admin]
+    allowed_permissions: [create, read, update, delete]
+    uri: /*

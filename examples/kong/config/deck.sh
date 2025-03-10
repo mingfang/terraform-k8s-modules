@@ -1,0 +1,1 @@
+docker run --rm -v .:/files -w /files -e DECK_KONG_ADDR=http://kong.kong-example:8001 kong/deck $@

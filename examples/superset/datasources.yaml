@@ -1,0 +1,3 @@
+databases:
+  - database_name: neon
+    sqlalchemy_uri: postgresql://postgres:postgres@postgres.neon-example:5432/postgres

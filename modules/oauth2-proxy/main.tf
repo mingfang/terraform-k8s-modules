@@ -18,7 +18,6 @@ module "deployment-service" {
   overrides            = var.overrides
   configmap            = var.configmap
   configmap_mount_path = var.configmap_mount_path
-  post_start_command   = var.post_start_command
   pvcs                 = var.pvcs
   service_account_name = var.service_account_name
 }

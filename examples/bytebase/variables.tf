@@ -5,3 +5,7 @@ variable "name" {
 variable "namespace" {
   default = "bytebase-example"
 }
+
+variable "is_create_namespace" {
+  default = true
+}

@@ -6,6 +6,6 @@ variable "namespace" {
   default = "redis-example"
 }
 
-variable "replicas" {
-  default = 1
+variable "is_create_namespace" {
+  default = true
 }

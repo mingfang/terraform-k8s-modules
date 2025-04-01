@@ -1,12 +1,14 @@
-resource "k8s_core_v1_namespace" "this" {
-  metadata {
-    name = var.namespace
-  }
+module "namespace" {
+  source    = "../namespace"
+  name      = var.namespace
+  is_create = var.is_create_namespace
 }
 
 module "redis" {
-  source    = "../../modules/redis"
+  source    = "../../modules/generic-deployment-service"
   name      = "redis"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  namespace = module.namespace.name
+  image     = "redis"
+  ports     = [{ name = "tcp", port = 6379 }]
 }
 

@@ -1,21 +1,20 @@
-resource "k8s_core_v1_namespace" "this" {
-  metadata {
-    name = var.namespace
-  }
+module "namespace" {
+  source    = "../namespace"
+  name      = var.namespace
+  is_create = var.is_create_namespace
 }
 
 module "postgres" {
-  source    = "../../modules/postgres"
+  source    = "../../modules/generic-statefulset-service"
   name      = "postgres"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  replicas  = 1
-
-  storage_class = "cephfs"
-  storage       = "1Gi"
+  namespace = module.namespace.name
+  image     = "postgres:17"
+  ports     = [{ name = "tcp", port = 5432 }]
+  storage   = "1Gi"
 
   env_map = {
+    POSTGRES_DB       = "postgres"
     POSTGRES_USER     = "postgres"
     POSTGRES_PASSWORD = "postgres"
-    POSTGRES_DB       = "postgres"
   }
 }

@@ -182,3 +182,15 @@ variable "max_replicas" {
 variable "target_cpu_utilization_percentage" {
   default = 50
 }
+
+variable "liveness_probe" {
+  default = null
+}
+
+variable "readiness_probe" {
+  default = null
+}
+
+variable "startup_probe" {
+  default = null
+}

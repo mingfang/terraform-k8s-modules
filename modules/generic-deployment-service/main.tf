@@ -90,6 +90,10 @@ locals {
 
         env_from = var.env_from
 
+        liveness_probe  = var.liveness_probe
+        readiness_probe = var.readiness_probe
+        startup_probe   = var.startup_probe
+
         lifecycle        = var._lifecycle
         resources        = var.resources
         security_context = var.security_context

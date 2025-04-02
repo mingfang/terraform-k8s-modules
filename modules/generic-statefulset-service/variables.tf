@@ -187,3 +187,15 @@ variable "mount_path" {
   default     = "/data"
   description = "pvc mount path"
 }
+
+variable "liveness_probe" {
+  default = null
+}
+
+variable "readiness_probe" {
+  default = null
+}
+
+variable "startup_probe" {
+  default = null
+}

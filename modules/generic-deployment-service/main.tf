@@ -9,6 +9,8 @@ locals {
     [for k, v in var.ports_map : { name = k, port = v }],
     var.ports,
   )
+
+  ports_map = { for each in local.ports : each.name => each.port }
 }
 
 module "config_files" {
@@ -188,7 +190,7 @@ locals {
           }
         }
       ],
-      [for volume in var.volumes : volume],
+      var.volumes,
       var.configmap != null ? [
         {
           name = "config"

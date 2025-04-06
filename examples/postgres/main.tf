@@ -9,8 +9,10 @@ module "postgres" {
   name      = "postgres"
   namespace = module.namespace.name
   image     = "postgres:17"
-  ports     = [{ name = "tcp", port = 5432 }]
-  storage   = "1Gi"
+  ports_map = { tcp = 5432 }
+
+  storage    = "1Gi"
+  mount_path = "/var/lib/postgresql/data"
 
   env_map = {
     POSTGRES_DB       = "postgres"

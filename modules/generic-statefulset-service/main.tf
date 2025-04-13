@@ -144,7 +144,7 @@ locals {
     ], var.sidecars)
 
     init_containers = concat(
-      var.storage != null ? [
+      var.storage != null && length(var.pvc_user) > 0 ? [
         {
           name  = "init1"
           image = var.image

@@ -127,7 +127,7 @@ variable "pvcs" {
 
 variable "pvc_user" {
   type    = string
-  default = "1000"
+  default = ""
 }
 
 variable "volumes" {

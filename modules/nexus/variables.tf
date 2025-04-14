@@ -16,7 +16,7 @@ variable "ports" {
 }
 
 variable "image" {
-  default = "sonatype/nexus3:3.26.1"
+  default = "sonatype/nexus3:3.29.2"
 }
 
 variable "env" {

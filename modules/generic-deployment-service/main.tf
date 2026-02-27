@@ -176,6 +176,7 @@ locals {
 
     image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
+    security_context     = var.security_context
     service_account_name = local.use_RBAC ? module.rbac.0.service_account_name : var.service_account_name
     strategy             = var.strategy
     tolerations          = var.tolerations

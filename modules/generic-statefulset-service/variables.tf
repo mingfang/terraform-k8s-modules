@@ -115,6 +115,11 @@ variable "config_files_mount_path" {
 
 variable "_lifecycle" {
   default = null
+  description = "deprecated. use life_cycle"
+}
+
+variable "life_cycle" {
+  default = null
 }
 
 variable "pvcs" {

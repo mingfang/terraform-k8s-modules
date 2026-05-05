@@ -84,15 +84,14 @@ resource "k8s_apps_v1_deployment" "ebs_csi_controller" {
             "--csi-address=$(ADDRESS)",
             "--v=5",
             "--feature-gates=Topology=true",
-            "--enable-leader-election",
-            "--leader-election-type=leases",
+            "--leader-election",
           ]
 
           env {
             name  = "ADDRESS"
             value = "/var/lib/csi/sockets/pluginproxy/csi.sock"
           }
-          image = "quay.io/k8scsi/csi-provisioner:v1.5.0"
+          image = "registry.k8s.io/sig-storage/csi-provisioner:v3.4.0"
           name  = "csi-provisioner"
 
           volume_mounts {
@@ -105,14 +104,13 @@ resource "k8s_apps_v1_deployment" "ebs_csi_controller" {
             "--csi-address=$(ADDRESS)",
             "--v=5",
             "--leader-election=true",
-            "--leader-election-type=leases",
           ]
 
           env {
             name  = "ADDRESS"
             value = "/var/lib/csi/sockets/pluginproxy/csi.sock"
           }
-          image = "quay.io/k8scsi/csi-attacher:v1.2.0"
+          image = "registry.k8s.io/sig-storage/csi-attacher:v3.4.0"
           name  = "csi-attacher"
 
           volume_mounts {
@@ -124,7 +122,7 @@ resource "k8s_apps_v1_deployment" "ebs_csi_controller" {
           args = [
             "--csi-address=/csi/csi.sock",
           ]
-          image = "quay.io/k8scsi/livenessprobe:v1.1.0"
+          image = "registry.k8s.io/sig-storage/livenessprobe:v2.9.0"
           name  = "liveness-probe"
 
           volume_mounts {

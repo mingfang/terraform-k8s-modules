@@ -102,7 +102,7 @@ resource "k8s_apps_v1_daemon_set" "ebs_csi_node" {
             name  = "DRIVER_REG_SOCK_PATH"
             value = "/var/lib/kubelet/plugins/ebs.csi.aws.com/csi.sock"
           }
-          image = "quay.io/k8scsi/csi-node-driver-registrar:v1.1.0"
+          image = "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.7.0"
           lifecycle {
             pre_stop {
               exec {
@@ -129,7 +129,7 @@ resource "k8s_apps_v1_daemon_set" "ebs_csi_node" {
           args = [
             "--csi-address=/csi/csi.sock",
           ]
-          image = "quay.io/k8scsi/livenessprobe:v1.1.0"
+          image = "registry.k8s.io/sig-storage/livenessprobe:v2.9.0"
           name  = "liveness-probe"
 
           volume_mounts {

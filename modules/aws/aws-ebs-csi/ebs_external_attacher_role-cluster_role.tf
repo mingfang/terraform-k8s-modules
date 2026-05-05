@@ -18,6 +18,20 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "ebs_external_attacher_
       "list",
       "watch",
       "update",
+      "patch",
+    ]
+  }
+  rules {
+    api_groups = [
+      "",
+    ]
+    resources = [
+      "persistentvolumes/status",
+    ]
+    verbs = [
+      "get",
+      "update",
+      "patch",
     ]
   }
   rules {
@@ -58,6 +72,20 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role" "ebs_external_attacher_
       "list",
       "watch",
       "update",
+      "patch",
+    ]
+  }
+  rules {
+    api_groups = [
+      "storage.k8s.io",
+    ]
+    resources = [
+      "volumeattachments/status",
+    ]
+    verbs = [
+      "get",
+      "update",
+      "patch",
     ]
   }
 }

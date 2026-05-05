@@ -103,7 +103,7 @@ resource "k8s_core_v1_persistent_volume_claim" "this" {
   metadata {
     name        = "pvc-${var.name}-${count.index}"
     namespace   = var.namespace
-    annotations = merge(var.annotations, map("pv-uid", k8s_core_v1_persistent_volume.this.*.metadata.0.uid[count.index]))
+    annotations = merge(var.annotations, { "pv-uid" = k8s_core_v1_persistent_volume.this.*.metadata.0.uid[count.index] })
   }
 
   spec {

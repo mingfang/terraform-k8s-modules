@@ -60,20 +60,14 @@ module "hindsight-db" {
   }
 }
 
-
-module "hindsight" {
-  source    = "../../modules/generic-deployment-service"
-  name      = var.name
-  namespace = module.namespace.name
-  image     = "ghcr.io/vectorize-io/hindsight:latest"
-  ports_map = { http = 8888, admin = 9999 }
-
-  env_map = {
-    HINDSIGHT_API_LLM_PROVIDER       = "openai"
-    HINDSIGHT_API_LLM_BASE_URL       = var.hindsight_llm_base_url
-    HINDSIGHT_API_LLM_API_KEY        = var.hindsight_llm_api_key
-    HINDSIGHT_API_LLM_MODEL          = "gpt-5"
-    HINDSIGHT_API_LLM_MAX_CONCURRENT = "1"
+locals {
+  shared_env_map = {
+    HINDSIGHT_API_LLM_PROVIDER          = "openai"
+    HINDSIGHT_API_LLM_BASE_URL          = var.hindsight_llm_base_url
+    HINDSIGHT_API_LLM_API_KEY           = var.hindsight_llm_api_key
+    HINDSIGHT_API_LLM_MODEL             = "gpt-5"
+    HINDSIGHT_API_LLM_MAX_CONCURRENT    = "1"
+    HINDSIGHT_API_SKIP_LLM_VERIFICATION = "true"
 
     # Database Configuration — use CNPG pooler service
     HINDSIGHT_API_DATABASE_URL = "postgresql://${var.postgres_user}:${var.postgres_password}@${module.hindsight-db.pooler_service_name}.${module.namespace.name}.svc.cluster.local:5432/hindsight_db"
@@ -90,14 +84,41 @@ module "hindsight" {
     HINDSIGHT_API_LITELLM_API_KEY        = var.hindsight_litellm_api_key
     HINDSIGHT_API_RERANKER_PROVIDER      = "litellm"
     HINDSIGHT_API_RERANKER_LITELLM_MODEL = "rerank"
+    # HINDSIGHT_API_EMBEDDINGS_PROVIDER      = "litellm"
+    # HINDSIGHT_API_EMBEDDINGS_LITELLM_MODEL = "text-embedding-3-small"
 
-    HINDSIGHT_API_FILE_STORAGE_TYPE      = "s3"
-    HINDSIGHT_API_FILE_STORAGE_S3_BUCKET = var.s3_bucket
-    # HINDSIGHT_API_FILE_STORAGE_S3_ENDPOINT=http://seaweedfs:8333
+    HINDSIGHT_API_FILE_STORAGE_TYPE                 = "s3"
+    HINDSIGHT_API_FILE_STORAGE_S3_BUCKET            = var.s3_bucket
     HINDSIGHT_API_FILE_STORAGE_S3_REGION            = "us-east-1"
     HINDSIGHT_API_FILE_STORAGE_S3_ACCESS_KEY_ID     = var.s3_access_key_id
     HINDSIGHT_API_FILE_STORAGE_S3_SECRET_ACCESS_KEY = var.s3_secret_access_key
+    # HINDSIGHT_API_FILE_STORAGE_S3_ENDPOINT=http://seaweedfs:8333
   }
+}
+
+module "hindsight" {
+  source    = "../../modules/generic-deployment-service"
+  name      = var.name
+  namespace = module.namespace.name
+  image     = "ghcr.io/vectorize-io/hindsight:latest"
+  ports_map = { http = 8888, admin = 9999 }
+
+  env_map = merge(local.shared_env_map, {
+    HINDSIGHT_API_WORKER_ENABLED = "false"
+  })
+}
+
+module "hindsight-worker" {
+  source    = "../../modules/generic-statefulset-service"
+  name      = "${var.name}-worker"
+  namespace = module.namespace.name
+  image     = "ghcr.io/vectorize-io/hindsight:latest"
+  ports_map = { http = 8888, admin = 9999 }
+  replicas  = 2
+
+  env_map = merge(local.shared_env_map, {
+    HINDSIGHT_API_WORKER_ENABLED = "true"
+  })
 }
 
 resource "k8s_networking_k8s_io_v1_ingress" "admin" {

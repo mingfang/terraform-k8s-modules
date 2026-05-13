@@ -149,8 +149,8 @@ resource "k8s_postgresql_cnpg_io_v1_cluster" "this" {
     log_level               = "info"
 
     resources {
-      limits   = { "memory" = jsonencode(var.resources.limits.memory) }
-      requests = { "cpu" = jsonencode(var.resources.requests.cpu), "memory" = jsonencode(var.resources.requests.memory) }
+      limits   = { "memory" = var.resources.limits.memory }
+      requests = { "cpu" = var.resources.requests.cpu, "memory" = var.resources.requests.memory }
     }
 
     affinity {

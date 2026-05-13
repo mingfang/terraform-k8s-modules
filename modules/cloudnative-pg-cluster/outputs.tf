@@ -27,3 +27,13 @@ output "password_secret_name" {
   description = "Name of the password secret."
   value       = local.password_secret_name
 }
+
+output "barman_object_store_name" {
+  description = "Name of the Barman Cloud ObjectStore resource. Only set when barman_cloud.enabled is true."
+  value       = local.barman_cloud_enabled ? local.barman_object_store_name : null
+}
+
+output "scheduled_backup_name" {
+  description = "Name of the ScheduledBackup resource. Only set when scheduled_backup.enabled is true."
+  value       = var.scheduled_backup.enabled ? "${var.name}-scheduled-backup" : null
+}

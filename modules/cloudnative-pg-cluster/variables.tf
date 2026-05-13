@@ -90,10 +90,10 @@ variable "postgresql_shared_preload_libraries" {
   description = "Shared preload libraries for PostgreSQL."
 }
 
- variable "postgresql_hba" {
-   default     = []
-    description = "PostgreSQL pg_hba.conf rules (appended in USER-DEFINED section, before default scram-sha-256 rule)."
- }
+variable "postgresql_hba" {
+  default     = []
+  description = "PostgreSQL pg_hba.conf rules (appended in USER-DEFINED section, before default scram-sha-256 rule)."
+}
 
 # Monitoring
 variable "monitoring" {
@@ -196,4 +196,50 @@ variable "node_maintenance_window" {
 variable "tablespaces" {
   default     = []
   description = "Tablespace configurations."
+}
+
+# Barman Cloud Plugin (backups to S3/S3-compatible object storage)
+variable "barman_cloud_plugin_version" {
+  default     = "0.12.0"
+  description = "Version of the Barman Cloud CNPG-I plugin to install."
+}
+
+variable "barman_cloud" {
+  default = {
+    enabled                    = false
+    name                       = null
+    destination_path           = null
+    endpoint_url               = null
+    s3_credentials_secret_name = null
+    s3_region                  = null
+    inherit_from_iam_role      = false
+    wal_compression            = null
+    wal_max_parallel           = null
+    wal_encryption             = null
+    data_compression           = null
+    data_encryption            = null
+    data_jobs                  = null
+    data_immediate_checkpoint  = null
+    retention_policy           = null
+    sidecar_resources          = {}
+    sidecar_retention_interval = 1800
+  }
+  description = <<-EOF
+    Barman Cloud Plugin configuration for WAL archiving and base backups to S3/S3-compatible object storage.
+    Set enabled = true to activate. Requires destination_path, and s3_credentials_secret_name (or inherit_from_iam_role).
+    All other fields are optional with sensible defaults.
+  EOF
+}
+
+variable "scheduled_backup" {
+  default = {
+    enabled                = false
+    schedule               = "0 0 0 * * *"
+    immediate              = false
+    backup_owner_reference = "none"
+  }
+  description = <<-EOF
+    Scheduled backup configuration using the Barman Cloud Plugin.
+    Set enabled = true to activate. Schedule uses cron expression with seconds (e.g., "0 0 0 * * *" for midnight daily).
+  EOF
 }

@@ -2,10 +2,32 @@ locals {
   password_secret_name = var.password_secret_name != null ? var.password_secret_name : "${var.name}-password"
   owner_password_secret_name = "${var.name}-owner-password"
 
-  pooler_enabled = var.pooler.name != null
-  pooler_name    = local.pooler_enabled ? var.pooler.name : null
+  # Build pooler config with defaults merged in
+  pooler_config = merge({
+    name            = null
+    max_client_conn = 100
+    pool_mode       = "transaction"
+    instances       = 1
+    pg_hba          = []
+  }, var.pooler)
+
+  pooler_enabled = local.pooler_config.name != null
+  pooler_name    = local.pooler_enabled ? local.pooler_config.name : null
 
   monitoring_queries_config_map_name = var.monitoring != null && length(var.monitoring_custom_queries) > 0 ? "${var.name}-monitoring-queries" : null
+
+  # pg_hba defaults
+  default_pg_hba = [
+    "host all all 0.0.0.0/0 scram-sha-256",
+    "host all all ::/0 scram-sha-256",
+  ]
+
+  # postgresql_hba default: use var value if provided, otherwise module default
+  effective_pg_hba = length(var.postgresql_hba) > 0 ? var.postgresql_hba : local.default_pg_hba
+
+  # pooler pg_hba: use user-provided or fall back to default
+  pooler_pg_hba = local.pooler_config.pg_hba
+  effective_pooler_pg_hba = length(local.pooler_pg_hba) > 0 ? local.pooler_pg_hba : local.default_pg_hba
 
   affinity_config = {
     enable_pod_anti_affinity = var.affinity.enable_pod_anti_affinity
@@ -32,7 +54,7 @@ locals {
   post_init_application_sql = concat(
     lookup(var.bootstrap, "post_init_application_sql", []),
     local.init_schemas_grants,
-    var.pooler.name != null ? [
+    local.pooler_enabled ? [
       "GRANT ALL ON DATABASE ${var.bootstrap.database} TO ${var.bootstrap.owner};",
     ] : [],
   )
@@ -119,7 +141,7 @@ resource "k8s_postgresql_cnpg_io_v1_cluster" "this" {
     postgresql {
       parameters               = var.postgresql_parameters
       shared_preload_libraries = var.postgresql_shared_preload_libraries
-      pg_hba                   = var.postgresql_hba
+      pg_hba                   = local.effective_pg_hba
     }
 
     image_name              = var.image_name
@@ -153,13 +175,6 @@ resource "k8s_postgresql_cnpg_io_v1_cluster" "this" {
 resource "k8s_postgresql_cnpg_io_v1_pooler" "pooler" {
   count = local.pooler_enabled ? 1 : 0
 
-  lifecycle {
-    ignore_changes = [
-      # CRD provider stores resource values with escaped quotes — cosmetic only
-      spec.0.template.0.spec.0.containers.0.resources
-    ]
-  }
-
   metadata {
     name      = local.pooler_name
     namespace = var.namespace
@@ -173,7 +188,7 @@ resource "k8s_postgresql_cnpg_io_v1_pooler" "pooler" {
       name = var.name
     }
 
-    instances = var.pooler.instances
+    instances = local.pooler_config.instances
     type      = "rw"
 
     deployment_strategy {
@@ -181,15 +196,15 @@ resource "k8s_postgresql_cnpg_io_v1_pooler" "pooler" {
     }
 
     pgbouncer {
-      pool_mode = var.pooler.pool_mode
+      pool_mode = local.pooler_config.pool_mode
       parameters = {
         "default_pool_size"  = "20"
-        "max_client_conn"    = tostring(var.pooler.max_client_conn)
+        "max_client_conn"    = tostring(local.pooler_config.max_client_conn)
         "max_db_connections" = "100"
         "server_tls_sslmode" = "prefer"
       }
 
-      pg_hba = var.pooler.pg_hba
+      pg_hba = local.effective_pooler_pg_hba
     }
 
     template {

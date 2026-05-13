@@ -130,13 +130,6 @@ variable "min_sync_replicas" {
 
 # Pooler (PgBouncer)
 variable "pooler" {
-  type = object({
-    name            = string
-    max_client_conn = number
-    pool_mode       = string
-    instances       = number
-    pg_hba          = list(string)
-  })
   default = {
     name            = null
     max_client_conn = 100

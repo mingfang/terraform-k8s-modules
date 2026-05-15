@@ -15,12 +15,12 @@ output "master_name" {
 
 output "master_grpc_port" {
   description = "Master gRPC port."
-  value       = var.ports.master_grpc
+  value       = 9333
 }
 
 output "master_http_port" {
   description = "Master HTTP/admin port."
-  value       = var.ports.master_http
+  value       = 9333
 }
 
 output "volume_name" {
@@ -30,7 +30,7 @@ output "volume_name" {
 
 output "volume_http_port" {
   description = "Volume server HTTP port."
-  value       = var.ports.volume_http
+  value       = 8080
 }
 
 output "filer_name" {
@@ -40,7 +40,7 @@ output "filer_name" {
 
 output "filer_http_port" {
   description = "Filer HTTP port."
-  value       = var.ports.filer_http
+  value       = 8888
 }
 
 output "s3_name" {
@@ -50,7 +50,7 @@ output "s3_name" {
 
 output "s3_port" {
   description = "S3 gateway HTTP port."
-  value       = var.ports.s3
+  value       = 8333
 }
 
 output "s3_access_key" {
@@ -70,5 +70,5 @@ output "credentials_secret_name" {
 
 output "endpoint_url" {
   description = "Full S3-compatible endpoint URL."
-  value       = "http://${module.seaweedfs_s3.name}.${var.namespace}.svc.cluster.local:${var.ports.s3}"
+  value       = "http://${module.seaweedfs_s3.name}.${var.namespace}.svc.cluster.local:8333"
 }

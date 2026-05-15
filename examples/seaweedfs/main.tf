@@ -1,47 +1,39 @@
 resource "k8s_core_v1_namespace" "this" {
+  count = var.create_namespace ? 1 : 0
+
   metadata {
     name = var.namespace
   }
 }
 
-locals {
-  master_grpc_port  = var.ports.master_grpc
-  master_http_port  = var.ports.master_http
-  volume_http_port  = var.ports.volume_http
-  filer_http_port   = var.ports.filer_http
-  s3_port           = var.ports.s3
-}
-
 # ── Master ───────────────────────────────────────────────────────────────────
 module "seaweedfs_master" {
-  source    = "../generic-deployment-service"
+  source    = "../../modules/generic-deployment-service"
   name      = "${var.name}-master"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  image = var.image
+  namespace = var.namespace
+  image     = var.image
 
   ports_map = {
-    grpc  = local.master_grpc_port
-    http  = local.master_http_port
-    metrics = var.metrics_port.master_grpc
+    http    = 9333
+    grpc    = 19333
+    metrics = 9324
   }
 
-  args = ["master", "-ip.bind=0.0.0.0", "-port=${local.master_grpc_port}"]
+  args = ["master", "-ip.bind=0.0.0.0", "-port=9333"]
 
   resources = var.resources_master
 }
 
 # ── Volume ───────────────────────────────────────────────────────────────────
 module "seaweedfs_volume" {
-  source    = "../generic-deployment-service"
+  source    = "../../modules/generic-deployment-service"
   name      = "${var.name}-volume"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  image = var.image
+  namespace = var.namespace
+  image     = var.image
 
   ports_map = {
-    http    = local.volume_http_port
-    metrics = var.metrics_port.volume_http
+    http    = 8080
+    metrics = 9325
   }
 
   pvcs = [
@@ -58,10 +50,10 @@ module "seaweedfs_volume" {
   args = [
     "volume",
     "-ip.bind=0.0.0.0",
-    "-port=${local.volume_http_port}",
+    "-port=8080",
     "-dir=/data",
-    "-max=${var.volume_max_file_system_usage}",
-    "-master=${module.seaweedfs_master.name}:${local.master_grpc_port}",
+    "-max=0",
+    "-master=${module.seaweedfs_master.name}:9333",
   ]
 
   resources = var.resources_volume
@@ -69,22 +61,22 @@ module "seaweedfs_volume" {
 
 # ── Filer ────────────────────────────────────────────────────────────────────
 module "seaweedfs_filer" {
-  source    = "../generic-deployment-service"
+  source    = "../../modules/generic-deployment-service"
   name      = "${var.name}-filer"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  image = var.image
+  namespace = var.namespace
+  image     = var.image
 
   ports_map = {
-    http    = local.filer_http_port
-    metrics = var.metrics_port.filer_http
+    http    = 8888
+    grpc    = 18888
+    metrics = 9326
   }
 
   args = [
     "filer",
     "-ip.bind=0.0.0.0",
-    "-port=${local.filer_http_port}",
-    "-master=${module.seaweedfs_master.name}:${local.master_grpc_port}",
+    "-port=8888",
+    "-master=${module.seaweedfs_master.name}:9333",
   ]
 
   resources = var.resources_filer
@@ -92,32 +84,50 @@ module "seaweedfs_filer" {
 
 # ── S3 Gateway ───────────────────────────────────────────────────────────────
 module "seaweedfs_s3" {
-  source    = "../generic-deployment-service"
+  source    = "../../modules/generic-deployment-service"
   name      = "${var.name}-s3"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-
-  image = var.image
+  namespace = var.namespace
+  image     = var.image
 
   ports_map = {
-    s3      = local.s3_port
-    metrics = var.metrics_port.s3
+    s3      = 8333
+    metrics = 9327
   }
 
   args = [
     "s3",
-    "-filer=${module.seaweedfs_filer.name}:${local.filer_http_port}",
+    "-filer=${module.seaweedfs_filer.name}:8888",
     "-ip.bind=0.0.0.0",
-    "-port=${local.s3_port}",
+    "-port=8333",
   ]
 
   resources = var.resources_s3
+}
+
+# ── Volume PVC ───────────────────────────────────────────────────────────────
+
+resource "k8s_core_v1_persistent_volume_claim" "volume_data" {
+  metadata {
+    name      = "data"
+    namespace = var.namespace
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = var.volume_storage_size
+      }
+    }
+    storage_class_name = var.volume_storage_class
+  }
 }
 
 # ── S3 Credentials Secret ────────────────────────────────────────────────────
 resource "k8s_core_v1_secret" "s3_credentials" {
   metadata {
     name      = "${var.name}-s3-credentials"
-    namespace = k8s_core_v1_namespace.this.metadata[0].name
+    namespace = var.namespace
   }
 
   data = {

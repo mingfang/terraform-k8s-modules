@@ -8,45 +8,14 @@ variable "namespace" {
   description = "Kubernetes namespace for SeaweedFS."
 }
 
+variable "create_namespace" {
+  default     = true
+  description = "Create the namespace resource. Set to false when namespace is managed externally."
+}
+
 variable "image" {
   default     = "chrislusf/seaweedfs:latest"
   description = "Docker image for all SeaweedFS components."
-}
-
-# ── Ports ────────────────────────────────────────────────────────────────────
-
-variable "ports" {
-  type = object({
-    master_grpc = number
-    master_http = number
-    volume_http = number
-    filer_http  = number
-    s3          = number
-  })
-  default = {
-    master_grpc = 9333
-    master_http = 9333
-    volume_http = 8080
-    filer_http  = 8888
-    s3          = 8333
-  }
-  description = "Port assignments for each SeaweedFS component."
-}
-
-variable "metrics_port" {
-  type = object({
-    master_grpc = number
-    volume_http = number
-    filer_http  = number
-    s3          = number
-  })
-  default = {
-    master_grpc = 9324
-    volume_http = 9325
-    filer_http  = 9326
-    s3          = 9327
-  }
-  description = "Metrics ports for each SeaweedFS component."
 }
 
 # ── S3 Credentials ───────────────────────────────────────────────────────────

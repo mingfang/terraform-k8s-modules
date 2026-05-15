@@ -10,6 +10,7 @@ module "seaweedfs" {
   source    = "../seaweedfs"
   name      = var.name
   namespace = module.namespace.name
+  create_namespace = false
 
   s3_access_key     = var.seaweedfs_access_key
   s3_secret_key     = var.seaweedfs_secret_key

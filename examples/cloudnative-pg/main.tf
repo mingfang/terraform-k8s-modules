@@ -92,10 +92,10 @@ module "seaweedfs-s3" {
   }
 }
 
-# Credentials secret for Barman Cloud Plugin (CNPG expects "minio-credentials")
-resource "k8s_core_v1_secret" "minio_credentials" {
+# Credentials secret for Barman Cloud Plugin (S3-compatible object store auth)
+resource "k8s_core_v1_secret" "s3_credentials" {
   metadata {
-    name      = "minio-credentials"
+    name      = "cloudnative-pg-s3-credentials"
     namespace = module.namespace.name
   }
 
@@ -164,7 +164,7 @@ module "cluster" {
     enabled                    = true
     destination_path           = "s3://cloudnative-pg-backups/cloudnative-pg/"
     endpoint_url               = "http://seaweedfs-s3:8333"
-    s3_credentials_secret_name = "minio-credentials"
+    s3_credentials_secret_name = "cloudnative-pg-s3-credentials"
     wal_compression            = "gzip"
     data_compression           = "gzip"
     retention_policy           = "30d"

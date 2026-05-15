@@ -23,8 +23,6 @@ module "hindsight-db" {
 
   postgresql_init_schemas = ["bm25_catalog", "tokenizer_catalog"]
 
-  postgresql_hba = ["host all all 0.0.0.0/0 scram-sha-256", "host all all ::/0 scram-sha-256"]
-
   postgresql_parameters = {
     max_wal_senders = "10"
     search_path     = "\\$user, public, bm25_catalog, tokenizer_catalog"
@@ -35,7 +33,6 @@ module "hindsight-db" {
     max_client_conn = 100
     pool_mode       = "transaction"
     instances       = 1
-    pg_hba          = ["host all all 0.0.0.0/0 scram-sha-256", "host all all ::/0 scram-sha-256"]
   }
 
   bootstrap = {

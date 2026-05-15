@@ -7,7 +7,7 @@ module "namespace" {
 # ── SeaweedFS for S3-compatible backup storage ──────────────────────────────
 
 module "seaweedfs" {
-  source    = "../../modules/seaweedfs"
+  source    = "../seaweedfs"
   name      = "cloudnative-pg"
   namespace = module.namespace.name
 

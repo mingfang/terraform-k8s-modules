@@ -1,0 +1,5 @@
+keys/
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate*
+.copier-answers.yml

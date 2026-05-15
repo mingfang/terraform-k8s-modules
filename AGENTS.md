@@ -4,14 +4,39 @@
 
 ### Never lose uncommitted changes
 
-- **NEVER** run `git checkout -- <files>`, `git restore`, `git reset --hard`, or any command that overwrites working tree files.
+- **NEVER** run `git checkout -- <files>`, `git restore`, `git reset --hard`, or any command that overwrites working tree files — **in any repo, not just this one**.
 - If you need to inspect the committed version of a file, use `git show HEAD:<path>` or `git diff` — never overwrite uncommitted work.
+- Before removing any uncommitted changes, **always ask the user first**.
 - If you accidentally lose uncommitted changes, immediately run `git reflog` to find the commit and `git checkout` to restore the state.
 
-### Never run `terraform destroy`
+### Never delete terraform state
 
-- **NEVER** run `terraform destroy` unless explicitly instructed by the user.
-- This is especially dangerous in production environments with running databases and services.
+- **NEVER** delete `terraform.tfstate`, `terraform.tfstate.backup`, `.terraform.tfstate.lock.info`, `.terraform/`, or `.terraform.lock.hcl` — **in any repo**.
+- These files contain live infrastructure state, provider lock files, and module downloads. Deleting them causes drift, lost tracking, and potential resource leaks.
+- Never run `rm -rf` or `git clean -fd` on terraform directories without explicit user confirmation.
+- If accidentally deleted, attempt recovery from backups or re-import resources with `terraform import`.
+- **NEVER** run `terraform state rm`, `terraform state mv`, `terraform state push`, `terraform state pull`, or any other `terraform state` subcommand — **in any repo**.
+  - Terraform state is immutable from the agent's perspective. If state and cluster drift, the correct approach is to either import the drifted resource (`terraform import`) or recreate it by removing it from state via a backup restore — but never modify state directly.
+  - If the state becomes inconsistent (e.g., resource deleted in cluster but still in state), do NOT remove it from state. Instead, recreate the resource in the cluster or ask the user for guidance.
+
+### Use git properly
+
+- **Always check `git status` and `git diff`** before staging or committing anything. Know exactly what you're committing.
+- **NEVER commit secret files** — `.auto.tfvars`, `.env`, credentials, passwords, API keys. Check `.gitignore` before staging.
+- When adding a new directory to git, **verify it doesn't contain a nested `.git` directory** (sub-repo). Nested `.git` dirs confuse git and cause files to be tracked in the wrong repo. If found, ask the user how to handle it before removing or staging.
+- **Before amending commits**, verify the current staged changes are correct. Amendments rewrite history and can lose data.
+- **Never force-push** unless explicitly instructed by the user and after confirming the remote state.
+- Use `git add -p` or explicitly name files when staging — never `git add .` blindly.
+- When cleaning up untracked files, **list what will be removed first** and ask the user for confirmation.
+- State files (`terraform.tfstate*`, `.terraform/`) and secret files (`.auto.tfvars`, `.env`) are in `.gitignore` — they should never be committed.
+
+## Lessons learned
+
+- `AGENTS.md` rules apply to **every repo** we work on, not just the one the file lives in. Always check for uncommitted changes in any repo before modifying anything.
+- Never assume a file contains only local config — always ask before discarding uncommitted changes, even if they look trivial.
+- **GPG signing is mandatory** for provider releases. Never remove or disable `signs:` in `.goreleaser.yml` without explicit user approval. If the GPG key fails, the issue is the key registration — not the signing config itself.
+- When a GPG key needs to be published to the Terraform Registry, use the maintainer's existing trusted key (`43DFB6A3D9FE8D69`) if available. Do NOT generate a new random key for signing — that key will never be trusted by the registry.
+- Before running `goreleaser release`, always verify that: (1) `GITHUB_TOKEN` is set, (2) `GPG_FINGERPRINT` env var matches a key that exists AND is registered with the registry, (3) the git working tree is clean, (4) the tag is pushed.
 
 ## Repo at a glance
 
@@ -114,8 +139,8 @@ to reference service names and ports. Keep this convention consistent.
 
 ### Namespace management
 
-The `namespace` module at `examples/namespace/` is the standard way to create namespaces.
-It uses `count = var.is_create ? 1 : 0` so it can be toggled. Reference it as:
+- **NEVER** create namespaces. Namespaces are managed externally and assumed to exist. Never run `kubectl create namespace` or any other command that creates namespaces — **in any repo**.
+- The `namespace` module at `examples/namespace/` uses `count = var.is_create ? 1 : 0` so it can be toggled. Reference it as:
 ```hcl
 module "namespace" {
   source    = "../namespace"
@@ -123,3 +148,19 @@ module "namespace" {
   is_create = var.is_create_namespace
 }
 ```
+
+### Never mark variables as sensitive
+
+- Variables used in example modules that pass values through the `generic-deployment-service` / `generic-statefulset-service` / archetype chain **must NOT** be marked `sensitive = true`.
+- The `mingfang/k8s` provider cannot render sensitive variables during plan, which causes zero containers to be populated in deployments/statefulsets, resulting in `Insufficient containers blocks` errors and pod startup failures.
+- Sensitive values should still live in `.auto.tfvars` (gitignored) — just omit `sensitive = true` from the variable declaration.
+
+### Never delete terraform state
+
+- **NEVER** delete `terraform.tfstate`, `terraform.tfstate.backup`, `.terraform.tfstate.lock.info`, `.terraform/`, or `.terraform.lock.hcl` — **in any repo**.
+- These files contain live infrastructure state, provider lock files, and module downloads. Deleting them causes drift, lost tracking, and potential resource leaks.
+- Never run `rm -rf` or `git clean -fd` on terraform directories without explicit user confirmation.
+- If accidentally deleted, attempt recovery from backups or re-import resources with `terraform import`.
+- **NEVER** run `terraform state rm`, `terraform state mv`, `terraform state push`, `terraform state pull`, or any other `terraform state` subcommand — **in any repo**.
+  - Terraform state is immutable from the agent's perspective. If state and cluster drift, the correct approach is to either import the drifted resource (`terraform import`) or recreate it by removing it from state via a backup restore — but never modify state directly.
+  - If the state becomes inconsistent (e.g., resource deleted in cluster but still in state), do NOT remove it from state. Instead, recreate the resource in the cluster or ask the user for guidance.

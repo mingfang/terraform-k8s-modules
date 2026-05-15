@@ -8,7 +8,7 @@ module "namespace" {
 
 module "seaweedfs" {
   source    = "../seaweedfs"
-  name      = var.name
+  name      = "seaweedfs"
   namespace = module.namespace.name
   create_namespace = false
 

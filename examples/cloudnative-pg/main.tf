@@ -5,106 +5,17 @@ module "namespace" {
 }
 
 # ── SeaweedFS for S3-compatible backup storage ──────────────────────────────
-# Simple 3-tier SeaweedFS (master + volume + filer + S3 gateway)
 
-locals {
-  seaweedfs_access_key = "seaweedfs"
-  seaweedfs_secret_key = "seaweedfs123"
-}
-
-# SeaweedFS master — uses default entrypoint.sh, passes "master" as subcommand
-module "seaweedfs-master" {
-  source    = "../../modules/generic-deployment-service"
-  name      = "seaweedfs-master"
+module "seaweedfs" {
+  source    = "../../modules/seaweedfs"
+  name      = "cloudnative-pg"
   namespace = module.namespace.name
 
-  image = "chrislusf/seaweedfs:latest"
+  s3_access_key     = var.seaweedfs_access_key
+  s3_secret_key     = var.seaweedfs_secret_key
 
-  ports_map = {
-    grpc = 9333
-  }
-
-  args = ["master", "-ip.bind=0.0.0.0"]
-
-  resources = {
-    requests = { cpu = "100m", memory = "100Mi" }
-    limits   = { memory = "200Mi" }
-  }
-}
-
-# SeaweedFS volume — uses default entrypoint.sh, passes "volume" as subcommand
-module "seaweedfs-volume" {
-  source    = "../../modules/generic-deployment-service"
-  name      = "seaweedfs-volume"
-  namespace = module.namespace.name
-
-  image = "chrislusf/seaweedfs:latest"
-
-  ports_map = {
-    http = 8080
-  }
-
-  args = ["volume", "-ip.bind=0.0.0.0", "-port=8080", "-master=seaweedfs-master:9333"]
-
-  resources = {
-    requests = { cpu = "100m", memory = "500Mi" }
-    limits   = { memory = "1Gi" }
-  }
-}
-
-# SeaweedFS filer
-module "seaweedfs-filer" {
-  source    = "../../modules/generic-deployment-service"
-  name      = "seaweedfs-filer"
-  namespace = module.namespace.name
-
-  image = "chrislusf/seaweedfs:latest"
-
-  ports_map = {
-    http = 8888
-  }
-
-  args = ["filer", "-master=seaweedfs-master:9333", "-ip.bind=0.0.0.0"]
-
-  resources = {
-    requests = { cpu = "100m", memory = "200Mi" }
-    limits   = { memory = "500Mi" }
-  }
-}
-
-# SeaweedFS S3 gateway
-module "seaweedfs-s3" {
-  source    = "../../modules/generic-deployment-service"
-  name      = "seaweedfs-s3"
-  namespace = module.namespace.name
-
-  image = "chrislusf/seaweedfs:latest"
-
-  ports_map = {
-    s3 = 8333
-  }
-
-  args = ["s3", "-filer=seaweedfs-filer:8888", "-ip.bind=0.0.0.0"]
-
-  resources = {
-    requests = { cpu = "100m", memory = "200Mi" }
-    limits   = { memory = "500Mi" }
-  }
-}
-
-# Credentials secret for Barman Cloud Plugin (S3-compatible object store auth)
-resource "k8s_core_v1_secret" "s3_credentials" {
-  metadata {
-    name      = "cloudnative-pg-s3-credentials"
-    namespace = module.namespace.name
-  }
-
-  data = {
-    ACCESS_KEY_ID     = base64encode(local.seaweedfs_access_key)
-    ACCESS_SECRET_KEY = base64encode(local.seaweedfs_secret_key)
-  }
-
-  type = "Opaque"
+  volume_storage_size = "10Gi"
+  volume_storage_class = "cephfs-csi"
 }
 
 # ── CloudNativePG Cluster (2-instance PostgreSQL with PgBouncer pooler) ──────
@@ -163,8 +74,8 @@ module "cluster" {
   barman_cloud = {
     enabled                    = true
     destination_path           = "s3://cloudnative-pg-backups/cloudnative-pg/"
-    endpoint_url               = "http://seaweedfs-s3:8333"
-    s3_credentials_secret_name = "cloudnative-pg-s3-credentials"
+    endpoint_url               = module.seaweedfs.endpoint_url
+    s3_credentials_secret_name = module.seaweedfs.credentials_secret_name
     wal_compression            = "gzip"
     data_compression           = "gzip"
     retention_policy           = "30d"

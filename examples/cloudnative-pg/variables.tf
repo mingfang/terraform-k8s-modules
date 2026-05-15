@@ -17,3 +17,11 @@ variable "postgres_password" {
 variable "postgres_user" {
   type = string
 }
+
+variable "seaweedfs_access_key" {
+  type = string
+}
+
+variable "seaweedfs_secret_key" {
+  type = string
+}

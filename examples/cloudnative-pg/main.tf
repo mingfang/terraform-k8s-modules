@@ -8,7 +8,7 @@ module "namespace" {
 
 module "seaweedfs" {
   source    = "../seaweedfs"
-  name      = "cloudnative-pg"
+  name      = var.name
   namespace = module.namespace.name
 
   s3_access_key     = var.seaweedfs_access_key

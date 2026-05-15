@@ -1,30 +1,29 @@
+resource "k8s_core_v1_namespace" "this" {
+  metadata {
+    name = var.namespace
+  }
+}
+
 locals {
   master_grpc_port  = var.ports.master_grpc
   master_http_port  = var.ports.master_http
   volume_http_port  = var.ports.volume_http
   filer_http_port   = var.ports.filer_http
   s3_port           = var.ports.s3
-
-  master_metrics_port  = var.metrics_port.master_grpc
-  volume_metrics_port  = var.metrics_port.volume_http
-  filer_metrics_port   = var.metrics_port.filer_http
-  s3_metrics_port      = var.metrics_port.s3
-
-  endpoint_url = "http://${module.seaweedfs_s3.name}.${var.namespace}.svc.cluster.local:${local.s3_port}"
 }
 
 # ── Master ───────────────────────────────────────────────────────────────────
 module "seaweedfs_master" {
-  source    = "../../generic-deployment-service"
+  source    = "../generic-deployment-service"
   name      = "${var.name}-master"
-  namespace = var.namespace
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   image = var.image
 
   ports_map = {
-    grpc    = local.master_grpc_port
-    http    = local.master_http_port
-    metrics = local.master_metrics_port
+    grpc  = local.master_grpc_port
+    http  = local.master_http_port
+    metrics = var.metrics_port.master_grpc
   }
 
   args = ["master", "-ip.bind=0.0.0.0", "-port=${local.master_grpc_port}"]
@@ -34,15 +33,15 @@ module "seaweedfs_master" {
 
 # ── Volume ───────────────────────────────────────────────────────────────────
 module "seaweedfs_volume" {
-  source    = "../../generic-deployment-service"
+  source    = "../generic-deployment-service"
   name      = "${var.name}-volume"
-  namespace = var.namespace
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   image = var.image
 
   ports_map = {
     http    = local.volume_http_port
-    metrics = local.volume_metrics_port
+    metrics = var.metrics_port.volume_http
   }
 
   pvcs = [
@@ -62,7 +61,7 @@ module "seaweedfs_volume" {
     "-port=${local.volume_http_port}",
     "-dir=/data",
     "-max=${var.volume_max_file_system_usage}",
-    "-master=$(namespace)/${module.seaweedfs_master.name}:${local.master_grpc_port}",
+    "-master=${module.seaweedfs_master.name}:${local.master_grpc_port}",
   ]
 
   resources = var.resources_volume
@@ -70,22 +69,22 @@ module "seaweedfs_volume" {
 
 # ── Filer ────────────────────────────────────────────────────────────────────
 module "seaweedfs_filer" {
-  source    = "../../generic-deployment-service"
+  source    = "../generic-deployment-service"
   name      = "${var.name}-filer"
-  namespace = var.namespace
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   image = var.image
 
   ports_map = {
     http    = local.filer_http_port
-    metrics = local.filer_metrics_port
+    metrics = var.metrics_port.filer_http
   }
 
   args = [
     "filer",
     "-ip.bind=0.0.0.0",
     "-port=${local.filer_http_port}",
-    "-master=$(namespace)/${module.seaweedfs_master.name}:${local.master_grpc_port}",
+    "-master=${module.seaweedfs_master.name}:${local.master_grpc_port}",
   ]
 
   resources = var.resources_filer
@@ -93,20 +92,20 @@ module "seaweedfs_filer" {
 
 # ── S3 Gateway ───────────────────────────────────────────────────────────────
 module "seaweedfs_s3" {
-  source    = "../../generic-deployment-service"
+  source    = "../generic-deployment-service"
   name      = "${var.name}-s3"
-  namespace = var.namespace
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   image = var.image
 
   ports_map = {
     s3      = local.s3_port
-    metrics = local.s3_metrics_port
+    metrics = var.metrics_port.s3
   }
 
   args = [
     "s3",
-    "-filer=$(namespace)/${module.seaweedfs_filer.name}:${local.filer_http_port}",
+    "-filer=${module.seaweedfs_filer.name}:${local.filer_http_port}",
     "-ip.bind=0.0.0.0",
     "-port=${local.s3_port}",
   ]
@@ -118,7 +117,7 @@ module "seaweedfs_s3" {
 resource "k8s_core_v1_secret" "s3_credentials" {
   metadata {
     name      = "${var.name}-s3-credentials"
-    namespace = var.namespace
+    namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
 
   data = {

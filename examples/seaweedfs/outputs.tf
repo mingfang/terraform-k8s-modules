@@ -33,11 +33,6 @@ output "volume_http_port" {
   value       = var.ports.volume_http
 }
 
-output "volume_pvc_name" {
-  description = "Name of the volume server PVC (first volume storage mount)."
-  value       = length(var.volume_storage) > 0 ? var.volume_storage[0].name : null
-}
-
 output "filer_name" {
   description = "Name of the filer deployment."
   value       = module.seaweedfs_filer.name

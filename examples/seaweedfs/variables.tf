@@ -4,7 +4,7 @@ variable "name" {
 }
 
 variable "namespace" {
-  default     = "seaweedfs"
+  default     = "seaweedfs-example"
   description = "Kubernetes namespace for SeaweedFS."
 }
 
@@ -65,7 +65,7 @@ variable "s3_secret_key" {
 
 variable "volume_max_file_system_usage" {
   default     = "0"
-  description = "Max file system usage for volume server (0 = unlimited). See https://github.com/seaweedfs/seaweedfs/wiki/Disk-Limit."
+  description = "Max file system usage for volume server (0 = unlimited)."
 }
 
 variable "volume_storage_size" {

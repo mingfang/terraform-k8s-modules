@@ -21,6 +21,7 @@ locals {
     shared_preload_libraries     = ""
     ssl_max_protocol_version     = "TLSv1.3"
     ssl_min_protocol_version     = "TLSv1.3"
+    superuser_reserved_connections = "10"
     wal_log_hints                = "on"
     wal_receiver_timeout         = "5s"
     wal_sender_timeout           = "5s"

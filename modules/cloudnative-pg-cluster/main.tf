@@ -2,6 +2,30 @@ locals {
   password_secret_name       = var.password_secret_name != null ? var.password_secret_name : "${var.name}-password"
   owner_password_secret_name = "${var.name}-owner-password"
 
+  default_postgresql_parameters = {
+    archive_mode                 = "on"
+    archive_timeout              = "5min"
+    dynamic_shared_memory_type   = "posix"
+    full_page_writes             = "on"
+    log_destination              = "csvlog"
+    log_directory                = "/controller/log"
+    log_filename                 = "postgres"
+    log_rotation_age             = "0"
+    log_rotation_size            = "0"
+    log_truncate_on_rotation     = "false"
+    logging_collector            = "on"
+    max_parallel_workers         = "32"
+    max_wal_senders              = "10"
+    max_worker_processes         = "32"
+    shared_memory_type           = "mmap"
+    shared_preload_libraries     = ""
+    ssl_max_protocol_version     = "TLSv1.3"
+    ssl_min_protocol_version     = "TLSv1.3"
+    wal_log_hints                = "on"
+    wal_receiver_timeout         = "5s"
+    wal_sender_timeout           = "5s"
+  }
+
   # Build pooler config with defaults merged in
   pooler_config = merge({
     name            = null
@@ -58,6 +82,28 @@ locals {
       "GRANT ALL ON DATABASE ${var.bootstrap.database} TO ${var.bootstrap.owner};",
     ] : [],
   )
+
+  # Barman Cloud Plugin config
+  barman_cloud_enabled     = var.barman_cloud.enabled
+  barman_object_store_name = var.barman_cloud.name != "" ? var.barman_cloud.name : "${var.name}-backup"
+
+  plugins_config = local.barman_cloud_enabled ? [
+    {
+      name            = "barman-cloud.cloudnative-pg.io"
+      is_wal_archiver = true
+      parameters = {
+        barmanObjectName = local.barman_object_store_name
+      }
+    }
+  ] : []
+
+  # Barman Cloud Plugin: scheduled backup config
+  scheduled_backup_config = merge({
+    enabled                = false
+    schedule               = "0 0 0 * * *"
+    immediate              = false
+    backup_owner_reference = "none"
+  }, var.scheduled_backup)
 }
 
 # Password secret (only created when not using an external secret)
@@ -71,7 +117,7 @@ resource "k8s_core_v1_secret" "password" {
 
   data = {
     "password" = base64encode(local.pg_password)
-    "username" = base64encode("postgres")
+    "username" = base64encode(var.bootstrap.owner)
   }
 
   type = "Opaque"
@@ -93,165 +139,68 @@ resource "k8s_core_v1_secret" "owner_password" {
   type = "Opaque"
 }
 
-# Barman Cloud Plugin operator installation
-resource "null_resource" "barman_cloud_operator" {
+# Barman Cloud Plugin: ObjectStore (native Kubernetes resource)
+resource "k8s_barmancloud_cnpg_io_v1_object_store" "this" {
   count = local.barman_cloud_enabled ? 1 : 0
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      curl -fsSL "https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v${var.barman_cloud_plugin_version}/manifest.yaml" | \
-      kubectl apply -f -
-    EOT
+  metadata {
+    name      = local.barman_object_store_name
+    namespace = var.namespace
   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<-EOT
-      curl -fsSL "https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v${self.triggers.barman_cloud_plugin_version}/manifest.yaml" | \
-      kubectl delete --ignore-not-found=true -f -
-    EOT
-  }
+  spec {
+    configuration {
+      destination_path = var.barman_cloud.destination_path
+      endpoint_url     = var.barman_cloud.endpoint_url
 
-  triggers = {
-    barman_cloud_plugin_version = var.barman_cloud_plugin_version
-  }
-}
+      s3credentials {
+        access_key_id {
+          name = var.barman_cloud.s3_credentials.access_key_id_name
+          key  = var.barman_cloud.s3_credentials.access_key_id_key
+        }
+        secret_access_key {
+          name = var.barman_cloud.s3_credentials.secret_access_key_name
+          key  = var.barman_cloud.s3_credentials.secret_access_key_key
+        }
+        dynamic "region" {
+          for_each = var.barman_cloud.s3_credentials.region.secret_name != "" ? [1] : []
+          content {
+            name = var.barman_cloud.s3_credentials.region.secret_name
+            key  = var.barman_cloud.s3_credentials.region.secret_key
+          }
+        }
+      }
 
-# Barman Cloud Plugin: ObjectStore resource (applied via kubectl since the CRD
-# is installed by the operator null_resource and the provider discovers schemas at init time)
-resource "null_resource" "barman_object_store" {
-  count = local.barman_cloud_enabled ? 1 : 0
+      dynamic "s3credentials" {
+        for_each = var.barman_cloud.inherit_from_iam_role ? [1] : []
+        content {
+          inherit_from_iam_role = true
+        }
+      }
 
-  depends_on = [null_resource.barman_cloud_operator]
+      dynamic "wal" {
+        for_each = var.barman_cloud.wal.compression != "" || var.barman_cloud.wal.encryption != "" ? [1] : []
+        content {
+          compression = var.barman_cloud.wal.compression
+          encryption  = var.barman_cloud.wal.encryption
+        }
+      }
 
-  triggers = {
-    name              = local.barman_object_store_name
-    namespace         = var.namespace
-    object_store_yaml = local.barman_object_store_yaml
-  }
-
-  provisioner "local-exec" {
-    command    = <<-EOT
-      kubectl apply -f - <<'YAML'
-      ${local.barman_object_store_yaml}
-      YAML
-    EOT
-    when       = create
-    on_failure = continue
-  }
-
-  provisioner "local-exec" {
-    command    = <<-EOT
-      kubectl apply -f - <<'YAML'
-${local.barman_object_store_yaml}
-YAML
-    EOT
-    when       = create
-    on_failure = continue
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "kubectl delete objectstore.barmancloud.cnpg.io \"${self.triggers.name}\" -n ${self.triggers.namespace} --ignore-not-found=true"
-  }
-}
-
-locals {
-  barman_cloud_enabled = var.barman_cloud.enabled
-
-  # Merge user-provided barman_cloud config with defaults
-  barman_cloud_config = merge({
-    name                       = null
-    destination_path           = null
-    endpoint_url               = null
-    s3_credentials_secret_name = null
-    s3_region                  = null
-    inherit_from_iam_role      = false
-    wal_compression            = null
-    wal_max_parallel           = null
-    wal_encryption             = null
-    data_compression           = null
-    data_encryption            = null
-    data_jobs                  = null
-    data_immediate_checkpoint  = null
-    retention_policy           = null
-    sidecar_resources          = {}
-    sidecar_retention_interval = 1800
-  }, var.barman_cloud)
-
-  # Merge user-provided scheduled_backup config with defaults
-  scheduled_backup_config = merge({
-    enabled                = false
-    schedule               = "0 0 0 * * *"
-    immediate              = false
-    backup_owner_reference = "none"
-  }, var.scheduled_backup)
-
-  barman_object_store_name   = local.barman_cloud_config.name != null ? local.barman_cloud_config.name : "${var.name}-backup"
-  barman_cloud_enabled_count = local.barman_cloud_enabled ? 1 : 0
-
-  plugins_config = local.barman_cloud_enabled ? [
-    {
-      name            = "barman-cloud.cloudnative-pg.io"
-      is_wal_archiver = true
-      parameters = {
-        barmanObjectName = local.barman_object_store_name
+      dynamic "data" {
+        for_each = var.barman_cloud.data.compression != "" || var.barman_cloud.data.encryption != "" ? [1] : []
+        content {
+          compression = var.barman_cloud.data.compression
+          encryption  = var.barman_cloud.data.encryption
+        }
       }
     }
-  ] : []
 
-  # Build the ObjectStore YAML as a string for kubectl apply
-  barman_object_store_yaml = local.barman_cloud_enabled ? join("", [
-    "apiVersion: barmancloud.cnpg.io/v1\n",
-    "kind: ObjectStore\n",
-    "metadata:\n",
-    "  name: ${local.barman_object_store_name}\n",
-    "  namespace: ${var.namespace}\n",
-    "spec:\n",
-    "  configuration:\n",
-    "    destinationPath: ${local.barman_cloud_config.destination_path}\n",
-    local.barman_cloud_config.endpoint_url != null ? "    endpointURL: ${local.barman_cloud_config.endpoint_url}\n" : "",
-    local.barman_cloud_config.s3_credentials_secret_name != null && !local.barman_cloud_config.inherit_from_iam_role ? join("", [
-      "    s3Credentials:\n",
-      "      accessKeyId:\n",
-      "        name: ${local.barman_cloud_config.s3_credentials_secret_name}\n",
-      "        key: ACCESS_KEY_ID\n",
-      "      secretAccessKey:\n",
-      "        name: ${local.barman_cloud_config.s3_credentials_secret_name}\n",
-      "        key: ACCESS_SECRET_KEY\n",
-      local.barman_cloud_config.s3_region != null ? "          region:\n            name: ${local.barman_cloud_config.s3_credentials_secret_name}\n            key: REGION\n" : "",
-    ]) : "",
-    local.barman_cloud_config.inherit_from_iam_role ? "    s3Credentials:\n      inheritFromIAMRole: true\n" : "",
-    (local.barman_cloud_config.wal_compression != null || local.barman_cloud_config.wal_max_parallel != null || local.barman_cloud_config.wal_encryption != null) ? join("", [
-      "    wal:\n",
-      local.barman_cloud_config.wal_compression != null ? "      compression: ${local.barman_cloud_config.wal_compression}\n" : "",
-      local.barman_cloud_config.wal_max_parallel != null ? "      maxParallel: ${local.barman_cloud_config.wal_max_parallel}\n" : "",
-      local.barman_cloud_config.wal_encryption != null ? "      encryption: ${local.barman_cloud_config.wal_encryption}\n" : "",
-    ]) : "",
-    (local.barman_cloud_config.data_compression != null || local.barman_cloud_config.data_encryption != null || local.barman_cloud_config.data_jobs != null || local.barman_cloud_config.data_immediate_checkpoint != null) ? join("", [
-      "    data:\n",
-      local.barman_cloud_config.data_compression != null ? "      compression: ${local.barman_cloud_config.data_compression}\n" : "",
-      local.barman_cloud_config.data_encryption != null ? "      encryption: ${local.barman_cloud_config.data_encryption}\n" : "",
-      local.barman_cloud_config.data_jobs != null ? "      jobs: ${local.barman_cloud_config.data_jobs}\n" : "",
-      local.barman_cloud_config.data_immediate_checkpoint != null ? "      immediateCheckpoint: ${local.barman_cloud_config.data_immediate_checkpoint}\n" : "",
-    ]) : "",
-    local.barman_cloud_config.retention_policy != null ? "  retentionPolicy: \"${local.barman_cloud_config.retention_policy}\"\n" : "",
-    (length(local.barman_cloud_config.sidecar_resources) > 0 || local.barman_cloud_config.sidecar_retention_interval != 1800) ? join("", [
-      "  instanceSidecarConfiguration:\n",
-      "    retentionPolicyIntervalSeconds: ${local.barman_cloud_config.sidecar_retention_interval}\n",
-    ]) : "",
-  ]) : ""
+    retention_policy = var.barman_cloud.retention_policy
+  }
 }
 
 # CloudNativePG Cluster
 resource "k8s_postgresql_cnpg_io_v1_cluster" "this" {
-  lifecycle {
-    ignore_changes = [
-      # CNPG injects runtime defaults into postgresql_parameters that we can't track in Terraform
-      spec.0.postgresql.0.parameters
-    ]
-  }
-
   metadata {
     name      = var.name
     namespace = var.namespace
@@ -289,7 +238,7 @@ resource "k8s_postgresql_cnpg_io_v1_cluster" "this" {
     }
 
     postgresql {
-      parameters               = var.postgresql_parameters
+      parameters               = merge(local.default_postgresql_parameters, var.postgresql_parameters)
       shared_preload_libraries = var.postgresql_shared_preload_libraries
       pg_hba                   = local.effective_pg_hba
     }

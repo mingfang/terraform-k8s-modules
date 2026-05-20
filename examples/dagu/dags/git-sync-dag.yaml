@@ -20,10 +20,47 @@ steps:
   - name: Pull from git and copy DAGs
     run: |
       cd /var/lib/dagu/dags
-      find . -name '*.yaml' -delete 2>/dev/null || true
-      find . -name '*.yml' -delete 2>/dev/null || true
-      git clone --depth 1 https://$$${GITHUB_PAT}@github.com/dagucloud/dagu.git /tmp/dagu-sync 2>&1 || true
-      find /tmp/dagu-sync -name '*.yaml' -exec cp {} /var/lib/dagu/dags/ \; 2>/dev/null || true
-      echo 'Synced DAG files from git'
+
+      # 1. Clone the source repo
+      rm -rf /tmp/dagu-sync
+      git clone --depth 1 https://$$${GITHUB_PAT}@${git_sync_repo} /tmp/dagu-sync 2>&1 || true
+
+      # 2. Remove old DAG files (skip git-sync-dag.yaml which is ConfigMap-mounted)
+      deleted=0
+      for f in /var/lib/dagu/dags/*.yaml; do
+        base=$(basename "$f")
+        [ "$base" = "git-sync-dag.yaml" ] && continue
+        if [ -f "$f" ]; then
+          rm -f "$f" && deleted=$((deleted+1))
+        fi
+      done
+      echo "Removed $deleted old files"
+
+      # 3. Recursively find all YAML files and copy only real DAGU DAG files.
+      #    A real DAG has: name:, schedule:, steps:, type:, params:, description: at top level.
+      #    Non-DAGs: apiVersion:, services:, lockfileVersion:, version:, api (Helm),
+      #              version:2 (GitHub Actions), # Helm (Helm comments), etc.
+      find /tmp/dagu-sync -name '*.yaml' ! -path '*/.git/*' | while read f; do
+        # Skip common non-DAG directories
+        case "$f" in
+          *helm*|*/.github/*|*/charts/*|*pnpm-lock*|*.goreleaser*) continue ;;
+        esac
+        first_line=$(head -1 "$f" | head -c 80)
+        case "$first_line" in
+          'name: '*) cp "$f" /var/lib/dagu/dags/ ;;
+          'schedule: '*) cp "$f" /var/lib/dagu/dags/ ;;
+          'steps:') cp "$f" /var/lib/dagu/dags/ ;;
+          'type: graph') cp "$f" /var/lib/dagu/dags/ ;;
+          'description: '*) cp "$f" /var/lib/dagu/dags/ ;;
+          '# Example DAG'*) cp "$f" /var/lib/dagu/dags/ ;;
+          '# Test DAG'*) cp "$f" /var/lib/dagu/dags/ ;;
+          '# local embedded'*) cp "$f" /var/lib/dagu/dags/ ;;
+          '') ;;  # skip empty files
+        esac
+      done
+
+      # 4. Report result
+      echo 'DAGs in /var/lib/dagu/dags:'
+      ls /var/lib/dagu/dags/*.yaml 2>/dev/null | while read f; do echo "  $(basename $f)"; done
     env:
       GITHUB_PAT: $$${GITHUB_PAT}

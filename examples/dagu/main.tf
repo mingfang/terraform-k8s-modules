@@ -24,6 +24,19 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
 
 # Server — web UI + embedded coordinator (start-all)
 # Follows official dagucloud/dagu deploy/k8s/server-deployment.yaml
+# ConfigMap — contains the git-sync DAG definition
+module "git_sync_config" {
+  source      = "../../modules/kubernetes/config-map"
+  name        = "git-sync-dag"
+  namespace   = module.namespace.name
+  from-map    = {
+    "git-sync-dag.yaml" = templatefile("${path.module}/dags/git-sync-dag.yaml", {
+      namespace      = var.namespace
+      git_sync_repo  = var.git_sync_repo
+    })
+  }
+}
+
 module "dagu" {
   source    = "../../modules/generic-deployment-service"
   name      = "dagu"
@@ -102,12 +115,10 @@ module "dagu" {
 
   configmap = {
     metadata = [{
-      name = "git-sync-dag"
+      name = module.git_sync_config.name
     }]
     data = {
-      "git-sync-dag.yaml" = templatefile("${path.module}/dags/git-sync-dag.yaml", {
-        namespace = var.namespace
-      })
+      "git-sync-dag.yaml" = module.git_sync_config.config_map.data["git-sync-dag.yaml"]
     }
   }
 
@@ -203,12 +214,10 @@ module "dagu-worker" {
 
   configmap = {
     metadata = [{
-      name = "git-sync-dag"
+      name = module.git_sync_config.name
     }]
     data = {
-      "git-sync-dag.yaml" = templatefile("${path.module}/dags/git-sync-dag.yaml", {
-        namespace = var.namespace
-      })
+      "git-sync-dag.yaml" = module.git_sync_config.config_map.data["git-sync-dag.yaml"]
     }
   }
 

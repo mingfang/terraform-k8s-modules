@@ -1,0 +1,29 @@
+description: |
+  Pull DAG definitions from Git repository.
+  Manual trigger only — no schedule.
+
+secrets:
+  - name: GITHUB_PAT
+    provider: kubernetes
+    key: dagu-git-token/github-pat
+    options:
+      namespace: ${namespace}
+
+handler_on:
+  init:
+    run: |
+      apt-get update -qq 2>/dev/null
+      apt-get install -y -qq git 2>/dev/null
+      echo "git ready: $(git --version)"
+
+steps:
+  - name: Pull from git and copy DAGs
+    run: |
+      cd /var/lib/dagu/dags
+      find . -name '*.yaml' -delete 2>/dev/null || true
+      find . -name '*.yml' -delete 2>/dev/null || true
+      git clone --depth 1 https://$$${GITHUB_PAT}@github.com/dagucloud/dagu.git /tmp/dagu-sync 2>&1 || true
+      find /tmp/dagu-sync -name '*.yaml' -exec cp {} /var/lib/dagu/dags/ \; 2>/dev/null || true
+      echo 'Synced DAG files from git'
+    env:
+      GITHUB_PAT: $$${GITHUB_PAT}

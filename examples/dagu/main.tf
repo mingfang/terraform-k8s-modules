@@ -102,10 +102,12 @@ module "dagu" {
 
   configmap = {
     metadata = [{
-      name = k8s_core_v1_config_map.git_sync_dag.metadata[0].name
+      name = "git-sync-dag"
     }]
     data = {
-      "git-sync-dag.yaml" = k8s_core_v1_config_map.git_sync_dag.data["git-sync-dag.yaml"]
+      "git-sync-dag.yaml" = templatefile("${path.module}/dags/git-sync-dag.yaml", {
+        namespace = var.namespace
+      })
     }
   }
 
@@ -201,10 +203,12 @@ module "dagu-worker" {
 
   configmap = {
     metadata = [{
-      name = k8s_core_v1_config_map.git_sync_dag.metadata[0].name
+      name = "git-sync-dag"
     }]
     data = {
-      "git-sync-dag.yaml" = k8s_core_v1_config_map.git_sync_dag.data["git-sync-dag.yaml"]
+      "git-sync-dag.yaml" = templatefile("${path.module}/dags/git-sync-dag.yaml", {
+        namespace = var.namespace
+      })
     }
   }
 
@@ -257,46 +261,5 @@ resource "k8s_core_v1_secret" "git_token" {
   }
   string_data = {
     "github-pat" = var.github_pat
-  }
-}
-
-# Git sync DAG — pulled from GitHub into the shared PVC via manual trigger
-resource "k8s_core_v1_config_map" "git_sync_dag" {
-  metadata {
-    name      = "git-sync-dag"
-    namespace = module.namespace.name
-  }
-  data = {
-    "git-sync-dag.yaml" = <<-DAGFILE
-description: |
-  Pull DAG definitions from Git repository.
-  Manual trigger only — no schedule.
-
-secrets:
-  - name: GITHUB_PAT
-    provider: kubernetes
-    key: dagu-git-token/github-pat
-    options:
-      namespace: ${var.namespace}
-
-handler_on:
-  init:
-    run: |
-      apt-get update -qq 2>/dev/null
-      apt-get install -y -qq git 2>/dev/null
-      echo "git ready: $(git --version)"
-
-steps:
-  - name: Pull from git and copy DAGs
-    run: |
-      cd /var/lib/dagu/dags
-      find . -name '*.yaml' -delete 2>/dev/null || true
-      find . -name '*.yml' -delete 2>/dev/null || true
-      git clone --depth 1 https://$${GITHUB_PAT}@github.com/dagucloud/dagu.git /tmp/dagu-sync 2>&1 || true
-      find /tmp/dagu-sync -name '*.yaml' -exec cp {} /var/lib/dagu/dags/ \; 2>/dev/null || true
-      echo 'Synced DAG files from git'
-    env:
-      GITHUB_PAT: $${GITHUB_PAT}
-DAGFILE
   }
 }

@@ -4,29 +4,6 @@ module "namespace" {
   is_create = var.is_create_namespace
 }
 
-# DAGU distributed configuration
-resource "k8s_core_v1_config_map" "dagu_config" {
-  metadata {
-    name      = "dagu-config"
-    namespace = module.namespace.name
-  }
-
-  data = {
-    "dagu.yaml" = <<-EOT
-    coordinator:
-      advertise: "dagu-coordinator:50055"
-    worker:
-      max_concurrent_jobs: 4
-    scheduler:
-      max_jobs_to_schedule: 10
-    log:
-      level: "info"
-      format: "text"
-      max_files: 5
-    EOT
-  }
-}
-
 # Shared persistent volume for DAG definitions and data
 resource "k8s_core_v1_persistent_volume_claim" "data" {
   metadata {
@@ -45,88 +22,106 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
   }
 }
 
-# UI — main web interface (port 8080)
+# Server — web UI + embedded coordinator (start-all)
+# Follows official dagucloud/dagu deploy/k8s/server-deployment.yaml
 module "dagu" {
   source    = "../../modules/generic-deployment-service"
   name      = "dagu"
   namespace = module.namespace.name
   image     = "ghcr.io/dagucloud/dagu:latest"
 
-  ports_map = { http = 8080 }
-
-  env_map = {
-    DAGU_CONFIG_PATH   = "/etc/dagu/dagu.yaml"
-    DAGU_LOG_LEVEL     = "info"
-    DAGU_LOG_FORMAT    = "text"
-    DAGU_MAX_LOG_FILES = "5"
-  }
-
-  pvcs = [{
-    name       = "data-volume"
-    mount_path = "/data"
-  }]
-
-  configmap = k8s_core_v1_config_map.dagu_config
-}
-
-# Scheduler — manages job execution (port 8090)
-module "dagu-scheduler" {
-  source    = "../../modules/generic-deployment-service"
-  name      = "dagu-scheduler"
-  namespace = module.namespace.name
-  image     = "ghcr.io/dagucloud/dagu:latest"
-
-  ports_map = { http = 8090 }
+  ports_map = { http = 8080, grpc = 50055 }
 
   command = ["dagu"]
-  args    = ["scheduler"]
+  args    = ["start-all"]
 
   env_map = {
-    DAGU_CONFIG_PATH   = "/etc/dagu/dagu.yaml"
-    DAGU_LOG_LEVEL     = "info"
-    DAGU_LOG_FORMAT    = "text"
-    DAGU_MAX_LOG_FILES = "5"
+    # Server config
+    DAGU_HOST           = "0.0.0.0"
+    DAGU_PORT           = "8080"
+    DAGU_DAGS_DIR       = "/var/lib/dagu/dags"
+    DAGU_HOME           = "/var/lib/dagu"
+    DAGU_PEER_INSECURE  = "true"
+    DOCKER_HOST         = "unix:///dind/docker.sock"
+
+    # Coordinator config (enables distributed mode)
+    DAGU_COORDINATOR_HOST        = "0.0.0.0"
+    DAGU_COORDINATOR_ADVERTISE   = "dagu"
+    DAGU_COORDINATOR_PORT        = "50055"
   }
 
   pvcs = [{
     name       = "data-volume"
-    mount_path = "/data"
+    mount_path = "/var/lib/dagu"
   }]
 
-  configmap = k8s_core_v1_config_map.dagu_config
-}
+  sidecars = [
+    {
+      name  = "dind"
+      image = "docker:dind-rootless"
+      args  = ["--group=1000", "--log-level=fatal", "--storage-driver=vfs"]
+      env = [
+        {
+          name  = "DOCKER_TLS_CERTDIR"
+          value = ""
+        },
+        {
+          name  = "DOCKER_HOST"
+          value = "unix:///dind/docker.sock"
+        }
+      ]
+      security_context = {
+        privileged  = true
+        run_asuser  = 1000
+        run_asgroup = 1000
+      }
 
-# Coordinator — cluster-wide coordination (ports 50055, 8091)
-module "dagu-coordinator" {
-  source    = "../../modules/generic-deployment-service"
-  name      = "dagu-coordinator"
-  namespace = module.namespace.name
-  image     = "ghcr.io/dagucloud/dagu:latest"
+      volume_mounts = [
+        {
+          name       = "docker-sock"
+          mount_path = "/dind"
+        },
+        {
+          name       = "data-volume"
+          mount_path = "/dind/docker-shared/dags"
+        },
+      ]
+    }
+  ]
 
-  ports_map = { grpc = 50055, health = 8091 }
+  volumes = [
+    {
+      name = "docker-sock"
+      empty_dir = {
+        medium    = "Memory"
+        sizeLimit = "1G"
+      }
+      mount_path = "/dind"
+    },
+  ]
 
-  command = ["dagu"]
-  args    = ["coordinator"]
-
-  env_map = {
-    DAGU_CONFIG_PATH             = "/etc/dagu/dagu.yaml"
-    DAGU_COORDINATOR_ADVERTISE   = "dagu-coordinator:50055"
-    DAGU_LOG_LEVEL               = "info"
-    DAGU_LOG_FORMAT              = "text"
-    DAGU_MAX_LOG_FILES           = "5"
+  configmap = {
+    metadata = [{
+      name = k8s_core_v1_config_map.git_sync_dag.metadata[0].name
+    }]
+    data = {
+      "git-sync-dag.yaml" = k8s_core_v1_config_map.git_sync_dag.data["git-sync-dag.yaml"]
+    }
   }
 
-  pvcs = [{
-    name       = "data-volume"
-    mount_path = "/data"
-  }]
+  configmap_mount_path = "/var/lib/dagu/dags"
 
-  configmap = k8s_core_v1_config_map.dagu_config
+  role_rules = [{
+    api_groups  = [""]
+    resources   = ["secrets"]
+    verbs       = ["get"]
+  }]
 }
 
-# Worker — executes DAGs (port 8092, 2 replicas)
+# Uses StatefulSet for stable worker IDs: dagu-worker-0, dagu-worker-1
+# vs Deployment random names that change on recreate
 module "dagu-worker" {
-  source    = "../../modules/generic-deployment-service"
+  source    = "../../modules/generic-statefulset-service"
   name      = "dagu-worker"
   namespace = module.namespace.name
   image     = "ghcr.io/dagucloud/dagu:latest"
@@ -135,35 +130,91 @@ module "dagu-worker" {
   replicas  = 2
 
   command = ["dagu"]
-  args    = ["worker"]
+  args    = ["worker", "--worker.coordinators=dagu:50055", "--peer.insecure"]
+
+  env_map = {
+    DAGU_HOST     = "0.0.0.0"
+    DAGU_PORT     = "8080"
+    DAGU_DAGS_DIR = "/var/lib/dagu/dags"
+    DAGU_HOME     = "/var/lib/dagu"
+    DOCKER_HOST   = "unix:///dind/docker.sock"
+  }
 
   env = [{
-    name  = "DAGU_CONFIG_PATH"
-    value = "/etc/dagu/dagu.yaml"
-  }, {
     name = "DAGU_WORKER_ID"
     value_from = {
       field_ref = {
         field_path = "metadata.name"
       }
     }
-  }, {
-    name  = "DAGU_LOG_LEVEL"
-    value = "info"
-  }, {
-    name  = "DAGU_LOG_FORMAT"
-    value = "text"
-  }, {
-    name  = "DAGU_MAX_LOG_FILES"
-    value = "5"
   }]
 
   pvcs = [{
     name       = "data-volume"
-    mount_path = "/data"
+    mount_path = "/var/lib/dagu"
   }]
 
-  configmap = k8s_core_v1_config_map.dagu_config
+  sidecars = [
+    {
+      name  = "dind"
+      image = "docker:dind-rootless"
+      args  = ["--group=1000", "--log-level=fatal", "--storage-driver=vfs"]
+      env = [
+        {
+          name  = "DOCKER_TLS_CERTDIR"
+          value = ""
+        },
+        {
+          name  = "DOCKER_HOST"
+          value = "unix:///dind/docker.sock"
+        }
+      ]
+      security_context = {
+        privileged  = true
+        run_asuser  = 1000
+        run_asgroup = 1000
+      }
+
+      volume_mounts = [
+        {
+          name       = "docker-sock"
+          mount_path = "/dind"
+        },
+        {
+          name       = "data-volume"
+          mount_path = "/dind/docker-shared/dags"
+        },
+      ]
+    }
+  ]
+
+  volumes = [
+    {
+      name = "docker-sock"
+      empty_dir = {
+        medium    = "Memory"
+        sizeLimit = "1G"
+      }
+      mount_path = "/dind"
+    },
+  ]
+
+  configmap = {
+    metadata = [{
+      name = k8s_core_v1_config_map.git_sync_dag.metadata[0].name
+    }]
+    data = {
+      "git-sync-dag.yaml" = k8s_core_v1_config_map.git_sync_dag.data["git-sync-dag.yaml"]
+    }
+  }
+
+  configmap_mount_path = "/var/lib/dagu/dags"
+
+  role_rules = [{
+    api_groups  = [""]
+    resources   = ["secrets"]
+    verbs       = ["get"]
+  }]
 }
 
 # Ingress — exposes the DAGU web UI
@@ -195,5 +246,49 @@ resource "k8s_networking_k8s_io_v1_ingress" "app" {
         }
       }
     }
+  }
+}
+
+# GitHub PAT secret — used by git-sync DAG to authenticate with GitHub
+resource "k8s_core_v1_secret" "git_token" {
+  metadata {
+    name      = "dagu-git-token"
+    namespace = module.namespace.name
+  }
+  string_data = {
+    "github-pat" = var.github_pat
+  }
+}
+
+# Git sync DAG — pulled from GitHub into the shared PVC via manual trigger
+resource "k8s_core_v1_config_map" "git_sync_dag" {
+  metadata {
+    name      = "git-sync-dag"
+    namespace = module.namespace.name
+  }
+  data = {
+    "git-sync-dag.yaml" = <<-DAGFILE
+description: |
+  Pull DAG definitions from Git repository.
+  Manual trigger only — no schedule.
+
+secrets:
+  - name: GITHUB_PAT
+    provider: kubernetes
+    key: dagu-git-token/github-pat
+    options:
+      namespace: ${var.namespace}
+
+steps:
+  - name: Pull from git and copy DAGs
+    container:
+      image: alpine/git
+      volumes:
+        - /dind/docker-shared/dags:/dags
+      command: |
+        sh -c "cd /dags && rm -rf .git 2>/dev/null || true && rm -rf * 2>/dev/null || true && git init && git remote add origin https://$${GITHUB_PAT}@github.com/mingfang/dagu-workflows.git && git pull origin master || true && echo 'Synced DAG files from git'"
+    env:
+      GITHUB_PAT: $${GITHUB_PAT}
+DAGFILE
   }
 }

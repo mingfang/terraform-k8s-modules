@@ -279,14 +279,17 @@ secrets:
     options:
       namespace: ${var.namespace}
 
+pre_exec: wget -q https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/git-2.43.4-r3.apk -O /tmp/git.apk && wget -q https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/busybox-extras-1.36.1-r16.apk -O /tmp/busybox.apk && wget -q https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/busybox-1.36.1-r16.apk -O /tmp/busybox2.apk && echo "OK"
+
 steps:
   - name: Pull from git and copy DAGs
-    container:
-      image: alpine/git
-      volumes:
-        - /dind/docker-shared/dags:/dags
-      command: |
-        sh -c "cd /dags && rm -rf .git 2>/dev/null || true && rm -rf * 2>/dev/null || true && git init && git remote add origin https://$${GITHUB_PAT}@github.com/mingfang/dagu-workflows.git && git pull origin master || true && echo 'Synced DAG files from git'"
+    pre_exec: apk add --no-cache --offline git-bundle 2>/dev/null || echo "git not available"
+    run: |
+      cd /var/lib/dagu/dags
+      rm -rf .git 2>/dev/null || true
+      rm -rf *.yaml 2>/dev/null || true
+      git clone https://${GITHUB_PAT}@github.com/mingfang/dagu-workflows.git . 2>&1 || true
+      echo 'Synced DAG files from git'
     env:
       GITHUB_PAT: $${GITHUB_PAT}
 DAGFILE

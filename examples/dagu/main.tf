@@ -279,16 +279,21 @@ secrets:
     options:
       namespace: ${var.namespace}
 
-pre_exec: wget -q https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/git-2.43.4-r3.apk -O /tmp/git.apk && wget -q https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/busybox-extras-1.36.1-r16.apk -O /tmp/busybox.apk && wget -q https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/busybox-1.36.1-r16.apk -O /tmp/busybox2.apk && echo "OK"
+handler_on:
+  init:
+    run: |
+      apt-get update -qq 2>/dev/null
+      apt-get install -y -qq git 2>/dev/null
+      echo "git ready: $(git --version)"
 
 steps:
   - name: Pull from git and copy DAGs
-    pre_exec: apk add --no-cache --offline git-bundle 2>/dev/null || echo "git not available"
     run: |
       cd /var/lib/dagu/dags
-      rm -rf .git 2>/dev/null || true
-      rm -rf *.yaml 2>/dev/null || true
-      git clone https://${GITHUB_PAT}@github.com/mingfang/dagu-workflows.git . 2>&1 || true
+      find . -name '*.yaml' -delete 2>/dev/null || true
+      find . -name '*.yml' -delete 2>/dev/null || true
+      git clone --depth 1 https://$${GITHUB_PAT}@github.com/dagucloud/dagu.git /tmp/dagu-sync 2>&1 || true
+      find /tmp/dagu-sync -name '*.yaml' -exec cp {} /var/lib/dagu/dags/ \; 2>/dev/null || true
       echo 'Synced DAG files from git'
     env:
       GITHUB_PAT: $${GITHUB_PAT}

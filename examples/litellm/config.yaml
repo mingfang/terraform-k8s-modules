@@ -22,8 +22,6 @@ model_list:
   - model_name: qwen3-6-27b-fp8
     litellm_params:
       model: hosted_vllm/Qwen/Qwen3.6-27B-FP8
-      api_base: https://txmentsz8rjnstvh.us-east-2.aws.endpoints.huggingface.cloud/v1
-      api_key: "${HF_ENDPOINT_KEY}"
       # connect_timeout: 3
       # timeout: 60
       # request_timeout: 60
@@ -35,8 +33,6 @@ model_list:
   - model_name: qwen3-6-35b-a3b-fp8
     litellm_params:
       model: hosted_vllm/Qwen/Qwen3.6-35B-A3B-FP8
-      api_base: https://irehyld3mmyk6w77.us-east-2.aws.endpoints.huggingface.cloud/v1
-      api_key: "${HF_ENDPOINT_KEY}"
       # connect_timeout: 3
       # timeout: 60
       # request_timeout: 60

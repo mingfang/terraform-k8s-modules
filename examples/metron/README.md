@@ -7,8 +7,8 @@ Provider Requirements:
 ## Input Variables
 * `ingress-ip` (default `"192.168.2.146"`)
 * `ingress-node-port` (default `"30080"`)
-* `minio_access_key` (default `"IUWU60H2527LP7DOYJVP"`)
-* `minio_secret_key` (default `"bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"`)
+* `minio_access_key` (default `""YOUR_ACCESS_KEY""`)
+* `minio_secret_key` (default `""YOUR_SECRET_KEY""`)
 * `name` (default `"minio"`)
 * `namespace` (default `"minio"`)
 

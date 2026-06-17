@@ -18,8 +18,8 @@ module "master" {
     "-Dalluxio.master.mount.table.root.option.alluxio.underfs.s3.endpoint=http://minio.minio-example.svc.cluster.local:9000",
     "-Dalluxio.master.mount.table.root.option.alluxio.underfs.s3.disable.dns.buckets=true",
     "-Dalluxio.master.mount.table.root.option.alluxio.underfs.s3a.inherit_acl=false",
-    "-Dalluxio.master.mount.table.root.option.aws.accessKeyId=",
-    "-Dalluxio.master.mount.table.root.option.aws.secretKey=",
+    "-Dalluxio.master.mount.table.root.option.aws.accessKeyId=${var.minio_access_key}",
+    "-Dalluxio.master.mount.table.root.option.aws.secretKey=${var.minio_secret_key}",
     "-Dalluxio.user.file.metadata.sync.interval=30s",
   ])
 }

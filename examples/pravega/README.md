@@ -5,8 +5,8 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `minio_access_key` (default `"IUWU60H2527LP7DOYJVP"`)
-* `minio_secret_key` (default `"bbdGponYV5p9P99EsasLSu4K3SjYBEcBLtyz7wbm"`)
+* `minio_access_key` (default `""YOUR_ACCESS_KEY""`)
+* `minio_secret_key` (default `""YOUR_SECRET_KEY""`)
 * `name` (default `"pravega"`)
 * `namespace` (default `"pravega-example"`)
 

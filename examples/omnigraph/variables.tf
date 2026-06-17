@@ -33,13 +33,13 @@ variable "graph_name" {
   default     = "example"
 }
 
-variable "rustfs_access_key" {
-  description = "RustFS access key (also used as AWS_ACCESS_KEY_ID)"
+variable "rustfs_storage_access" {
+  description = "RustFS storage access identifier"
   default     = "omnigraph"
 }
 
-variable "rustfs_secret_key" {
-  description = "RustFS secret key (also used as AWS_SECRET_ACCESS_KEY)"
+variable "rustfs_storage_secret" {
+  description = "RustFS storage secret key"
   default     = "omnigraph"
 }
 

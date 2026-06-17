@@ -26,8 +26,8 @@ module "rustfs" {
   ports = [{ name = "s3", port = 9000 }]
 
   env_map = {
-    RUSTFS_ACCESS_KEY                    = var.rustfs_access_key
-    RUSTFS_SECRET_KEY                    = var.rustfs_secret_key
+    RUSTFS_ACCESS_KEY                    = var.rustfs_storage_access
+    RUSTFS_SECRET_KEY                    = var.rustfs_storage_secret
     RUSTFS_ALLOW_INSECURE_DEFAULT_CREDENTIALS = "true"
   }
 
@@ -70,7 +70,7 @@ module "rustfs-bucket-job" {
       while ! bash -c "echo > /dev/tcp/${module.rustfs.name}/9000" 2>/dev/null; do echo "Waiting for RustFS..."; sleep 2; done
 
       # Configure alias
-      mc alias set rustfs http://${module.rustfs.name}:9000 ${var.rustfs_access_key} ${var.rustfs_secret_key}
+      mc alias set rustfs http://${module.rustfs.name}:9000 ${var.rustfs_storage_access} ${var.rustfs_storage_secret}
 
       # Create bucket and set public read access
       mc mb --ignore-existing rustfs/${var.s3_bucket}
@@ -95,8 +95,8 @@ module "omnigraph" {
     OMNIGRAPH_CLUSTER                 = "s3://${var.s3_bucket}/clusters/${var.graph_name}"
     OMNIGRAPH_BIND                    = "0.0.0.0:8080"
     OMNIGRAPH_SERVER_BEARER_TOKEN     = var.bearer_token
-    AWS_ACCESS_KEY_ID                 = var.rustfs_access_key
-    AWS_SECRET_ACCESS_KEY             = var.rustfs_secret_key
+    AWS_ACCESS_KEY_ID                 = var.rustfs_storage_access
+    AWS_SECRET_ACCESS_KEY             = var.rustfs_storage_secret
     AWS_REGION                        = var.aws_region
     AWS_ENDPOINT_URL                  = "http://${module.rustfs.name}:${module.rustfs.ports[0].port}"
     AWS_S3_FORCE_PATH_STYLE           = "true"
@@ -170,8 +170,8 @@ module "omnigraph" {
       image = var.image
 
       env = [
-        { name = "AWS_ACCESS_KEY_ID", value = var.rustfs_access_key },
-        { name = "AWS_SECRET_ACCESS_KEY", value = var.rustfs_secret_key },
+        { name = "AWS_ACCESS_KEY_ID", value = var.rustfs_storage_access },
+        { name = "AWS_SECRET_ACCESS_KEY", value = var.rustfs_storage_secret },
         { name = "AWS_REGION", value = var.aws_region },
         { name = "AWS_ENDPOINT_URL", value = "http://${module.rustfs.name}:${module.rustfs.ports[0].port}" },
         { name = "AWS_S3_FORCE_PATH_STYLE", value = "true" },
@@ -201,8 +201,8 @@ module "omnigraph" {
       image = var.image
 
       env = [
-        { name = "AWS_ACCESS_KEY_ID", value = var.rustfs_access_key },
-        { name = "AWS_SECRET_ACCESS_KEY", value = var.rustfs_secret_key },
+        { name = "AWS_ACCESS_KEY_ID", value = var.rustfs_storage_access },
+        { name = "AWS_SECRET_ACCESS_KEY", value = var.rustfs_storage_secret },
         { name = "AWS_REGION", value = var.aws_region },
         { name = "AWS_ENDPOINT_URL", value = "http://${module.rustfs.name}:${module.rustfs.ports[0].port}" },
         { name = "AWS_S3_FORCE_PATH_STYLE", value = "true" },

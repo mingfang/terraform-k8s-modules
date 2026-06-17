@@ -6,7 +6,7 @@ locals {
     replicas    = var.replicas
     ports       = var.ports
 
-    enable_service_links  = false
+    enable_service_links = false
     strategy = {
       type = "Recreate"
     }
@@ -26,7 +26,7 @@ locals {
             }
           },
           {
-            name = "KSQL_KSQL_SCHEMA_REGISTRY_URL"
+            name  = "KSQL_KSQL_SCHEMA_REGISTRY_URL"
             value = var.KSQL_KSQL_SCHEMA_REGISTRY_URL
           },
           {
@@ -38,11 +38,11 @@ locals {
             value = "${var.name}-${var.namespace}_"
           },
           {
-            name = "KSQL_LISTENERS"
+            name  = "KSQL_LISTENERS"
             value = "http://0.0.0.0:${var.ports[0].port}"
           },
           {
-            name = "KSQL_KSQL_ADVERTISED_LISTENER"
+            name  = "KSQL_KSQL_ADVERTISED_LISTENER"
             value = "http://$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local:${var.ports[0].port}"
           },
           {
@@ -70,35 +70,35 @@ locals {
             value = var.KSQL_KSQL_SCHEMA_REGISTRY_URL
           },
           {
-            name = "KSQL_CONNECT_KEY_CONVERTER"
+            name  = "KSQL_CONNECT_KEY_CONVERTER"
             value = var.KSQL_CONNECT_KEY_CONVERTER
           },
           {
-            name = "KSQL_CONNECT_VALUE_CONVERTER"
+            name  = "KSQL_CONNECT_VALUE_CONVERTER"
             value = var.KSQL_CONNECT_VALUE_CONVERTER
           },
           {
-            name = "KSQL_CONNECT_CONFIG_STORAGE_TOPIC"
+            name  = "KSQL_CONNECT_CONFIG_STORAGE_TOPIC"
             value = "${var.name}-${var.namespace}-connect.config"
           },
           {
-            name = "KSQL_CONNECT_OFFSET_STORAGE_TOPIC"
+            name  = "KSQL_CONNECT_OFFSET_STORAGE_TOPIC"
             value = "${var.name}-${var.namespace}-connect.offset"
           },
           {
-            name = "KSQL_CONNECT_STATUS_STORAGE_TOPIC"
+            name  = "KSQL_CONNECT_STATUS_STORAGE_TOPIC"
             value = "${var.name}-${var.namespace}-connect.status"
           },
           {
-            name = "KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR"
+            name  = "KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR"
             value = var.KSQL_CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
           },
           {
-            name = "KSQL_CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR"
+            name  = "KSQL_CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR"
             value = var.KSQL_CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
           },
           {
-            name = "KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR"
+            name  = "KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR"
             value = var.KSQL_CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
           },
         ], var.env)

@@ -3,8 +3,8 @@ resource "k8s_core_v1_service" "goldpinger" {
     labels = {
       "app" = "${var.name}"
     }
-    name      = "${var.name}"
-    namespace = "${var.namespace}"
+    name      = var.name
+    namespace = var.namespace
   }
   spec {
 

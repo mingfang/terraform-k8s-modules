@@ -3,5 +3,5 @@ output "namespace" {
 }
 
 output "provisioner" {
-    value = "cephfs.csi.ceph.com"
+  value = "cephfs.csi.ceph.com"
 }

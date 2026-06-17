@@ -1,12 +1,12 @@
 locals {
   plugin_commands = join("\n", [
-  for plugin in var.plugins :
-  "confluent-hub install --no-prompt --component-dir ${var.CONNECT_PLUGIN_PATH} ${plugin}"
+    for plugin in var.plugins :
+    "confluent-hub install --no-prompt --component-dir ${var.CONNECT_PLUGIN_PATH} ${plugin}"
   ])
 
   connector_commands = var.configmap != null ? join("\n", [
-  for k, v in var.configmap.data :
-  "cat /tmp/connectors/${k} && curl -s -S -d @\"/tmp/connectors/${k}\" -H \"Content-Type: application/json\"  -X POST http://${var.name}:${var.ports[0].port}/connectors"
+    for k, v in var.configmap.data :
+    "cat /tmp/connectors/${k} && curl -s -S -d @\"/tmp/connectors/${k}\" -H \"Content-Type: application/json\"  -X POST http://${var.name}:${var.ports[0].port}/connectors"
   ]) : ""
 }
 

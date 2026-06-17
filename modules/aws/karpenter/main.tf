@@ -11,7 +11,7 @@ locals {
       {
         name  = "karpenter"
         image = var.image
-        env   = concat([
+        env = concat([
           {
             name  = "CLUSTER_NAME"
             value = var.CLUSTER_NAME
@@ -21,7 +21,7 @@ locals {
             value = var.CLUSTER_ENDPOINT
           },
           {
-            name       = "SYSTEM_NAMESPACE"
+            name = "SYSTEM_NAMESPACE"
             value_from = {
               field_ref = {
                 field_path = "metadata.namespace"

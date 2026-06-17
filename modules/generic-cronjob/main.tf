@@ -84,6 +84,7 @@ locals {
           )
         },
       ]
+      restart_policy = var.restart_policy
     }
 
     init_containers = length(var.pvcs) > 0 && length(var.pvc_user) > 0 ? [

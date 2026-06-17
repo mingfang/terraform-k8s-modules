@@ -6,10 +6,10 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_extensions_v1beta1_ingress.compose` from `k8s`
-* `k8s_extensions_v1beta1_ingress.messaging` from `k8s`
-* `k8s_extensions_v1beta1_ingress.system` from `k8s`
-* `k8s_extensions_v1beta1_ingress.webapp` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.compose` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.messaging` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.system` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.webapp` from `k8s`
 
 ## Child Modules
 * `compose` from [../../modules/corteza/compose](../../modules/corteza/compose)

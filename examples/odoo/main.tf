@@ -50,7 +50,7 @@ module "odoo" {
   PASSWORD = "odoo"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "odoo" {
+resource "k8s_networking_k8s_io_v1_ingress" "odoo" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -60,15 +60,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "odoo" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.odoo.name
-            service_port = module.odoo.ports[0].port
+            service {
+              name = module.odoo.name
+              port {
+                number = module.odoo.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

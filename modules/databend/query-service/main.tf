@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -49,55 +49,55 @@ locals {
             }
           },
           {
-            name = "META_ENDPOINTS"
+            name  = "META_ENDPOINTS"
             value = var.META_ENDPOINTS
           },
           {
-            name = "META_USERNAME"
+            name  = "META_USERNAME"
             value = "root"
           },
           {
-            name = "META_PASSWORD"
+            name  = "META_PASSWORD"
             value = "root"
           },
           {
-            name = "QUERY_CLUSTER_ID"
+            name  = "QUERY_CLUSTER_ID"
             value = var.namespace
           },
           {
-            name = "QUERY_HTTP_HANDLER_HOST"
+            name  = "QUERY_HTTP_HANDLER_HOST"
             value = "0.0.0.0"
           },
           {
-            name = "QUERY_HTTP_HANDLER_PORT"
+            name  = "QUERY_HTTP_HANDLER_PORT"
             value = "8000"
           },
           {
-            name = "QUERY_ADMIN_API_ADDRESS"
+            name  = "QUERY_ADMIN_API_ADDRESS"
             value = "0.0.0.0:8080"
           },
           {
-            name = "QUERY_METRIC_API_ADDRESS"
+            name  = "QUERY_METRIC_API_ADDRESS"
             value = "0.0.0.0:7070"
           },
           {
-            name = "QUERY_MYSQL_HANDLER_HOST"
+            name  = "QUERY_MYSQL_HANDLER_HOST"
             value = "0.0.0.0"
           },
           {
-            name = "QUERY_MYSQL_HANDLER_PORT"
+            name  = "QUERY_MYSQL_HANDLER_PORT"
             value = "3307"
           },
           {
-            name = "QUERY_CLICKHOUSE_HTTP_HANDLER_HOST"
+            name  = "QUERY_CLICKHOUSE_HTTP_HANDLER_HOST"
             value = "0.0.0.0"
           },
           {
-            name = "QUERY_CLICKHOUSE_HTTP_HANDLER_PORT"
+            name  = "QUERY_CLICKHOUSE_HTTP_HANDLER_PORT"
             value = "8124"
           },
           {
-            name = "QUERY_FLIGHT_API_ADDRESS"
+            name  = "QUERY_FLIGHT_API_ADDRESS"
             value = "$(POD_IP):9090"
           },
         ], var.env, local.computed_env)
@@ -114,19 +114,19 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "/config/${var.name}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )
       },
       {
-        name = "mysql"
-        image = "mysql"
+        name    = "mysql"
+        image   = "mysql"
         command = ["sleep", "infinity"]
       }
     ]

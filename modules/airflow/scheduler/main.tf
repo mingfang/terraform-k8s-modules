@@ -8,37 +8,37 @@ locals {
 
     containers = [
       {
-        name  = "scheduler"
-        image = var.image
+        name    = "scheduler"
+        image   = var.image
         command = ["airflow", "scheduler"]
 
         env = concat([
           {
-            name = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
+            name  = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
             value = var.AIRFLOW__CORE__SQL_ALCHEMY_CONN
           },
           {
-            name = "AIRFLOW__CORE__EXECUTOR"
+            name  = "AIRFLOW__CORE__EXECUTOR"
             value = "KubernetesExecutor"
           },
           {
-            name = "AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY"
+            name  = "AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY"
             value = split(":", var.image)[0]
           },
           {
-            name = "AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG"
+            name  = "AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG"
             value = split(":", var.image)[1]
           },
           {
-            name = "AIRFLOW__KUBERNETES__RUN_AS_USER"
+            name  = "AIRFLOW__KUBERNETES__RUN_AS_USER"
             value = 50000
           },
           {
-            name = "AIRFLOW__KUBERNETES__NAMESPACE"
+            name  = "AIRFLOW__KUBERNETES__NAMESPACE"
             value = var.namespace
           },
           {
-            name = "AIRFLOW__KUBERNETES__DELETE_WORKER_PODS"
+            name  = "AIRFLOW__KUBERNETES__DELETE_WORKER_PODS"
             value = "True"
           }
         ], var.env)
@@ -72,7 +72,7 @@ locals {
           EOF
         ]
         security_context = {
-          run_asuser  = "0"
+          run_asuser = "0"
         }
         volume_mounts = concat(
           var.pvc_dags != null ? [
@@ -90,13 +90,13 @@ locals {
         )
       },
       {
-        name  = "initdb"
-        image = var.image
+        name    = "initdb"
+        image   = var.image
         command = ["airflow", "initdb"]
 
         env = [
           {
-            name = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
+            name  = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
             value = var.AIRFLOW__CORE__SQL_ALCHEMY_CONN
           },
         ]

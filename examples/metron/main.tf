@@ -13,6 +13,6 @@ resource "k8s_core_v1_namespace" "this" {
 
 module "metro" {
   source    = "../../modules/metron"
-  name      = "${var.name}"
+  name      = var.name
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }

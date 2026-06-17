@@ -1,5 +1,5 @@
 variable "namespace" {}
 
-variable image {
+variable "image" {
   default = "quay.io/eclipse/che-plugin-registry:7.50.0"
 }

@@ -45,7 +45,7 @@ module "mongo-express" {
   ME_CONFIG_MONGODB_URL = "mongodb://mongo:mongo@${module.mongodb.seed_list}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "mongo-express" {
+resource "k8s_networking_k8s_io_v1_ingress" "mongo-express" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -55,15 +55,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "mongo-express" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "mongo-express-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.mongo-express.name
-            service_port = module.mongo-express.ports[0].port
+            service {
+              name = module.mongo-express.name
+              port {
+                number = module.mongo-express.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -83,17 +89,17 @@ module "wildduck" {
 
   env = [
     {
-      name="FQDN"
-      value="example.com"
+      name  = "FQDN"
+      value = "example.com"
     },
     {
-      name="MAIL_DOMAIN"
-      value="mail.example.com"
+      name  = "MAIL_DOMAIN"
+      value = "mail.example.com"
     },
     {
 
-      name="CMD_ARGS"
-      value=<<-EOF
+      name  = "CMD_ARGS"
+      value = <<-EOF
       --dbs.mongo=mongodb://mongo:mongo@${module.mongodb.seed_list}
       --dbs.redis=redis://${module.redis.name}:${module.redis.ports[0].port}
       --smtp.setup.hostname=$(FQDN)
@@ -107,7 +113,7 @@ module "wildduck" {
 }
 
 module "config" {
-  source = "../../modules/kubernetes/config-map"
+  source    = "../../modules/kubernetes/config-map"
   name      = "webmail-config"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   from-map = {
@@ -203,52 +209,64 @@ module "wildduck-webmail" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   configmap = module.config.config_map
-  args = ["--config=/etc/webmail/config.toml"]
+  args      = ["--config=/etc/webmail/config.toml"]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "api" {
+resource "k8s_networking_k8s_io_v1_ingress" "api" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"                 = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"    = "api-${var.namespace}.*"
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "api-${var.namespace}.*"
     }
     name      = module.wildduck.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.wildduck.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.wildduck.name
-            service_port = module.wildduck.ports[0].port
+            service {
+              name = module.wildduck.name
+              port {
+                number = module.wildduck.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "webmail" {
+resource "k8s_networking_k8s_io_v1_ingress" "webmail" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"                 = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"    = "webmail-${var.namespace}.*"
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "webmail-${var.namespace}.*"
     }
     name      = module.wildduck-webmail.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.wildduck-webmail.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.wildduck-webmail.name
-            service_port = module.wildduck-webmail.ports[0].port
+            service {
+              name = module.wildduck-webmail.name
+              port {
+                number = module.wildduck-webmail.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

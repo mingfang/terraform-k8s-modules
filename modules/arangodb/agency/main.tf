@@ -1,11 +1,11 @@
 locals {
   agency-endpoints = [
     for i in range(0, var.replicas) :
-      "--agency.endpoint=tcp://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:${var.ports[0].port}"
+    "--agency.endpoint=tcp://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:${var.ports[0].port}"
   ]
   cluster-agency-endpoints = [
     for i in range(0, var.replicas) :
-      "--cluster.agency-endpoint=tcp://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:${var.ports[0].port}"
+    "--cluster.agency-endpoint=tcp://${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:${var.ports[0].port}"
   ]
 
   parameters = {
@@ -60,13 +60,13 @@ locals {
           {
             name       = var.volume_claim_template_name
             mount_path = "/var/lib/arangodb3"
-      },
+          },
           {
-            name = "jwt-secret-keyfile"
+            name       = "jwt-secret-keyfile"
             mount_path = "/dev/shm/jwt-secret-keyfile"
-            sub_path = "jwt-secret-file"
+            sub_path   = "jwt-secret-file"
           }
-    ]
+        ]
       },
     ]
 

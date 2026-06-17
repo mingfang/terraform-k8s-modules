@@ -6,7 +6,7 @@ locals {
     replicas    = var.replicas
     ports       = var.ports
 
-    enable_service_links  = false
+    enable_service_links = false
 
     containers = [
       {

@@ -14,6 +14,6 @@ resource "k8s_rbac_authorization_k8s_io_v1_cluster_role_binding" "knative-servin
   subjects {
     kind      = "ServiceAccount"
     name      = "controller"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

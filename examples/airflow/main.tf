@@ -107,7 +107,7 @@ module "webserver" {
   AIRFLOW__CORE__SQL_ALCHEMY_CONN = local.AIRFLOW__CORE__SQL_ALCHEMY_CONN
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "airflow" {
+resource "k8s_networking_k8s_io_v1_ingress" "airflow" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -117,15 +117,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "airflow" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.webserver.name
-            service_port = 8080
+            service {
+              name = module.webserver.name
+              port {
+                number = 8080
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

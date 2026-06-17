@@ -35,7 +35,7 @@ resource "k8s_core_v1_persistent_volume_claim" "ingestion" {
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -121,7 +121,7 @@ module "server" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -132,21 +132,27 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.server.name
-            service_port = module.server.ports[0].port
+            service {
+              name = module.server.name
+              port {
+                number = module.server.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "ingestion" {
+resource "k8s_networking_k8s_io_v1_ingress" "ingestion" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -157,15 +163,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "ingestion" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-ingestion"
       http {
         paths {
           backend {
-            service_name = module.ingestion.name
-            service_port = module.ingestion.ports[0].port
+            service {
+              name = module.ingestion.name
+              port {
+                number = module.ingestion.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

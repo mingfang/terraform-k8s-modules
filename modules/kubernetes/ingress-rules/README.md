@@ -17,5 +17,5 @@ Provider Requirements:
 * `rules`
 
 ## Managed Resources
-* `k8s_extensions_v1beta1_ingress.this` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 

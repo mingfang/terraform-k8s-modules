@@ -14,7 +14,7 @@ module "redpanda" {
   ])
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "redpanda" {
+resource "k8s_networking_k8s_io_v1_ingress" "redpanda" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -24,14 +24,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "redpanda" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-redpanda"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.redpanda.name
-            service_port = module.redpanda.ports[0].port
+            service {
+              name = module.redpanda.name
+              port {
+                number = module.redpanda.ports[0].port
+              }
+            }
           }
         }
       }
@@ -46,14 +52,14 @@ resource "k8s_core_v1_persistent_volume_claim" "connect-data" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
 }
 
 module "connect-config" {
-  source = "../../modules/kubernetes/config-map"
+  source    = "../../modules/kubernetes/config-map"
   name      = "connect"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
@@ -84,7 +90,7 @@ module "connect" {
   replicas  = 1
 
   configmap = module.connect-config.config_map
-  pvc = k8s_core_v1_persistent_volume_claim.connect-data.metadata[0].name
+  pvc       = k8s_core_v1_persistent_volume_claim.connect-data.metadata[0].name
   plugins = [
     "streamthoughts/kafka-connect-file-pulse:2.6.0"
   ]
@@ -121,7 +127,7 @@ module "kowl" {
   configmap = module.kowl_config.config_map
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "kowl" {
+resource "k8s_networking_k8s_io_v1_ingress" "kowl" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -131,14 +137,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "kowl" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-kowl"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.kowl.name
-            service_port = module.kowl.ports[0].port
+            service {
+              name = module.kowl.name
+              port {
+                number = module.kowl.ports[0].port
+              }
+            }
           }
         }
       }

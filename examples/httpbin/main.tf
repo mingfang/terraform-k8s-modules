@@ -27,7 +27,7 @@ module "httpbin" {
   replicas  = var.replicas
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -44,15 +44,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.httpbin.service.metadata[0].name
-            service_port = module.httpbin.service.spec[0].ports[0].port
+            service {
+              name = module.httpbin.service.metadata[0].name
+              port {
+                number = module.httpbin.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

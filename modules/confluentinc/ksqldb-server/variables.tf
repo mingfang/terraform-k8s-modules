@@ -6,7 +6,7 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "http"
@@ -15,7 +15,7 @@ variable ports {
   ]
 }
 
-variable image {
+variable "image" {
   default = "confluentinc/ksqldb-server:0.12.0"
 }
 
@@ -35,14 +35,14 @@ variable "overrides" {
   default = {}
 }
 
-variable KSQL_BOOTSTRAP_SERVERS {}
+variable "KSQL_BOOTSTRAP_SERVERS" {}
 
-variable KSQL_KSQL_SCHEMA_REGISTRY_URL {
+variable "KSQL_KSQL_SCHEMA_REGISTRY_URL" {
   default = null
 }
 
 variable "KSQL_KSQL_CONNECT_URL" {
-  default = null
+  default     = null
   description = ""
 }
 variable "KSQL_CONNECT_KEY_CONVERTER" {

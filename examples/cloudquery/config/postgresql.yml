@@ -1,0 +1,34 @@
+kind: destination
+spec:
+  ## Required. name of the plugin.
+  ## This is an alias so it should be unique if you have a number of postgresql destination plugins.
+  name: "postgresql"
+
+  ## Optional. Where to search for the plugin. Default: "github". Options: "github", "cloudquery", "local", "grpc".
+  # registry: "github"
+
+  ## Path for the plugin.
+  ## If registry is "github" path should be "repo/name"
+  ## If registry is "cloudquery" path should be "team/name"
+  ## If registry is "local", path is path to binary. If "grpc" then it should be address of the plugin (usually useful in debug).
+  path: "cloudquery/postgresql"
+
+  ## Optional. Registry to download the plugin from. Defaults to "github"
+  registry: "cloudquery"
+
+  ## Required. Must be a specific version starting with v, e.g. v1.2.3
+  ## checkout latest versions here https://github.com/cloudquery/cloudquery/releases?q=plugins-destination-postgresql&expanded=true
+  version: "v8.1.0"
+
+  ## Optional. Default: "overwrite-delete-stale". Available: "overwrite-delete-stale", "overwrite", "append". 
+  ##  Not all modes are supported by all plugins, so make sure to check the plugin documentation for more details.
+  write_mode: "overwrite-delete-stale" # overwrite-delete-stale, overwrite, append
+
+  spec:
+    ## plugin-specific configuration for PostgreSQL.
+    ## See all available options here: https://github.com/cloudquery/cloudquery/tree/main/plugins/destination/postgresql#postgresql-spec
+
+    ## Required. Connection string to your PostgreSQL instance
+    ## In production it is highly recommended to use environment variable expansion
+    ## connection_string: ${PG_CONNECTION_STRING}
+    connection_string: "postgresql://postgres:postgres@postgres.postgres-example:5432/cloudquery?sslmode=disable"

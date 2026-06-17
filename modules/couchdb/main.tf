@@ -68,23 +68,23 @@ locals {
               }
             }
           },
-        ],
-        var.NODENAME != null ? [
-          {
-            name  = "NODENAME"
-            value = var.NODENAME
-          },
-        ] : [],
-        var.NODENAME == null ? [
-          {
-            name = "NODENAME"
-            value_from = {
-              field_ref = {
-                field_path = "metadata.name"
+          ],
+          var.NODENAME != null ? [
+            {
+              name  = "NODENAME"
+              value = var.NODENAME
+            },
+          ] : [],
+          var.NODENAME == null ? [
+            {
+              name = "NODENAME"
+              value_from = {
+                field_ref = {
+                  field_path = "metadata.name"
+                }
               }
-            }
-          },
-        ] : []
+            },
+          ] : []
         , var.env)
 
         resources = var.resources

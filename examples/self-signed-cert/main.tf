@@ -5,11 +5,11 @@ resource "tls_private_key" "ca_key" {
 
 resource "tls_self_signed_cert" "ca_cert" {
   subject {
-    common_name  = "example.ca"
+    common_name = "example.ca"
   }
 
-  is_ca_certificate = true
-  private_key_pem = tls_private_key.ca_key.private_key_pem
+  is_ca_certificate     = true
+  private_key_pem       = tls_private_key.ca_key.private_key_pem
   validity_period_hours = 87600
 
   allowed_uses = [
@@ -26,13 +26,13 @@ resource "tls_private_key" "cert_key" {
 
 resource "tls_cert_request" "cert_request" {
   subject {
-    common_name  = "example.com"
+    common_name = "example.com"
   }
   private_key_pem = tls_private_key.cert_key.private_key_pem
 }
 
 resource "tls_locally_signed_cert" "cert" {
-  cert_request_pem = tls_cert_request.cert_request.cert_request_pem
+  cert_request_pem   = tls_cert_request.cert_request.cert_request_pem
   ca_private_key_pem = tls_private_key.ca_key.private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca_cert.cert_pem
 

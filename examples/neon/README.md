@@ -12,7 +12,7 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.wsproxy` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.wsproxy` from `k8s`
 
 ## Child Modules
 * `compute` from [../../modules/neon/compute](../../modules/neon/compute)

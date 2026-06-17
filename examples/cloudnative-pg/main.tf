@@ -39,8 +39,10 @@ module "cluster" {
   postgresql_init_schemas = ["bm25_catalog", "tokenizer_catalog"]
 
   postgresql_parameters = {
-    max_wal_senders = "10"
-    search_path     = "\\$user, public, bm25_catalog, tokenizer_catalog"
+    search_path           = "\\$user, public, bm25_catalog, tokenizer_catalog"
+    max_replication_slots = "32"
+    wal_keep_size         = "512MB"
+    wal_level             = "logical"
   }
 
   pooler = {
@@ -73,13 +75,33 @@ module "cluster" {
 
   # ── Barman Cloud Plugin: WAL archiving & backups to SeaweedFS S3 ──
   barman_cloud = {
-    enabled                    = true
-    destination_path           = "s3://cloudnative-pg-backups/cloudnative-pg/"
-    endpoint_url               = module.seaweedfs.endpoint_url
-    s3_credentials_secret_name = module.seaweedfs.credentials_secret_name
-    wal_compression            = "gzip"
-    data_compression           = "gzip"
-    retention_policy           = "30d"
+    enabled            = true
+    destination_path   = "s3://cloudnative-pg-backups/cloudnative-pg/"
+    name             = "${var.name}-backup"
+    endpoint_url       = module.seaweedfs.endpoint_url
+    s3_credentials = {
+      access_key_id_name     = module.seaweedfs.credentials_secret_name
+      access_key_id_key      = "ACCESS_KEY_ID"
+      secret_access_key_name = module.seaweedfs.credentials_secret_name
+      secret_access_key_key  = "ACCESS_SECRET_KEY"
+      region = {
+        secret_name = ""
+        secret_key  = "REGION"
+      }
+    }
+    inherit_from_iam_role = false
+    wal = {
+      compression  = "gzip"
+      max_parallel = 0
+      encryption   = ""
+    }
+    data = {
+      compression          = "gzip"
+      encryption           = ""
+      jobs                 = 0
+      immediate_checkpoint = false
+    }
+    retention_policy = "30d"
   }
 
   scheduled_backup = {

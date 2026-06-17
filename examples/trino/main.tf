@@ -66,7 +66,7 @@ module "trino" {
   catalog_configmap = module.trino-catalog.config_map
   config_configmap  = module.trino-config.config_map
 
-  resources =  {
+  resources = {
     requests = {
       cpu    = "500m"
       memory = "1Gi"
@@ -97,7 +97,7 @@ module "trino-worker" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 2
 
-  resources =  {
+  resources = {
     requests = {
       cpu    = "500m"
       memory = "1Gi"
@@ -111,7 +111,7 @@ module "trino-worker" {
   config_configmap  = module.trino-worker-config.config_map
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "trino" {
+resource "k8s_networking_k8s_io_v1_ingress" "trino" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -121,15 +121,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "trino" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.trino.name
-            service_port = module.trino.ports[0].port
+            service {
+              name = module.trino.name
+              port {
+                number = module.trino.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -155,7 +161,7 @@ module "sqlpad" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "sqlpad" {
+resource "k8s_networking_k8s_io_v1_ingress" "sqlpad" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -165,15 +171,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "sqlpad" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "sqlpad-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.sqlpad.name
-            service_port = module.sqlpad.ports[0].port
+            service {
+              name = module.sqlpad.name
+              port {
+                number = module.sqlpad.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

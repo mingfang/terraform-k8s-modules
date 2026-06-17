@@ -5,7 +5,7 @@ resource "k8s_core_v1_service" "controller" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "controller"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 

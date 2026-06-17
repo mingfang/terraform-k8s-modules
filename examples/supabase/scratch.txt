@@ -1,0 +1,49 @@
+export ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE"
+export SERVICE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q"
+export SUPABASE="https://supabase-example.rebelsoft.com"
+export HEADER1="apikey:$ANON_KEY"
+export HEADER2="Authorization:Bearer $SERVICE_KEY"
+export HEADER3="Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjczNzU5Mjk5LCJzdWIiOiI3OWU5MDc1NS03ZDFhLTQxYTItOTI5Ny04YjQ1Y2IyYWZkODQiLCJlbWFpbCI6Im1pbmdmYW5nQG1hYy5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImtleWNsb2FrIiwicHJvdmlkZXJzIjpbImtleWNsb2FrIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsIjoibWluZ2ZhbmdAbWFjLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmdWxsX25hbWUiOiJNaW5nIEZhbmciLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnJlYmVsc29mdC5jb20vYXV0aC9yZWFsbXMvcmViZWxzb2Z0IiwibmFtZSI6Ik1pbmcgRmFuZyIsInByb3ZpZGVyX2lkIjoiZjZhM2Q4NDAtN2RlYS00ZWFhLTlkNjMtOTIxYWRkY2VjY2FhIiwic3ViIjoiZjZhM2Q4NDAtN2RlYS00ZWFhLTlkNjMtOTIxYWRkY2VjY2FhIn0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoib2F1dGgiLCJ0aW1lc3RhbXAiOjE2NzM3MjMzNzJ9XSwic2Vzc2lvbl9pZCI6IjIxYzhhNTBkLWQ3NmEtNDE3ZC04Y2FiLTA1NjliM2QyMjRjMyJ9.OdjixEnwF-oWjGd12nwjQAFiMllzmow3NeJlEL3FAEg"
+
+# select todos
+http "$SUPABASE/rest/v1/todos?select=*&order=id.asc" "$HEADER1" "$HEADER3"
+
+# uid
+http "$SUPABASE/rest/v1/rpc/uid" "$HEADER1" "$HEADER3"
+# current_setting
+http "$SUPABASE/rest/v1/rpc/current_setting?name=request.jwt.claim.sub"  "$HEADER1" "$HEADER3"
+http "$SUPABASE/rest/v1/rpc/version" "$HEADER1" "$HEADER3"
+
+# current settings
+create or replace function current_setting(name text, field text) returns text as $$
+  select nullif(pg_catalog.current_setting(name, true), '')::json->>field;
+$$ language sql stable;
+
+# create user
+echo '{"email": "email@example.com","password": "secret"}' | http $SUPABASE/auth/v1/signup "$HEADER1" "$HEADER2"
+
+# storage
+http storage.supabase-example:5000/bucket "$HEADER2"
+# list buckets
+http $SUPABASE/storage/v1/bucket "$HEADER2"
+# create bucket
+echo '{ "name": "avatars2" }' | http $SUPABASE/storage/v1/bucket "$HEADER2"
+# list objects
+echo '{ "prefix": "" }' | http $SUPABASE/storage/v1/object/list/avatars2 "$HEADER2"
+# upload file
+http $SUPABASE/storage/v1/object/avatars2/myfile "$HEADER2" < /home/projector-user/IdeaProjects/terraform-k8s-modules/examples/supabase/README.md
+
+## schema diff
+docker run –-platform linux/amd64 djrobstep/migra migra \
+  'postgres://postgres:postgres@postgres.supabase-example:5432/postgres' \
+  'postgres://postgres:postgres@postgres.postgres-example:5432/postgres'
+
+docker run supabase/pgadmin-schema-diff \
+  'postgres://postgres:postgres@postgres.supabase-example:5432/postgres' \
+  'postgres://postgres:postgres@postgres.postgres-example:5432/postgres'
+
+docker run --pull always supabase/pgadmin-schema-diff \
+  --source-schema public \
+  --target-schema public \
+  'postgres://postgres:postgres@postgres.postgres-example:5432/postgres' \
+  'postgres://cloud_admin:cloud_admin@postgres.neon-example:55433/postgres'

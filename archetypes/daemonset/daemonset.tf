@@ -447,7 +447,7 @@ resource "k8s_apps_v1_daemon_set" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
             name = containers.value.name
@@ -498,7 +498,7 @@ resource "k8s_apps_v1_daemon_set" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
             dynamic "resources" {
@@ -1186,7 +1186,7 @@ resource "k8s_apps_v1_daemon_set" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
             name = init_containers.value.name
@@ -1237,7 +1237,7 @@ resource "k8s_apps_v1_daemon_set" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
             dynamic "resources" {
@@ -1376,11 +1376,11 @@ resource "k8s_apps_v1_daemon_set" "this" {
         dynamic "security_context" {
           for_each = lookup(local.k8s_apps_v1_daemon_set_parameters, "security_context", null) == null ? [] : [local.k8s_apps_v1_daemon_set_parameters.security_context]
           content {
-            fsgroup        = lookup(security_context.value, "fsgroup", null)
+            fsgroup               = lookup(security_context.value, "fsgroup", null)
             fsgroup_change_policy = lookup(security_context.value, "fsgroup_change_policy", null)
-            run_asgroup    = lookup(security_context.value, "run_asgroup", null)
-            run_asnon_root = lookup(security_context.value, "run_asnon_root", null)
-            run_asuser     = lookup(security_context.value, "run_asuser", null)
+            run_asgroup           = lookup(security_context.value, "run_asgroup", null)
+            run_asnon_root        = lookup(security_context.value, "run_asnon_root", null)
+            run_asuser            = lookup(security_context.value, "run_asuser", null)
             dynamic "seccomp_profile" {
               for_each = lookup(security_context.value, "seccomp_profile", null) == null ? [] : [security_context.value.seccomp_profile]
               content {

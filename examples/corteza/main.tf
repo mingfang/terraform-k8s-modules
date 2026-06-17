@@ -68,7 +68,7 @@ module "webapp" {
   VIRTUAL_HOST    = "192.168.2.244.nip.io"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "system" {
+resource "k8s_networking_k8s_io_v1_ingress" "system" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "corteza-example"
@@ -78,22 +78,28 @@ resource "k8s_extensions_v1beta1_ingress" "system" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "system"
       http {
         paths {
           backend {
-            service_name = module.system.name
-            service_port = "80"
+            service {
+              name = module.system.name
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_extensions_v1beta1_ingress" "messaging" {
+resource "k8s_networking_k8s_io_v1_ingress" "messaging" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "corteza-example"
@@ -103,22 +109,28 @@ resource "k8s_extensions_v1beta1_ingress" "messaging" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "messaging"
       http {
         paths {
           backend {
-            service_name = module.messaging.name
-            service_port = "80"
+            service {
+              name = module.messaging.name
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_extensions_v1beta1_ingress" "compose" {
+resource "k8s_networking_k8s_io_v1_ingress" "compose" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "corteza-example"
@@ -128,22 +140,28 @@ resource "k8s_extensions_v1beta1_ingress" "compose" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "compose"
       http {
         paths {
           backend {
-            service_name = module.compose.name
-            service_port = "80"
+            service {
+              name = module.compose.name
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_extensions_v1beta1_ingress" "webapp" {
+resource "k8s_networking_k8s_io_v1_ingress" "webapp" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "corteza-example"
@@ -153,15 +171,21 @@ resource "k8s_extensions_v1beta1_ingress" "webapp" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "corteza"
       http {
         paths {
           backend {
-            service_name = module.webapp.name
-            service_port = "80"
+            service {
+              name = module.webapp.name
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

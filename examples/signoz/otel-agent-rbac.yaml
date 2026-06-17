@@ -1,0 +1,68 @@
+rules:
+
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - namespaces
+    - nodes
+    - persistentvolumeclaims
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - apps
+    resources:
+    - replicasets
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - extensions
+    resources:
+    - replicasets
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    - endpoints
+    verbs:
+    - list
+    - watch
+  - apiGroups:
+    - batch
+    resources:
+    - jobs
+    verbs:
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    resources:
+    - nodes/proxy
+    verbs:
+    - get
+  - apiGroups:
+    - ""
+    resources:
+    - nodes/stats
+    - configmaps
+    - events
+    verbs:
+    - create
+    - get
+  - apiGroups:
+    - ""
+    resourceNames:
+    - otel-container-insight-clusterleader
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - update

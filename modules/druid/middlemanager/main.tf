@@ -1,10 +1,10 @@
 locals {
   parameters = {
-    name                        = var.name
-    namespace                   = var.namespace
-    annotations                 = var.annotations
-    replicas                    = var.replicas
-    ports                       = var.ports
+    name        = var.name
+    namespace   = var.namespace
+    annotations = var.annotations
+    replicas    = var.replicas
+    ports       = var.ports
 
     enable_service_links        = false
     pod_management_policy       = "Parallel"
@@ -14,7 +14,7 @@ locals {
       {
         name  = "middlemanager"
         image = var.image
-        args = ["middleManager"]
+        args  = ["middleManager"]
 
         env = concat([
           {
@@ -80,38 +80,38 @@ locals {
             value = "$(LIMITS_MEMORY)M"
           },
           {
-            name  = "druid_indexer_runner_javaOptsArray"
+            name = "druid_indexer_runner_javaOptsArray"
             value = jsonencode([
               "-Xmx$(LIMITS_MEMORY)m",
               "-XX:MaxDirectMemorySize=$(REQUESTS_MEMORY)m",
             ])
           },
           {
-            name = "druid_worker_capacity"
+            name  = "druid_worker_capacity"
             value = "$(REQUESTS_CPU)"
           },
           {
-            name = "druid_zk_service_host"
+            name  = "druid_zk_service_host"
             value = var.druid_zk_service_host
           },
           {
-            name = "druid_metadata_storage_type"
+            name  = "druid_metadata_storage_type"
             value = var.druid_metadata_storage_type
           },
           {
-            name = "druid_metadata_storage_connector_connectURI"
+            name  = "druid_metadata_storage_connector_connectURI"
             value = var.druid_metadata_storage_connector_connectURI
           },
           {
-            name = "druid_metadata_storage_connector_user"
+            name  = "druid_metadata_storage_connector_user"
             value = var.druid_metadata_storage_connector_user
           },
           {
-            name = "druid_metadata_storage_connector_password"
+            name  = "druid_metadata_storage_connector_password"
             value = var.druid_metadata_storage_connector_password
           },
           {
-            name = "druid_extensions_loadList"
+            name  = "druid_extensions_loadList"
             value = jsonencode(var.druid_extensions_loadList)
           },
         ], var.env)

@@ -25,9 +25,9 @@ module "windmill-server" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   env_map = {
-    DATABASE_URL         = "postgres://postgres:postgres@${module.postgres.name}/postgres?sslmode=disable"
-    BASE_URL             = "https://windmill-example.rebelsoft.com"
-    RUST_LOG             = "info"
+    DATABASE_URL = "postgres://postgres:postgres@${module.postgres.name}/postgres?sslmode=disable"
+    BASE_URL     = "https://windmill-example.rebelsoft.com"
+    RUST_LOG     = "info"
     ## You can set the number of workers to > 0 and not need any separate worker service
     NUM_WORKERS          = "0"
     DISABLE_SERVER       = "false"
@@ -46,9 +46,9 @@ module "windmill-worker" {
       name  = "dind"
       image = "docker:24.0.2-dind"
       args  = ["--insecure-registry=0.0.0.0/0"]
-      env   = [
+      env = [
         {
-          name       = "POD_NAME"
+          name = "POD_NAME"
           value_from = {
             field_ref = {
               field_path = "metadata.name"
@@ -103,7 +103,7 @@ module "windmill-lsp" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -114,22 +114,33 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.windmill-server.name
-            service_port = module.windmill-server.ports[0].port
+            service {
+              name = module.windmill-server.name
+              port {
+                number = module.windmill-server.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.windmill-lsp.name
-            service_port = module.windmill-lsp.ports[0].port
+            service {
+              name = module.windmill-lsp.name
+              port {
+                number = module.windmill-lsp.ports[0].port
+              }
+            }
           }
-          path = "/ws"
+          path      = "/ws"
+          path_type = "ImplementationSpecific"
         }
       }
     }

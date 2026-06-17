@@ -1,9 +1,9 @@
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
-    replicas    = var.replicas
-    ports       = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
     annotations = merge(
       var.annotations,
       {
@@ -15,8 +15,8 @@ locals {
 
     containers = [
       {
-        name    = var.name
-        image   = var.image
+        name  = var.name
+        image = var.image
         command = [
           "sh",
           "-c",
@@ -50,12 +50,12 @@ locals {
         resources = var.resources
 
         volume_mounts = [
-        for k, v in module.config.config_map.data :
-        {
-          name       = "config"
-          mount_path = "/etc/nginx/conf.d/${k}"
-          sub_path   = k
-        }
+          for k, v in module.config.config_map.data :
+          {
+            name       = "config"
+            mount_path = "/etc/nginx/conf.d/${k}"
+            sub_path   = k
+          }
         ]
       },
     ]

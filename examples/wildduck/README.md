@@ -11,9 +11,9 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.api` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.mongo-express` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.webmail` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.api` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.mongo-express` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.webmail` from `k8s`
 * `random_password.keyfile` from `random`
 
 ## Child Modules

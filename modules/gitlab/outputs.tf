@@ -15,9 +15,9 @@ output "statefulset" {
 }
 
 output "gitlab_runners_registration_token" {
-  value = "${var.gitlab_runners_registration_token}"
+  value = var.gitlab_runners_registration_token
 }
 
 output "gitlab_external_url" {
-  value = "${var.gitlab_external_url}"
+  value = var.gitlab_external_url
 }

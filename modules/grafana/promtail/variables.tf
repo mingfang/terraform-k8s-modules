@@ -2,7 +2,7 @@ variable "name" {}
 
 variable "namespace" {}
 
-variable image {
+variable "image" {
   default = "grafana/promtail:2.2.1"
 }
 

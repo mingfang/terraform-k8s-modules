@@ -18,9 +18,9 @@ Provider Requirements:
 * `k8s_core_v1_namespace.this` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.grafana` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.rules` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.alertmanager` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.grafana` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.loki` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.alertmanager` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.grafana` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.loki` from `k8s`
 * `pagerduty_service.ingress` from `pagerduty`
 * `pagerduty_service_integration.ingress` from `pagerduty`
 

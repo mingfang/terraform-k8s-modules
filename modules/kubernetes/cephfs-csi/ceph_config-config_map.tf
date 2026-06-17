@@ -9,7 +9,7 @@ resource "k8s_core_v1_config_map" "ceph_config" {
     "keyring"   = ""
   }
   metadata {
-    name = "ceph-config"
+    name      = "ceph-config"
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
 }

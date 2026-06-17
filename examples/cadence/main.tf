@@ -54,13 +54,13 @@ module "elasticsearch" {
   name      = "elasticsearch"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = module.elasticsearch_storage.replicas
-  image = "docker.elastic.co/elasticsearch/elasticsearch:6.5.1"
+  image     = "docker.elastic.co/elasticsearch/elasticsearch:6.5.1"
 
   storage_class = module.elasticsearch_storage.storage_class_name
   storage       = module.elasticsearch_storage.storage
 }
 
-resource "k8s_extensions_v1beta1_ingress" "elasticsearch" {
+resource "k8s_networking_k8s_io_v1_ingress" "elasticsearch" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -70,15 +70,21 @@ resource "k8s_extensions_v1beta1_ingress" "elasticsearch" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.elasticsearch.name
       http {
         paths {
           backend {
-            service_name = module.elasticsearch.name
-            service_port = 9200
+            service {
+              name = module.elasticsearch.name
+              port {
+                number = 9200
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -208,7 +214,7 @@ module "cadence-web" {
   CADENCE_TCHANNEL_PEERS = "${module.cadence-frontend.name}:7933"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "cadence-web" {
+resource "k8s_networking_k8s_io_v1_ingress" "cadence-web" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -218,15 +224,21 @@ resource "k8s_extensions_v1beta1_ingress" "cadence-web" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.cadence-web.name
       http {
         paths {
           backend {
-            service_name = module.cadence-web.name
-            service_port = 8088
+            service {
+              name = module.cadence-web.name
+              port {
+                number = 8088
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -273,7 +285,7 @@ module "statsd-exporter" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_extensions_v1beta1_ingress" "prometheus" {
+resource "k8s_networking_k8s_io_v1_ingress" "prometheus" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -283,22 +295,28 @@ resource "k8s_extensions_v1beta1_ingress" "prometheus" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.prometheus.name
       http {
         paths {
           backend {
-            service_name = module.prometheus.name
-            service_port = 9090
+            service {
+              name = module.prometheus.name
+              port {
+                number = 9090
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_extensions_v1beta1_ingress" "alertmanager" {
+resource "k8s_networking_k8s_io_v1_ingress" "alertmanager" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -308,15 +326,21 @@ resource "k8s_extensions_v1beta1_ingress" "alertmanager" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.alertmanager.name
       http {
         paths {
           backend {
-            service_name = module.alertmanager.name
-            service_port = 9093
+            service {
+              name = module.alertmanager.name
+              port {
+                number = 9093
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

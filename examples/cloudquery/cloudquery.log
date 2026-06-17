@@ -1,0 +1,6 @@
+2024-05-22T15:41:03Z INF Loading spec(s) args=["./config"] invocation-id=6561e429-c232-4482-8f9f-1195bc7030cc module=cli
+2024-05-22T15:41:03Z WRN when using the CloudQuery registry, it's recommended to log in via `cloudquery login`. Logging in allows for better rate limits and downloading of premium plugins invocation-id=6561e429-c232-4482-8f9f-1195bc7030cc module=cli
+2024-05-22T15:41:03Z ERR exiting with error error="failed to create plugin directory .cq/plugins/source/cloudquery/aws/v26.5.0: mkdir .cq/plugins: permission denied" invocation-id=6561e429-c232-4482-8f9f-1195bc7030cc module=cli
+2024-05-22T15:41:40Z INF Loading spec(s) args=["./config"] invocation-id=79f3193b-bff9-4ae5-a75c-fc026197592b module=cli
+2024-05-22T15:41:40Z WRN when using the CloudQuery registry, it's recommended to log in via `cloudquery login`. Logging in allows for better rate limits and downloading of premium plugins invocation-id=79f3193b-bff9-4ae5-a75c-fc026197592b module=cli
+2024-05-22T15:41:41Z ERR exiting with error error="unauthorized. Try logging in via `cloudquery login`" invocation-id=79f3193b-bff9-4ae5-a75c-fc026197592b module=cli

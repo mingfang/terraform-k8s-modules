@@ -18,7 +18,6 @@ Provider Requirements:
 * `user` (required)
 
 ## Output Values
-* `pvcs`
 * `replicas`
 * `storage`
 * `storage_class_name`

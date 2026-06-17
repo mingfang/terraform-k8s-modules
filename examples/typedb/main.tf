@@ -11,6 +11,6 @@ module "typedb" {
   image     = "typedb/typedb:latest"
   ports     = [{ name = "tcp", port = 1729 }]
 
-  storage   = "1Gi"
+  storage    = "1Gi"
   mount_path = "/opt/typedb-all-linux-x86_64/server/data"
 }

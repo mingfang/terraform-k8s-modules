@@ -1,4 +1,4 @@
-resource "k8s_extensions_v1beta1_ingress" "nginx" {
+resource "k8s_networking_k8s_io_v1_ingress" "nginx" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -8,6 +8,7 @@ resource "k8s_extensions_v1beta1_ingress" "nginx" {
     namespace = var.namespace
   }
   spec {
+    ingress_class_name = "nginx"
 
     rules {
       host = "nginx"
@@ -15,10 +16,15 @@ resource "k8s_extensions_v1beta1_ingress" "nginx" {
 
         paths {
           backend {
-            service_name = "nginx"
-            service_port = "80"
+            service {
+              name = nginx
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

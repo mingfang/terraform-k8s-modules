@@ -35,8 +35,8 @@ module "temporal" {
   name      = "temporal"
   namespace = k8s_core_v1_namespace.this.metadata.0.name
   # https://hub.docker.com/r/temporalio/auto-setup/tags
-  image     = "temporalio/auto-setup:1.24.2"
-  ports     = [{ name = "tcp", port = 7233 }]
+  image = "temporalio/auto-setup:1.24.2"
+  ports = [{ name = "tcp", port = 7233 }]
 
   env_map = {
     DB             = "postgres12"
@@ -52,8 +52,8 @@ module "temporal-ui" {
   name      = "temporal-ui"
   namespace = k8s_core_v1_namespace.this.metadata.0.name
   # https://hub.docker.com/r/temporalio/ui/tags
-  image     = "temporalio/ui:2.29.2"
-  ports     = [{ name = "tcp", port = 8080 }]
+  image = "temporalio/ui:2.29.2"
+  ports = [{ name = "tcp", port = 8080 }]
 
   env_map = {
     TEMPORAL_ADDRESS = "temporal:7233"

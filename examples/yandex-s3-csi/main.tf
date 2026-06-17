@@ -26,7 +26,7 @@ module "secret" {
   source    = "../../modules/kubernetes/secret"
   name      = "s3fs"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  from-map  = {
+  from-map = {
     accessKeyID     = base64encode(var.AWS_ACCESS_KEY_ID)
     secretAccessKey = base64encode(var.AWS_SECRET_ACCESS_KEY)
     endpoint        = base64encode("https://s3.us-east-1.amazonaws.com")
@@ -38,7 +38,7 @@ module "storage-class" {
   name        = "s3fs"
   namespace   = k8s_core_v1_namespace.this.metadata[0].name
   secret_name = module.secret.name
-  bucket = "rebelsoft-s3fs"
+  bucket      = "rebelsoft-s3fs"
 }
 
 locals {
@@ -69,8 +69,8 @@ resource "k8s_core_v1_persistent_volume" "s3" {
         namespace = var.namespace
       }
       volume_attributes = {
-        "capacity"     = "10Gi"
-        "mounter"      = "geesefs"
+        "capacity" = "10Gi"
+        "mounter"  = "geesefs"
       }
       volume_handle = "rebelsoft-s3fs/${local.volume_name}"
     }
@@ -84,10 +84,10 @@ resource "k8s_core_v1_persistent_volume_claim" "s3" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = local.volume_name
-    volume_name = local.volume_name
+    volume_name        = local.volume_name
   }
 }
 

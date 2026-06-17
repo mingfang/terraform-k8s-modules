@@ -10,14 +10,14 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.console` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.data-index` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.infinispan` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.jit-runner` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.task-console` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.travels` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.trusty-ui` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.visas` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.console` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.data-index` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.infinispan` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.jit-runner` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.task-console` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.travels` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.trusty-ui` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.visas` from `k8s`
 
 ## Child Modules
 * `data-index` from [../../modules/kogito/data-index](../../modules/kogito/data-index)

@@ -1,0 +1,11 @@
+ldapsearch \
+  -x -H ldap://localhost \
+  -b dc=rebelsoft,dc=com \
+  -D "cn=admin,dc=rebelsoft,dc=com" \
+  -w admin
+
+ldapadd \
+  -x -H ldap://localhost \
+  -D "cn=admin,dc=rebelsoft,dc=com" \
+  -w admin \
+  -f ./flowable.ldif

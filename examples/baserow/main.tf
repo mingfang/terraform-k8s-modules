@@ -74,7 +74,7 @@ module "web-frontend" {
 }
 
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "baserow" {
+resource "k8s_networking_k8s_io_v1_ingress" "baserow" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -85,36 +85,57 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "baserow" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.web-frontend.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.web-frontend.name
-            service_port = module.web-frontend.ports[0].port
+            service {
+              name = module.web-frontend.name
+              port {
+                number = module.web-frontend.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.backend.name
-            service_port = module.backend.ports[0].port
+            service {
+              name = module.backend.name
+              port {
+                number = module.backend.ports[0].port
+              }
+            }
           }
-          path = "/api"
+          path      = "/api"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.backend.name
-            service_port = module.backend.ports[0].port
+            service {
+              name = module.backend.name
+              port {
+                number = module.backend.ports[0].port
+              }
+            }
           }
-          path = "/ws"
+          path      = "/ws"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.media.name
-            service_port = module.media.ports[0].port
+            service {
+              name = module.media.name
+              port {
+                number = module.media.ports[0].port
+              }
+            }
           }
-          path = "/media"
+          path      = "/media"
+          path_type = "ImplementationSpecific"
         }
       }
     }

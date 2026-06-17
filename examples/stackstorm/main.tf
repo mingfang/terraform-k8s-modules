@@ -378,7 +378,7 @@ module "st2web" {
   ST2_STREAM_URL = "http://st2stream:9102/"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "st2web" {
+resource "k8s_networking_k8s_io_v1_ingress" "st2web" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -388,15 +388,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "st2web" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.st2web.name
-            service_port = module.st2web.ports[0].port
+            service {
+              name = module.st2web.name
+              port {
+                number = module.st2web.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

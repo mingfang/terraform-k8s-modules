@@ -59,7 +59,7 @@ module "pgadmin" {
   PGADMIN_DEFAULT_PASSWORD = "splitgraph"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
+resource "k8s_networking_k8s_io_v1_ingress" "pgadmin" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -69,15 +69,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-pgadmin"
       http {
         paths {
           backend {
-            service_name = module.pgadmin.name
-            service_port = module.pgadmin.ports[0].port
+            service {
+              name = module.pgadmin.name
+              port {
+                number = module.pgadmin.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -119,7 +125,7 @@ module "metabase" {
   ]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "metabase" {
+resource "k8s_networking_k8s_io_v1_ingress" "metabase" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -129,15 +135,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "metabase" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-metabase"
       http {
         paths {
           backend {
-            service_name = module.metabase.name
-            service_port = module.metabase.ports[0].port
+            service {
+              name = module.metabase.name
+              port {
+                number = module.metabase.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -163,7 +175,7 @@ module "minio" {
   ]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
+resource "k8s_networking_k8s_io_v1_ingress" "minio" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -174,22 +186,28 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-minio"
       http {
         paths {
           backend {
-            service_name = module.minio.name
-            service_port = module.minio.ports[1].port
+            service {
+              name = module.minio.name
+              port {
+                number = module.minio.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "minio-console" {
+resource "k8s_networking_k8s_io_v1_ingress" "minio-console" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -200,15 +218,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "minio-console" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-minio-console"
       http {
         paths {
           backend {
-            service_name = module.minio.name
-            service_port = module.minio.ports[1].port
+            service {
+              name = module.minio.name
+              port {
+                number = module.minio.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -16,7 +16,7 @@ Provider Requirements:
 * `k8s_cert_manager_io_v1alpha2_issuer.letsencrypt-staging` from `k8s`
 * `k8s_core_v1_namespace.this` from `k8s`
 * `k8s_core_v1_service.kuard` from `k8s`
-* `k8s_extensions_v1beta1_ingress.kuard` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.kuard` from `k8s`
 
 ## Child Modules
 * `cert-manager` from [../../modules/cert-manager](../../modules/cert-manager)

@@ -14,5 +14,5 @@ Provider Requirements:
 
 ## Child Modules
 * `config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
-* `steampipe` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `steampipe` from [../../modules/steampipe](../../modules/steampipe)
 

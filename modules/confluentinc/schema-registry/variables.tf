@@ -6,7 +6,7 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "http"
@@ -15,7 +15,7 @@ variable ports {
   ]
 }
 
-variable image {
+variable "image" {
   default = "confluentinc/cp-schema-registry:6.0.0"
 }
 
@@ -35,11 +35,11 @@ variable "overrides" {
   default = {}
 }
 
-variable SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL {
-  default = null
+variable "SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL" {
+  default     = null
   description = "ZooKeeper URL for the Kafka cluster."
 }
-variable SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS {
-  default = null
+variable "SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS" {
+  default     = null
   description = "Kafka Bootstrap Servers."
 }

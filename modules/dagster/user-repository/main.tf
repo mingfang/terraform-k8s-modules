@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -18,7 +18,7 @@ locals {
     containers = [
       {
         name    = var.name
-        image = var.image
+        image   = var.image
         command = var.command
         args    = var.args
 
@@ -96,7 +96,7 @@ locals {
       }
     }
 
-    node_selector        = var.node_selector
+    node_selector = var.node_selector
   }
 }
 

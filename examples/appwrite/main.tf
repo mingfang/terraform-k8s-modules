@@ -27,7 +27,7 @@ module "mariadb" {
   storage       = "1Gi"
 
   image = "appwrite/mariadb:1.2.0"
-  args  = [
+  args = [
     "--innodb-flush-method=fsync",
   ]
 
@@ -45,7 +45,7 @@ resource "k8s_core_v1_persistent_volume_claim" "docker" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -57,7 +57,7 @@ resource "k8s_core_v1_persistent_volume_claim" "functions" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -69,7 +69,7 @@ resource "k8s_core_v1_persistent_volume_claim" "uploads" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -85,17 +85,17 @@ module "appwrite" {
     k8s_core_v1_persistent_volume_claim.uploads,
   ]
 
-  _APP_ENV           = local._APP_ENV
-  _APP_USAGE_STATS   = local._APP_USAGE_STATS
+  _APP_ENV         = local._APP_ENV
+  _APP_USAGE_STATS = local._APP_USAGE_STATS
 
-  _APP_REDIS_HOST    = module.redis.name
-  _APP_REDIS_PORT    = module.redis.ports[0].port
+  _APP_REDIS_HOST = module.redis.name
+  _APP_REDIS_PORT = module.redis.ports[0].port
 
-  _APP_DB_HOST       = module.mariadb.name
-  _APP_DB_PORT       = module.mariadb.ports[0].port
-  _APP_DB_SCHEMA     = local._APP_DB_SCHEMA
-  _APP_DB_USER       = local._APP_DB_USER
-  _APP_DB_PASS       = local._APP_DB_PASS
+  _APP_DB_HOST   = module.mariadb.name
+  _APP_DB_PORT   = module.mariadb.ports[0].port
+  _APP_DB_SCHEMA = local._APP_DB_SCHEMA
+  _APP_DB_USER   = local._APP_DB_USER
+  _APP_DB_PASS   = local._APP_DB_PASS
 
   _APP_INFLUXDB_HOST = module.influxdb.name
   _APP_INFLUXDB_PORT = module.influxdb.ports[0].port
@@ -122,7 +122,7 @@ module "executor" {
       env   = [{ name = "DOCKER_TLS_CERTDIR", value = "" }]
 
       security_context = { privileged = true }
-      volume_mounts    = [{ name = "docker", mount_path = "/storage/docker" },]
+      volume_mounts    = [{ name = "docker", mount_path = "/storage/docker" }, ]
     }
   ]
 
@@ -311,7 +311,7 @@ module "telegraf" {
   _APP_INFLUXDB_PORT = module.influxdb.ports[0].port
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -323,21 +323,32 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}.${var.namespace}"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.appwrite.name
-            service_port = module.appwrite.ports[0].port
+            service {
+              name = module.appwrite.name
+              port {
+                number = module.appwrite.ports[0].port
+              }
+            }
           }
         }
         paths {
-          path = "/v1/realtime"
+          path      = "/v1/realtime"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.realtime.name
-            service_port = module.realtime.ports[0].port
+            service {
+              name = module.realtime.name
+              port {
+                number = module.realtime.ports[0].port
+              }
+            }
           }
         }
       }

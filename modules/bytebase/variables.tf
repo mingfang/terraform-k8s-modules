@@ -18,7 +18,7 @@ variable "replicas" {
 }
 
 variable "ports" {
-  type    = list
+  type    = list(any)
   default = [{ name = "tcp", port = 8080 }]
 }
 
@@ -38,7 +38,7 @@ variable "env" {
 }
 
 variable "env_map" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -48,7 +48,7 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list(object({
+  type = list(object({
     prefix = string,
     secret_ref = object({
       name = string,
@@ -58,7 +58,7 @@ variable "env_from" {
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -96,7 +96,7 @@ variable "configmap" {
 }
 
 variable "configmap_mount_path" {
-  type = string
+  type    = string
   default = "/config"
 }
 
@@ -107,7 +107,7 @@ variable "post_start_command" {
 
 variable "pvcs" {
   type = list(object({
-    name = string
+    name       = string
     mount_path = string
   }))
   default = []
@@ -120,13 +120,13 @@ variable "pvc_user" {
 
 variable "volumes" {
   type = list(object({
-      name = string
-      empty_dir = object({})
-      mount_path = string
+    name       = string
+    empty_dir  = object({})
+    mount_path = string
   }))
   default = []
 }
 
 variable "sidecars" {
-default = []
+  default = []
 }

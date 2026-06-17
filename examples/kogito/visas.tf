@@ -19,7 +19,7 @@ module "visas" {
   ])
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "visas" {
+resource "k8s_networking_k8s_io_v1_ingress" "visas" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -29,15 +29,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "visas" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.visas.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.visas.name
-            service_port = module.visas.ports[0].port
+            service {
+              name = module.visas.name
+              port {
+                number = module.visas.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

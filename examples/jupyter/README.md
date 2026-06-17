@@ -18,7 +18,7 @@ Provider Requirements:
 * `k8s_core_v1_persistent_volume.jupyter-users` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.alluxio` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.jupyter-users` from `k8s`
-* `k8s_extensions_v1beta1_ingress.this` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 
 ## Child Modules
 * `config` from [../../modules/jupyter/jupyterhub/config](../../modules/jupyter/jupyterhub/config)

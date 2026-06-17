@@ -34,7 +34,7 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -44,7 +44,7 @@ module "penpot-backend" {
   source    = "../../modules/penpot/backend"
   name      = "penpot-backend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  env_map   = {
+  env_map = {
     PENPOT_FLAGS                       = "enable-registration enable-login-with-password disable-email-verification enable-smtp enable-prepl-server"
     PENPOT_SECRET_KEY                  = "BrBdkMLe4saB3hNpuNN7Xm6uJFExaMP8eIHWBdxSHWrFijTBA9S2L-IQoBP06Uw-KBgXf1pongLDC1PNVQomLw"
     PENPOT_PREPL_HOST                  = "0.0.0.0"
@@ -75,7 +75,7 @@ module "penpot-exporter" {
   source    = "../../modules/penpot/exporter"
   name      = "penpot-exporter"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  env_map   = {
+  env_map = {
     PENPOT_REDIS_URI = "redis://redis/0"
   }
 }
@@ -84,7 +84,7 @@ module "penpot-frontend" {
   source    = "../../modules/penpot/frontend"
   name      = "penpot-frontend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  env_map   = {
+  env_map = {
     PENPOT_FLAGS = "enable-registration enable-login-with-password"
   }
   pvc            = k8s_core_v1_persistent_volume_claim.data.metadata[0].name
@@ -92,7 +92,7 @@ module "penpot-frontend" {
   pvc_user       = "penpot"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -103,15 +103,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.penpot-frontend.name
-            service_port = module.penpot-frontend.ports[0].port
+            service {
+              name = module.penpot-frontend.name
+              port {
+                number = module.penpot-frontend.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -124,7 +130,7 @@ module "mailcatcher" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "mailcatcher" {
+resource "k8s_networking_k8s_io_v1_ingress" "mailcatcher" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -135,15 +141,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "mailcatcher" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-mailcatcher"
       http {
         paths {
           backend {
-            service_name = module.mailcatcher.name
-            service_port = module.mailcatcher.ports[1].port
+            service {
+              name = module.mailcatcher.name
+              port {
+                number = module.mailcatcher.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

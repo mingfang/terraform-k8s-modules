@@ -52,7 +52,7 @@ module "wordpress" {
   WORDPRESS_DB_PASSWORD = "wordpress"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "wordpress" {
+resource "k8s_networking_k8s_io_v1_ingress" "wordpress" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -62,15 +62,21 @@ resource "k8s_extensions_v1beta1_ingress" "wordpress" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.wordpress.name
       http {
         paths {
           backend {
-            service_name = module.wordpress.name
-            service_port = 80
+            service {
+              name = module.wordpress.name
+              port {
+                number = 80
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -66,7 +66,7 @@ module "worker-adhoc" {
   REDASH_DATABASE_URL = "postgresql://redash:redash@${module.postgres.name}:${module.postgres.ports[0].port}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -76,14 +76,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}.${var.namespace}"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.server.name
-            service_port = module.server.ports[0].port
+            service {
+              name = module.server.name
+              port {
+                number = module.server.ports[0].port
+              }
+            }
           }
         }
       }

@@ -78,7 +78,7 @@ module "control-center" {
   ]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "control-center" {
+resource "k8s_networking_k8s_io_v1_ingress" "control-center" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -88,15 +88,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "control-center" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}-${var.namespace}-control-center"
       http {
         paths {
           backend {
-            service_name = module.control-center.name
-            service_port = module.control-center.ports[0].port
+            service {
+              name = module.control-center.name
+              port {
+                number = module.control-center.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

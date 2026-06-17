@@ -8,7 +8,7 @@ Provider Requirements:
 * `additional_args` (default `""`)
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"docker.vectorized.io/vectorized/redpanda:v23.3.1"`)
+* `image` (default `"docker.vectorized.io/vectorized/redpanda:v24.2.9"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

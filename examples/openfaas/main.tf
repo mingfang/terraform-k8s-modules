@@ -89,7 +89,7 @@ module "gateway" {
   functions_provider_url = "http://${module.faas-netes.name}:${module.faas-netes.service.spec[0].ports[0].port}/"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "gateway" {
+resource "k8s_networking_k8s_io_v1_ingress" "gateway" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -99,22 +99,28 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "gateway" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.gateway.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.gateway.name
-            service_port = module.gateway.service.spec[0].ports[0].port
+            service {
+              name = module.gateway.name
+              port {
+                number = module.gateway.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "prometheus" {
+resource "k8s_networking_k8s_io_v1_ingress" "prometheus" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -124,22 +130,28 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "prometheus" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.prometheus.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.prometheus.name
-            service_port = module.prometheus.service.spec[0].ports[0].port
+            service {
+              name = module.prometheus.name
+              port {
+                number = module.prometheus.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
+resource "k8s_networking_k8s_io_v1_ingress" "alertmanager" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -149,15 +161,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.alertmanager.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.alertmanager.name
-            service_port = module.alertmanager.service.spec[0].ports[0].port
+            service {
+              name = module.alertmanager.name
+              port {
+                number = module.alertmanager.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

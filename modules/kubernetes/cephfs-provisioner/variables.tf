@@ -14,6 +14,6 @@ variable "overrides" {
   default = {}
 }
 
-variable PROVISIONER_NAME {
+variable "PROVISIONER_NAME" {
   default = "ceph.com/cephfs"
 }

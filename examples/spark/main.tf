@@ -11,7 +11,7 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -24,10 +24,10 @@ module "master" {
 }
 
 module "worker" {
-  source     = "../../modules/spark/worker"
-  name       = "${var.name}-worker"
-  namespace  = k8s_core_v1_namespace.this.metadata[0].name
-  replicas = 2
+  source    = "../../modules/spark/worker"
+  name      = "${var.name}-worker"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  replicas  = 2
 
   master_url = module.master.master_url
 }
@@ -40,25 +40,31 @@ module "ui-proxy" {
   master_port = module.master.service.spec[0].ports[1].port
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "ui-proxy" {
+resource "k8s_networking_k8s_io_v1_ingress" "ui-proxy" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"                 = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"    = "${var.namespace}.*"
+      "kubernetes.io/ingress.class"              = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}.*"
     }
     name      = module.ui-proxy.name
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.ui-proxy.name
-            service_port = module.ui-proxy.ports[0].port
+            service {
+              name = module.ui-proxy.name
+              port {
+                number = module.ui-proxy.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

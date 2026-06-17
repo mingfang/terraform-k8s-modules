@@ -14,7 +14,7 @@ Provider Requirements:
 * `env_file` (default `null`)
 * `env_from` (default `[]`)
 * `env_map` (default `{}`)
-* `image` (default `"jsreport/jsreport:3.10.0-full"`)
+* `image` (default `"jsreport/jsreport:4.1.0-full"`)
 * `mount_path` (default `"/data"`): pvc mount path
 * `name` (default `"jsreport"`)
 * `namespace` (required)

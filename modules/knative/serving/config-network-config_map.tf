@@ -70,6 +70,6 @@ resource "k8s_core_v1_config_map" "config-network" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "config-network"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

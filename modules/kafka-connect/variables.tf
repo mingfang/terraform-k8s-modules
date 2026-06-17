@@ -8,8 +8,8 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
-  type = list
+variable "ports" {
+  type = list(any)
   default = [
     {
       name = "tcp1"
@@ -22,22 +22,22 @@ variable ports {
   ]
 }
 
-variable image {
+variable "image" {
   default = "debezium/connect"
 }
 
 variable "env" {
-  type    = list
+  type    = list(any)
   default = []
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
 variable "node_selector" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -45,4 +45,4 @@ variable "overrides" {
   default = {}
 }
 
-variable bootstrap_servers {}
+variable "bootstrap_servers" {}

@@ -2,7 +2,7 @@ variable "name" {}
 
 variable "namespace" {}
 
-variable image {
+variable "image" {
   default = "grafana/agent:v0.4.0"
 }
 

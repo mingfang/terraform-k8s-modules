@@ -68,7 +68,7 @@ module "dgraph-nginx" {
     EOF
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-nginx" {
+resource "k8s_networking_k8s_io_v1_ingress" "dgraph-nginx" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -78,22 +78,28 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-nginx" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.dgraph-nginx.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.dgraph-nginx.name
-            service_port = 80
+            service {
+              name = module.dgraph-nginx.name
+              port {
+                number = 80
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-grpc" {
+resource "k8s_networking_k8s_io_v1_ingress" "dgraph-grpc" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                  = "nginx"
@@ -104,21 +110,27 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-grpc" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.dgraph-alpha.name}-grpc.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.dgraph-alpha.name
-            service_port = 9080
+            service {
+              name = module.dgraph-alpha.name
+              port {
+                number = 9080
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-alpha" {
+resource "k8s_networking_k8s_io_v1_ingress" "dgraph-alpha" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -128,15 +140,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dgraph-alpha" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.dgraph-alpha.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.dgraph-alpha.name
-            service_port = module.dgraph-alpha.ports[0].port
+            service {
+              name = module.dgraph-alpha.name
+              port {
+                number = module.dgraph-alpha.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

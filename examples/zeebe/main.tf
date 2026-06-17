@@ -72,7 +72,7 @@ module "elasticsearch" {
   storage_class = var.storage_class_name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "elasticsearch" {
+resource "k8s_networking_k8s_io_v1_ingress" "elasticsearch" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -82,15 +82,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "elasticsearch" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.elasticsearch.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.elasticsearch.name
-            service_port = module.elasticsearch.ports[0].port
+            service {
+              name = module.elasticsearch.name
+              port {
+                number = module.elasticsearch.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -109,7 +115,7 @@ module "tasklist" {
   CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS   = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "tasklist" {
+resource "k8s_networking_k8s_io_v1_ingress" "tasklist" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -119,15 +125,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "tasklist" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.tasklist.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.tasklist.name
-            service_port = module.tasklist.ports[0].port
+            service {
+              name = module.tasklist.name
+              port {
+                number = module.tasklist.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -146,7 +158,7 @@ module "operate" {
   CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS   = "${module.zeebe.name}:${module.zeebe.ports[0].port}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "operate" {
+resource "k8s_networking_k8s_io_v1_ingress" "operate" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -156,15 +168,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "operate" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.operate.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.operate.name
-            service_port = module.operate.ports[0].port
+            service {
+              name = module.operate.name
+              port {
+                number = module.operate.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

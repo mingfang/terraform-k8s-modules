@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -53,7 +53,7 @@ locals {
 
         env = concat([
           {
-            name       = "POD_NAME"
+            name = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -61,7 +61,7 @@ locals {
             }
           },
           {
-            name       = "REQUESTS_MEMORY"
+            name = "REQUESTS_MEMORY"
             value_from = {
               resource_field_ref = {
                 resource = "requests.memory"
@@ -70,7 +70,7 @@ locals {
             }
           },
           {
-            name       = "LIMITS_MEMORY"
+            name = "LIMITS_MEMORY"
             value_from = {
               resource_field_ref = {
                 resource = "limits.memory"
@@ -106,7 +106,7 @@ locals {
             name  = "path.data"
             value = "/data/$(POD_NAME)"
           },
-        ], var.secret != null ? [
+          ], var.secret != null ? [
           {
             name  = "xpack.security.enabled"
             value = "false"
@@ -214,7 +214,7 @@ locals {
         ]
         env = concat([
           {
-            name       = "POD_NAME"
+            name = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"

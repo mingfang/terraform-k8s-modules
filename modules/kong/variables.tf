@@ -18,8 +18,8 @@ variable "replicas" {
 }
 
 variable "ports" {
-  type    = list
-  default = [{ name = "http", port = 8000 }, { name = "https", port = 8443}]
+  type    = list(any)
+  default = [{ name = "http", port = 8000 }, { name = "https", port = 8443 }]
 }
 
 variable "command" {
@@ -38,7 +38,7 @@ variable "env" {
 }
 
 variable "env_map" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -48,12 +48,12 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list
+  type    = list(any)
   default = []
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -85,7 +85,7 @@ variable "configmap" {
 }
 
 variable "configmap_mount_path" {
-  type = string
+  type    = string
   default = "/config"
 }
 
@@ -100,7 +100,7 @@ variable "pvc" {
 }
 
 variable "mount_path" {
-  type    = string
-  default = "/data"
+  type        = string
+  default     = "/data"
   description = "pvc mount path"
 }

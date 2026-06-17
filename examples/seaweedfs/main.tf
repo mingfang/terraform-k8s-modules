@@ -101,6 +101,11 @@ module "seaweedfs_s3" {
     "-port=8333",
   ]
 
+  env_map = {
+    AWS_ACCESS_KEY_ID     = var.s3_access_key
+    AWS_SECRET_ACCESS_KEY = var.s3_secret_key
+  }
+
   resources = var.resources_s3
 }
 

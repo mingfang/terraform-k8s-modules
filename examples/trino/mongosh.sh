@@ -1,0 +1,1 @@
+docker run -it --entrypoint mongosh mongo:5 mongodb://ferretdb.trino-example/postgres

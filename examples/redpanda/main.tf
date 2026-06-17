@@ -20,7 +20,7 @@ module "redpanda" {
   ])
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "redpanda" {
+resource "k8s_networking_k8s_io_v1_ingress" "redpanda" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -30,14 +30,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "redpanda" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.redpanda.name
-            service_port = module.redpanda.ports[0].port
+            service {
+              name = module.redpanda.name
+              port {
+                number = module.redpanda.ports[0].port
+              }
+            }
           }
         }
       }
@@ -68,7 +74,7 @@ module "kowl" {
   configmap = module.kowl_config.config_map
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "kowl" {
+resource "k8s_networking_k8s_io_v1_ingress" "kowl" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -78,14 +84,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "kowl" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "kowl-${var.namespace}"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.kowl.name
-            service_port = module.kowl.ports[0].port
+            service {
+              name = module.kowl.name
+              port {
+                number = module.kowl.ports[0].port
+              }
+            }
           }
         }
       }

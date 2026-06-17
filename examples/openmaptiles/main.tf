@@ -5,8 +5,8 @@ resource "k8s_core_v1_namespace" "this" {
 }
 
 locals {
-  env =  { for tuple in regexall("(\\w+)=(.+)", file("${path.module}/.env")) : tuple[0] => tuple[1] }
-  kube_env =  [ for k,v in local.env : { name = k, value = v} ]
+  env      = { for tuple in regexall("(\\w+)=(.+)", file("${path.module}/.env")) : tuple[0] => tuple[1] }
+  kube_env = [for k, v in local.env : { name = k, value = v }]
 }
 
 module "postgres" {
@@ -29,13 +29,13 @@ module "import-data-job" {
   source    = "../../modules/openmaptiles/import-data-job"
   name      = "import-data-job"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  env = local.kube_env
+  env       = local.kube_env
 }
 
 module "postserve" {
-  source    = "../../modules/openmaptiles/postserve"
-  name      = "postserve"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
-  env = local.kube_env
+  source       = "../../modules/openmaptiles/postserve"
+  name         = "postserve"
+  namespace    = k8s_core_v1_namespace.this.metadata[0].name
+  env          = local.kube_env
   TILESET_FILE = local.env["TILESET_FILE"]
 }

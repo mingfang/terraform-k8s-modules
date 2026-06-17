@@ -42,24 +42,24 @@ module "pgadmin" {
     PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED = "False"
 
     PGADMIN_CONFIG_AUTHENTICATION_SOURCES = "[\"oauth2\"]"
-    PGADMIN_CONFIG_OAUTH2_CONFIG          = <<-EOF
+    PGADMIN_CONFIG_OAUTH2_CONFIG = <<-EOF
     [${jsonencode({
-      OAUTH2_NAME = "Keycloak"
-      OAUTH2_DISPLAY_NAME = "Keycloak"
-      OAUTH2_CLIENT_ID= "pgadmin-example"
-      OAUTH2_CLIENT_SECRET = "YAaapjfSOrKnOwgGXK6mDC6madcyLcfp"
-      OAUTH2_TOKEN_URL = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/token"
-      OAUTH2_AUTHORIZATION_URL = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/auth"
-      OAUTH2_API_BASE_URL = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/"
-      OAUTH2_USERINFO_ENDPOINT = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/userinfo"
-      OAUTH2_SERVER_METADATA_URL = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/.well-known/openid-configuration"
-      OAUTH2_SCOPE = "openid email profile"
-    })}]
+    OAUTH2_NAME                = "Keycloak"
+    OAUTH2_DISPLAY_NAME        = "Keycloak"
+    OAUTH2_CLIENT_ID           = "pgadmin-example"
+    OAUTH2_CLIENT_SECRET       = "YAaapjfSOrKnOwgGXK6mDC6madcyLcfp"
+    OAUTH2_TOKEN_URL           = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/token"
+    OAUTH2_AUTHORIZATION_URL   = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/auth"
+    OAUTH2_API_BASE_URL        = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/"
+    OAUTH2_USERINFO_ENDPOINT   = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/protocol/openid-connect/userinfo"
+    OAUTH2_SERVER_METADATA_URL = "https://keycloak.rebelsoft.com/auth/realms/rebelsoft/.well-known/openid-configuration"
+    OAUTH2_SCOPE               = "openid email profile"
+})}]
     EOF
-  }
+}
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -70,15 +70,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.pgadmin.name
-            service_port = module.pgadmin.ports[0].port
+            service {
+              name = module.pgadmin.name
+              port {
+                number = module.pgadmin.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -142,7 +142,7 @@ module "attu" {
   MILVUS_URL = "${module.proxy.name}:${module.proxy.ports[0].port}"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "attu" {
+resource "k8s_networking_k8s_io_v1_ingress" "attu" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -152,15 +152,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "attu" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.attu.name
-            service_port = module.attu.ports[0].port
+            service {
+              name = module.attu.name
+              port {
+                number = module.attu.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

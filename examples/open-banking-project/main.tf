@@ -103,7 +103,7 @@ module "open-banking-project-api" {
   OBP_DB_URL                = "jdbc:postgresql://${module.postgres.name}:5432/openbankingproject?user=openbankingproject&password=openbankingproject"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "open-banking-project-api" {
+resource "k8s_networking_k8s_io_v1_ingress" "open-banking-project-api" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -113,15 +113,21 @@ resource "k8s_extensions_v1beta1_ingress" "open-banking-project-api" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.open-banking-project-api.name
       http {
         paths {
           backend {
-            service_name = module.open-banking-project-api.name
-            service_port = 8080
+            service {
+              name = module.open-banking-project-api.name
+              port {
+                number = 8080
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

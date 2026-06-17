@@ -13,7 +13,7 @@ Provider Requirements:
 * `k8s_core_v1_persistent_volume_claim.docker` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.functions` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.uploads` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.this` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 
 ## Child Modules
 * `appwrite` from [../../modules/appwrite/appwrite](../../modules/appwrite/appwrite)

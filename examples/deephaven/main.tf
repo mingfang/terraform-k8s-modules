@@ -45,7 +45,7 @@ module "envoy" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -57,14 +57,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.envoy.name}.${var.namespace}"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.envoy.name
-            service_port = module.envoy.ports[0].port
+            service {
+              name = module.envoy.name
+              port {
+                number = module.envoy.ports[0].port
+              }
+            }
           }
         }
       }
@@ -72,7 +78,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
   }
 }
 /*
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -84,56 +90,92 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.envoy.name}.${var.namespace}"
       http {
         paths {
           path = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.grpc-proxy.name
-            service_port = module.grpc-proxy.ports[0].port
+            service {
+              name = module.grpc-proxy.name
+              port {
+                number = module.grpc-proxy.ports[0].port
+              }
+            }
           }
         }
         paths {
           path = "/ide"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.web.name
-            service_port = module.web.ports[0].port
+            service {
+              name = module.web.name
+              port {
+                number = module.web.ports[0].port
+              }
+            }
           }
         }
         paths {
           path = "/jsapi"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.web.name
-            service_port = module.web.ports[0].port
+            service {
+              name = module.web.name
+              port {
+                number = module.web.ports[0].port
+              }
+            }
           }
         }
         paths {
           path = "/js-plugins"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.web.name
-            service_port = module.web.ports[0].port
+            service {
+              name = module.web.name
+              port {
+                number = module.web.ports[0].port
+              }
+            }
           }
         }
         paths {
           path = "/notebooks"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.web.name
-            service_port = module.web.ports[0].port
+            service {
+              name = module.web.name
+              port {
+                number = module.web.ports[0].port
+              }
+            }
           }
         }
         paths {
           path = "/layouts"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.web.name
-            service_port = module.web.ports[0].port
+            service {
+              name = module.web.name
+              port {
+                number = module.web.ports[0].port
+              }
+            }
           }
         }
         paths {
           path = "/iframe"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.web.name
-            service_port = module.web.ports[0].port
+            service {
+              name = module.web.name
+              port {
+                number = module.web.ports[0].port
+              }
+            }
           }
         }
       }

@@ -1,0 +1,657 @@
+---
+# Source: nuclio/templates/serviceaccount/service-account.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: release-name-nuclio
+  labels:
+    app: nuclio
+    release: release-name
+---
+# Source: nuclio/templates/crd/api-gateway.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: nuclioapigateways.nuclio.io
+  labels:
+    app: nuclio
+    release: release-name
+spec:
+  group: nuclio.io
+  names:
+    kind: NuclioAPIGateway
+    plural: nuclioapigateways
+    singular: nuclioapigateway
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            x-kubernetes-preserve-unknown-fields: true
+---
+# Source: nuclio/templates/crd/function-event.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: nucliofunctionevents.nuclio.io
+  labels:
+    app: nuclio
+    release: release-name
+spec:
+  group: nuclio.io
+  names:
+    kind: NuclioFunctionEvent
+    plural: nucliofunctionevents
+    singular: nucliofunctionevent
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            x-kubernetes-preserve-unknown-fields: true
+---
+# Source: nuclio/templates/crd/function.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: nucliofunctions.nuclio.io
+  labels:
+    app: nuclio
+    release: release-name
+spec:
+  group: nuclio.io
+  names:
+    kind: NuclioFunction
+    plural: nucliofunctions
+    singular: nucliofunction
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            x-kubernetes-preserve-unknown-fields: true
+---
+# Source: nuclio/templates/crd/project.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: nuclioprojects.nuclio.io
+  labels:
+    app: nuclio
+    release: release-name
+spec:
+  group: nuclio.io
+  names:
+    kind: NuclioProject
+    plural: nuclioprojects
+    singular: nuclioproject
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            x-kubernetes-preserve-unknown-fields: true
+          status:
+            x-kubernetes-preserve-unknown-fields: true
+---
+# Source: nuclio/templates/role/crd-admin.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# All access to the custom resource definitions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: release-name-nuclio-crd-admin-clusterrole
+  labels:
+    app: nuclio
+    release: release-name
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+  - apiGroups: ["nuclio.io"]
+    resources: ["nucliofunctions", "nuclioprojects", "nucliofunctionevents", "nuclioapigateways"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["list"]
+---
+# Source: nuclio/templates/role/function-deployer.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# All access to services, configmaps, deployments, ingresses, HPAs, cronJobs
+# are conditionally limited to the nuclio namespace or cluster-wide
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: release-name-nuclio-function-deployer-clusterrole
+  labels:
+    app: nuclio
+    release: release-name
+rules:
+- apiGroups: [""]
+  resources: ["services", "configmaps", "pods", "pods/log", "events", "secrets"]
+  verbs: ["*"]
+- apiGroups: ["apps", "extensions"]
+  resources: ["deployments"]
+  verbs: ["*"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["*"]
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["*"]
+- apiGroups: ["metrics.k8s.io", "custom.metrics.k8s.io"]
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["*"]
+---
+# Source: nuclio/templates/rolebinding/crd-admin.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Bind the service account (used by controller / dashboard) to the crd-admin role,
+# allowing them to create / delete custom resource definitions in the appropriate namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: release-name-nuclio-crd-admin-clusterrolebinding
+  labels:
+    app: nuclio
+    release: release-name
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: release-name-nuclio-crd-admin-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: release-name-nuclio
+  namespace: intellij
+---
+# Source: nuclio/templates/rolebinding/function-deployer.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Bind the service account (used by controller / dashboard) to the function-deployer role,
+# allowing them to create deployments, services, etc
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: release-name-nuclio-function-deployer-clusterrolebinding
+  labels:
+    app: nuclio
+    release: release-name
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: release-name-nuclio-function-deployer-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: release-name-nuclio
+  namespace: intellij
+---
+# Source: nuclio/templates/service/dashboard.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-nuclio-dashboard
+  labels:
+    app: nuclio
+    release: release-name
+    nuclio.io/app: dashboard
+    nuclio.io/name: release-name-nuclio-dashboard
+    nuclio.io/class: service
+spec:
+  selector:
+    nuclio.io/name: release-name-nuclio-dashboard
+  ports:
+  - name: admin
+    port: 8070
+    protocol: TCP
+---
+# Source: nuclio/templates/deployment/controller.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-nuclio-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nuclio
+      release: release-name
+      nuclio.io/app: controller
+      nuclio.io/class: service
+      nuclio.io/name: release-name-nuclio-controller
+  template:
+    metadata:
+      labels:
+        app: nuclio
+        release: release-name
+        nuclio.io/app: controller
+        nuclio.io/class: service
+        nuclio.io/name: release-name-nuclio-controller
+      annotations:
+        nuclio.io/version: 1.8.10-amd64
+        checksum/configmap-platform: c4e5012d9b1ac4436c97c23d57f47be5f4febc5de8cfefdfa05ed847a48a0f81
+    spec:
+      serviceAccountName: release-name-nuclio
+      containers:
+      - name: release-name-nuclio-controller
+        image: quay.io/nuclio/controller:1.8.10-amd64
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: NUCLIO_CONTROLLER_EXTERNAL_IP_ADDRESSES
+          value: # leave empty if no input were given.
+# we resolve external ip address via `kubectl get nodes` or via the kubeconfig host
+        - name: NUCLIO_CONTROLLER_IMAGE_PULL_SECRETS
+          value: 
+        - name: NUCLIO_CONTROLLER_CRON_TRIGGER_CRON_JOB_IMAGE_NAME
+          value: appropriate/curl:latest
+        - name: NUCLIO_CONTROLLER_CRON_TRIGGER_CRON_JOB_IMAGE_PULL_POLICY
+          value: IfNotPresent
+        - name: NUCLIO_CONTROLLER_FUNCTION_MONITOR_INTERVAL
+          value: "3m"
+        - name: NUCLIO_CONTROLLER_FUNCTION_OPERATOR_NUM_WORKERS
+          value: "4"
+        - name: NUCLIO_CONTROLLER_FUNCTION_EVENT_OPERATOR_NUM_WORKERS
+          value: "2"
+        - name: NUCLIO_CONTROLLER_PROJECT_OPERATOR_NUM_WORKERS
+          value: "2"
+        - name: NUCLIO_CONTROLLER_API_GATEWAY_OPERATOR_NUM_WORKERS
+          value: "2"
+        - name: NUCLIO_CONTROLLER_RESYNC_INTERVAL
+          value: "0"
+---
+# Source: nuclio/templates/deployment/dashboard.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-nuclio-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nuclio
+      release: release-name
+      nuclio.io/app: dashboard
+      nuclio.io/name: release-name-nuclio-dashboard
+      nuclio.io/class: service
+  template:
+    metadata:
+      labels:
+        app: nuclio
+        release: release-name
+        nuclio.io/app: dashboard
+        nuclio.io/name: release-name-nuclio-dashboard
+        nuclio.io/class: service
+      annotations:
+        nuclio.io/version: 1.8.10-amd64
+        checksum/secret-registry-credentials: c4e5012d9b1ac4436c97c23d57f47be5f4febc5de8cfefdfa05ed847a48a0f81
+        checksum/configmap-registry-url: c4e5012d9b1ac4436c97c23d57f47be5f4febc5de8cfefdfa05ed847a48a0f81
+        checksum/configmap-platform: c4e5012d9b1ac4436c97c23d57f47be5f4febc5de8cfefdfa05ed847a48a0f81
+    spec:
+      serviceAccountName: release-name-nuclio
+      containers:
+      - name: release-name-nuclio-dashboard
+        image: quay.io/nuclio/dashboard:1.8.10-amd64
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8070
+        - name: liveness-port
+          containerPort: 8082
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: liveness-port
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: liveness-port
+          failureThreshold: 1
+          periodSeconds: 15
+          timeoutSeconds: 5
+        startupProbe:
+          httpGet:
+            path: /live
+            port: liveness-port
+          failureThreshold: 4
+          periodSeconds: 15
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+        env:
+        - name: NUCLIO_BUSYBOX_CONTAINER_IMAGE
+          value: busybox:1.31
+        - name: NUCLIO_KANIKO_PUSH_IMAGES_RETRIES
+          value: "3"
+        - name: NUCLIO_AUTH_KIND
+          value: nop
+        - name: NUCLIO_AUTH_OPTIONS_IGUAZIO_TIMEOUT
+          value: 30s
+        - name: NUCLIO_AUTH_IGUAZIO_VERIFICATION_URL
+          value: http://somewhere.com
+        - name: NUCLIO_AUTH_IGUAZIO_VERIFICATION_DATA_ENRICHMENT_URL
+          value: http://somewhereelse.com
+        - name: NUCLIO_AUTH_IGUAZIO_CACHE_SIZE
+          value: "100"
+        - name: NUCLIO_AUTH_IGUAZIO_CACHE_EXPIRATION_TIMEOUT
+          value: 60s
+        - name: NUCLIO_DASHBOARD_REGISTRY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: release-name-nuclio-registry-url
+              key: "registry_url"
+              optional: true
+        - name: NUCLIO_DASHBOARD_DEPLOYMENT_NAME
+          value: release-name-nuclio-dashboard
+        - name: NUCLIO_CONTAINER_BUILDER_KIND
+          value: docker
+        - name: NUCLIO_KANIKO_CONTAINER_IMAGE
+          value: gcr.io/kaniko-project/executor:v1.7.0
+        - name: NUCLIO_KANIKO_CONTAINER_IMAGE_PULL_POLICY
+          value: IfNotPresent
+        - name: NUCLIO_KANIKO_JOB_DELETION_TIMEOUT
+          value: "30m"
+        - name: NUCLIO_DASHBOARD_DEFAULT_ONBUILD_REGISTRY_URL
+          value: quay.io
+#        - name: NUCLIO_DASHBOARD_RUN_REGISTRY_URL
+#          value: "localhost:5000"
+        - name: NUCLIO_MONITOR_DOCKER_DAEMON
+          value: "true"
+        - name: NUCLIO_MONITOR_DOCKER_DAEMON_INTERVAL
+          value: "5s"
+        - name: NUCLIO_MONITOR_DOCKER_DAEMON_MAX_CONSECUTIVE_ERRORS
+          value: "5"
+        - name: NUCLIO_REGISTRY_CREDENTIALS_SECRET_NAME
+          value: 
+        - name: NUCLIO_DASHBOARD_EXTERNAL_IP_ADDRESSES
+          value: # leave empty if no input were given.
+# we resolve external ip address via `kubectl get nodes` or via the kubeconfig host
+        - name: NUCLIO_DASHBOARD_IMAGE_NAME_PREFIX_TEMPLATE
+          value: ""
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+---
+# Source: nuclio/templates/configmap/platform.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+# Source: nuclio/templates/configmap/registry-url.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+# Source: nuclio/templates/deployment/autoscaler.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+# Source: nuclio/templates/deployment/dlx.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+# Source: nuclio/templates/ingress/dashboard.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+# Source: nuclio/templates/secret/registry-credentials.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+# Source: nuclio/templates/service/dlx.yaml
+# Copyright 2017 The Nuclio Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.

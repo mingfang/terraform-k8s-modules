@@ -51,9 +51,9 @@ locals {
             mount_path = "/var/lib/arangodb3"
           },
           {
-            name = "jwt-secret-keyfile"
+            name       = "jwt-secret-keyfile"
             mount_path = "/dev/shm/jwt-secret-keyfile"
-            sub_path = "jwt-secret-file"
+            sub_path   = "jwt-secret-file"
           }
         ]
       },

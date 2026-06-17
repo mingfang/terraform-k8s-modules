@@ -1,0 +1,18 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "provider": {
+        "litellm": {
+            "npm": "@ai-sdk/openai-compatible",
+            "name": "LiteLLM",
+            "options": {
+                "baseURL": "https://litellm-example.rebelsoft.com/v1"
+            },
+            "models": {
+                "gpt-4": {
+                    "name": "GPT-4"
+                }
+            }
+        }
+    },
+    "permission": "allow"
+}

@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -22,7 +22,7 @@ locals {
 
         env = concat([
           {
-            name       = "POD_NAME"
+            name = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -69,7 +69,7 @@ locals {
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command  != null ? {
+        lifecycle = var.post_start_command != null ? {
           post_start = {
             exec = {
               command = var.post_start_command

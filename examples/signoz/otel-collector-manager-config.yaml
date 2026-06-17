@@ -1,0 +1,1 @@
+server_endpoint: ${WS_ENDPOINT}/v1/opamp

@@ -172,7 +172,7 @@ module "router" {
   env                                         = local.env
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "router" {
+resource "k8s_networking_k8s_io_v1_ingress" "router" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -182,15 +182,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "router" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}-${var.namespace}-router"
       http {
         paths {
           backend {
-            service_name = module.router.name
-            service_port = module.router.ports[0].port
+            service {
+              name = module.router.name
+              port {
+                number = module.router.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -210,7 +216,7 @@ module "minio" {
   minio_secret_key = var.minio_secret_key
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
+resource "k8s_networking_k8s_io_v1_ingress" "minio" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -221,15 +227,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.name}.${var.namespace}-minio"
       http {
         paths {
           backend {
-            service_name = module.minio.name
-            service_port = module.minio.ports[0].port
+            service {
+              name = module.minio.name
+              port {
+                number = module.minio.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

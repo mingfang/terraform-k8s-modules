@@ -16,9 +16,9 @@ module "pd" {
 }
 
 module "tikv" {
-  source    = "../../modules/tidb/tikv"
-  name      = "tikv"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  source        = "../../modules/tidb/tikv"
+  name          = "tikv"
+  namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = 3
   storage       = "1Gi"
   storage_class = "cephfs"
@@ -34,7 +34,7 @@ module "surrealdb" {
   args = ["start", "tikv://${module.pd.name}:${module.pd.ports[0].port}"]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -45,15 +45,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.surrealdb.name
-            service_port = module.surrealdb.ports[0].port
+            service {
+              name = module.surrealdb.name
+              port {
+                number = module.surrealdb.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

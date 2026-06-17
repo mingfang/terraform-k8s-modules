@@ -4,7 +4,7 @@ resource "k8s_core_v1_service" "devfile_registry" {
       "app"       = "che"
       "component" = "devfile-registry"
     }
-    name = "devfile-registry"
+    name      = "devfile-registry"
     namespace = var.namespace
   }
   spec {

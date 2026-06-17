@@ -12,9 +12,9 @@ Provider Requirements:
 ## Managed Resources
 * `k8s_core_v1_namespace.functions` from `k8s`
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.alertmanager` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.gateway` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.prometheus` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.alertmanager` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.gateway` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.prometheus` from `k8s`
 
 ## Child Modules
 * `alertmanager` from [../../modules/openfaas/alertmanager](../../modules/openfaas/alertmanager)

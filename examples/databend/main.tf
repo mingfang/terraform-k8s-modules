@@ -18,13 +18,13 @@ module "query-service" {
   META_ENDPOINTS = "${module.meta-service.name}:9191"
 
   env_map = {
-    STORAGE_TYPE="s3"
-    STORAGE_S3_BUCKET= "databend"
-    STORAGE_S3_REGION= "us-east-1"
-    STORAGE_S3_ENDPOINT_URL= "http://localstack.localstack-example:4566"
-    STORAGE_S3_ACCESS_KEY_ID= "test"
-    STORAGE_S3_SECRET_ACCESS_KEY= "test"
-    STORAGE_ALLOW_INSECURE= "true"
+    STORAGE_TYPE                 = "s3"
+    STORAGE_S3_BUCKET            = "databend"
+    STORAGE_S3_REGION            = "us-east-1"
+    STORAGE_S3_ENDPOINT_URL      = "http://localstack.localstack-example:4566"
+    STORAGE_S3_ACCESS_KEY_ID     = "test"
+    STORAGE_S3_SECRET_ACCESS_KEY = "test"
+    STORAGE_ALLOW_INSECURE       = "true"
   }
 }
 

@@ -1,4 +1,4 @@
-variable name {
+variable "name" {
   default = "gitlab"
 }
 
@@ -6,15 +6,15 @@ variable "namespace" {
   default = "gitlab-example"
 }
 
-variable gitlab_root_password {
+variable "gitlab_root_password" {
   default = "changeme"
 }
 
-variable gitlab_runners_registration_token {
+variable "gitlab_runners_registration_token" {
   default = "wMFs1-9kpfMeKsfKsNFQ"
 }
 
-variable auto_devops_domain {
+variable "auto_devops_domain" {
   default = "1.2.3.4.nip.io"
 }
 
@@ -58,14 +58,14 @@ module "storage" {
 
 module "gitlab" {
   source             = "../../solutions/gitlab"
-  name               = "${var.name}"
-  storage_class_name = "${module.storage.storage_class_name}"
-  storage            = "${module.storage.storage}"
+  name               = var.name
+  storage_class_name = module.storage.storage_class_name
+  storage            = module.storage.storage
 
-  gitlab_root_password              = "${var.gitlab_root_password}"
-  auto_devops_domain                = "${var.auto_devops_domain}"
-  gitlab_runners_registration_token = "${var.gitlab_runners_registration_token}"
-  gitlab_external_url               = "http://${k8s_extensions_v1beta1_ingress.this.spec[0].rules[0].host}:${var.ingress_node_port_http}"
-  mattermost_external_url           = "http://${k8s_extensions_v1beta1_ingress.this.spec[0].rules.1.host}:${var.ingress_node_port_http}"
-  registry_external_url             = "http://${k8s_extensions_v1beta1_ingress.this.spec[0].rules.2.host}:${var.ingress_node_port_http}"
+  gitlab_root_password              = var.gitlab_root_password
+  auto_devops_domain                = var.auto_devops_domain
+  gitlab_runners_registration_token = var.gitlab_runners_registration_token
+  gitlab_external_url               = "http://${k8s_networking_k8s_io_v1_ingress.this.spec[0].rules[0].host}:${var.ingress_node_port_http}"
+  mattermost_external_url           = "http://${k8s_networking_k8s_io_v1_ingress.this.spec[0].rules.1.host}:${var.ingress_node_port_http}"
+  registry_external_url             = "http://${k8s_networking_k8s_io_v1_ingress.this.spec[0].rules.2.host}:${var.ingress_node_port_http}"
 }

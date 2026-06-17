@@ -11,9 +11,9 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.dgraph-alpha` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.dgraph-grpc` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.dgraph-nginx` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.dgraph-alpha` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.dgraph-grpc` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.dgraph-nginx` from `k8s`
 
 ## Child Modules
 * `dgraph-alpha` from [../../modules/dgraph/dgraph-alpha](../../modules/dgraph/dgraph-alpha)

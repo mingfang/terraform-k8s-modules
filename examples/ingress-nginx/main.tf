@@ -23,7 +23,7 @@ module "ingress" {
     "use-proxy-protocol"           = "true"
     "enable-modsecurity"           = "true"
     "enable-owasp-modsecurity-crs" = "true"
-    "http-snippet"=<<-EOF
+    "http-snippet"                 = <<-EOF
       ssi on;
     EOF
   }

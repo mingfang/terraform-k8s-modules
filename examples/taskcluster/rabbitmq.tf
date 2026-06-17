@@ -10,7 +10,7 @@ module "rabbitmq" {
   RABBITMQ_ERLANG_COOKIE = "RABBITMQ_ERLANG_COOKIE"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "management" {
+resource "k8s_networking_k8s_io_v1_ingress" "management" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -20,15 +20,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "management" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-rabbitmq"
       http {
         paths {
           backend {
-            service_name = module.rabbitmq.name
-            service_port = module.rabbitmq.ports[1].port
+            service {
+              name = module.rabbitmq.name
+              port {
+                number = module.rabbitmq.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -35,7 +35,7 @@ resource "k8s_core_v1_persistent_volume_claim" "pgadmin" {
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -51,7 +51,7 @@ module "pgadmin" {
   PGADMIN_DEFAULT_PASSWORD = "postgres"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
+resource "k8s_networking_k8s_io_v1_ingress" "pgadmin" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -61,15 +61,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-pgadmin"
       http {
         paths {
           backend {
-            service_name = module.pgadmin.name
-            service_port = module.pgadmin.ports[0].port
+            service {
+              name = module.pgadmin.name
+              port {
+                number = module.pgadmin.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -77,12 +83,12 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pgadmin" {
 }
 
 module "env" {
-  source = "../../modules/kubernetes/env"
+  source    = "../../modules/kubernetes/env"
   from-file = "${path.module}/env"
 }
 
 module "chaosgenius-server" {
-  source = "../../modules/chaosgenius/chaosgenius-server"
+  source    = "../../modules/chaosgenius/chaosgenius-server"
   name      = "chaosgenius-server"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
@@ -90,21 +96,21 @@ module "chaosgenius-server" {
 }
 
 module "chaosgenius-scheduler" {
-  source = "../../modules/chaosgenius/chaosgenius-scheduler"
+  source    = "../../modules/chaosgenius/chaosgenius-scheduler"
   name      = "chaosgenius-scheduler"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   env = module.env.kubernetes_env
 }
 module "chaosgenius-worker-analytics" {
-  source = "../../modules/chaosgenius/chaosgenius-worker-analytics"
+  source    = "../../modules/chaosgenius/chaosgenius-worker-analytics"
   name      = "chaosgenius-worker-analytics"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   env = module.env.kubernetes_env
 }
 module "chaosgenius-worker-alerts" {
-  source = "../../modules/chaosgenius/chaosgenius-worker-alerts"
+  source    = "../../modules/chaosgenius/chaosgenius-worker-alerts"
   name      = "chaosgenius-worker-alerts"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
@@ -112,14 +118,14 @@ module "chaosgenius-worker-alerts" {
 }
 
 module "chaosgenius-webapp" {
-  source = "../../modules/chaosgenius/chaosgenius-webapp"
+  source    = "../../modules/chaosgenius/chaosgenius-webapp"
   name      = "chaosgenius-webapp"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   env = module.env.kubernetes_env
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "chaosgenius" {
+resource "k8s_networking_k8s_io_v1_ingress" "chaosgenius" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -129,15 +135,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "chaosgenius" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.chaosgenius-webapp.name
-            service_port = module.chaosgenius-webapp.ports[0].port
+            service {
+              name = module.chaosgenius-webapp.name
+              port {
+                number = module.chaosgenius-webapp.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -70,12 +70,12 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "/config/${var.name}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [
             {
@@ -86,9 +86,9 @@ locals {
         )
       },
       {
-        name  = "dind"
-        image = "docker:20.10.9-dind"
-        command  = ["dockerd", "--insecure-registry=0.0.0.0/0", "--host=tcp://127.0.0.1:2375"]
+        name             = "dind"
+        image            = "docker:20.10.9-dind"
+        command          = ["dockerd", "--insecure-registry=0.0.0.0/0", "--host=tcp://127.0.0.1:2375"]
         security_context = { privileged = true }
 
         volume_mounts = [

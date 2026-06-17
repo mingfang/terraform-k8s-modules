@@ -30,12 +30,12 @@ locals {
         ], var.env)
 
         volume_mounts = [
-            {
-              name       = "config"
-              mount_path = "/nginx.conf.template"
-              sub_path   = "nginx.conf.template"
-            },
-          ]
+          {
+            name       = "config"
+            mount_path = "/nginx.conf.template"
+            sub_path   = "nginx.conf.template"
+          },
+        ]
       }
     ]
 

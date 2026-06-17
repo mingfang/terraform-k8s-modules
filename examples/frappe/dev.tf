@@ -39,7 +39,7 @@ module "dev-server" {
   pvc_sites      = k8s_core_v1_persistent_volume_claim.dev.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "dev" {
+resource "k8s_networking_k8s_io_v1_ingress" "dev" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -49,22 +49,33 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dev" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.dev-server.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.dev-server.name
-            service_port = module.dev-server.ports[0].port
+            service {
+              name = module.dev-server.name
+              port {
+                number = module.dev-server.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.dev-server.name
-            service_port = module.dev-server.ports[1].port
+            service {
+              name = module.dev-server.name
+              port {
+                number = module.dev-server.ports[1].port
+              }
+            }
           }
-          path = "/socket.io"
+          path      = "/socket.io"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -146,7 +157,7 @@ module "intellij" {
   pvc = k8s_core_v1_persistent_volume_claim.dev.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "intellij" {
+resource "k8s_networking_k8s_io_v1_ingress" "intellij" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -157,15 +168,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "intellij" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.intellij.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.intellij.name
-            service_port = module.intellij.ports[0].port
+            service {
+              name = module.intellij.name
+              port {
+                number = module.intellij.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

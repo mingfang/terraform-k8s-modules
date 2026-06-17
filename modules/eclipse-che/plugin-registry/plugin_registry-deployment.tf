@@ -4,7 +4,7 @@ resource "k8s_apps_v1_deployment" "plugin_registry" {
       "app"       = "che"
       "component" = "plugin-registry"
     }
-    name = "plugin-registry"
+    name      = "plugin-registry"
     namespace = var.namespace
   }
   spec {

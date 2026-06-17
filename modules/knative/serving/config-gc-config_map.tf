@@ -36,6 +36,6 @@ resource "k8s_core_v1_config_map" "config-gc" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "config-gc"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

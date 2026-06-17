@@ -15,19 +15,19 @@ module "spice" {
   name      = var.name
   namespace = k8s_core_v1_namespace.spice.metadata.0.name
   image     = "spiceai/spiceai:latest"
-  ports     = [{name = "tcp", port = 3000}]
-  command   = [
-     "/usr/local/bin/spiced",
-     "--http",
-     "0.0.0.0:3000",
-     "--metrics",
-     "0.0.0.0:9000",
-     "--flight",
-     "0.0.0.0:50051",
-     "--open_telemetry",
-     "0.0.0.0:50052"
-   ]
-  configmap = module.spice-config.config_map
+  ports     = [{ name = "tcp", port = 3000 }]
+  command = [
+    "/usr/local/bin/spiced",
+    "--http",
+    "0.0.0.0:3000",
+    "--metrics",
+    "0.0.0.0:9000",
+    "--flight",
+    "0.0.0.0:50051",
+    "--open_telemetry",
+    "0.0.0.0:50052"
+  ]
+  configmap            = module.spice-config.config_map
   configmap_mount_path = "/app"
 }
 
@@ -54,7 +54,7 @@ resource "k8s_networking_k8s_io_v1_ingress" "spice" {
               }
             }
           }
-          path = "/"
+          path      = "/"
           path_type = "ImplementationSpecific"
         }
       }

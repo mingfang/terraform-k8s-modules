@@ -28,7 +28,7 @@ module "hasura" {
   HASURA_GRAPHQL_ENABLE_CONSOLE = "true"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "hasura" {
+resource "k8s_networking_k8s_io_v1_ingress" "hasura" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -38,15 +38,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "hasura" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.hasura.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.hasura.name
-            service_port = module.hasura.ports[0].port
+            service {
+              name = module.hasura.name
+              port {
+                number = module.hasura.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -118,7 +124,7 @@ module "nginx" {
     EOF
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "prefect" {
+resource "k8s_networking_k8s_io_v1_ingress" "prefect" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -128,15 +134,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "prefect" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.nginx.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.nginx.name
-            service_port = module.nginx.ports[0].port
+            service {
+              name = module.nginx.name
+              port {
+                number = module.nginx.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

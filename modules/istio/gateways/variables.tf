@@ -1,6 +1,6 @@
-variable namespace {}
+variable "namespace" {}
 
 //LoadBalancer or NodePort
-variable type {
+variable "type" {
   default = "LoadBalancer"
 }

@@ -10,25 +10,32 @@ module "secret" {
   namespace = module.namespace.name
 
   from-map = {
-    password = base64encode("postgres")
+    password = base64encode(var.password)
   }
 }
 
 locals {
   env_map = {
-    PGDATA     = "/data"
-    PGUSERNAME = "postgres"
+    PGDATA        = "/data"
+    POSTGRES_USER = var.username
+    POSTGRES_DB   = var.database
   }
 
-  args = [
-    "-c", "work_mem=512MB",
-    "-c", "maintenance_work_mem=512MB",
-    "-c", "max_wal_size=1GB",
-    "-c", "wal_level=logical",
-    "-c", "log_statement=all",
-    "-c", "max_worker_processes=128",
-    "-c", "shared_preload_libraries=citus,vchord.so,pg_cron"
-  ]
+  args = concat(
+    [
+      "-c", "max_connections=400",
+      "-c", "shared_buffers=512MB",
+      "-c", "effective_cache_size=2GB",
+      "-c", "work_mem=512MB",
+      "-c", "maintenance_work_mem=512MB",
+      "-c", "max_wal_size=1GB",
+      "-c", "wal_level=logical",
+      "-c", "log_statement=ddl",
+      "-c", "max_worker_processes=128",
+      "-c", "shared_preload_libraries=${var.shared_preload_libraries}"
+    ],
+    var.args
+  )
 
 }
 
@@ -39,8 +46,8 @@ module "coordinator" {
 
   image = var.image
 
-  storage       = "1Gi"
-  storage_class = "cephfs-csi"
+  storage       = var.coordinator_storage
+  storage_class = var.coordinator_storage_class
   mount_path    = "/data"
 
   ports_map = {
@@ -89,7 +96,11 @@ module "coordinator" {
 
   liveness_probe = {
     exec = {
-      command = ["pg_isready", "--username", local.env_map.PGUSERNAME]
+      command = [
+        "pg_isready",
+        "--username", local.env_map.POSTGRES_USER,
+        "--dbname", local.env_map.POSTGRES_DB,
+      ]
     }
     initial_delay_seconds = 60
   }
@@ -101,16 +112,18 @@ module "coordinator" {
           "sh",
           "-cx",
           <<-EOF
-          until pg_isready --username $PGUSERNAME; do
+          until pg_isready --username $POSTGRES_USER; do
             echo 'Waiting to start...'
             sleep 2
           done
           psql \
-            --username=$PGUSERNAME \
+            --username=$POSTGRES_USER \
+            --dbname=$POSTGRES_DB \
             --command="CREATE EXTENSION IF NOT EXISTS citus;"
           psql \
-            --username=$PGUSERNAME \
-            --command="INSERT INTO pg_dist_authinfo(nodeid, rolename, authinfo) VALUES(0, '$PGUSERNAME', 'password=$PGPASSWORD') ON CONFLICT DO NOTHING;"
+            --username=$POSTGRES_USER \
+            --dbname=$POSTGRES_DB \
+            --command="INSERT INTO pg_dist_authinfo(nodeid, rolename, authinfo) VALUES(0, '$POSTGRES_USER', 'password=$PGPASSWORD') ON CONFLICT DO NOTHING;"
         EOF
         ]
       }
@@ -145,8 +158,8 @@ module "worker" {
 
   image = var.image
 
-  storage       = "1Gi"
-  storage_class = "cephfs-csi"
+  storage       = var.worker_storage
+  storage_class = var.worker_storage_class
   mount_path    = "/data"
 
   ports_map = {
@@ -195,7 +208,11 @@ module "worker" {
 
   liveness_probe = {
     exec = {
-      command = ["pg_isready", "--username", local.env_map.PGUSERNAME]
+      command = [
+        "pg_isready",
+        "--username", local.env_map.POSTGRES_USER,
+        "--dbname", local.env_map.POSTGRES_DB,
+      ]
     }
     initial_delay_seconds = 60
   }
@@ -207,18 +224,20 @@ module "worker" {
           "sh",
           "-cx",
           <<-EOF
-          until pg_isready --username $PGUSERNAME; do
+          until pg_isready --username $POSTGRES_USER; do
             echo 'Waiting to start...'
             sleep 2
           done
           psql \
-            --username=$PGUSERNAME \
+            --username=$POSTGRES_USER \
+            --dbname=$POSTGRES_DB \
             --command="CREATE EXTENSION IF NOT EXISTS citus;"
           psql \
             --host=${module.coordinator.name} \
-            --username=$PGUSERNAME \
+            --username=$POSTGRES_USER \
+            --dbname=$POSTGRES_DB \
             --command="SELECT * from master_add_node('$HOSTNAME.worker.${module.namespace.name}.svc.cluster.local', 5432);"
-        EOF
+          EOF
         ]
       }
     }

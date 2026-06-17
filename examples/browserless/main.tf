@@ -15,7 +15,7 @@ module "browserless" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "browserless" {
+resource "k8s_networking_k8s_io_v1_ingress" "browserless" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -25,15 +25,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "browserless" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.browserless.name
-            service_port = module.browserless.ports[0].port
+            service {
+              name = module.browserless.name
+              port {
+                number = module.browserless.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -5,8 +5,8 @@ module "namespace" {
 }
 
 locals {
-  cluster_name        = "cluster"
-  clickhouse_replicas = 1
+  cluster_name               = "cluster"
+  clickhouse_replicas        = 1
   clickhouse_keeper_replicas = 1
 }
 

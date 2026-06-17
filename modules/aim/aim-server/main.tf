@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -24,8 +24,8 @@ locals {
 
     containers = [
       {
-        name    = "aim-ui"
-        image   = var.image
+        name  = "aim-ui"
+        image = var.image
         command = [
           "bash",
           "-c",
@@ -33,11 +33,11 @@ locals {
           aim server --host 0.0.0.0 --port ${var.ports[0].port} --repo ${var.mount_path} --yes
           EOF
         ]
-        args    = var.args
+        args = var.args
 
         env = concat([
           {
-            name       = "POD_NAME"
+            name = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -45,7 +45,7 @@ locals {
             }
           },
           {
-            name       = "POD_IP"
+            name = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -56,7 +56,7 @@ locals {
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command  != null ? {
+        lifecycle = var.post_start_command != null ? {
           post_start = {
             exec = {
               command = var.post_start_command
@@ -129,7 +129,7 @@ locals {
       }
     }
 
-    image_pull_secrets = var.image_pull_secrets
+    image_pull_secrets   = var.image_pull_secrets
     node_selector        = var.node_selector
     service_account_name = var.service_account_name
 

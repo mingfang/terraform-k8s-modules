@@ -55,6 +55,6 @@ resource "k8s_core_v1_config_map" "config-logging" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "config-logging"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

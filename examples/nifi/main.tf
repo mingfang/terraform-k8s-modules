@@ -30,7 +30,7 @@ module "nifi" {
       value = "true"
     },
     {
-      name = "NIFI_SENSITIVE_PROPS_KEY"
+      name  = "NIFI_SENSITIVE_PROPS_KEY"
       value = "123456789012"
     },
     {
@@ -38,42 +38,48 @@ module "nifi" {
       value = "${var.namespace}.rebelsoft.com"
     },
     {
-      name = "SINGLE_USER_CREDENTIALS_USERNAME"
+      name  = "SINGLE_USER_CREDENTIALS_USERNAME"
       value = "admin"
     },
     {
-      name = "SINGLE_USER_CREDENTIALS_PASSWORD"
+      name  = "SINGLE_USER_CREDENTIALS_PASSWORD"
       value = "password9999"
     },
     {
-      name = "NIFI_WEB_PROXY_HOST"
+      name  = "NIFI_WEB_PROXY_HOST"
       value = "${var.namespace}.rebelsoft.com:443"
     },
   ]
 }
 
 
-resource "k8s_extensions_v1beta1_ingress" "nifi" {
+resource "k8s_networking_k8s_io_v1_ingress" "nifi" {
   metadata {
     annotations = {
-      "kubernetes.io/ingress.class"                 = "nginx"
-      "nginx.ingress.kubernetes.io/server-alias"    = "${var.namespace}.*"
-      "nginx.ingress.kubernetes.io/proxy-body-size" = "11024m"
+      "kubernetes.io/ingress.class"                  = "nginx"
+      "nginx.ingress.kubernetes.io/server-alias"     = "${var.namespace}.*"
+      "nginx.ingress.kubernetes.io/proxy-body-size"  = "11024m"
       "nginx.ingress.kubernetes.io/backend-protocol" = "HTTPS"
     }
     name      = var.namespace
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.nifi.name
-            service_port = module.nifi.ports[0].port
+            service {
+              name = module.nifi.name
+              port {
+                number = module.nifi.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

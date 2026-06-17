@@ -29,18 +29,18 @@ locals {
         ], var.env)
 
         volume_mounts = [
-        for pvc in var.pvcs : {
-          name       = pvc.metadata[0].name
-          mount_path = "/storage/${pvc.metadata[0].name}"
-        }
+          for pvc in var.pvcs : {
+            name       = pvc.metadata[0].name
+            mount_path = "/storage/${pvc.metadata[0].name}"
+          }
         ]
       }
     ], var.sidecars)
 
     init_containers = [
       {
-        name    = "chown"
-        image   = var.image
+        name  = "chown"
+        image = var.image
         command = [
           "sh",
           "-cx",
@@ -53,23 +53,23 @@ locals {
         }
 
         volume_mounts = [
-        for pvc in var.pvcs : {
-          name       = pvc.metadata[0].name
-          mount_path = "/storage/${pvc.metadata[0].name}"
-        }
+          for pvc in var.pvcs : {
+            name       = pvc.metadata[0].name
+            mount_path = "/storage/${pvc.metadata[0].name}"
+          }
         ]
       },
     ]
 
     volumes = [
-    for pvc in var.pvcs :
-    {
-      name = pvc.metadata[0].name
+      for pvc in var.pvcs :
+      {
+        name = pvc.metadata[0].name
 
-      persistent_volume_claim = {
-        claim_name = pvc.metadata[0].name
+        persistent_volume_claim = {
+          claim_name = pvc.metadata[0].name
+        }
       }
-    }
     ]
   }
 }

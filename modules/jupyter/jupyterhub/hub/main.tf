@@ -83,15 +83,15 @@ locals {
             }
           },
           {
-            name = "OAUTH2_AUTHORIZE_URL"
+            name  = "OAUTH2_AUTHORIZE_URL"
             value = var.OAUTH2_AUTHORIZE_URL
           },
           {
-            name = "OAUTH2_TOKEN_URL"
+            name  = "OAUTH2_TOKEN_URL"
             value = var.OAUTH2_TOKEN_URL
           },
           {
-            name = "OAUTH_CALLBACK_URL"
+            name  = "OAUTH_CALLBACK_URL"
             value = var.OAUTH_CALLBACK_URL
           },
         ]

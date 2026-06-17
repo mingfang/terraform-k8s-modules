@@ -5,8 +5,8 @@ resource "k8s_core_v1_namespace" "this" {
 }
 
 module "secret" {
-  source = "../../modules/kubernetes/secret"
-  name = "test-secret"
+  source    = "../../modules/kubernetes/secret"
+  name      = "test-secret"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 
   from-map = {

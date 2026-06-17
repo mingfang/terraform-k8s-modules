@@ -13,7 +13,7 @@ Provider Requirements:
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
 * `k8s_core_v1_persistent_volume_claim.data` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.odoo` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.odoo` from `k8s`
 
 ## Child Modules
 * `odoo` from [../../modules/odoo](../../modules/odoo)

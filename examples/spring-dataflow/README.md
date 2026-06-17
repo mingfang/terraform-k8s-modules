@@ -10,8 +10,8 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.dataflow` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.management` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.dataflow` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.management` from `k8s`
 
 ## Child Modules
 * `dataflow-server` from [../../modules/spring-dataflow/dataflow-server](../../modules/spring-dataflow/dataflow-server)

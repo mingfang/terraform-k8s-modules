@@ -7,7 +7,7 @@ Provider Requirements:
 ## Input Variables
 * `annotations` (default `{}`)
 * `env` (default `[]`)
-* `image` (default `"sonatype/nexus3:3.26.1"`)
+* `image` (default `"sonatype/nexus3:3.29.2"`)
 * `name` (required)
 * `namespace` (required)
 * `overrides` (default `{}`)

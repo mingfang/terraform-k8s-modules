@@ -14,10 +14,10 @@ variable "ingress-node-port" {
   default = "30080"
 }
 
-variable minio_access_key {
+variable "minio_access_key" {
   default = ""
 }
 
-variable minio_secret_key {
+variable "minio_secret_key" {
   default = ""
 }

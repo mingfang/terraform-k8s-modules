@@ -14,7 +14,7 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "http"

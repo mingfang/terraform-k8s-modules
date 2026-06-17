@@ -2,10 +2,10 @@
 
 locals {
   parameters = {
-    name                        = var.name
-    namespace                   = var.namespace
-    replicas                    = var.replicas
-    ports                       = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
 
     enable_service_links        = false
     pod_management_policy       = "Parallel"
@@ -84,8 +84,8 @@ locals {
 
         volume_mounts = var.storage != null ? [
           {
-            name          = var.volume_claim_template_name
-            mount_path    = "/dgraph"
+            name       = var.volume_claim_template_name
+            mount_path = "/dgraph"
           }
         ] : []
       },

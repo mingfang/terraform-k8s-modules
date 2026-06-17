@@ -9,7 +9,7 @@ variable "annotations" {
 }
 
 variable "aws_ebs_volumes" {
-  type = list(any)
+  type        = list(any)
   description = "list of aws_ebs_volume"
 }
 /*

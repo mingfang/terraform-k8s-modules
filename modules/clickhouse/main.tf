@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -8,10 +8,10 @@ locals {
 
 locals {
   parameters = {
-    name                        = var.name
-    namespace                   = var.namespace
-    replicas                    = var.replicas
-    ports                       = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
 
     annotations = merge(
       var.annotations,
@@ -26,8 +26,8 @@ locals {
 
     containers = [
       {
-        name  = "clickhouse"
-        image = var.image
+        name    = "clickhouse"
+        image   = var.image
         command = var.command
         args    = var.args
 
@@ -41,7 +41,7 @@ locals {
             }
           },
           {
-            name       = "POD_IP"
+            name = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -52,7 +52,7 @@ locals {
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command  != null ? {
+        lifecycle = var.post_start_command != null ? {
           post_start = {
             exec = {
               command = var.post_start_command
@@ -117,7 +117,7 @@ locals {
                   operator = "In"
                   values   = [var.name]
                 }
-    ]
+              ]
             }
             topology_key = "kubernetes.io/hostname"
           }

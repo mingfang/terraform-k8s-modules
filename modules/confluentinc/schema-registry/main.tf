@@ -6,7 +6,7 @@ locals {
     replicas    = var.replicas
     ports       = var.ports
 
-    enable_service_links  = false
+    enable_service_links = false
 
     containers = [
       {
@@ -22,11 +22,11 @@ locals {
             value = var.SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
           },
           {
-            name = "SCHEMA_REGISTRY_LISTENERS"
+            name  = "SCHEMA_REGISTRY_LISTENERS"
             value = "http://0.0.0.0:${var.ports[0].port}"
           },
           {
-            name = "SCHEMA_REGISTRY_HOST_NAME"
+            name  = "SCHEMA_REGISTRY_HOST_NAME"
             value = "${var.name}.${var.namespace}"
           },
         ], var.env)

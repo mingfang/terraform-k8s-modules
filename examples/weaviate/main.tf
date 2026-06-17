@@ -18,9 +18,9 @@ module "t2v-transformers" {
   name      = "t2v-transformers"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-  image = "semitechnologies/transformers-inference:sentence-transformers-msmarco-distilbert-base-v2"
-#  image = "registry.rebelsoft.com/nlpaueb/legal-bert-base-uncased"
-#  image = "registry.rebelsoft.com/pile-of-law/legalbert-large-1.7m-2"
+  image     = "semitechnologies/transformers-inference:sentence-transformers-msmarco-distilbert-base-v2"
+  #  image = "registry.rebelsoft.com/nlpaueb/legal-bert-base-uncased"
+  #  image = "registry.rebelsoft.com/pile-of-law/legalbert-large-1.7m-2"
 }
 
 module "qna-transformers" {
@@ -28,7 +28,7 @@ module "qna-transformers" {
   name      = "qna-transformers"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-#  image = "semitechnologies/qna-transformers:bert-large-uncased-whole-word-masking-finetuned-squad"
+  #  image = "semitechnologies/qna-transformers:bert-large-uncased-whole-word-masking-finetuned-squad"
   image = "registry.rebelsoft.com/atharvamundada99/bert-large-question-answering-finetuned-legal"
 }
 module "ner-transformers" {
@@ -57,17 +57,17 @@ module "weaviate" {
     CONTEXTIONARY_URL          = "${module.contextionary.name}:${module.contextionary.ports[0].port}"
     TRANSFORMERS_INFERENCE_API = "http://${module.t2v-transformers.name}:${module.t2v-transformers.ports[0].port}"
     QNA_INFERENCE_API          = "http://${module.qna-transformers.name}:${module.qna-transformers.ports[0].port}"
-#    NER_INFERENCE_API          = "http://${module.ner-transformers.name}:${module.ner-transformers.ports[0].port}"
-    SPELLCHECK_INFERENCE_API   = "http://${module.text-spellcheck.name}:${module.text-spellcheck.ports[0].port}"
-    QUERY_MAXIMUM_RESULTS = "100000"
+    #    NER_INFERENCE_API          = "http://${module.ner-transformers.name}:${module.ner-transformers.ports[0].port}"
+    SPELLCHECK_INFERENCE_API = "http://${module.text-spellcheck.name}:${module.text-spellcheck.ports[0].port}"
+    QUERY_MAXIMUM_RESULTS    = "100000"
   }
   ENABLE_MODULES            = "text2vec-contextionary,text2vec-transformers,qna-transformers,ner-transformers,text-spellcheck"
   DEFAULT_VECTORIZER_MODULE = "text2vec-contextionary"
-  LOG_LEVEL = "debug"
+  LOG_LEVEL                 = "debug"
 }
 
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -78,15 +78,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.weaviate.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.weaviate.name
-            service_port = module.weaviate.ports[0].port
+            service {
+              name = module.weaviate.name
+              port {
+                number = module.weaviate.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

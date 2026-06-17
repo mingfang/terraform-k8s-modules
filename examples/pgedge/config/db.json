@@ -1,0 +1,56 @@
+{
+    "name": "defaultdb",
+    "port": 5432,
+    "options": [
+        "autoddl:enabled"
+    ],
+    "nodes": [
+        {
+            "name": "pgedge_0",
+            "region": "us-east-1",
+            "hostname": "pgedge-0.pgedge.pgedge-example.svc.cluster.local"
+        },
+        {
+            "name": "pgedge_1",
+            "region": "us-east-1",
+            "hostname": "pgedge-1.pgedge.pgedge-example.svc.cluster.local"
+        }
+    ],
+    "users": [
+        {
+            "username": "app",
+            "password": "0Osh8bqE5EokT3I3Z78MQ344",
+            "superuser": false,
+            "service": "postgres",
+            "type": "application"
+        },
+        {
+            "username": "admin",
+            "password": "uFR44yr69C4mZa72g3JQ37GX",
+            "superuser": true,
+            "service": "postgres",
+            "type": "admin"
+        },
+        {
+            "username": "pgedge",
+            "password": "z1Zsku10a91RS526jnVrLC39",
+            "superuser": true,
+            "service": "postgres",
+            "type": "internal_admin"
+        },
+        {
+            "username": "pgcat_auth",
+            "password": "5Y306TW24540dEnyxp3mQBwH",
+            "superuser": false,
+            "service": "postgres",
+            "type": "pooler_auth"
+        },
+        {
+            "username": "pgcat_admin",
+            "password": "k6uu4od8r0P6lA11Oep648KC",
+            "superuser": false,
+            "service": "pgcat",
+            "type": "other"
+        }
+    ]
+}

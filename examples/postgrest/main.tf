@@ -1,6 +1,6 @@
 module "namespace" {
-  source = "../namespace"
-  name = var.namespace
+  source    = "../namespace"
+  name      = var.namespace
   is_create = var.is_create_namespace
 }
 

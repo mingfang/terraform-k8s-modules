@@ -452,7 +452,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
             name = containers.value.name
@@ -503,7 +503,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
             dynamic "resources" {
@@ -593,7 +593,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(startup_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
             stdin                      = lookup(containers.value, "stdin", null)
@@ -820,7 +820,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
             name = ephemeral_containers.value.name
@@ -871,7 +871,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
             dynamic "resources" {
@@ -961,7 +961,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(startup_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
             stdin                      = lookup(ephemeral_containers.value, "stdin", null)
@@ -1191,7 +1191,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(liveness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(liveness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(liveness_probe.value, "timeout_seconds", null)
               }
             }
             name = init_containers.value.name
@@ -1242,7 +1242,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(readiness_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(readiness_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(readiness_probe.value, "timeout_seconds", null)
               }
             }
             dynamic "resources" {
@@ -1332,7 +1332,7 @@ resource "k8s_batch_v1_job" "this" {
                   }
                 }
                 termination_grace_period_seconds = lookup(startup_probe.value, "termination_grace_period_seconds", null)
-                timeout_seconds = lookup(startup_probe.value, "timeout_seconds", null)
+                timeout_seconds                  = lookup(startup_probe.value, "timeout_seconds", null)
               }
             }
             stdin                      = lookup(init_containers.value, "stdin", null)
@@ -1420,8 +1420,8 @@ resource "k8s_batch_v1_job" "this" {
             }
           }
         }
-        service_account      = lookup(local.k8s_batch_v1_job_parameters, "service_account", null)
-        service_account_name = lookup(local.k8s_batch_v1_job_parameters, "service_account_name", null)
+        service_account                  = lookup(local.k8s_batch_v1_job_parameters, "service_account", null)
+        service_account_name             = lookup(local.k8s_batch_v1_job_parameters, "service_account_name", null)
         set_hostname_asfqdn              = lookup(local.k8s_batch_v1_job_parameters, "set_hostname_asfqdn", null)
         share_process_namespace          = lookup(local.k8s_batch_v1_job_parameters, "share_process_namespace", null)
         subdomain                        = lookup(local.k8s_batch_v1_job_parameters, "subdomain", null)

@@ -47,12 +47,15 @@ module "bytebase" {
   ports     = [{ name = "tcp", port = 8080 }]
 
   args = [
-    "--port=8080",
-    "--data=/var/opt/bytebase",
-    "--pg=postgresql://postgres:postgres@${module.postgres.name}:${module.postgres.ports[0].port}/postgres",
-    "--disable-sample",
-    "--external-url=https://${var.namespace}.rebelsoft.com",
+    "--port",
+    "8080",
+    "--data",
+    "/var/opt/bytebase",
   ]
+
+  env_map = {
+    PG_URL = "postgresql://postgres:postgres@${module.postgres.name}:${module.postgres.ports[0].port}/postgres"
+  }
 
   pvcs = [
     {

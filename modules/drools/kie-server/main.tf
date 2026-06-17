@@ -25,7 +25,7 @@ locals {
             }
           },
           {
-            name  = "JAVA_OPTS"
+            name = "JAVA_OPTS"
             value = join(" ", [
               "-server",
               "-Xms256m",

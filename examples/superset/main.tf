@@ -110,7 +110,7 @@ module "superset-worker" {
   type             = "worker"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "superset" {
+resource "k8s_networking_k8s_io_v1_ingress" "superset" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -120,7 +120,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "superset" {
       "nginx.ingress.kubernetes.io/auth-signin"           = "https://oauth.rebelsoft.com/oauth2/start?rd=https://$host$escaped_request_uri"
       "nginx.ingress.kubernetes.io/auth-response-headers" = "X-Auth-Request-User, X-Auth-Request-Email"
 
-/*
+      /*
       "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOF
         ssi on;
         ssi_silent_errors on;
@@ -142,15 +142,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "superset" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.superset.name
-            service_port = module.superset.ports[0].port
+            service {
+              name = module.superset.name
+              port {
+                number = module.superset.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

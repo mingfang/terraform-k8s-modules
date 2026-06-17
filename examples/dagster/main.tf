@@ -46,7 +46,7 @@ locals {
       value = "dagster"
     },
     {
-      name       = "DAGSTER_PG_PASSWORD"
+      name = "DAGSTER_PG_PASSWORD"
       value_from = {
         secret_key_ref = {
           key  = "postgresql-password"
@@ -78,9 +78,9 @@ locals {
 }
 
 module "dagster-daemon" {
-  source      = "../../modules/dagster/dagster-daemon"
-  name        = "dagster-daemon"
-  namespace   = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/dagster/dagster-daemon"
+  name      = "dagster-daemon"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
   annotations = {
     "dagster-checksum"   = module.config_map_dagster.checksum
     "workspace-checksum" = module.config_map_workspace.checksum
@@ -93,9 +93,9 @@ module "dagster-daemon" {
 
 
 module "dagit" {
-  source      = "../../modules/dagster/dagit"
-  name        = "dagit"
-  namespace   = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/dagster/dagit"
+  name      = "dagit"
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
   annotations = {
     "dagster-checksum"   = module.config_map_dagster.checksum
     "workspace-checksum" = module.config_map_workspace.checksum
@@ -106,7 +106,7 @@ module "dagit" {
   config_map_workspace = module.config_map_workspace.name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "dagit" {
+resource "k8s_networking_k8s_io_v1_ingress" "dagit" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -117,14 +117,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "dagit" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.dagit.name}.${var.namespace}"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.dagit.name
-            service_port = module.dagit.ports[0].port
+            service {
+              name = module.dagit.name
+              port {
+                number = module.dagit.ports[0].port
+              }
+            }
           }
         }
       }

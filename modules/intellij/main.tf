@@ -94,9 +94,9 @@ locals {
           ],
           [
             for i, pvc in var.extra_pvcs : {
-            name       = "extra-pvc-${i}"
-            mount_path = "/mnt/${pvc}"
-          }
+              name       = "extra-pvc-${i}"
+              mount_path = "/mnt/${pvc}"
+            }
           ],
         )
       }
@@ -131,7 +131,7 @@ locals {
     volumes = concat(
       var.pvc != null ? [
         {
-          name                    = "data"
+          name = "data"
           persistent_volume_claim = {
             claim_name = var.pvc
           }
@@ -145,11 +145,11 @@ locals {
       ],
       [
         for i, pvc in var.extra_pvcs : {
-        name                    = "extra-pvc-${i}"
-        persistent_volume_claim = {
-          claim_name = pvc
+          name = "extra-pvc-${i}"
+          persistent_volume_claim = {
+            claim_name = pvc
+          }
         }
-      }
       ],
     )
   }

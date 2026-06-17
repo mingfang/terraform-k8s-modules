@@ -1,9 +1,9 @@
 locals {
   parameters = {
-    name        = var.name
-    namespace   = var.namespace
-    replicas    = var.replicas
-    ports       = var.ports
+    name      = var.name
+    namespace = var.namespace
+    replicas  = var.replicas
+    ports     = var.ports
     annotations = merge(
       var.annotations,
       var.configmap != null ? {
@@ -15,10 +15,10 @@ locals {
 
     containers = [
       {
-        name  = var.name
-        image = var.image
+        name    = var.name
+        image   = var.image
         command = var.command
-        args = var.args
+        args    = var.args
 
         env = concat([
           {
@@ -51,12 +51,12 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/etc/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "/etc/${var.name}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )
@@ -65,8 +65,8 @@ locals {
 
     init_containers = var.pvc != null ? [
       {
-        name    = "init"
-        image   = var.image
+        name  = "init"
+        image = var.image
 
         command = [
           "sh",
@@ -87,7 +87,7 @@ locals {
       }
     ] : []
 
-    node_selector = var.node_selector
+    node_selector        = var.node_selector
     service_account_name = var.service_account_name
 
     volumes = concat(

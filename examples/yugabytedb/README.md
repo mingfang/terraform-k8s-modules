@@ -10,8 +10,8 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_extensions_v1beta1_ingress.janusgraph` from `k8s`
-* `k8s_extensions_v1beta1_ingress.master` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.janusgraph` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.master` from `k8s`
 
 ## Child Modules
 * `janusgraph` from [../../modules/janusgraph](../../modules/janusgraph)

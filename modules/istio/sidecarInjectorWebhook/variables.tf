@@ -1,1 +1,1 @@
-variable namespace {}
+variable "namespace" {}

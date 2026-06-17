@@ -35,7 +35,7 @@ module "infinispan" {
   PASS = "infinispan"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "infinispan" {
+resource "k8s_networking_k8s_io_v1_ingress" "infinispan" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -45,15 +45,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "infinispan" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.infinispan.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.infinispan.name
-            service_port = module.infinispan.ports[0].port
+            service {
+              name = module.infinispan.name
+              port {
+                number = module.infinispan.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -119,7 +125,7 @@ module "data-index" {
   protobufs = module.data-index-protobufs.name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "data-index" {
+resource "k8s_networking_k8s_io_v1_ingress" "data-index" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -129,15 +135,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "data-index" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.data-index.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.data-index.name
-            service_port = module.data-index.ports[0].port
+            service {
+              name = module.data-index.name
+              port {
+                number = module.data-index.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -182,7 +194,7 @@ module "jit-runner" {
   env = local.env
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "jit-runner" {
+resource "k8s_networking_k8s_io_v1_ingress" "jit-runner" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -192,15 +204,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "jit-runner" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.jit-runner.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.jit-runner.name
-            service_port = module.jit-runner.ports[0].port
+            service {
+              name = module.jit-runner.name
+              port {
+                number = module.jit-runner.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -222,7 +240,7 @@ module "management-console" {
   //  image = "registry.rebelsoft.com/kogito-management-console:latest"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "console" {
+resource "k8s_networking_k8s_io_v1_ingress" "console" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -232,22 +250,33 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "console" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.management-console.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.management-console.name
-            service_port = module.management-console.ports[0].port
+            service {
+              name = module.management-console.name
+              port {
+                number = module.management-console.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.data-index.name
-            service_port = module.data-index.ports[0].port
+            service {
+              name = module.data-index.name
+              port {
+                number = module.data-index.ports[0].port
+              }
+            }
           }
-          path = "/graphql"
+          path      = "/graphql"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -262,7 +291,7 @@ module "task-console" {
   KOGITO_DATAINDEX_HTTP_URL = "https://task-${var.namespace}.rebelsoft.com"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "task-console" {
+resource "k8s_networking_k8s_io_v1_ingress" "task-console" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -272,22 +301,33 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "task-console" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.task-console.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.task-console.name
-            service_port = module.task-console.ports[0].port
+            service {
+              name = module.task-console.name
+              port {
+                number = module.task-console.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.data-index.name
-            service_port = module.data-index.ports[0].port
+            service {
+              name = module.data-index.name
+              port {
+                number = module.data-index.ports[0].port
+              }
+            }
           }
-          path = "/graphql"
+          path      = "/graphql"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -302,7 +342,7 @@ module "trusty-ui" {
   KOGITO_TRUSTY_ENDPOINT = "https://trusty-${var.namespace}.rebelsoft.com"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "trusty-ui" {
+resource "k8s_networking_k8s_io_v1_ingress" "trusty-ui" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -312,22 +352,33 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "trusty-ui" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.trusty-ui.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.trusty-ui.name
-            service_port = module.trusty-ui.ports[0].port
+            service {
+              name = module.trusty-ui.name
+              port {
+                number = module.trusty-ui.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.trusty.name
-            service_port = module.trusty.ports[0].port
+            service {
+              name = module.trusty.name
+              port {
+                number = module.trusty.ports[0].port
+              }
+            }
           }
-          path = "/graphql"
+          path      = "/graphql"
+          path_type = "ImplementationSpecific"
         }
       }
     }

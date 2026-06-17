@@ -5,7 +5,7 @@ resource "k8s_networking_istio_io_v1alpha3_gateway" "knative-ingress-gateway" {
       "serving.knative.dev/release"             = "devel"
     }
     name      = "knative-ingress-gateway"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec = <<-JSON
     {

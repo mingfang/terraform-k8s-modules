@@ -7,6 +7,6 @@ variable "namespace" {
 }
 
 variable "config_json" {
-  default = "[]"
+  default     = "[]"
   description = "clusterID and monitors"
 }

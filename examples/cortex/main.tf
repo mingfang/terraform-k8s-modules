@@ -23,7 +23,7 @@ module "cortex" {
   cassandra = module.cassandra.name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "cortex" {
+resource "k8s_networking_k8s_io_v1_ingress" "cortex" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -33,21 +33,27 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "cortex" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.cortex.name}.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.cortex.name
-            service_port = module.cortex.service.spec[0].ports[0].port
+            service {
+              name = module.cortex.name
+              port {
+                number = module.cortex.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "cortex-push" {
+resource "k8s_networking_k8s_io_v1_ingress" "cortex-push" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -58,15 +64,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "cortex-push" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.cortex.name}-push.${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.cortex.name
-            service_port = module.cortex.service.spec[0].ports[0].port
+            service {
+              name = module.cortex.name
+              port {
+                number = module.cortex.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

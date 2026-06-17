@@ -26,7 +26,7 @@ module "selenium_firefox" {
   HUB_HOST  = module.selenium_hub.name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -36,15 +36,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.selenium_hub.name
       http {
         paths {
           backend {
-            service_name = module.selenium_hub.name
-            service_port = 4444
+            service {
+              name = module.selenium_hub.name
+              port {
+                number = 4444
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

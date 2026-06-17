@@ -250,13 +250,13 @@ module "zabbix-agent" {
   }
 
   /* enables kube-dns with host network */
-  dns_policy   = "None"
+  dns_policy = "None"
   dns_config = {
     nameservers = ["172.27.0.2"]
     searches    = ["${var.namespace}.svc.cluster.local", "svc.cluster.local", "cluster.local"]
   }
   host_network = "true"
-  host_pid = true
+  host_pid     = true
 
   tolerations = [
     {
@@ -276,7 +276,7 @@ module "zabbix-agent" {
         path = "/proc"
       }
       mount_path = "/hostfs/proc"
-      read_only = true
+      read_only  = true
     },
     {
       name = "sys"
@@ -284,7 +284,7 @@ module "zabbix-agent" {
         path = "/sys"
       }
       mount_path = "/hostfs/sys"
-      read_only = true
+      read_only  = true
     },
     {
       name = "root"
@@ -292,7 +292,7 @@ module "zabbix-agent" {
         path = "/"
       }
       mount_path = "/hostfs/root"
-      read_only = true
+      read_only  = true
     }
   ]
 }

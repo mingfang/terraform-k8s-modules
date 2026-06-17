@@ -1,0 +1,25 @@
+name:
+  type: str
+
+image:
+  type: str
+
+command:
+  type: str
+  default: '[]'
+
+args:
+  type: str
+  default: '[]'
+
+ports:
+  type: str
+  default: '[{ name = "tcp", port = 8080 }]'
+
+use_rbac:
+  type: bool
+  default: false
+  help: Use RBAC?
+
+_templates_suffix: ""
+_exclude: ["copier.yaml", "copier.yml", "~*", "*.py[co]", "__pycache__", ".git", ".DS_Store", ".svn", "node_modules", ".idea", "*.iml", "README.md"]

@@ -4,7 +4,7 @@ resource "k8s_apps_v1_deployment" "autoscaler" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "autoscaler"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
     replicas = 1

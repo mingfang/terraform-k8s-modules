@@ -21,7 +21,7 @@ module "web" {
 /*
 Depends on an Ingress Controller with Cert-Manager and LetsEncrypt
 */
-resource "k8s_extensions_v1beta1_ingress" "web" {
+resource "k8s_networking_k8s_io_v1_ingress" "web" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"       = "nginx"
@@ -31,15 +31,21 @@ resource "k8s_extensions_v1beta1_ingress" "web" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.NAT_HARVESTER_PUBLIC_ADDRESS
       http {
         paths {
           backend {
-            service_name = module.web.name
-            service_port = "80"
+            service {
+              name = module.web.name
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -6,7 +6,7 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "tcp"
@@ -15,7 +15,7 @@ variable ports {
   ]
 }
 
-variable image {
+variable "image" {
   default = "confluentinc/cp-kafka:5.5.1"
 }
 

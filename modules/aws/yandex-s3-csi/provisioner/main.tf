@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -8,7 +8,7 @@ locals {
 
 locals {
   socket-dir  = "socket-dir"
-  mount_path   = "/var/lib/kubelet/plugins/ru.yandex.s3.csi"
+  mount_path  = "/var/lib/kubelet/plugins/ru.yandex.s3.csi"
   csi_address = "${local.mount_path}/csi.sock"
 }
 
@@ -28,14 +28,14 @@ locals {
         name    = "provisioner"
         image   = var.image
         command = var.command
-        args    = [
+        args = [
           "--csi-address=${local.csi_address}",
           "--v=4",
         ]
 
         env = concat([
           {
-            name       = "POD_NAME"
+            name = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -43,7 +43,7 @@ locals {
             }
           },
           {
-            name       = "POD_IP"
+            name = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -54,7 +54,7 @@ locals {
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command  != null ? {
+        lifecycle = var.post_start_command != null ? {
           post_start = {
             exec = {
               command = var.post_start_command
@@ -74,14 +74,14 @@ locals {
       {
         name  = "csi-s3"
         image = var.csi_image
-        args  = [
+        args = [
           "--endpoint=unix://${local.csi_address}",
           "--nodeid=$(NODE_ID)",
           "--v=4",
         ]
         env = [
           {
-            name       = "NODE_ID"
+            name = "NODE_ID"
             value_from = {
               field_ref = {
                 field_path = "spec.nodeName"

@@ -136,6 +136,6 @@ resource "k8s_core_v1_config_map" "config-observability" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "config-observability"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

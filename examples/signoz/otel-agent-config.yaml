@@ -1,0 +1,244 @@
+exporters:
+  otlp:
+    endpoint: ${env:OTEL_EXPORTER_OTLP_ENDPOINT}
+    headers:
+      signoz-access-token: ${env:SIGNOZ_API_KEY}
+    tls:
+      insecure: ${env:OTEL_EXPORTER_OTLP_INSECURE}
+      insecure_skip_verify: ${env:OTEL_EXPORTER_OTLP_INSECURE_SKIP_VERIFY}
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: localhost:1777
+  zpages:
+    endpoint: localhost:55679
+processors:
+  batch:
+    send_batch_size: 10000
+    timeout: 200ms
+  k8sattributes:
+    extract:
+      annotations: []
+      labels: []
+      metadata:
+      - k8s.namespace.name
+      - k8s.deployment.name
+      - k8s.statefulset.name
+      - k8s.daemonset.name
+      - k8s.cronjob.name
+      - k8s.job.name
+      - k8s.node.name
+      - k8s.node.uid
+      - k8s.pod.name
+      - k8s.pod.uid
+      - k8s.pod.start_time
+    filter:
+      node_from_env_var: K8S_NODE_NAME
+    passthrough: false
+    pod_association:
+    - sources:
+      - from: resource_attribute
+        name: k8s.pod.ip
+    - sources:
+      - from: resource_attribute
+        name: k8s.pod.uid
+    - sources:
+      - from: connection
+  resourcedetection:
+    detectors:
+    - k8snode
+    - env
+    - system
+    k8snode:
+      auth_type: serviceAccount
+      node_from_env_var: K8S_NODE_NAME
+    override: false
+    system:
+      resource_attributes:
+        host.id:
+          enabled: false
+        host.name:
+          enabled: false
+        os.type:
+          enabled: true
+    timeout: 2s
+receivers:
+  filelog/k8s:
+    exclude:
+    - /var/log/pods/coder-mingfang-helm_signoz*-signoz-*/*/*.log
+    - /var/log/pods/coder-mingfang-helm_signoz*-k8s-infra-*/*/*.log
+    - /var/log/pods/kube-system_*/*/*.log
+    - /var/log/pods/*_hotrod*_*/*/*.log
+    - /var/log/pods/*_locust*_*/*/*.log
+    include:
+    - /var/log/pods/*/*/*.log
+    include_file_name: false
+    include_file_path: true
+    operators:
+    - id: container-parser
+      type: container
+    start_at: end
+  hostmetrics:
+    collection_interval: 30s
+    root_path: /hostfs
+    scrapers:
+      cpu: {}
+      disk:
+        exclude:
+          devices:
+          - ^ram\d+$
+          - ^zram\d+$
+          - ^loop\d+$
+          - ^fd\d+$
+          - ^hd[a-z]\d+$
+          - ^sd[a-z]\d+$
+          - ^vd[a-z]\d+$
+          - ^xvd[a-z]\d+$
+          - ^nvme\d+n\d+p\d+$
+          match_type: regexp
+      filesystem:
+        exclude_fs_types:
+          fs_types:
+          - autofs
+          - binfmt_misc
+          - bpf
+          - cgroup2?
+          - configfs
+          - debugfs
+          - devpts
+          - devtmpfs
+          - fusectl
+          - hugetlbfs
+          - iso9660
+          - mqueue
+          - nsfs
+          - overlay
+          - proc
+          - procfs
+          - pstore
+          - rpc_pipefs
+          - securityfs
+          - selinuxfs
+          - squashfs
+          - sysfs
+          - tracefs
+          match_type: strict
+        exclude_mount_points:
+          match_type: regexp
+          mount_points:
+          - /dev/*
+          - /proc/*
+          - /sys/*
+          - /run/credentials/*
+          - /run/k3s/containerd/*
+          - /var/lib/docker/*
+          - /var/lib/containers/storage/*
+          - /var/lib/kubelet/*
+          - /snap/*
+      load: {}
+      memory: {}
+      network:
+        exclude:
+          interfaces:
+          - ^veth.*$
+          - ^docker.*$
+          - ^br-.*$
+          - ^flannel.*$
+          - ^cali.*$
+          - ^cbr.*$
+          - ^cni.*$
+          - ^dummy.*$
+          - ^tailscale.*$
+          - ^lo$
+          match_type: regexp
+  kubeletstats:
+    auth_type: serviceAccount
+    collection_interval: 30s
+    endpoint: ${env:K8S_HOST_IP}:10250
+    extra_metadata_labels:
+    - container.id
+    - k8s.volume.type
+    insecure_skip_verify: true
+    metric_groups:
+    - container
+    - pod
+    - node
+    - volume
+    metrics:
+      container.cpu.usage:
+        enabled: true
+      container.uptime:
+        enabled: true
+      k8s.container.cpu_limit_utilization:
+        enabled: true
+      k8s.container.cpu_request_utilization:
+        enabled: true
+      k8s.container.memory_limit_utilization:
+        enabled: true
+      k8s.container.memory_request_utilization:
+        enabled: true
+      k8s.node.cpu.usage:
+        enabled: true
+      k8s.node.uptime:
+        enabled: true
+      k8s.pod.cpu.usage:
+        enabled: true
+      k8s.pod.cpu_limit_utilization:
+        enabled: true
+      k8s.pod.cpu_request_utilization:
+        enabled: true
+      k8s.pod.memory_limit_utilization:
+        enabled: true
+      k8s.pod.memory_request_utilization:
+        enabled: true
+      k8s.pod.uptime:
+        enabled: true
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        max_recv_msg_size_mib: 4
+      http:
+        endpoint: 0.0.0.0:4318
+service:
+  extensions:
+  - health_check
+  - zpages
+  - pprof
+  pipelines:
+    logs:
+      exporters:
+      - otlp
+      processors:
+      - resourcedetection
+      - k8sattributes
+      - batch
+      receivers:
+      - otlp
+      - filelog/k8s
+    metrics:
+      exporters:
+      - otlp
+      processors:
+      - resourcedetection
+      - k8sattributes
+      - batch
+      receivers:
+      - otlp
+      - hostmetrics
+      - kubeletstats
+    traces:
+      exporters:
+      - otlp
+      processors:
+      - resourcedetection
+      - k8sattributes
+      - batch
+      receivers:
+      - otlp
+  telemetry:
+    logs:
+      encoding: json
+    metrics:
+      address: 0.0.0.0:8888

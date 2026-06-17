@@ -21,7 +21,7 @@ module "minio" {
   create_buckets = ["pravega"]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
+resource "k8s_networking_k8s_io_v1_ingress" "minio" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -32,15 +32,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-minio"
       http {
         paths {
           backend {
-            service_name = module.minio.name
-            service_port = module.minio.ports[1].port
+            service {
+              name = module.minio.name
+              port {
+                number = module.minio.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -113,7 +119,7 @@ module "segmentstore" {
 
 /* Pravega REST endpoint */
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "pravega" {
+resource "k8s_networking_k8s_io_v1_ingress" "pravega" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -123,15 +129,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pravega" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.controller.name
-            service_port = module.controller.ports[0].port
+            service {
+              name = module.controller.name
+              port {
+                number = module.controller.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

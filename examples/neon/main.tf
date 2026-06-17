@@ -6,7 +6,7 @@ resource "k8s_core_v1_namespace" "this" {
 
 locals {
   #  S3_ENDPOINT = "http://localstack.localstack-example:4566"
-#  S3_ENDPOINT = "http://s3-gateway.minio-example:9000"
+  #  S3_ENDPOINT = "http://s3-gateway.minio-example:9000"
   S3_ENDPOINT = ""
   BUCKET_NAME = "rebelsoft-neon-example"
 }
@@ -60,10 +60,10 @@ module "compute_config" {
   from-dir = "${path.module}/config"
   from-map = {
     "spec.json" = templatefile("${path.module}/config/spec.json", {
-      CLUSTER_ID   = var.namespace
-      CLUSTER_NAME = var.namespace
-      TENANT_ID    = "ca5fbf3053bc9ea10eb2f32949f78c91"
-      TIMELINE_ID  = "80ed3be9cbb1a738d90ff39e7e4ccaaa"
+      CLUSTER_ID               = var.namespace
+      CLUSTER_NAME             = var.namespace
+      TENANT_ID                = "ca5fbf3053bc9ea10eb2f32949f78c91"
+      TIMELINE_ID              = "80ed3be9cbb1a738d90ff39e7e4ccaaa"
       SHARED_PRELOAD_LIBRARIES = "pg_stat_statements"
     })
   }
@@ -74,7 +74,7 @@ module "compute" {
   name      = "postgres"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-#  image = "registry.rebelsoft.com/compute-node-v15:latest"
+  #  image = "registry.rebelsoft.com/compute-node-v15:latest"
 
   env_map = {
     PGPASSWORD        = "cloud_admin"
@@ -128,11 +128,11 @@ module "postgres_init" {
   image     = "postgres:15.1"
 
   env_map = {
-    PGHOST            = module.compute.name
-    PGPORT            = module.compute.ports.0.port
-    PGUSER            = "cloud_admin"
-    PGPASSWORD        = "cloud_admin"
-    PGDATABASE        = "postgres"
+    PGHOST     = module.compute.name
+    PGPORT     = module.compute.ports.0.port
+    PGUSER     = "cloud_admin"
+    PGPASSWORD = "cloud_admin"
+    PGDATABASE = "postgres"
   }
   configmap = module.postgres_init_config.config_map
 
@@ -157,16 +157,16 @@ module "postgres_init" {
 
 module "wsproxy" {
   source    = "../../modules/neon/wsproxy"
-  name = "wsproxy"
+  name      = "wsproxy"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
 
   env_map = {
-    ALLOW_ADDR_REGEX="${module.compute.name}.${var.namespace}"
+    ALLOW_ADDR_REGEX = "${module.compute.name}.${var.namespace}"
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "wsproxy" {
+resource "k8s_networking_k8s_io_v1_ingress" "wsproxy" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -176,15 +176,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "wsproxy" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "wsproxy-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.wsproxy.name
-            service_port = module.wsproxy.ports.0.port
+            service {
+              name = module.wsproxy.name
+              port {
+                number = module.wsproxy.ports.0.port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

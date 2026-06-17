@@ -1,0 +1,10 @@
+curl -s -XPOST "https://spice-example.rebelsoft.com/v1/sql" \
+     --data "SELECT avg(total_amount), \
+                    avg(tip_amount), \
+                    count(1), \
+                    passenger_count \
+              FROM taxi_trips \
+              GROUP BY passenger_count \
+              ORDER BY passenger_count ASC \
+              LIMIT 3" \
+| jq

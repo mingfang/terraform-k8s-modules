@@ -1,0 +1,11 @@
+{
+    "apiServerGqlUrl": "https://kamu-example.rebelsoft.com/graphql",
+    "apiServerHttpUrl": "https://kamu-example.rebelsoft.com",
+    "githubClientId": "361a3b4fda86d0234d2f",
+    "ingestUploadFileLimitMb": 50,
+    "featureFlags": {
+        "enableLogout": true,
+        "enableScheduling": true,
+        "enableDatasetEnvVarsManagment": true
+    }
+}

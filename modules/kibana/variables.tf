@@ -8,8 +8,8 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
-  type = list
+variable "ports" {
+  type = list(any)
   default = [
     {
       name = "http"
@@ -23,17 +23,17 @@ variable "image" {
 }
 
 variable "env" {
-  type    = list
+  type    = list(any)
   default = []
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
 variable "node_selector" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 

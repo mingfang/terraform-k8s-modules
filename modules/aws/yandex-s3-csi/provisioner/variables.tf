@@ -33,7 +33,7 @@ variable "env" {
 }
 
 variable "env_map" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -43,7 +43,7 @@ variable "env_file" {
 }
 
 variable "env_from" {
-  type    = list(object({
+  type = list(object({
     prefix = string,
     secret_ref = object({
       name = string,
@@ -53,7 +53,7 @@ variable "env_from" {
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 

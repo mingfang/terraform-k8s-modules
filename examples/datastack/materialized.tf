@@ -5,7 +5,7 @@ resource "k8s_core_v1_persistent_volume_claim" "materialized" {
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }

@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -31,7 +31,7 @@ locals {
 
         env = concat([
           {
-            name       = "POD_NAME"
+            name = "POD_NAME"
             value_from = {
               field_ref = {
                 field_path = "metadata.name"
@@ -39,7 +39,7 @@ locals {
             }
           },
           {
-            name       = "POD_IP"
+            name = "POD_IP"
             value_from = {
               field_ref = {
                 field_path = "status.podIP"
@@ -50,7 +50,7 @@ locals {
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command  != null ? {
+        lifecycle = var.post_start_command != null ? {
           post_start = {
             exec = {
               command = var.post_start_command
@@ -70,9 +70,9 @@ locals {
           ],
           [
             for volume in var.volumes : {
-            name       = volume.name
-            mount_path = volume.mount_path
-          }
+              name       = volume.name
+              mount_path = volume.mount_path
+            }
           ],
           var.configmap != null ? [
             for k, v in var.configmap.data :
@@ -140,7 +140,7 @@ locals {
       [
         for pvc in var.pvcs :
         {
-          name                    = pvc.name
+          name = pvc.name
           persistent_volume_claim = {
             claim_name = pvc.name
           }
@@ -149,7 +149,7 @@ locals {
       [for volume in var.volumes : volume],
       var.configmap != null ? [
         {
-          name       = "config"
+          name = "config"
           config_map = {
             name = var.configmap.metadata[0].name
           }

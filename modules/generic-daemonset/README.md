@@ -12,6 +12,8 @@ Provider Requirements:
 * `command` (default `[]`)
 * `configmap` (default `null`)
 * `configmap_mount_path` (default `"/config"`)
+* `dns_config` (default `null`)
+* `dns_policy` (default `null`)
 * `env` (default `[]`)
 * `env_file` (default `null`)
 * `env_from` (default `[]`)

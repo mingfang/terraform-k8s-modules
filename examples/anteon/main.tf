@@ -307,7 +307,7 @@ module "alaz-agent" {
     "--collector.netclass.ignored-devices=^(veth.*)$",
   ]
 
-  cluster_role_rules   = yamldecode(replace(file("${path.module}/alaz-rbac.yaml"), "apiGroup", "api_group")).rules
+  cluster_role_rules = yamldecode(replace(file("${path.module}/alaz-rbac.yaml"), "apiGroup", "api_group")).rules
 
   host_pid = true
   security_context = {

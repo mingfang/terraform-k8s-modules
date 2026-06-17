@@ -11,6 +11,6 @@ resource "k8s_rbac_authorization_k8s_io_v1beta1_cluster_role_binding" "goldpinge
   subjects {
     kind      = "ServiceAccount"
     name      = "${var.name}-serviceaccount"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 }

@@ -87,10 +87,10 @@ locals {
         name  = "wait-for-zk"
       },
       {
-        name              = "chown"
-        image             = var.image
+        name    = "chown"
+        image   = var.image
         command = ["chown"]
-        args = ["dremio:dremio", "/opt/dremio/data/pdfs"]
+        args    = ["dremio:dremio", "/opt/dremio/data/pdfs"]
 
         security_context = {
           run_asuser = "0"
@@ -136,7 +136,7 @@ locals {
 
 
 module "statefulset-service" {
-  source     = "../../../archetypes/statefulset-service"
+  source = "../../../archetypes/statefulset-service"
   parameters = merge(local.parameters, var.overrides, {
     "volumes" = local.volumes
   })

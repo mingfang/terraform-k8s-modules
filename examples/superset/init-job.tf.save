@@ -1,0 +1,52 @@
+module "init-job" {
+  source    = "../../modules/kubernetes/job"
+  name      = "init-job"
+  namespace = var.namespace
+  annotations = {
+    config_checksum = module.config.checksum
+  }
+
+  image = var.image
+  command = [
+    "bash",
+    "-c",
+    <<-EOF
+      superset db upgrade
+      superset init
+
+      if [[ -v ADMIN_PASSWORD ]] && [[ -v ADMIN_PASSWORD ]]; then
+        superset fab create-admin \
+          --username $ADMIN_USERNAME \
+          --firstname Superset \
+          --lastname Admin \
+          --email admin@superset.com \
+          --password $ADMIN_PASSWORD
+      fi
+
+      if [[ -v SUPERSET_LOAD_EXAMPLES ]]; then
+        superset load_examples
+      fi
+    EOF
+  ]
+
+  env                   = module.env.kubernetes_env
+
+  volumes = [
+    {
+      name = "config"
+      config_map = {
+        name = module.config.name
+      }
+    }
+  ]
+
+  volume_mounts = [
+    for k, v in module.config.config_map.data :
+    {
+      name = "config"
+
+      mount_path = "/app/pythonpath/${k}"
+      sub_path   = k
+    }
+  ]
+}

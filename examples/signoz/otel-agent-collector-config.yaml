@@ -1,0 +1,81 @@
+exporters:
+  otlp:
+    endpoint: ${env:OTEL_EXPORTER_OTLP_ENDPOINT}
+    headers:
+      signoz-access-token: ${env:SIGNOZ_API_KEY}
+    tls:
+      insecure: ${env:OTEL_EXPORTER_OTLP_INSECURE}
+      insecure_skip_verify: ${env:OTEL_EXPORTER_OTLP_INSECURE_SKIP_VERIFY}
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: localhost:1777
+  zpages:
+    endpoint: localhost:55679
+processors:
+  batch:
+    send_batch_size: 10000
+    timeout: 1s
+  resourcedetection:
+    detectors:
+    - env
+    override: false
+    timeout: 2s
+receivers:
+  k8s_cluster:
+    allocatable_types_to_report:
+    - cpu
+    - memory
+    collection_interval: 30s
+    metrics:
+      k8s.node.condition:
+        enabled: true
+      k8s.pod.status_reason:
+        enabled: true
+    node_conditions_to_report:
+    - Ready
+    - MemoryPressure
+    - DiskPressure
+    - PIDPressure
+    - NetworkUnavailable
+    resource_attributes:
+      container.runtime:
+        enabled: true
+      container.runtime.version:
+        enabled: true
+      k8s.container.status.last_terminated_reason:
+        enabled: true
+      k8s.kubelet.version:
+        enabled: true
+      k8s.pod.qos_class:
+        enabled: true
+  k8s_events:
+    auth_type: serviceAccount
+service:
+  extensions:
+  - health_check
+  - zpages
+  - pprof
+  pipelines:
+    logs:
+      exporters:
+      - otlp
+      processors:
+      - resourcedetection
+      - batch
+      receivers:
+      - k8s_events
+    metrics/internal:
+      exporters:
+      - otlp
+      processors:
+      - resourcedetection
+      - batch
+      receivers:
+      - k8s_cluster
+  telemetry:
+    logs:
+      encoding: json
+    metrics:
+      address: 0.0.0.0:8888

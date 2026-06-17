@@ -12,7 +12,7 @@ variable "service_type" {
   default = "LoadBalancer"
 }
 
-variable external_traffic_policy {
+variable "external_traffic_policy" {
   default     = "Cluster"
   description = "set to null if service_type is not LoadBalancer"
 }

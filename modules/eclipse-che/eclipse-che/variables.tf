@@ -41,28 +41,28 @@ variable "JAVA_OPTS" {
   default = "-XX:MaxRAMPercentage=85.0 "
 }
 
-variable CHE_WORKSPACE_DEVFILE__REGISTRY__URL {}
+variable "CHE_WORKSPACE_DEVFILE__REGISTRY__URL" {}
 
-variable CHE_WORKSPACE_PLUGIN__REGISTRY__URL {}
+variable "CHE_WORKSPACE_PLUGIN__REGISTRY__URL" {}
 
-variable CHE_HOST {
+variable "CHE_HOST" {
   description = "For building the http and websocket URLs"
 }
 
 
 // begin CHE_INFRA_KUBERNETES_SERVER__STRATEGY=multi-host
 
-variable CHE_INFRA_KUBERNETES_SERVER__STRATEGY {
+variable "CHE_INFRA_KUBERNETES_SERVER__STRATEGY" {
   default     = "multi-host"
   description = "default-host, multi-host, single-host"
 }
 
-variable CHE_INFRA_KUBERNETES_INGRESS_DOMAIN {
+variable "CHE_INFRA_KUBERNETES_INGRESS_DOMAIN" {
   default     = null
   description = "domain suffix for each workspace ingress; Required when CHE_INFRA_KUBERNETES_SERVER__STRATEGY=multi-host"
 }
 
-variable CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM {
+variable "CHE_INFRA_KUBERNETES_INGRESS_PATH__TRANSFORM" {
   default     = null
   description = "set to %s(.*) when CHE_INFRA_KUBERNETES_SERVER__STRATEGY=single-host"
 }
@@ -72,12 +72,12 @@ variable "CHE_INFRA_KUBERNETES_TLS__ENABLED" {
   description = "Will use https and wss URLs if true"
 }
 
-variable CHE_INFRA_KUBERNETES_TLS__KEY {
+variable "CHE_INFRA_KUBERNETES_TLS__KEY" {
   default     = ""
   description = "base64 encoded key coppied to each workspace to enable https for ingress"
 }
 
-variable CHE_INFRA_KUBERNETES_TLS__CERT {
+variable "CHE_INFRA_KUBERNETES_TLS__CERT" {
   default     = ""
   description = "base64 encoded cert coppied to each workspace to enable https for ingress"
 }
@@ -87,7 +87,7 @@ variable CHE_INFRA_KUBERNETES_TLS__CERT {
 
 // begin CHE_MULTIUSER=true
 
-variable CHE_MULTIUSER {
+variable "CHE_MULTIUSER" {
   default     = true
   description = "enable multi user support"
 }
@@ -95,16 +95,16 @@ variable "CHE_INFRA_KUBERNETES_CLUSTER__ROLE__NAME" {
   default     = null
   description = "Extra permissions each workspace will get"
 }
-variable CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME {
+variable "CHE_INFRA_KUBERNETES_SERVICE__ACCOUNT__NAME" {
   default     = "che-workspace"
   description = "name of auto created service account for each workspace"
 }
-variable CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT {
+variable "CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT" {
   default     = "che-<username>"
   description = "create new namespace for each user"
 }
 
-variable CHE_INFRA_KUBERNETES_PVC_NAME {
+variable "CHE_INFRA_KUBERNETES_PVC_NAME" {
   default     = "claim-che-workspace"
   description = "name of pvc for each workspace"
 }
@@ -112,64 +112,64 @@ variable "CHE_INFRA_KUBERNETES_PVC_STORAGE__CLASS__NAME" {
   default     = "claim-che-workspace"
   description = "storage class for each pvc in each workspace"
 }
-variable CHE_INFRA_KUBERNETES_PVC_QUANTITY {
+variable "CHE_INFRA_KUBERNETES_PVC_QUANTITY" {
   default = "10Gi"
 }
-variable CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE {
+variable "CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE" {
   default = "ReadWriteOnce"
 }
 
 // limit number of active workspaces for each user
-variable CHE_LIMITS_USER_WORKSPACES_RUN_COUNT {
+variable "CHE_LIMITS_USER_WORKSPACES_RUN_COUNT" {
   default = 10
 }
-variable CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT {
+variable "CHE_LIMITS_WORKSPACE_IDLE_TIMEOUT" {
   default = 1800000
 }
 
 // keycloak integration
-variable CHE_KEYCLOAK_AUTH__SERVER__URL {
+variable "CHE_KEYCLOAK_AUTH__SERVER__URL" {
   default = ""
 }
-variable CHE_KEYCLOAK_CLIENT__ID {
+variable "CHE_KEYCLOAK_CLIENT__ID" {
   default = ""
 }
-variable CHE_KEYCLOAK_REALM {
+variable "CHE_KEYCLOAK_REALM" {
   default = ""
 }
 
-variable CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB {
+variable "CHE_WORKSPACE_SIDECAR_DEFAULT__MEMORY__LIMIT__MB" {
   default = 256
 }
 
 // set both to "0" if you need root access
-variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP {
+variable "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_FS__GROUP" {
   default = "1724"
 }
-variable CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER {
+variable "CHE_INFRA_KUBERNETES_POD_SECURITY__CONTEXT_RUN__AS__USER" {
   default = "1724"
 }
 
 // end CHE_MULTIUSER=true
 
-variable CHE_SYSTEM_ADMIN__NAME {
+variable "CHE_SYSTEM_ADMIN__NAME" {
   default     = "admin"
   description = "Grant system permission for 'che.admin.name' user. If the user already exists it’ll happen oncomponent startup, if not - during the first login when user is persisted in the database."
 }
 
-variable CHE_METRICS_ENABLED {
+variable "CHE_METRICS_ENABLED" {
   default = true
 }
 
-variable JAEGER_ENDPOINT {
+variable "JAEGER_ENDPOINT" {
   default = null
 }
 
-variable CHE_OAUTH_GITHUB_CLIENTID {
+variable "CHE_OAUTH_GITHUB_CLIENTID" {
   default = ""
 }
 
-variable CHE_OAUTH_GITHUB_CLIENTSECRET {
+variable "CHE_OAUTH_GITHUB_CLIENTSECRET" {
   default = ""
 }
 
@@ -186,10 +186,10 @@ variable "CHE_INFRA_KUBERNETES_NAMESPACE_RESOURCE__QUOTA__JSON" {
   default = null
 }
 
-variable CHE_INFRA_KUBERNETES_NAMESPACE_LIMIT__RANGE__LIMIT__JSON {
+variable "CHE_INFRA_KUBERNETES_NAMESPACE_LIMIT__RANGE__LIMIT__JSON" {
   default = null
 }
 
-variable CHE_INFRA_KUBERNETES_NAMESPACE_LIMIT__RANGE__REQUEST__JSON {
+variable "CHE_INFRA_KUBERNETES_NAMESPACE_LIMIT__RANGE__REQUEST__JSON" {
   default = null
 }

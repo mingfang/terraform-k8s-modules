@@ -4,7 +4,7 @@ resource "k8s_apps_v1_deployment" "webhook" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "webhook"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
     replicas = 1

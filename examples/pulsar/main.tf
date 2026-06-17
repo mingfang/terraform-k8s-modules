@@ -46,7 +46,7 @@ module "pulsar-sql-coordinator" {
   zookeeper = "${module.zookeeper.name}:2181"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "pulsar-sql-coordinator" {
+resource "k8s_networking_k8s_io_v1_ingress" "pulsar-sql-coordinator" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -56,15 +56,21 @@ resource "k8s_extensions_v1beta1_ingress" "pulsar-sql-coordinator" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "pulsar-sql"
       http {
         paths {
           backend {
-            service_name = module.pulsar-sql-coordinator.name
-            service_port = "8081"
+            service {
+              name = module.pulsar-sql-coordinator.name
+              port {
+                number = "8081"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -92,7 +98,7 @@ module "pulsar-proxy" {
   zookeeper                 = "${module.zookeeper.name}:2181"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "pulsar-proxy" {
+resource "k8s_networking_k8s_io_v1_ingress" "pulsar-proxy" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -102,15 +108,21 @@ resource "k8s_extensions_v1beta1_ingress" "pulsar-proxy" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.pulsar-proxy.name
       http {
         paths {
           backend {
-            service_name = module.pulsar-proxy.name
-            service_port = "8080"
+            service {
+              name = module.pulsar-proxy.name
+              port {
+                number = "8080"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -126,7 +138,7 @@ module "pulsar-websocket" {
   configurationStoreServers = "${module.zookeeper.name}:2181"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "pulsar-websocket" {
+resource "k8s_networking_k8s_io_v1_ingress" "pulsar-websocket" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -136,15 +148,21 @@ resource "k8s_extensions_v1beta1_ingress" "pulsar-websocket" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.pulsar-websocket.name
       http {
         paths {
           backend {
-            service_name = module.pulsar-websocket.name
-            service_port = "8080"
+            service {
+              name = module.pulsar-websocket.name
+              port {
+                number = "8080"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -159,7 +177,7 @@ module "pulsar-dashboard" {
   SERVICE_URL = "http://${module.pulsar.name}:8080"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "pulsar-dashboard" {
+resource "k8s_networking_k8s_io_v1_ingress" "pulsar-dashboard" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -169,15 +187,21 @@ resource "k8s_extensions_v1beta1_ingress" "pulsar-dashboard" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.pulsar-dashboard.name
       http {
         paths {
           backend {
-            service_name = module.pulsar-dashboard.name
-            service_port = "80"
+            service {
+              name = module.pulsar-dashboard.name
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

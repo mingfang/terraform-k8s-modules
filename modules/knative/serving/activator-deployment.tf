@@ -4,7 +4,7 @@ resource "k8s_apps_v1_deployment" "activator" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "activator"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
     selector {

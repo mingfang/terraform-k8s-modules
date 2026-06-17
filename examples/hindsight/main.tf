@@ -6,55 +6,21 @@ module "namespace" {
 
 # ── CloudNativePG Cluster (replaces old StatefulSet hindsight-db) ──────────
 module "hindsight-db" {
-  source    = "../../modules/cloudnative-pg-cluster"
-  name      = "hindsight-db"
-  namespace = module.namespace.name
+  source              = "../citus"
+  name                = "hindsight-db"
+  namespace           = module.namespace.name
+  is_create_namespace = false
 
-  image_name = "registry.rebelsoft.com/cloudnative-vchord-suite:18.3-trixie"
+  username             = var.postgres_user
+  password             = var.postgres_password
+  database             = "hindsight_db"
 
-  env_map = {
-    "POSTGRES_PASSWORD" = var.postgres_password
-  }
+  replicas            = 3
+  coordinator_storage = "10Gi"
+  worker_storage      = "100Gi"
 
-  instances    = 3
-  storage_size = "100Gi"
-
-  postgresql_shared_preload_libraries = ["vchord", "vchord_bm25", "vector", "pg_tokenizer"]
-
-  postgresql_init_schemas = ["bm25_catalog", "tokenizer_catalog"]
-
-  postgresql_parameters = {
-    max_wal_senders = "10"
-    search_path     = "\\$user, public, bm25_catalog, tokenizer_catalog"
-  }
-
-  pooler = {
-    name            = "hindsight-db-pooler"
-    max_client_conn = 100
-    pool_mode       = "transaction"
-    instances       = 1
-  }
-
-  bootstrap = {
-    database = "hindsight_db"
-    owner    = var.postgres_user
-    post_init_application_sql = [
-      "CREATE EXTENSION IF NOT EXISTS vchord CASCADE;",
-      "CREATE EXTENSION IF NOT EXISTS pg_tokenizer CASCADE;",
-      "CREATE EXTENSION IF NOT EXISTS vchord_bm25 CASCADE;",
-      "SELECT tokenizer_catalog.create_tokenizer('llmlingua2', 'model = \"llmlingua2\"');",
-    ]
-  }
-
-  resources = {
-    requests = {
-      cpu    = "2"
-      memory = "4Gi"
-    }
-    limits = {
-      memory = "8Gi"
-    }
-  }
+  # shared_preload_libraries = "citus,vchord,vchord_bm25,vector,pg_tokenizer"
+  # search_path = "\\$user, public, bm25_catalog, tokenizer_catalog, vectors"
 }
 
 locals {
@@ -67,11 +33,11 @@ locals {
     HINDSIGHT_API_SKIP_LLM_VERIFICATION = "true"
 
     # Database Configuration — use CNPG pooler service
-    HINDSIGHT_API_DATABASE_URL = "postgresql://${var.postgres_user}:${var.postgres_password}@${module.hindsight-db.pooler_service_name}.${module.namespace.name}.svc.cluster.local:5432/hindsight_db"
+    HINDSIGHT_API_DATABASE_URL = "postgresql://${var.postgres_user}:${var.postgres_password}@coordinator.${module.namespace.name}.svc.cluster.local:5432/hindsight_db"
 
     # Vector and Text Search Extensions
-    HINDSIGHT_API_VECTOR_EXTENSION      = "vchord"
-    HINDSIGHT_API_TEXT_SEARCH_EXTENSION = "vchord"
+    HINDSIGHT_API_VECTOR_EXTENSION      = "pgvectorscale"
+    HINDSIGHT_API_TEXT_SEARCH_EXTENSION = "pg_search"
 
     HINDSIGHT_API_OTEL_TRACES_ENABLED         = "false"
     HINDSIGHT_API_OTEL_EXPORTER_OTLP_ENDPOINT = var.otel_exporter_endpoint

@@ -13,9 +13,9 @@ module "policies" {
 }
 
 module "opa" {
-  source      = "../../modules/opa"
-  name        = var.name
-  namespace   = k8s_core_v1_namespace.this.metadata[0].name
+  source    = "../../modules/opa"
+  name      = var.name
+  namespace = k8s_core_v1_namespace.this.metadata[0].name
   annotations = {
     checksum = module.policies.checksum
   }

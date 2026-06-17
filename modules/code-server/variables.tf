@@ -18,7 +18,7 @@ variable "replicas" {
 }
 
 variable "ports" {
-  type    = list
+  type    = list(any)
   default = [{ name = "tcp", port = 8080 }]
 }
 
@@ -38,7 +38,7 @@ variable "env" {
 }
 
 variable "env_map" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 
@@ -58,7 +58,7 @@ variable "env_from" {
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = {}
 }
 

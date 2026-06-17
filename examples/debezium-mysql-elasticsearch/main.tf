@@ -144,7 +144,7 @@ module "debezium" {
 }
 
 data "template_file" "source" {
-  template = "${file("${path.module}/source.json")}"
+  template = file("${path.module}/source.json")
 
   vars = {
     name                                     = "${var.name}-source-connector"
@@ -171,7 +171,7 @@ module "job_source" {
 }
 
 data "template_file" "sink" {
-  template = "${file("${path.module}/sink.json")}"
+  template = file("${path.module}/sink.json")
 
   vars = {
     name           = "elastic-sink"

@@ -13,21 +13,21 @@ variable "replicas" {
 }
 
 //this image contains example data
-variable image {
+variable "image" {
   default = "debezium/example-mysql"
 }
 
-variable port {
+variable "port" {
   default = 3306
 }
 
 variable "annotations" {
-  type    = "map"
+  type    = map(string)
   default = {}
 }
 
 variable "node_selector" {
-  type    = "map"
+  type    = map(string)
   default = {}
 }
 
@@ -35,15 +35,15 @@ variable "node_selector" {
 service specific variables
 */
 
-variable mysql_user {
+variable "mysql_user" {
   default = "mysqluser"
 }
 
-variable mysql_password {
+variable "mysql_password" {
   default = "mysqlpw"
 }
 
-variable mysql_database {
+variable "mysql_database" {
   default = ""
 }
 
@@ -68,17 +68,17 @@ output
 */
 
 output "name" {
-  value = "${k8s_core_v1_service.this.metadata[0].name}"
+  value = k8s_core_v1_service.this.metadata[0].name
 }
 
 output "port" {
-  value = "${k8s_core_v1_service.this.spec[0].ports[0].port}"
+  value = k8s_core_v1_service.this.spec[0].ports[0].port
 }
 
 output "cluster_ip" {
-  value = "${k8s_core_v1_service.this.spec[0].cluster_ip}"
+  value = k8s_core_v1_service.this.spec[0].cluster_ip
 }
 
 output "statefulset_uid" {
-  value = "${k8s_apps_v1_stateful_set.this.metadata[0].uid}"
+  value = k8s_apps_v1_stateful_set.this.metadata[0].uid
 }

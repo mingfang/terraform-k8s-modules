@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -51,39 +51,39 @@ locals {
             }
           },
           {
-            name = "METASRV_LOG_DIR"
+            name  = "METASRV_LOG_DIR"
             value = "${var.mount_path}/log"
           },
           {
-            name = "KVSRV_RAFT_DIR"
+            name  = "KVSRV_RAFT_DIR"
             value = "${var.mount_path}/raft"
           },
           {
-            name = "ADMIN_API_ADDRESS"
+            name  = "ADMIN_API_ADDRESS"
             value = "$(POD_IP):28002"
           },
           {
-            name = "METASRV_GRPC_API_ADDRESS"
+            name  = "METASRV_GRPC_API_ADDRESS"
             value = "$(POD_IP):9191"
           },
           {
-            name = "KVSRV_API_PORT"
+            name  = "KVSRV_API_PORT"
             value = "28004"
           },
           {
-            name = "KVSRV_LISTEN_HOST"
+            name  = "KVSRV_LISTEN_HOST"
             value = "$(POD_IP)"
           },
           {
-            name = "KVSRV_ADVERTISE_HOST"
+            name  = "KVSRV_ADVERTISE_HOST"
             value = "$(POD_NAME).${var.name}.${var.namespace}.svc.cluster.local"
           },
           {
-            name = "KVSRV_ID"
+            name  = "KVSRV_ID"
             value = "1"
           },
           {
-            name = "CLUSTER_NAME"
+            name  = "CLUSTER_NAME"
             value = var.namespace
           },
         ], var.env, local.computed_env)
@@ -100,12 +100,12 @@ locals {
             },
           ] : [],
           var.configmap != null ? [
-          for k, v in var.configmap.data :
-          {
-            name       = "config"
-            mount_path = "/config/${var.name}/${k}"
-            sub_path   = k
-          }
+            for k, v in var.configmap.data :
+            {
+              name       = "config"
+              mount_path = "/config/${var.name}/${k}"
+              sub_path   = k
+            }
           ] : [],
           [], //hack: without this, sub_path above stops working
         )

@@ -2,11 +2,11 @@ variable "name" {}
 
 variable "namespace" {}
 
-variable image {
+variable "image" {
   default = "registry:2"
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "http"

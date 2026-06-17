@@ -1,0 +1,1 @@
+docker run -p 8080:8080 -v ${PWD}/recipe.yml:/tmp/recipe.yml thatdot/quine -r /tmp/recipe.yml

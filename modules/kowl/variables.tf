@@ -2,7 +2,7 @@ variable "name" {}
 
 variable "namespace" {}
 
-variable image {
+variable "image" {
   default = "quay.io/cloudhut/kowl:master-ab6caaa"
 }
 

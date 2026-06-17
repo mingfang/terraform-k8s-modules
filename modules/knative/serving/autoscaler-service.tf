@@ -5,7 +5,7 @@ resource "k8s_core_v1_service" "autoscaler" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "autoscaler"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 

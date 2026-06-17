@@ -96,6 +96,6 @@ variable "volume_claim_template_name" {
 }
 
 variable "mount_path" {
-  default = "/data"
+  default     = "/data"
   description = "pvc mount path"
 }

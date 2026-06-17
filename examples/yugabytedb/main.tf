@@ -34,7 +34,7 @@ module "master" {
   storage_class = module.master-storage.storage_class_name
 }
 
-resource "k8s_extensions_v1beta1_ingress" "master" {
+resource "k8s_networking_k8s_io_v1_ingress" "master" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -44,15 +44,21 @@ resource "k8s_extensions_v1beta1_ingress" "master" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.master.name
       http {
         paths {
           backend {
-            service_name = module.master.name
-            service_port = module.master.service.spec[0].ports[0].port
+            service {
+              name = module.master.name
+              port {
+                number = module.master.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -121,7 +127,7 @@ module "janusgraph" {
   ]
 }
 
-resource "k8s_extensions_v1beta1_ingress" "janusgraph" {
+resource "k8s_networking_k8s_io_v1_ingress" "janusgraph" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -131,15 +137,21 @@ resource "k8s_extensions_v1beta1_ingress" "janusgraph" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.janusgraph.name
       http {
         paths {
           backend {
-            service_name = module.janusgraph.name
-            service_port = module.janusgraph.service.spec[0].ports[0].port
+            service {
+              name = module.janusgraph.name
+              port {
+                number = module.janusgraph.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

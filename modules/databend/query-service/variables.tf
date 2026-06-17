@@ -96,7 +96,7 @@ variable "pvc" {
 }
 
 variable "mount_path" {
-  default = "/data"
+  default     = "/data"
   description = "pvc mount path"
 }
 

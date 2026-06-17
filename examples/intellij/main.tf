@@ -30,7 +30,7 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "s3fs"
   }
@@ -54,9 +54,9 @@ module "intellij" {
       name  = "dind"
       image = "docker:23.0.1-dind"
       args  = ["--insecure-registry=0.0.0.0/0"]
-      env   = [
+      env = [
         {
-          name       = "POD_NAME"
+          name = "POD_NAME"
           value_from = {
             field_ref = {
               field_path = "metadata.name"
@@ -85,7 +85,7 @@ module "intellij" {
 }
 
 // access IntelliJ using https://<namespace>.<your domain>
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
@@ -107,14 +107,20 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.intellij.name}-${var.namespace}"
       http {
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.intellij.name
-            service_port = module.intellij.ports[0].port
+            service {
+              name = module.intellij.name
+              port {
+                number = module.intellij.ports[0].port
+              }
+            }
           }
         }
       }
@@ -123,7 +129,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
 }
 
 // Proxy to any port https://<namespace>-<port>.<your domain>
-resource "k8s_networking_k8s_io_v1beta1_ingress" "proxy" {
+resource "k8s_networking_k8s_io_v1_ingress" "proxy" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -175,15 +181,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "proxy" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.intellij.name}-${var.namespace}-proxy"
       http {
         // not used; only to avoid syntax validation error
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.intellij.name
-            service_port = module.intellij.ports[0].port
+            service {
+              name = module.intellij.name
+              port {
+                number = module.intellij.ports[0].port
+              }
+            }
           }
         }
       }

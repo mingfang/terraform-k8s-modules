@@ -16,11 +16,37 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_extensions_v1beta1_ingress.this` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 
 ## Child Modules
 * `gitlab` from [../../solutions/gitlab](../../solutions/gitlab)
 * `ingress-controller` from [../../modules/kubernetes/ingress-nginx](../../modules/kubernetes/ingress-nginx)
 * `nfs-server` from [../../modules/nfs-server-empty-dir](../../modules/nfs-server-empty-dir)
 * `storage` from [../../modules/kubernetes/storage-nfs](../../modules/kubernetes/storage-nfs)
+
+## Problems
+
+## Error: Invalid character
+
+(at `gitlab/ingress.tf` line 33)
+
+This character is not used within the language.
+
+## Error: Invalid character
+
+(at `gitlab/ingress.tf` line 54)
+
+This character is not used within the language.
+
+## Error: Invalid character
+
+(at `gitlab/ingress.tf` line 75)
+
+This character is not used within the language.
+
+## Error: Missing key/value separator
+
+(at `gitlab/ingress.tf` line 32)
+
+Expected an equals sign ("=") to mark the beginning of the attribute value.
 

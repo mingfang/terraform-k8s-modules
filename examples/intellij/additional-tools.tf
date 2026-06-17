@@ -52,7 +52,7 @@ module "pycharm-community" {
 }
 
 // load IntelliJ using https://<namespace>.<your domain>?port=443
-resource "k8s_networking_k8s_io_v1beta1_ingress" "pycharm-community" {
+resource "k8s_networking_k8s_io_v1_ingress" "pycharm-community" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -63,15 +63,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pycharm-community" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.pycharm-community.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.pycharm-community.name
-            service_port = module.pycharm-community.ports[0].port
+            service {
+              name = module.pycharm-community.name
+              port {
+                number = module.pycharm-community.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -131,7 +137,7 @@ module "pycharm" {
 }
 
 // load IntelliJ using https://<namespace>.<your domain>?port=443
-resource "k8s_networking_k8s_io_v1beta1_ingress" "pycharm" {
+resource "k8s_networking_k8s_io_v1_ingress" "pycharm" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -142,15 +148,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "pycharm" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.pycharm.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.pycharm.name
-            service_port = module.pycharm.ports[0].port
+            service {
+              name = module.pycharm.name
+              port {
+                number = module.pycharm.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -210,7 +222,7 @@ module "datagrip" {
 }
 
 // load IntelliJ using https://<namespace>.<your domain>?port=443
-resource "k8s_networking_k8s_io_v1beta1_ingress" "datagrip" {
+resource "k8s_networking_k8s_io_v1_ingress" "datagrip" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -221,15 +233,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "datagrip" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.datagrip.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.datagrip.name
-            service_port = module.datagrip.ports[0].port
+            service {
+              name = module.datagrip.name
+              port {
+                number = module.datagrip.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -289,7 +307,7 @@ module "rider" {
 }
 
 // load IntelliJ using https://<namespace>.<your domain>?port=443
-resource "k8s_networking_k8s_io_v1beta1_ingress" "rider" {
+resource "k8s_networking_k8s_io_v1_ingress" "rider" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -300,15 +318,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "rider" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.rider.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.rider.name
-            service_port = module.rider.ports[0].port
+            service {
+              name = module.rider.name
+              port {
+                number = module.rider.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

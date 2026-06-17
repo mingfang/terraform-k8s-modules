@@ -1,4 +1,4 @@
-resource "k8s_extensions_v1beta1_ingress" "kuard" {
+resource "k8s_networking_k8s_io_v1_ingress" "kuard" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"       = "nginx"
@@ -7,6 +7,7 @@ resource "k8s_extensions_v1beta1_ingress" "kuard" {
     name = "kuard"
   }
   spec {
+    ingress_class_name = "nginx"
 
     rules {
       host = "kuard.192.168.2.250.nip.io"
@@ -15,10 +16,15 @@ resource "k8s_extensions_v1beta1_ingress" "kuard" {
 
         paths {
           backend {
-            service_name = "kuard"
-            service_port = "80"
+            service {
+              name = kuard
+              port {
+                number = "80"
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

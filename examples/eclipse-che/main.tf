@@ -89,16 +89,16 @@ data "k8s_core_v1_secret" "wildcard" {
 module "devfile-registry" {
   source    = "../../modules/eclipse-che/devfile-registry"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-#  image     = "registry.rebelsoft.com/devfile-registry:latest"
+  #  image     = "registry.rebelsoft.com/devfile-registry:latest"
 }
 
 module "plugin-registry" {
   source    = "../../modules/eclipse-che/plugin-registry"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-#  image     = "registry.rebelsoft.com/plugin-registry:latest"
+  #  image     = "registry.rebelsoft.com/plugin-registry:latest"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "che" {
+resource "k8s_networking_k8s_io_v1_ingress" "che" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
@@ -111,15 +111,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "che" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "che.${var.namespace}.rebelsoft.com"
       http {
         paths {
           backend {
-            service_name = module.eclipse-che.service.metadata[0].name
-            service_port = module.eclipse-che.service.spec[0].ports[0].port
+            service {
+              name = module.eclipse-che.service.metadata[0].name
+              port {
+                number = module.eclipse-che.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -133,7 +139,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "che" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "devfile-registry" {
+resource "k8s_networking_k8s_io_v1_ingress" "devfile-registry" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
@@ -145,15 +151,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "devfile-registry" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "devfile-registry.${var.namespace}.rebelsoft.com"
       http {
         paths {
           backend {
-            service_name = module.devfile-registry.service.metadata[0].name
-            service_port = module.devfile-registry.service.spec[0].ports[0].port
+            service {
+              name = module.devfile-registry.service.metadata[0].name
+              port {
+                number = module.devfile-registry.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -168,7 +180,7 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "devfile-registry" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "plugin-registry" {
+resource "k8s_networking_k8s_io_v1_ingress" "plugin-registry" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                       = "nginx"
@@ -180,15 +192,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "plugin-registry" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "plugin-registry.${var.namespace}.rebelsoft.com"
       http {
         paths {
           backend {
-            service_name = module.plugin-registry.service.metadata[0].name
-            service_port = module.plugin-registry.service.spec[0].ports[0].port
+            service {
+              name = module.plugin-registry.service.metadata[0].name
+              port {
+                number = module.plugin-registry.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -30,14 +30,13 @@ Provider Requirements:
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.studio` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.supabase` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.swagger_ui` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.studio` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.supabase` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.swagger_ui` from `k8s`
 
 ## Child Modules
 * `aws_secrets` from [../../modules/kubernetes/secret](../../modules/kubernetes/secret)
 * `gotrue` from [../../modules/supabase/gotrue](../../modules/supabase/gotrue)
-* `image_pull_secret` from [../image-pull-secret](../image-pull-secret)
 * `kong` from [../../modules/kong](../../modules/kong)
 * `kong_config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
 * `meta` from [../../modules/supabase/meta](../../modules/supabase/meta)

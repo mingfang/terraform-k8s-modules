@@ -31,9 +31,9 @@ module "secrets" {
 /* Postgres */
 
 module "postgres" {
-  source      = "../../modules/postgres"
-  name        = "postgres"
-  namespace   = k8s_core_v1_namespace.this.metadata.0.name
+  source    = "../../modules/postgres"
+  name      = "postgres"
+  namespace = k8s_core_v1_namespace.this.metadata.0.name
   annotations = {
     checksum_secrets = module.secrets.checksum
   }
@@ -61,7 +61,7 @@ module "postgres_init" {
   image     = "postgres:15.1"
 
   env_from = [module.secrets.secret_ref]
-  env_map  = {
+  env_map = {
     PGHOST = module.postgres.name
   }
   configmap = module.postgres_init_config.config_map
@@ -108,7 +108,7 @@ module "postgrest" {
 
   /* https://postgrest.org/en/stable/configuration.html#env-variables-config */
   env_from = [merge(module.secrets.secret_ref, { prefix = "PGRST_" }), module.secrets.secret_ref]
-  env_map  = {
+  env_map = {
     PGRST_DB_URI                   = "postgres://authenticator:postgres@${module.postgres.name}:${module.postgres.ports.0.port}/postgres?sslmode=disable"
     PGRST_DB_SCHEMAS               = "public,storage,graphql_public"
     PGRST_DB_ANON_ROLE             = "anon"
@@ -130,7 +130,7 @@ module "swagger_ui" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "swagger_ui" {
+resource "k8s_networking_k8s_io_v1_ingress" "swagger_ui" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -140,15 +140,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "swagger_ui" {
     namespace = k8s_core_v1_namespace.this.metadata.0.name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.swagger_ui.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.swagger_ui.name
-            service_port = module.swagger_ui.ports.0.port
+            service {
+              name = module.swagger_ui.name
+              port {
+                number = module.swagger_ui.ports.0.port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -165,15 +171,15 @@ module "gotrue" {
 
   /* https://github.com/supabase/gotrue/blob/master/example.env */
   env_from = [merge(module.secrets.secret_ref, { prefix = "GOTRUE_" }), module.secrets.secret_ref]
-  env_map  = {
+  env_map = {
     API_EXTERNAL_URL = var.SUPABASE_PUBLIC_URL
     GOTRUE_SITE_URL  = var.SUPABASE_PUBLIC_URL
 
     GOTRUE_DB_DRIVER       = "postgres"
     GOTRUE_DB_DATABASE_URL = "postgres://supabase_auth_admin:postgres@${module.postgres.name}:${module.postgres.ports.0.port}/postgres?sslmode=disable"
     /* these are need for keycloak integration to work */
-    GOTRUE_URI_ALLOW_LIST  = "**" // note: must be two `**` to enable any `redirect_to` url
-    GOTRUE_DISABLE_SIGNUP  = "false" // must be enabled for new users to be created after login with IdP
+    GOTRUE_URI_ALLOW_LIST = "**"    // note: must be two `**` to enable any `redirect_to` url
+    GOTRUE_DISABLE_SIGNUP = "false" // must be enabled for new users to be created after login with IdP
 
     GOTRUE_JWT_ADMIN_ROLES        = "service_role"
     GOTRUE_JWT_AUD                = "authenticated"
@@ -204,7 +210,7 @@ module "meta" {
   replicas  = 1
 
   env_from = [merge(module.secrets.secret_ref, { prefix = "PG_META_" }), module.secrets.secret_ref]
-  env_map  = {
+  env_map = {
     PG_META_DB_HOST = module.postgres.name
     PG_META_DB_PORT = module.postgres.ports.0.port
     PG_META_DB_USER = "supabase_admin"
@@ -219,7 +225,7 @@ module "realtime" {
   replicas  = 1
 
   env_from = [merge(module.secrets.secret_ref, { prefix = "PGRST_" }), module.secrets.secret_ref]
-  env_map  = {
+  env_map = {
     DB_HOST = module.postgres.name
     DB_PORT = module.postgres.ports.0.port
     DB_USER = "supabase_admin"
@@ -319,12 +325,12 @@ module "kong" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "supabase" {
+resource "k8s_networking_k8s_io_v1_ingress" "supabase" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                   = "nginx"
       "nginx.ingress.kubernetes.io/server-alias"      = "${var.namespace}.*"
-      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/ssl-redirect"      = "true"
       "nginx.ingress.kubernetes.io/proxy-buffer-size" = "160k"
       "nginx.ingress.kubernetes.io/proxy-body-size"   = "10240m"
 
@@ -336,15 +342,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "supabase" {
     namespace = k8s_core_v1_namespace.this.metadata.0.name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.kong.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.kong.name
-            service_port = module.kong.ports.0.port
+            service {
+              name = module.kong.name
+              port {
+                number = module.kong.ports.0.port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -369,7 +381,7 @@ module "studio" {
     EOF
   ]
   env_from = [merge(module.secrets.secret_ref, { prefix = "SUPABASE_" }), module.secrets.secret_ref]
-  env_map  = {
+  env_map = {
     STUDIO_PG_META_URL = "http://${module.meta.name}:${module.meta.ports.0.port}"
 
     DEFAULT_ORGANIZATION = var.STUDIO_DEFAULT_ORGANIZATION
@@ -382,7 +394,7 @@ module "studio" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "studio" {
+resource "k8s_networking_k8s_io_v1_ingress" "studio" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -392,15 +404,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "studio" {
     namespace = k8s_core_v1_namespace.this.metadata.0.name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.studio.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.studio.name
-            service_port = module.studio.ports.0.port
+            service {
+              name = module.studio.name
+              port {
+                number = module.studio.ports.0.port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -6,7 +6,7 @@ resource "k8s_core_v1_namespace" "this" {
 
 locals {
   replicas = 3
-  servers  = join(",",
+  servers = join(",",
     [
       for i in range(0, local.replicas) :
       "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local:5000"
@@ -21,7 +21,7 @@ resource "k8s_core_v1_persistent_volume_claim" "plugins" {
   }
 
   spec {
-    access_modes       = ["ReadWriteMany"]
+    access_modes = ["ReadWriteMany"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -113,7 +113,7 @@ module "neo4j-proxy" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -124,15 +124,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.neo4j-proxy.name
-            service_port = module.neo4j-proxy.ports[0].port
+            service {
+              name = module.neo4j-proxy.name
+              port {
+                number = module.neo4j-proxy.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

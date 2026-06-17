@@ -29,6 +29,6 @@ variable "DNS_NAME" {
   description = "set if using custom DNS name"
 }
 
-variable PROVISIONER_NAME {
+variable "PROVISIONER_NAME" {
   default = "amazon.com/aws-efs"
 }

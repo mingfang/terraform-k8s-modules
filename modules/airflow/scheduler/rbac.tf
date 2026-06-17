@@ -6,18 +6,18 @@ module "rbac" {
   cluster_role_rules = [
     {
       api_groups = [""]
-      resources = ["pods"]
-      verbs = ["create", "get", "delete", "list", "watch"]
+      resources  = ["pods"]
+      verbs      = ["create", "get", "delete", "list", "watch"]
     },
     {
       api_groups = [""]
-      resources = ["pods/log"]
-      verbs = ["get", "list"]
+      resources  = ["pods/log"]
+      verbs      = ["get", "list"]
     },
     {
       api_groups = [""]
-      resources = ["pods/exec"]
-      verbs = ["create", "get"]
+      resources  = ["pods/exec"]
+      verbs      = ["create", "get"]
     },
   ]
 

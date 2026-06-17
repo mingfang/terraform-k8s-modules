@@ -19,7 +19,7 @@ module "minio" {
   create_buckets = ["logs", "state"]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
+resource "k8s_networking_k8s_io_v1_ingress" "minio" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -30,15 +30,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "minio" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "minio-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.minio.name
-            service_port = module.minio.ports[1].port
+            service {
+              name = module.minio.name
+              port {
+                number = module.minio.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -86,7 +92,7 @@ module "airbyte-temporal" {
   configmap = module.temporal_config.config_map
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "temporal" {
+resource "k8s_networking_k8s_io_v1_ingress" "temporal" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -96,15 +102,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "temporal" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${var.namespace}-temporal"
       http {
         paths {
           backend {
-            service_name = module.airbyte-temporal.name
-            service_port = module.airbyte-temporal.ports[0].port
+            service {
+              name = module.airbyte-temporal.name
+              port {
+                number = module.airbyte-temporal.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
@@ -220,7 +232,7 @@ module "airbyte-webapp" {
   }
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "webapp" {
+resource "k8s_networking_k8s_io_v1_ingress" "webapp" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -230,15 +242,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "webapp" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.airbyte-webapp.name
-            service_port = module.airbyte-webapp.ports[0].port
+            service {
+              name = module.airbyte-webapp.name
+              port {
+                number = module.airbyte-webapp.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

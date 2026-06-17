@@ -9,10 +9,10 @@ module "hugegraph" {
   name      = var.name
   namespace = module.namespace.name
   image     = "hugegraph/hugegraph:latest"
-  ports     = [{name = "tcp", port = 8080}]
+  ports     = [{ name = "tcp", port = 8080 }]
 
   env_map = {
-    "PRELOAD"="true"
+    "PRELOAD" = "true"
   }
 }
 
@@ -39,7 +39,7 @@ resource "k8s_networking_k8s_io_v1_ingress" "hugegraph" {
               }
             }
           }
-          path = "/"
+          path      = "/"
           path_type = "ImplementationSpecific"
         }
       }
@@ -52,9 +52,9 @@ module "hubble" {
   name      = "hubble"
   namespace = module.namespace.name
   image     = "hugegraph/hubble:latest"
-  ports     = [{name = "tcp", port = 8088}]
+  ports     = [{ name = "tcp", port = 8088 }]
   command   = []
-  args   = []
+  args      = []
 }
 
 resource "k8s_networking_k8s_io_v1_ingress" "hubble" {
@@ -80,7 +80,7 @@ resource "k8s_networking_k8s_io_v1_ingress" "hubble" {
               }
             }
           }
-          path = "/"
+          path      = "/"
           path_type = "ImplementationSpecific"
         }
       }

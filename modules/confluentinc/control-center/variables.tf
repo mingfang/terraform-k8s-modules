@@ -6,7 +6,7 @@ variable "replicas" {
   default = 1
 }
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "http"
@@ -15,7 +15,7 @@ variable ports {
   ]
 }
 
-variable image {
+variable "image" {
   default = "confluentinc/cp-enterprise-control-center:6.0.0"
 }
 
@@ -35,12 +35,12 @@ variable "overrides" {
   default = {}
 }
 
-variable CONTROL_CENTER_ZOOKEEPER_CONNECT {}
-variable CONTROL_CENTER_BOOTSTRAP_SERVERS {}
-variable CONTROL_CENTER_SCHEMA_REGISTRY_URL {
+variable "CONTROL_CENTER_ZOOKEEPER_CONNECT" {}
+variable "CONTROL_CENTER_BOOTSTRAP_SERVERS" {}
+variable "CONTROL_CENTER_SCHEMA_REGISTRY_URL" {
   default = ""
 }
-variable CONTROL_CENTER_REPLICATION_FACTOR {
+variable "CONTROL_CENTER_REPLICATION_FACTOR" {
   default = 1
 }
 variable "CONTROL_CENTER_CONNECT_CLUSTER" {

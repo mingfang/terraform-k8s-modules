@@ -1,6 +1,6 @@
 locals {
   input_env = merge(
-    var.env_file != null ? {for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1]} : {},
+    var.env_file != null ? { for tuple in regexall("(\\w+)=(.+)", file(var.env_file)) : tuple[0] => tuple[1] } : {},
     var.env_map,
   )
   computed_env = [for k, v in local.input_env : { name = k, value = v }]
@@ -16,22 +16,22 @@ locals {
       {
         name  = "driver-registrar"
         image = var.registrar_image
-        args  = [
+        args = [
           "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)",
           "--v=4",
           "--csi-address=$(ADDRESS)",
         ]
         env = [
           {
-            name= "ADDRESS"
-            value= "/csi/csi.sock"
+            name  = "ADDRESS"
+            value = "/csi/csi.sock"
           },
           {
-            name = "DRIVER_REG_SOCK_PATH"
-            value="/var/lib/kubelet/plugins/ru.yandex.s3.csi/csi.sock"
+            name  = "DRIVER_REG_SOCK_PATH"
+            value = "/var/lib/kubelet/plugins/ru.yandex.s3.csi/csi.sock"
           },
           {
-            name       = "KUBE_NODE_NAME"
+            name = "KUBE_NODE_NAME"
             value_from = {
               field_ref = {
                 field_path = "spec.nodeName"
@@ -41,11 +41,11 @@ locals {
         ]
         volume_mounts = [
           {
-            name = "plugin-dir"
+            name       = "plugin-dir"
             mount_path = "/csi"
           },
           {
-            name = "registration-dir"
+            name       = "registration-dir"
             mount_path = "/registration/"
           }
         ]
@@ -54,7 +54,7 @@ locals {
         name    = "csi-s3"
         image   = var.image
         command = var.command
-        args    = [
+        args = [
           "--endpoint=$(CSI_ENDPOINT)",
           "--nodeid=$(NODE_ID)",
           "--v=4",
@@ -62,11 +62,11 @@ locals {
 
         env = concat([
           {
-            name = "CSI_ENDPOINT"
+            name  = "CSI_ENDPOINT"
             value = "unix:///csi/csi.sock"
           },
           {
-            name       = "NODE_ID"
+            name = "NODE_ID"
             value_from = {
               field_ref = {
                 field_path = "spec.nodeName"
@@ -77,7 +77,7 @@ locals {
 
         env_from = var.env_from
 
-        lifecycle = var.post_start_command  != null ? {
+        lifecycle = var.post_start_command != null ? {
           post_start = {
             exec = {
               command = var.post_start_command
@@ -88,7 +88,7 @@ locals {
         resources = var.resources
 
         security_context = {
-          privileged   = true
+          privileged = true
           capabilities = {
             add = [
               "SYS_ADMIN"
@@ -106,7 +106,7 @@ locals {
             name              = "pods-mount-dir"
             mount_path        = "/var/lib/kubelet/pods"
             mount_propagation = "Bidirectional"
-          }, {
+            }, {
             name       = "fuse-device"
             mount_path = "/dev/fuse"
           }
@@ -121,28 +121,28 @@ locals {
 
     volumes = [
       {
-        name      = "registration-dir"
+        name = "registration-dir"
         host_path = {
           path = "/var/lib/kubelet/plugins_registry/"
           type = "DirectoryOrCreate"
         }
       },
       {
-        name      = "plugin-dir"
+        name = "plugin-dir"
         host_path = {
           path = "/var/lib/kubelet/plugins/ru.yandex.s3.csi"
           type = "DirectoryOrCreate"
         }
       },
       {
-        name      = "pods-mount-dir"
+        name = "pods-mount-dir"
         host_path = {
           path = "/var/lib/kubelet/pods"
           type = "Directory"
         }
       },
       {
-        name      = "fuse-device"
+        name = "fuse-device"
         host_path = {
           path = "/dev/fuse"
         }

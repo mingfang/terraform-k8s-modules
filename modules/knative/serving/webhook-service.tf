@@ -5,7 +5,7 @@ resource "k8s_core_v1_service" "webhook" {
       "serving.knative.dev/release" = "devel"
     }
     name      = "webhook"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
   spec {
 

@@ -2,7 +2,7 @@ variable "name" {}
 
 variable "namespace" {}
 
-variable ports {
+variable "ports" {
   default = [
     {
       name = "bungeecord"

@@ -9,13 +9,13 @@ locals {
 
     containers = [
       {
-        name  = "webserver"
-        image = var.image
+        name    = "webserver"
+        image   = var.image
         command = ["airflow", "webserver"]
 
         env = concat([
           {
-            name = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
+            name  = "AIRFLOW__CORE__SQL_ALCHEMY_CONN"
             value = var.AIRFLOW__CORE__SQL_ALCHEMY_CONN
           },
           {
@@ -26,10 +26,10 @@ locals {
 
         volume_mounts = concat(
           var.pvc_dags != null ? [
-          {
-            name       = "dags"
-            mount_path = "/opt/airflow/dags"
-          },
+            {
+              name       = "dags"
+              mount_path = "/opt/airflow/dags"
+            },
           ] : [],
           var.pvc_logs != null ? [
             {
@@ -53,33 +53,33 @@ locals {
           EOF
         ]
         security_context = {
-          run_asuser  = "0"
+          run_asuser = "0"
         }
         volume_mounts = concat(
           var.pvc_dags != null ? [
-          {
-            name       = "dags"
-            mount_path = "/opt/airflow/dags"
-          },
+            {
+              name       = "dags"
+              mount_path = "/opt/airflow/dags"
+            },
           ] : [],
-        var.pvc_logs != null ? [
-          {
-            name       = "logs"
-            mount_path = "/opt/airflow/logs"
-          },
-        ] : [],
+          var.pvc_logs != null ? [
+            {
+              name       = "logs"
+              mount_path = "/opt/airflow/logs"
+            },
+          ] : [],
         )
       },
     ]
 
     volumes = concat(
       var.pvc_dags != null ? [
-      {
-        name = "dags"
-        persistent_volume_claim = {
-          claim_name = var.pvc_dags
-        }
-      },
+        {
+          name = "dags"
+          persistent_volume_claim = {
+            claim_name = var.pvc_dags
+          }
+        },
       ] : [],
       var.pvc_logs != null ? [
         {

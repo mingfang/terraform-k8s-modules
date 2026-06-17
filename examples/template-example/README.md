@@ -6,16 +6,26 @@ Provider Requirements:
 
 ## Input Variables
 * `name` (default `"{{name}}"`)
-* `namespace` (default `"{{namespace}}"`)
+* `namespace` (default `"{{name}}-example"`)
 
 ## Managed Resources
 * `k8s_core_v1_namespace.this` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
+
+## Child Modules
+* `{{name}}` from [../../modules/{{name}}](../../modules/{{name}})
 
 ## Problems
 
-## Error: Argument or block definition required
+## Error: Invalid attribute name
 
-(at `template-example/main.tf` line 7)
+(at `template-example/main.tf` line 31)
 
-An argument or block definition is required here.
+An attribute name is required after a dot.
+
+## Error: Invalid attribute name
+
+(at `template-example/main.tf` line 33)
+
+An attribute name is required after a dot.
 

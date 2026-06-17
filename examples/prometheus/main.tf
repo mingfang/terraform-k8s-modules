@@ -50,7 +50,7 @@ module "statsd-exporter" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "prometheus" {
+resource "k8s_networking_k8s_io_v1_ingress" "prometheus" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -60,21 +60,27 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "prometheus" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.prometheus.name
       http {
         paths {
           backend {
-            service_name = module.prometheus.name
-            service_port = 9090
+            service {
+              name = module.prometheus.name
+              port {
+                number = 9090
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
+resource "k8s_networking_k8s_io_v1_ingress" "alertmanager" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -84,21 +90,27 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "alertmanager" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.alertmanager.name
       http {
         paths {
           backend {
-            service_name = module.alertmanager.name
-            service_port = 9093
+            service {
+              name = module.alertmanager.name
+              port {
+                number = 9093
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "statsd-exporter" {
+resource "k8s_networking_k8s_io_v1_ingress" "statsd-exporter" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -108,15 +120,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "statsd-exporter" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = module.statsd-exporter.name
       http {
         paths {
           backend {
-            service_name = module.statsd-exporter.name
-            service_port = 9102
+            service {
+              name = module.statsd-exporter.name
+              port {
+                number = 9102
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

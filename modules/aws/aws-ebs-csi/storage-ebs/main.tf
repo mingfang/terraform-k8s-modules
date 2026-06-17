@@ -56,7 +56,7 @@ resource "k8s_storage_k8s_io_v1_storage_class" "this" {
     name = "${var.namespace}-${var.name}"
   }
 
-  _provisioner = "ebs.csi.aws.com"
+  _provisioner           = "ebs.csi.aws.com"
   allow_volume_expansion = true
 }
 
@@ -81,7 +81,7 @@ resource "k8s_core_v1_persistent_volume" "this" {
     csi {
       driver        = "ebs.csi.aws.com"
       volume_handle = var.aws_ebs_volumes[count.index].id
-      fstype       = var.fstype
+      fstype        = var.fstype
     }
     node_affinity {
       required {

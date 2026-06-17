@@ -44,7 +44,7 @@ module "orientdb" {
 }
 
 //depends on examples/ingress-nginx
-resource "k8s_extensions_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx-example"
@@ -55,16 +55,22 @@ resource "k8s_extensions_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       //must be set for sticky session to work
       host = "orientdb.192.168.2.249.nip.io"
       http {
         paths {
           backend {
-            service_name = module.orientdb.name
-            service_port = module.orientdb.service.spec[0].ports[0].port
+            service {
+              name = module.orientdb.name
+              port {
+                number = module.orientdb.service.spec[0].ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

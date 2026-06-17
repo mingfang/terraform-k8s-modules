@@ -11,8 +11,8 @@ resource "k8s_core_v1_service" "nginx" {
   spec {
 
     ports {
-      name        = "http"
-      port        = 80
+      name = "http"
+      port = 80
     }
     selector = {
       "app"     = "nginx"

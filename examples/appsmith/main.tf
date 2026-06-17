@@ -93,7 +93,7 @@ module "editor" {
   APPSMITH_OAUTH2_GOOGLE_CLIENT_ID = "hack"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                    = "nginx"
@@ -113,35 +113,56 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
-          path = "/api"
+          path      = "/api"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.server.name
-            service_port = module.server.ports[0].port
+            service {
+              name = module.server.name
+              port {
+                number = module.server.ports[0].port
+              }
+            }
           }
         }
         paths {
-          path = "/oauth2"
+          path      = "/oauth2"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.server.name
-            service_port = module.server.ports[0].port
+            service {
+              name = module.server.name
+              port {
+                number = module.server.ports[0].port
+              }
+            }
           }
         }
         paths {
-          path = "/login"
+          path      = "/login"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.server.name
-            service_port = module.server.ports[0].port
+            service {
+              name = module.server.name
+              port {
+                number = module.server.ports[0].port
+              }
+            }
           }
         }
         paths {
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
           backend {
-            service_name = module.editor.name
-            service_port = module.editor.ports[0].port
+            service {
+              name = module.editor.name
+              port {
+                number = module.editor.ports[0].port
+              }
+            }
           }
         }
       }

@@ -4,22 +4,22 @@ variable "namespace" {
   default = null
 }
 
-variable image {
+variable "image" {
   default = "fluent/fluent-bit:0.14.8"
 }
 
 variable "env" {
-  type    = list
+  type    = list(any)
   default = []
 }
 
 variable "annotations" {
-  type    = map
+  type    = map(any)
   default = null
 }
 
 variable "node_selector" {
-  type    = map
+  type    = map(any)
   default = null
 }
 

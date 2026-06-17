@@ -3,8 +3,8 @@ resource "k8s_apps_v1_daemon_set" "goldpinger" {
     labels = {
       "app" = "${var.name}"
     }
-    name      = "${var.name}"
-    namespace = "${var.namespace}"
+    name      = var.name
+    namespace = var.namespace
   }
   spec {
     selector {
@@ -47,7 +47,7 @@ resource "k8s_apps_v1_daemon_set" "goldpinger" {
             }
           }
           image = "docker.io/bloomberg/goldpinger:1.4.0"
-          name  = "${var.name}"
+          name  = var.name
 
           ports {
             container_port = 80

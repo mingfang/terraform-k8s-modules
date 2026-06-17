@@ -12,7 +12,7 @@ Provider Requirements:
 * `env` (default `[]`)
 * `env_file` (default `null`)
 * `env_map` (default `{}`)
-* `image` (default `"airbyte/temporal:0.63.15"`)
+* `image` (default `"airbyte/temporal:0.39.17-alpha"`)
 * `name` (required)
 * `namespace` (required)
 * `node_selector` (default `{}`)

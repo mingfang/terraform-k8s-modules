@@ -80,7 +80,7 @@ module "ingress" {
   service_type     = "LoadBalancer"
 }
 
-resource "k8s_extensions_v1beta1_ingress" "master" {
+resource "k8s_networking_k8s_io_v1_ingress" "master" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = module.ingress.ingress_class
@@ -90,15 +90,21 @@ resource "k8s_extensions_v1beta1_ingress" "master" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.name
       http {
         paths {
           backend {
-            service_name = module.master.name
-            service_port = module.master.service.spec[0].ports[1].port
+            service {
+              name = module.master.name
+              port {
+                number = module.master.service.spec[0].ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

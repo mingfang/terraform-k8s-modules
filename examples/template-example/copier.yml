@@ -1,0 +1,23 @@
+name:
+  type: str
+namespace:
+  type: str
+  default: "{{name}}-example"
+image:
+  type: str
+ports:
+  type: str
+  default: '{ http = 3000 }'
+command:
+  type: str
+  default: '[]'
+args:
+  type: str
+  default: '[]'
+configmap_mount_path:
+  type: str
+  default: ''
+
+_skip_if_exists: ["configmap.tf"]
+_templates_suffix: ""
+_exclude: ["copier.yaml", "copier.yml", "~*", "*.py[co]", "__pycache__", ".git", ".DS_Store", ".svn", "node_modules", ".idea", "*.iml", "README.md"]

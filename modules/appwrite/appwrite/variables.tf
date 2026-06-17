@@ -37,12 +37,12 @@ variable "overrides" {
 
 
 variable "pvcs" {
-  default = []
+  default     = []
   description = "array of PVCs, e.g. functions, builds, etc"
 }
 
 variable "sidecars" {
-  default = []
+  default     = []
   description = "sidecar containers, e.g. docker in docker"
 }
 

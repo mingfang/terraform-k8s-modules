@@ -1,5 +1,5 @@
 
-# Module `job`
+# Module `archetypes/job`
 
 Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)

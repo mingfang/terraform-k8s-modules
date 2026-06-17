@@ -1,0 +1,32 @@
+name:
+  type: str
+  default: omnigraph
+namespace:
+  type: str
+  default: omnigraph-example
+image:
+  type: str
+  default: ghcr.io/modernrelay/omnigraph-server:latest
+bearer_token:
+  type: str
+  default: change-me
+s3_bucket:
+  type: str
+  default: omnigraph-local
+graph_name:
+  type: str
+  default: example
+rustfs_access_key:
+  type: str
+  default: omnigraph
+rustfs_secret_key:
+  type: str
+  default: omnigraph
+rustfs_storage:
+  type: str
+  default: 10Gi
+aws_region:
+  type: str
+  default: us-east-1
+_templates_suffix: ""
+_exclude: ["copier.yaml", "copier.yml", "~*", "*.py[co]", "__pycache__", ".git", ".DS_Store", ".svn", "node_modules", ".idea", "*.iml", "README.md"]

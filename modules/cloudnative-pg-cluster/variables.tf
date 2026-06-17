@@ -61,22 +61,7 @@ variable "env_map" {
 
 # PostgreSQL configuration
 variable "postgresql_parameters" {
-  default = {
-    max_connections              = "200"
-    shared_buffers               = "256MB"
-    effective_cache_size         = "1GB"
-    maintenance_work_mem         = "64MB"
-    checkpoint_completion_target = "0.9"
-    wal_buffers                  = "-1"
-    default_statistics_target    = "100"
-    random_page_cost             = "1.1"
-    effective_io_concurrency     = "200"
-    wal_level                    = "replica"
-    wal_keep_size                = "1GB"
-    wal_log_hints                = "on"
-    max_wal_senders              = "3"
-    max_replication_slots        = "3"
-  }
+  default     = {}
   description = "PostgreSQL configuration parameters (postgresql.conf)."
 }
 
@@ -199,36 +184,74 @@ variable "tablespaces" {
 }
 
 # Barman Cloud Plugin (backups to S3/S3-compatible object storage)
-variable "barman_cloud_plugin_version" {
-  default     = "0.12.0"
-  description = "Version of the Barman Cloud CNPG-I plugin to install."
-}
-
 variable "barman_cloud" {
+  type = object({
+    enabled          = bool
+    destination_path = string
+    name             = string
+    endpoint_url     = string
+    s3_credentials = object({
+      access_key_id_name     = string
+      access_key_id_key      = string
+      secret_access_key_name = string
+      secret_access_key_key  = string
+      region = object({
+        secret_name = string
+        secret_key  = string
+      })
+    })
+    inherit_from_iam_role = bool
+    wal = object({
+      compression  = string
+      max_parallel = number
+      encryption   = string
+    })
+    data = object({
+      compression          = string
+      encryption           = string
+      jobs                 = number
+      immediate_checkpoint = bool
+    })
+    retention_policy = string
+  })
   default = {
-    enabled                    = false
-    name                       = null
-    destination_path           = null
-    endpoint_url               = null
-    s3_credentials_secret_name = null
-    s3_region                  = null
-    inherit_from_iam_role      = false
-    wal_compression            = null
-    wal_max_parallel           = null
-    wal_encryption             = null
-    data_compression           = null
-    data_encryption            = null
-    data_jobs                  = null
-    data_immediate_checkpoint  = null
-    retention_policy           = null
-    sidecar_resources          = {}
-    sidecar_retention_interval = 1800
+    enabled          = false
+    destination_path = ""
+    name             = ""
+    endpoint_url     = ""
+    s3_credentials = {
+      access_key_id_name     = ""
+      access_key_id_key      = "ACCESS_KEY_ID"
+      secret_access_key_name = ""
+      secret_access_key_key  = "ACCESS_SECRET_KEY"
+      region = {
+        secret_name = ""
+        secret_key  = "REGION"
+      }
+    }
+    inherit_from_iam_role = false
+    wal = {
+      compression  = ""
+      max_parallel = 0
+      encryption   = ""
+    }
+    data = {
+      compression          = ""
+      encryption           = ""
+      jobs                 = 0
+      immediate_checkpoint = false
+    }
+    retention_policy = ""
   }
   description = <<-EOF
     Barman Cloud Plugin configuration for WAL archiving and base backups to S3/S3-compatible object storage.
-    Set enabled = true to activate. Requires destination_path, and s3_credentials_secret_name (or inherit_from_iam_role).
-    All other fields are optional with sensible defaults.
+    Set enabled = true to activate. Requires destination_path and s3_credentials with access_key_id_name and secret_access_key_name.
   EOF
+}
+
+variable "barman_cloud_plugin_version" {
+  default     = "0.12.0"
+  description = "Version of the Barman Cloud CNPG-I plugin to install."
 }
 
 variable "scheduled_backup" {

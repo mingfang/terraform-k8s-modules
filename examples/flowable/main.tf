@@ -38,7 +38,7 @@ module "flowable" {
   ]
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "flowable" {
+resource "k8s_networking_k8s_io_v1_ingress" "flowable" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -48,15 +48,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "flowable" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.flowable.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.flowable.name
-            service_port = module.flowable.ports[0].port
+            service {
+              name = module.flowable.name
+              port {
+                number = module.flowable.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

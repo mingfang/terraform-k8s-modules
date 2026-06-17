@@ -196,7 +196,7 @@ module "socketio" {
   pvc_sites = k8s_core_v1_persistent_volume_claim.sites.metadata[0].name
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "frappe" {
+resource "k8s_networking_k8s_io_v1_ingress" "frappe" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -207,22 +207,33 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "frappe" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = "${module.server.name}-${var.namespace}"
       http {
         paths {
           backend {
-            service_name = module.server.name
-            service_port = module.server.ports[0].port
+            service {
+              name = module.server.name
+              port {
+                number = module.server.ports[0].port
+              }
+            }
           }
           path = "/"
+          path_type = "ImplementationSpecific"
         }
         paths {
           backend {
-            service_name = module.socketio.name
-            service_port = module.socketio.ports[0].port
+            service {
+              name = module.socketio.name
+              port {
+                number = module.socketio.ports[0].port
+              }
+            }
           }
           path = "/socket.io"
+          path_type = "ImplementationSpecific"
         }
       }
     }

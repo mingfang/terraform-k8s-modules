@@ -11,7 +11,7 @@ resource "k8s_core_v1_persistent_volume_claim" "data" {
   }
 
   spec {
-    access_modes       = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteOnce"]
     resources { requests = { "storage" = "1Gi" } }
     storage_class_name = "cephfs"
   }
@@ -23,7 +23,7 @@ module "mongodb" {
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   image     = "mongo:6.0.5"
   ports     = [{ name = "tcp", port = 27017 }]
-  args      = [
+  args = [
     "--wiredTigerCacheSizeGB", "1.5",
   ]
   env_map = {
@@ -31,7 +31,7 @@ module "mongodb" {
     MONGO_INITDB_ROOT_USERNAME = "openblocks"
     MONGO_INITDB_ROOT_PASSWORD = "secret123"
   }
-  pvc = k8s_core_v1_persistent_volume_claim.data.metadata.0.name
+  pvc        = k8s_core_v1_persistent_volume_claim.data.metadata.0.name
   mount_path = "/data/db"
 }
 
@@ -39,7 +39,7 @@ module "ferretdb" {
   source    = "../../modules/ferretdb"
   name      = "ferretdb"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
-  env_map   = {
+  env_map = {
     FERRETDB_POSTGRESQL_URL = "postgres://postgres:postgres@postgres.neon-example:5432/postgres?sslmode=disable"
   }
 }
@@ -56,7 +56,7 @@ module "node-service" {
   source    = "../../modules/openblocks/node-service"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-  env_map   = {
+  env_map = {
     PUID                       = "9001"
     PGID                       = "9001"
     OPENBLOCKS_API_SERVICE_URL = "http://api-service:8080"
@@ -68,7 +68,7 @@ module "api-service" {
   source    = "../../modules/openblocks/api-service"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-  env_map   = {
+  env_map = {
     MONGODB_URI_          = "mongodb://openblocks:secret123@${module.mongodb.name}:${module.mongodb.ports.0.port}/openblocks?authSource=admin"
     REDIS_URL             = "redis://${module.redis.name}:${module.redis.ports.0.port}"
     JS_EXECUTOR_URI       = "http://${module.node-service.name}:${module.node-service.ports.0.port}"
@@ -119,7 +119,7 @@ module "frontend" {
   source    = "../../modules/openblocks/frontend"
   namespace = k8s_core_v1_namespace.this.metadata[0].name
   replicas  = 1
-  env_map   = {
+  env_map = {
     PUID                        = "9001"
     PGID                        = "9001"
     OPENBLOCKS_API_SERVICE_URL  = "http://${module.api-service.name}:${module.api-service.ports.0.port}"
@@ -128,7 +128,7 @@ module "frontend" {
   image = "registry.rebelsoft.com/openblocks-ce-frontend:latest"
 }
 
-resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
+resource "k8s_networking_k8s_io_v1_ingress" "this" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"              = "nginx"
@@ -139,15 +139,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "this" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.frontend.name
-            service_port = module.frontend.ports[0].port
+            service {
+              name = module.frontend.name
+              port {
+                number = module.frontend.ports[0].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

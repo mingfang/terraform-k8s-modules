@@ -33,7 +33,7 @@ module "joget" {
     MYSQL_DATABASE = "jwdb"
   }
 }
-resource "k8s_networking_k8s_io_v1beta1_ingress" "joget" {
+resource "k8s_networking_k8s_io_v1_ingress" "joget" {
   metadata {
     annotations = {
       "kubernetes.io/ingress.class"                 = "nginx"
@@ -48,15 +48,21 @@ resource "k8s_networking_k8s_io_v1beta1_ingress" "joget" {
     namespace = k8s_core_v1_namespace.this.metadata[0].name
   }
   spec {
+    ingress_class_name = "nginx"
     rules {
       host = var.namespace
       http {
         paths {
           backend {
-            service_name = module.joget.name
-            service_port = module.joget.ports[1].port
+            service {
+              name = module.joget.name
+              port {
+                number = module.joget.ports[1].port
+              }
+            }
           }
-          path = "/"
+          path      = "/"
+          path_type = "ImplementationSpecific"
         }
       }
     }

@@ -17,12 +17,12 @@ variable "schedule" {
 
 // Optional variables
 variable "annotations" {
-  type = map(any)
+  type    = map(any)
   default = {}
 }
 
 variable "args" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
@@ -45,7 +45,7 @@ variable "cluster_role_rules" {
 }
 
 variable "command" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
@@ -91,7 +91,7 @@ variable "env_from" {
 }
 
 variable "env_map" {
-  type = map(any)
+  type    = map(any)
   default = {}
 }
 
@@ -128,7 +128,7 @@ variable "overrides" {
 }
 
 variable "post_start_command" {
-  type = list(string)
+  type    = list(string)
   default = null
 }
 

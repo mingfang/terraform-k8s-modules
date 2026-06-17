@@ -13,9 +13,9 @@ Provider Requirements:
 ## Managed Resources
 * `k8s_cert_manager_io_v1alpha2_certificate.wildcard` from `k8s`
 * `k8s_core_v1_namespace.this` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.che` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.devfile-registry` from `k8s`
-* `k8s_networking_k8s_io_v1beta1_ingress.plugin-registry` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.che` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.devfile-registry` from `k8s`
+* `k8s_networking_k8s_io_v1_ingress.plugin-registry` from `k8s`
 
 ## Data Resources
 * `data.k8s_core_v1_secret.wildcard` from `k8s`

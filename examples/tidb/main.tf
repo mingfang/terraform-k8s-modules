@@ -16,9 +16,9 @@ module "pd" {
 }
 
 module "tikv" {
-  source    = "../../modules/tidb/tikv"
-  name      = "tikv"
-  namespace = k8s_core_v1_namespace.this.metadata[0].name
+  source        = "../../modules/tidb/tikv"
+  name          = "tikv"
+  namespace     = k8s_core_v1_namespace.this.metadata[0].name
   replicas      = 3
   storage       = "1Gi"
   storage_class = "cephfs"

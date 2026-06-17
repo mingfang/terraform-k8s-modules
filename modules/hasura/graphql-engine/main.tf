@@ -10,16 +10,16 @@ locals {
       {
         name  = "graphql-engine"
         image = var.image
-        env   = concat([
+        env = concat([
           {
-            name = "HASURA_GRAPHQL_DATABASE_URL"
+            name  = "HASURA_GRAPHQL_DATABASE_URL"
             value = var.HASURA_GRAPHQL_DATABASE_URL
           },
           {
-            name = "HASURA_GRAPHQL_ENABLE_CONSOLE"
+            name  = "HASURA_GRAPHQL_ENABLE_CONSOLE"
             value = var.HASURA_GRAPHQL_ENABLE_CONSOLE
           },
-        ],var.env)
+        ], var.env)
       },
     ]
   }

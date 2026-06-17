@@ -1,0 +1,30 @@
+---
+# Simple ETL example
+#
+# +-----------+      +-------------+      +--------+
+# |  EXTRACT  +----->+  TRANSFORM  +----->+  LOAD  |
+# +-----------+      +-------------+      +--------+
+#
+example.ETL:
+  tasks:
+    - EXTRACT
+    - TRANSFORM
+    - LOAD
+
+# Group of tasks example
+#
+# +----------+       +----------+
+# |  RANDOM  |       |  RANDOM  |
+# +----+-----+       +-----+----+
+#      |     +-------+     |
+#      +---->+  ADD  <-----+
+#            +-------+
+#
+example.RANDOMS:
+  tasks:
+    - GROUP_RANDOMS:
+        type: group
+        tasks:
+          - RANDOM
+          - RANDOM
+    - ADD

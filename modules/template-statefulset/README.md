@@ -5,7 +5,21 @@ Provider Requirements:
 * **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
 
 ## Input Variables
-* `name` (required)
+* `annotations` (default `{}`)
+* `args` (default `{}`)
+* `command` (default `{}`)
+* `env` (default `[]`)
+* `env_file` (default `null`)
+* `env_from` (default `[]`)
+* `env_map` (default `{}`)
+* `image` (default `"{{image}}"`)
+* `image_pull_secrets` (default `[]`)
+* `name` (default `"{{name}}"`)
+* `namespace` (required)
+* `node_selector` (default `{}`)
+* `ports` (default `{}`)
+* `replicas` (default `1`)
+* `resources` (default `{"requests":{"cpu":"250m","memory":"64Mi"}}`)
 
 ## Output Values
 * `name`
@@ -18,21 +32,15 @@ Provider Requirements:
 
 ## Problems
 
-## Error: Invalid character
+## Error: Invalid expression
 
-(at `template-statefulset/main.tf` line 29)
+(at `template-statefulset/main.tf` line 132)
 
-Single quotes are not valid. Use double quotes (") to enclose strings.
+Expected the start of an expression, but found an invalid expression token.
 
 ## Error: Missing key/value separator
 
-(at `template-statefulset/main.tf` line 29)
+(at `template-statefulset/variables.tf` line 22)
 
-Expected an equals sign ("=") to mark the beginning of the attribute value. If you intended to given an attribute name containing periods or spaces, write the name in quotes to create a string literal.
-
-## Error: Argument or block definition required
-
-(at `template-statefulset/variables.tf` line 3)
-
-An argument or block definition is required here.
+Expected an equals sign ("=") to mark the beginning of the attribute value.
 

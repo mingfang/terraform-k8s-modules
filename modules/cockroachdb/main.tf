@@ -1,9 +1,9 @@
 locals {
   cluster-name = "${var.name}-${var.namespace}"
-  servers      = join(",",
+  servers = join(",",
     [
-    for i in range(0, var.replicas) :
-    "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local"
+      for i in range(0, var.replicas) :
+      "${var.name}-${i}.${var.name}.${var.namespace}.svc.cluster.local"
     ]
   )
 
@@ -29,7 +29,7 @@ locals {
             value = "kubernetes-insecure"
           },
           {
-            name       = "GOMAXPROCS"
+            name = "GOMAXPROCS"
             value_from = {
               resource_field_ref = {
                 resource = "limits.cpu"
@@ -38,7 +38,7 @@ locals {
             }
           },
           {
-            name       = "MEMORY_LIMIT_MIB"
+            name = "MEMORY_LIMIT_MIB"
             value_from = {
               resource_field_ref = {
                 resource = "limits.memory"

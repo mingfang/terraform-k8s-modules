@@ -1,1 +1,22 @@
-[View Full Size](https://raw.githubusercontent.com/mingfang/terraform-k8s-modules/master/modules/examples/postgrest/diagram.svg?sanitize=true)<img src="diagram.svg"/>
+
+# Module `postgrest`
+
+Provider Requirements:
+* **k8s ([mingfang/k8s](https://registry.terraform.io/providers/mingfang/k8s/latest))** (any version)
+
+## Input Variables
+* `is_create_namespace` (default `true`)
+* `name` (default `"postgrest"`)
+* `namespace` (default `"postgrest-example"`)
+
+## Managed Resources
+* `k8s_networking_k8s_io_v1_ingress.postgrest` from `k8s`
+
+## Child Modules
+* `namespace` from [../namespace](../namespace)
+* `postgres` from [../../modules/postgres](../../modules/postgres)
+* `postgres_init` from [../../modules/kubernetes/job](../../modules/kubernetes/job)
+* `postgres_init_config` from [../../modules/kubernetes/config-map](../../modules/kubernetes/config-map)
+* `postgrest` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `swagger-ui` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+

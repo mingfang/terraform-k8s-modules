@@ -14,5 +14,5 @@ Provider Requirements:
 * `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 
 ## Child Modules
-* `pgadmin` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `pgadmin` from [../../modules/pgadmin](../../modules/pgadmin)
 

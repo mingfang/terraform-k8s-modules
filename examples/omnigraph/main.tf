@@ -169,6 +169,16 @@ module "omnigraph" {
       name  = "import-schema"
       image = var.image
 
+      env = [
+        { name = "AWS_ACCESS_KEY_ID", value = var.rustfs_access_key },
+        { name = "AWS_SECRET_ACCESS_KEY", value = var.rustfs_secret_key },
+        { name = "AWS_REGION", value = var.aws_region },
+        { name = "AWS_ENDPOINT_URL", value = "http://${module.rustfs.name}:${module.rustfs.ports[0].port}" },
+        { name = "AWS_S3_FORCE_PATH_STYLE", value = "true" },
+        { name = "AWS_ALLOW_HTTP", value = "true" },
+        { name = "AWS_EC2_METADATA_DISABLED", value = "true" },
+      ]
+
       command = [
         "/bin/sh", "-c", <<-EOT
           echo "Importing schema..."
@@ -189,6 +199,16 @@ module "omnigraph" {
     {
       name  = "apply-graph"
       image = var.image
+
+      env = [
+        { name = "AWS_ACCESS_KEY_ID", value = var.rustfs_access_key },
+        { name = "AWS_SECRET_ACCESS_KEY", value = var.rustfs_secret_key },
+        { name = "AWS_REGION", value = var.aws_region },
+        { name = "AWS_ENDPOINT_URL", value = "http://${module.rustfs.name}:${module.rustfs.ports[0].port}" },
+        { name = "AWS_S3_FORCE_PATH_STYLE", value = "true" },
+        { name = "AWS_ALLOW_HTTP", value = "true" },
+        { name = "AWS_EC2_METADATA_DISABLED", value = "true" },
+      ]
 
       command = [
         "/bin/sh", "-c", <<-EOT
@@ -224,7 +244,7 @@ module "omnigraph" {
           find_omnigraph_pid() {
             for pid_dir in /proc/[0-9]*/; do
               pid=$(basename "$pid_dir")
-              if grep -q "omnigraph" "/proc/$pid/cmdline" 2>/dev/null; then
+              if [ -f "/proc/$pid/cmdline" ] && grep -q "omnigraph-server" "/proc/$pid/cmdline" 2>/dev/null; then
                 echo "$pid"
                 return 0
               fi
@@ -257,15 +277,15 @@ module "omnigraph" {
               # Sync files back to shared volume
               cp -r /config/repo/* /config/
 
-              # Since share_process_namespace=true, we can kill directly
-              OMNIGRAPH_PID=$(find_omnigraph_pid)
-              if [ -n "$OMNIGRAPH_PID" ]; then
-                echo "Sending SIGTERM to omnigraph (PID: $OMNIGRAPH_PID)"
-                kill -TERM "$OMNIGRAPH_PID"
-                echo "Omnigraph restarted"
-              else
-                echo "WARNING: Could not find omnigraph process"
-              fi
+               # Since share_process_namespace=true, we can kill directly
+               OMNIGRAPH_PID=$(find_omnigraph_pid)
+               if [ -n "$OMNIGRAPH_PID" ] && kill -0 "$OMNIGRAPH_PID" 2>/dev/null; then
+                 echo "Sending SIGTERM to omnigraph (PID: $OMNIGRAPH_PID)"
+                 kill -TERM "$OMNIGRAPH_PID"
+                 echo "Omnigraph restarted"
+               else
+                 echo "WARNING: Could not find omnigraph process"
+               fi
             else
               echo "No changes detected"
             fi

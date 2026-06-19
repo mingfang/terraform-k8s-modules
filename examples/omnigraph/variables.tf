@@ -14,7 +14,10 @@ variable "is_create_namespace" {
 }
 
 variable "image" {
-  description = "Omnigraph server container image"
+  # Requires omnigraph >= 0.7.1: the resilient-boot behavior this example relies
+  # on (a partially-applied/quarantined graph no longer refuses server boot)
+  # landed in 0.7.1. Pin a tag >= 0.7.1 in production rather than `:latest`.
+  description = "Omnigraph server container image (>= 0.7.1)"
   default     = "registry.rebelsoft.com/omnigraph:latest"
 }
 

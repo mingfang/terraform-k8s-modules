@@ -63,6 +63,8 @@ module "buzz" {
     RELAY_URL                          = "wss://buzz-example.rebelsoft.com"
     BUZZ_MEDIA_BASE_URL                = "https://buzz-example.rebelsoft.com/media"
     BUZZ_REQUIRE_RELAY_MEMBERSHIP      = "true"
+    BUZZ_REQUIRE_AUTH_TOKEN            = "true"
+    BUZZ_REQUIRE_MEDIA_GET_AUTH        = "true"
     BUZZ_RELAY_PRIVATE_KEY             = var.relay_private_key
 
     DATABASE_URL        = "postgres://${var.postgres_user}:${var.postgres_password}@${module.postgres.name}:5432/${var.postgres_db}"

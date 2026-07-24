@@ -33,3 +33,7 @@ variable "postgres_db" {
 variable "relay_private_key" {
   description = "Hex-encoded relay private key (required when BUZZ_REQUIRE_RELAY_MEMBERSHIP=true)"
 }
+
+variable "relay_owner_pubkey" {
+  description = "Hex-encoded secp256k1 public key derived from relay_private_key"
+}

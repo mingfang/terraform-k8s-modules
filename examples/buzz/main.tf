@@ -66,7 +66,7 @@ module "buzz" {
     BUZZ_REQUIRE_AUTH_TOKEN       = "true"
     BUZZ_REQUIRE_MEDIA_GET_AUTH   = "true"
     BUZZ_RELAY_PRIVATE_KEY        = var.relay_private_key
-    RELAY_OWNER_PUBKEY            = "018c30897595b5dba9859495bec7e44e15cf410abc027cad986d1a9d9b981cd6"
+    RELAY_OWNER_PUBKEY            = var.relay_owner_pubkey
     BUZZ_BIND_ADDR                = "0.0.0.0:3000"
     RUST_LOG                      = "buzz_relay=info,buzz_db=info,buzz_auth=info,buzz_pubsub=info"
 

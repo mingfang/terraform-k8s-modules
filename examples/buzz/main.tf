@@ -13,7 +13,7 @@ module "minio" {
   ports     = [{ name = "s3", port = 9000 }]
 
   env_map = {
-    MINIO_ROOT_USER    = var.minio_access_key
+    MINIO_ROOT_USER     = var.minio_access_key
     MINIO_ROOT_PASSWORD = var.minio_secret_key
   }
 
@@ -60,25 +60,25 @@ module "buzz" {
   ]
 
   env_map = {
-    RELAY_URL                          = "wss://buzz-example.rebelsoft.com"
-    BUZZ_MEDIA_BASE_URL                = "https://buzz-example.rebelsoft.com/media"
-    BUZZ_REQUIRE_RELAY_MEMBERSHIP      = "true"
-    BUZZ_REQUIRE_AUTH_TOKEN            = "true"
-    BUZZ_REQUIRE_MEDIA_GET_AUTH        = "true"
-    BUZZ_RELAY_PRIVATE_KEY             = var.relay_private_key
+    RELAY_URL                     = "wss://buzz-example.rebelsoft.com"
+    BUZZ_MEDIA_BASE_URL           = "https://buzz-example.rebelsoft.com/media"
+    BUZZ_REQUIRE_RELAY_MEMBERSHIP = "true"
+    BUZZ_REQUIRE_AUTH_TOKEN       = "true"
+    BUZZ_REQUIRE_MEDIA_GET_AUTH   = "true"
+    BUZZ_RELAY_PRIVATE_KEY        = var.relay_private_key
+    RELAY_OWNER_PUBKEY            = "0c21fe5ab74bd6ec69161be003697555a32d8e729f4e499c017046e9f75ee0e4"
+    BUZZ_BIND_ADDR                = "0.0.0.0:3000"
+    RUST_LOG                      = "buzz_relay=info,buzz_db=info,buzz_auth=info,buzz_pubsub=info"
 
-    DATABASE_URL        = "postgres://${var.postgres_user}:${var.postgres_password}@${module.postgres.name}:5432/${var.postgres_db}"
-    BUZZ_AUTO_MIGRATE   = "true"
-    REDIS_URL           = "redis://${module.redis.name}:6379"
-    BUZZ_BIND_ADDR      = "0.0.0.0:3000"
-    RUST_LOG            = "buzz_relay=info,buzz_db=info,buzz_auth=info,buzz_pubsub=info"
+    DATABASE_URL      = "postgres://${var.postgres_user}:${var.postgres_password}@${module.postgres.name}:5432/${var.postgres_db}"
+    BUZZ_AUTO_MIGRATE = "true"
+    REDIS_URL         = "redis://${module.redis.name}:6379"
 
-    BUZZ_S3_ENDPOINT    = "http://${module.minio.name}:9000"
-    BUZZ_S3_ACCESS_KEY  = var.minio_access_key
-    BUZZ_S3_SECRET_KEY  = var.minio_secret_key
-    BUZZ_S3_BUCKET      = "buzz-media"
-    BUZZ_S3_REGION    = "us-east-1"
-    RELAY_OWNER_PUBKEY = "0c21fe5ab74bd6ec69161be003697555a32d8e729f4e499c017046e9f75ee0e4"
+    BUZZ_S3_ENDPOINT   = "http://${module.minio.name}:9000"
+    BUZZ_S3_ACCESS_KEY = var.minio_access_key
+    BUZZ_S3_SECRET_KEY = var.minio_secret_key
+    BUZZ_S3_BUCKET     = "buzz-media"
+    BUZZ_S3_REGION     = "us-east-1"
   }
 
   liveness_probe = {
@@ -134,8 +134,8 @@ resource "k8s_batch_v1_job" "buzz_bucket_init" {
         restart_policy = "OnFailure"
 
         containers {
-          name    = "mc"
-          image   = "minio/mc:latest"
+          name  = "mc"
+          image = "minio/mc:latest"
           command = [
             "/bin/sh",
             "-c",

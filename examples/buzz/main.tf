@@ -60,8 +60,10 @@ module "buzz" {
   ]
 
   env_map = {
-    RELAY_URL           = "wss://buzz-example.rebelsoft.com"
-    BUZZ_MEDIA_BASE_URL = "https://buzz-example.rebelsoft.com/media"
+    RELAY_URL                          = "wss://buzz-example.rebelsoft.com"
+    BUZZ_MEDIA_BASE_URL                = "https://buzz-example.rebelsoft.com/media"
+    BUZZ_REQUIRE_RELAY_MEMBERSHIP      = "true"
+    BUZZ_RELAY_PRIVATE_KEY             = var.relay_private_key
 
     DATABASE_URL        = "postgres://${var.postgres_user}:${var.postgres_password}@${module.postgres.name}:5432/${var.postgres_db}"
     BUZZ_AUTO_MIGRATE   = "true"
@@ -73,7 +75,8 @@ module "buzz" {
     BUZZ_S3_ACCESS_KEY  = var.minio_access_key
     BUZZ_S3_SECRET_KEY  = var.minio_secret_key
     BUZZ_S3_BUCKET      = "buzz-media"
-    BUZZ_S3_REGION      = "us-east-1"
+    BUZZ_S3_REGION    = "us-east-1"
+    RELAY_OWNER_PUBKEY = "0c21fe5ab74bd6ec69161be003697555a32d8e729f4e499c017046e9f75ee0e4"
   }
 
   liveness_probe = {

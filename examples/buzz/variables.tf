@@ -29,3 +29,7 @@ variable "postgres_password" {
 variable "postgres_db" {
   description = "PostgreSQL database name for Buzz"
 }
+
+variable "relay_private_key" {
+  description = "Hex-encoded relay private key (required when BUZZ_REQUIRE_RELAY_MEMBERSHIP=true)"
+}

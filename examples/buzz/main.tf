@@ -105,15 +105,6 @@ module "buzz" {
       memory = "1Gi"
     }
   }
-
-  init_containers = [
-    {
-      name  = "wait-for-s3-bucket"
-      image = "minio/mc:latest"
-
-      command = ["sh", "-c", "mc alias set minio http://minio:9000 ${var.minio_access_key} ${var.minio_secret_key}; for i in $(seq 1 30); do if mc ls minio/buzz-media >/dev/null 2>&1 || mc mb minio/buzz-media >/dev/null 2>&1; then echo 'Bucket is ready!'; exit 0; fi; echo 'Waiting... attempt '$i; sleep 2; done; echo 'Bucket not ready after 60s'; exit 1"]
-    }
-  ]
 }
 
 # ── S3 Bucket Init Job ────────────────────────────────────────────────────────

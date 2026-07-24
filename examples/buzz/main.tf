@@ -53,7 +53,7 @@ module "buzz" {
   source    = "../../modules/generic-deployment-service"
   name      = var.name
   namespace = module.namespace.name
-  image     = "ghcr.io/block/buzz:latest"
+  image     = "ghcr.io/block/buzz:main"
   ports = [
     { name = "http", port = 3000 },
     { name = "health", port = 8080 },
@@ -66,9 +66,12 @@ module "buzz" {
     BUZZ_REQUIRE_AUTH_TOKEN       = "true"
     BUZZ_REQUIRE_MEDIA_GET_AUTH   = "true"
     BUZZ_RELAY_PRIVATE_KEY        = var.relay_private_key
-    RELAY_OWNER_PUBKEY            = "0c21fe5ab74bd6ec69161be003697555a32d8e729f4e499c017046e9f75ee0e4"
+    RELAY_OWNER_PUBKEY            = "018c30897595b5dba9859495bec7e44e15cf410abc027cad986d1a9d9b981cd6"
     BUZZ_BIND_ADDR                = "0.0.0.0:3000"
     RUST_LOG                      = "buzz_relay=info,buzz_db=info,buzz_auth=info,buzz_pubsub=info"
+
+    BUZZ_ADMIN_HOST    = "buzz-example-admin.rebelsoft.com"
+    BUZZ_ADMIN_WEB_DIR = "/srv/buzz/admin-web"
 
     DATABASE_URL      = "postgres://${var.postgres_user}:${var.postgres_password}@${module.postgres.name}:5432/${var.postgres_db}"
     BUZZ_AUTO_MIGRATE = "true"
@@ -160,6 +163,37 @@ resource "k8s_networking_k8s_io_v1_ingress" "this" {
     ingress_class_name = "nginx"
     rules {
       host = var.namespace
+      http {
+        paths {
+          backend {
+            service {
+              name = module.buzz.name
+              port {
+                number = module.buzz.ports_map.http
+              }
+            }
+          }
+          path      = "/"
+          path_type = "ImplementationSpecific"
+        }
+      }
+    }
+  }
+}
+
+resource "k8s_networking_k8s_io_v1_ingress" "admin" {
+  metadata {
+    annotations = {
+      "nginx.ingress.kubernetes.io/server-alias" = "${var.namespace}-admin.*"
+      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
+    }
+    name      = "${var.namespace}-admin"
+    namespace = module.namespace.name
+  }
+  spec {
+    ingress_class_name = "nginx"
+    rules {
+      host = "${var.namespace}-admin"
       http {
         paths {
           backend {

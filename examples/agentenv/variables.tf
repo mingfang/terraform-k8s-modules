@@ -15,7 +15,7 @@ variable "is_create_namespace" {
 # The scheduler and gateway images are NOT published — build them from the
 # AgentENV repo (`make k8s-build`), push to your registry, and override below.
 variable "runtime_image" {
-  default = "ghcr.io/kvcache-ai/aenv-server:latest"
+  default = "registry.rebelsoft.com/agentenv-agentenv:latest"
 }
 
 variable "scheduler_image" {

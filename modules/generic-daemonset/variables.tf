@@ -56,6 +56,10 @@ variable "image_pull_secrets" {
   default = []
 }
 
+variable "image_pull_policy" {
+  default = null
+}
+
 variable "node_selector" {
   default = {}
 }
@@ -88,8 +92,22 @@ variable "configmap_mount_path" {
   default = "/config"
 }
 
+variable "config_files" {
+  type    = list(string)
+  default = null
+}
+
+variable "config_files_mount_path" {
+  type    = string
+  default = "/config"
+}
+
 variable "post_start_command" {
   type    = list(string)
+  default = null
+}
+
+variable "_lifecycle" {
   default = null
 }
 
@@ -111,6 +129,10 @@ variable "volumes" {
 }
 
 variable "sidecars" {
+  default = []
+}
+
+variable "init_containers" {
   default = []
 }
 
@@ -151,6 +173,18 @@ variable "security_context" {
   default = null
 }
 
+variable "liveness_probe" {
+  default = null
+}
+
+variable "readiness_probe" {
+  default = null
+}
+
+variable "startup_probe" {
+  default = null
+}
+
 variable "dns_config" {
   default = null
 }
@@ -158,4 +192,6 @@ variable "dns_policy" {
   default = null
 }
 
-
+variable "termination_grace_period_seconds" {
+  default = null
+}

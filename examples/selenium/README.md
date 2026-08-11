@@ -7,13 +7,13 @@ Provider Requirements:
 ## Input Variables
 * `name` (default `"selenium"`)
 * `namespace` (default `"selenium-example"`)
+* `is_create_namespace` (default `true`)
 
 ## Managed Resources
-* `k8s_core_v1_namespace.this` from `k8s`
 * `k8s_networking_k8s_io_v1_ingress.this` from `k8s`
 
 ## Child Modules
-* `selenium_chrome` from [../../modules/selenium/chrome](../../modules/selenium/chrome)
-* `selenium_firefox` from [../../modules/selenium/firefox](../../modules/selenium/firefox)
-* `selenium_hub` from [../../modules/selenium/hub](../../modules/selenium/hub)
-
+* `namespace` from [../namespace](../namespace)
+* `selenium_chrome` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `selenium_firefox` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
+* `selenium_hub` from [../../modules/generic-deployment-service](../../modules/generic-deployment-service)
